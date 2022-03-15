@@ -1,0 +1,1042 @@
+*HP42s*
+
+|Key_map|
+|hp42s_details|
+
+-----------------------------------------------------------------------------
+Key Map                                               *Key_map*
+
+Sigma+:   F1, or 'a' as in "Accumulate"
+Sigma-:   Shift F1, or 'A' (Shift a)
+1/X:      F2, or 'v' as in "inVerse"
+Y^X:      Shift F2, or 'V' (Shift v)
+SQRT:     F3, or 'q' as in "sQuare root"
+X^2:      Shift F3, or 'Q' (Shift q)
+LOG:      F4, or 'o' as in "lOg, not ln"
+10^X:     Shift F4, or 'O' (Shift o)
+LN:       F5, or 'l' as in "Ln, not log"
+E^X:      Shift F5, or 'L" (Shift l)
+XEQ:      F6, or 'x' as in "Xeq"
+GTO:      Shift F6, or 'X' (Shift x)
+
+STO:      'm' as in "Memory"
+COMPLEX:  'M' (Shift m)
+RCL:      'r' as in "Rcl"
+%:        'R' (Shift r)
+Rdown:    'd' as in "Down"
+pi:       'D' (Shift d)
+SIN:      's' as in "Sin"
+ASIN:     'S' (Shift s)
+COS:      'c' as in "Cos"
+ACOS:     'C' (Shift c)
+TAN:      't' as in "Tan"
+ATAN:     'T' (Shift t)
+
+ENTER:    Enter or Return
+ALPHA:    Shift Enter or Shift Return
+X<>Y:     'w' as in "sWap"
+LASTX:    'W' (Shift w)
++/-:      'n' as in "Negative"
+MODES:    'N' (Shift n)
+E:        'e' as in "Exponent" (duh...)
+DISP:     'E' (Shift e)
+<-:       Backspace
+CLEAR:    Shift Backspace
+
+<Up>:     CursorUp
+BST:      Shift CursorUp
+7:        '7'
+SOLVER:   '&' (Shift 7)
+8:        '8'
+Integral: Alt 8 (can't use Shift 8 because that's 'x' (multiply))
+9:        '9'
+MATRIX:   '(' (Shift 9)
+divide:   '/'
+STAT:     '?' (Shift /)
+
+<Down>:   CursorDown
+SST:      Shift CursorDown
+4:        '4'
+BASE:     '$' (Shift 4)
+5:        '5'
+CONVERT:  '%' (Shift 5)
+6:        '6'
+FLAGS:    '^' (Shift 6)
+multiply: '*'
+PROB:     Ctrl 8 (can't use Shift * because '*' is shifted itself (Shift 8))
+
+Shift:    Shift
+1:        '1'
+ASSIGN:   '!' (Shift 1)
+2:        '2'
+CUSTOM:   '@' (Shift 2)
+3:        '3'
+PGM.FCN:  '#' (Shift 3)
+subtract: '-'
+PRINT:    '_' (Shift -)
+
+EXIT:     Escape
+OFF:      Shift Escape
+0:        '0'
+TOP.FCN:  ')' (Shift 0)
+.:        . or ,
+SHOW:     '<' or '>' (Shift . or Shift ,)
+R/S:      '\' (ummm... because it's close to Enter (or Return))
+PRGM:     '|' (Shift \)
+add:      '+'
+CATALOG:  '=' (Can't use Shift + because + is shifted itself (shift =))
+
+In A..F mode (meaning the "A..F" submenu of the BASE menu), the PC
+keyboard keys A through F are mapped to the top row of the
+calculator's keyboard (Sigma+ through XEQ); these mappings override
+any other mappings that may be defined for A through F.
+
+In ALPHA mode, all PC keyboard keys that normally generate printable
+ASCII characters, enter those characters into the ALPHA register (or
+to the command argument, if a command with an alphanumeric argument is
+being entered). These mappings override any other mappings that may be
+defined for those keys.
+
+----------------------------------------------------------------------
+hp42s_details                                           *hp42s_details*
+
+From http://www.finseth.com/hpdata/hp42s.php, downloaded 2 Aug 2013
+
+Model:  -42S
+
+General:
+    Name:           RPN Scientific Calculator
+    Code-Name:      Davinci
+    Family:         Pioneer
+    Logic:          RPN
+    Features:       scientific, programmable, -41C* replacement,
+                complex, solver, integrator, matrix,
+                all-model statistics, base w/arithmetic
+    Firsts:         polar complex notation
+    Introduction:
+        Date:       1988-10-31
+        Price:      $120
+    Discontinuation:
+        Date:       1996-03-01
+        Price:      $120?
+    Production-Run:     ?
+
+Display:
+    Type:           LCD, bit-mapped
+    Size:           2 line x 22 chars, 16 x 131 pixels
+    Number-Formats:     sign, 12 mantissa, ., exp sign, 2 exp
+    Annunciators:       v^  arrow keys are active
+                ---^    shift key
+                printer printer data being sent
+                ((.))   executing function or program
+                battery battery low
+                RAD radians mode
+                GRAD    grads mode
+
+Data:
+    User-Visible:
+        Smallest:   1E-499
+        Largest:    9.99999999999E499
+        Signif.-Digits: 12
+    Internal:
+        Smallest:   1E-49999
+        Largest:    9.99999999999999E49999
+        Signif.-Digits: 15
+    Data-Types-and-Sizes:   real, 8 bytes
+                binary, 8 bytes (36 bits)
+                alpha, 8 bytes, display in ""s, up to 6 chars
+                complex, 16 bytes, display with i or \.)
+                matrix, either real or complex, display in []s
+
+                entire calculator is in real or complex mode
+Memory:
+    Named-Registers:    X, Y, Z, T, Last X, Alpha (44 chars)
+    Flags:          100, of which 0-10 and 81-99 are user and the
+                rest system or reserved
+                0-4 show annunciator when set
+                11  auto execution
+                12  print double wide
+                13  print lower case
+                15  HPIL printer: 0)manual 1)normal
+                    2)trace 3)trace w/stack print
+                21  printer enabled
+                22  numeric input available
+                23  alpha input available
+                24  ignore range errors
+                25  ignore any errors & clear
+                26  audio output is ignored
+                27  custom mode is active
+                28  radix mark: 0). 1),
+                29  digit groupings shown: 0)no 1)yes
+                30  stack lift disable
+                34  AGRAPH merging: 0)OR 1)duplicate
+                    "on" get turned off 2)overwrite 3)XOR
+                36  number of digits, 0-15
+                40  display format: 0)sci 1)eng 2)fix 3)all
+                42  angle mode: 0)deg 1)rad 2)grad 3)rad
+                44  continuous on
+                45  currently solving equation
+                46  currently integrating
+                47  variable menu active
+                48  alpha keyboard active
+                49  low battery
+                50  set when a message is displayed line 1
+                51  set when a message is displayed line 2
+                52  program mode
+                53  INPUT in progress
+                55  printer exists
+                56  curve fit model: 1)linear 2)log
+                    4)exponential 8)power
+                60  all \GS mode
+                61  logarithmic model invalid
+                62  exponential model invalid
+                63  power model invalid
+                65  matrix editor in use
+                66  auto grow matrices
+                68  base: 0)decimal 1)binary 7)octal
+                    15)hexadecimal
+                72  local label
+                73  polar mode
+                74  real result only
+                75  programmable menu selected
+                76  matrix wrap, edge to edge
+                77  matrix wrap, first to last
+    Register-Usage:     REGS    is where the numbered registers are
+                    stored; can be redimensioned
+    Numbered-Registers: variable amount, default 25
+    Program-Steps:      memory
+    Program-Editing:    insert
+    Program-Display:    alpha
+    User-RAM-Bytes:     variable
+    Total-RAM-Bytes:    8,192
+    ROM-Bytes:      64K
+    Machine-State:      memory (includes registers, flags, random
+                  seed, 8 returns, current matrix,
+                  currnt row and column pointers, programs,
+                  etc.)
+    File-Types:     none
+
+Physical:
+    Technology-Used:    CMOS
+    Processor:      Lewis, 1 MHz
+    Chip-Count:     ?
+    Power-Source:       3 alkaline (Panasonic LR44) or mercury
+                (Panasonic NR44 or MR44) button cells
+    Continuous-Memory:  yes
+    Expansion-Ports:    none
+    I/O-Ports:      I/R output, beeper
+    Clock:          none
+
+    Length:         ?
+    Width:          ?
+    Height:         ?
+    Weight:         ?
+    Temperature-Range:
+        Operating:  0 to 45 deg C
+        Charging:   -
+        Storage:    -20 to 65 deg C
+
+Keyboard:
+    Switches:       none
+    Shift-Keys:     orange, orange, above
+    User-Defined-Keys:  top six
+
+Key-Arrangement::
+
+** ** ** ** ** **
+** ** ** ** ** **
+***** ** ** ** **
+**    ** ** ** **
+**    ** ** ** **
+**    ** ** ** **
+**    ** ** ** **
+
+Key-Labels-Base-Keyboard::
+
+\GS+    1/x \v/x    LOG LN  XEQ
+STO RCL Rv  SIN COS TAN
+ENTER   x<>y    +/- E   <-
+^   7   8   9   \:-
+v   4   5   6   x
+[]  1   2   3   -
+EXIT    0   .   R/S +
+
+(The EXIT key has a lower label of ON.)
+
+Key-Labels-Orange-Orange-Above::
+
+     x   2    x  x
+\GS-    y   x   10  e   GTO
+COMPLEX %   \pi ASIN    ACOS    ATAN
+[ALPHA] LAST x  [MODES] [DISP]  [CLEAR]
+BST [SOLVER][\.Sf(x)][MATRIX][STAT]
+SST [BASE]  [CONVERT][FLAGS][PROB]
+[]  ASSIGN  [CUSTOM][PGM.FCN][PRINT]
+OFF [TOP.FCN]SHOW   PRGM    [CATALOG]
+
+Programmable-Operations::
+
+%       percent
+%CH     percent change
++       addition
++/-     change sign
+-       subtraction
+->      move right one element in matrix
+->DEC       convert octal to decimal
+->DEG       convert radians to degrees
+->HMS       convert decimal hours to H.MS
+->HR        convert H.MS to decimal hours
+->OCT       convert decimal to octal
+->POL       convert rectangular to polar
+->RAD       convert degrees to radians
+->REC       convert polar to rectangular
+0-9, .      enter digit or decimal point
+1/X     inverse
+10^X        common exponent
+<-      move left one element in matrix
+ABS     absolute value
+ACOS        arc cosine
+ACOS        hyperbolic arc cosine
+ADV     paper advance
+AGRAPH      display graphics image
+AIP     append integer part to alpha
+ALENG       length of alpha
+ALL     ALL display mode
+ALL\GS      use all 13 summation coefficients
+AND     logical and
+AOFF        alpha keyboard off
+AON     alpha keyboard off
+ARCL %%%    recall alpha
+AROT        rotate alpha
+ASHF        alpha shift
+ASIN        arc sine
+ASINH       hyperbolic arc sine
+ASSIGN function/label 01-18 assign to CUSTOM key
+ASTO %%%    alpha store
+ATAN        arc tangent
+ATANH       hyperbolic arc tangent
+ATOX        left byte of alpha to x
+AVIEW       alpha view
+BASE+       binary addition
+BASE+/-     binary change sign
+BASE-       binary subtraction
+BASEx       binary multiplication
+BASE\:-     binary division
+BEEP        beep
+BEST        select besst fit model
+BINM        select binary mode
+BIT?        test xth bith of y
+CF 00-29,81-99  clear flag
+CLA     clear alpha
+CLD     clear display
+CLKEYS      clear keys
+CLLCD       clear LCD
+CLMENU      delete menu key assignments for the programmable menu
+CLP     clear a program
+CLRG        clear registers
+CLST        clear stack
+CLV variable    clear a variable
+CLX     clear x
+CL\GS       clear summation registers
+COMB        combinations
+COMPLEX     convert to real numbers or matrices to complex
+CORR        compute correlation coefficient
+COS     cosine
+COSH        hyperbolic cosine
+CPX?        is X complex?
+CPXRES      enable complex results
+CROSS       compute cross product
+DECM        select decimal mode
+DEG     set degrees mode
+DELAY       set print delay to X seconds
+DELR        delete row of matrix
+DET     compute determinant
+DIM variable    dimension a matrix
+DIM?        return the matrix dimensions
+DOT     compute dot product
+DSE %%%     decrement and skip if equal
+E       enter exponent
+EDIT        edit a matrix
+EDITN variable  edit a named matrix
+END     end program
+ENG 00-11   engineering notation
+ENTER       enter
+EXITALL     exit all menus
+E^X     natural exponent
+E^X-1       natural exponent - 1
+FC? 00-99   is flag clear
+FC?C 00-35,81-99 is flag clear and clear
+FCSTX       forcast X given Y
+FCSTY       forcast Y given X
+FIX 00-11   fixed notation
+FNRM        compute Frobenius norm
+FP      fractional part
+FS? 00-99   is flag set
+FS?C 00-35,81-99    is flag set and clear
+GAMMA       compute gamma function
+GETKEY      get a key
+GETM        get matrix
+GRAD        set grads mode
+GROW        select grow mode
+GTO label   goto
+HEXM        set hexadecimal mode
+HMS+        add two times in H.MS notation
+HMS-        subtract two times in H.MS notation
+I+      increment row pointer
+I-      decrement row pointer
+INDEX variable  indexes a matrix
+INPUT %%%   recall a named value, displays it, and halts
+INSR        insert a row
+INTEG variable  integrates the selected program
+INVERT      inverts a matrix
+IP      integer part
+ISG %%%     increment and skip if greater
+J+      increment a column pointer
+J-      decrement a column pointer
+KEYASN      select key assignments mode
+KEYG 1-9 label  on menu key, go to (defines a label)
+KEYX 1-9 label  on menu key, XEQ (defines a label)
+LASTX       recall last x
+LBL label   label
+LCLBL label define a local label
+LINE\GS     use only linear summation registers
+LINF        select linear model
+LN      natural logarithm
+LN1+X       natural logarithm + 1
+LOG     common logarithm
+LOGF        select logarithmic model
+MAN     select manual print mode
+MAT?        does X contain a matrix
+MEAN        compute average
+MOD     modulus
+MVAR variable   declare a menu variable
+N!      factorial
+NEWMAT      create new matrix
+NORM        select normal print
+NOT     logical not
+OCTM        select octal mode
+OFF     turn off (not the same as OFF key)
+OLD     recalls the current matrix element same as RCLEL)
+ON      set continuous on
+OR      logical or
+PERM        permutations
+PGMINT label    select a program to integrate
+PGMSLV label    select a program to solve
+PI      constant pi
+PIXEL       turn on a pixel
+POLAR       select polar coordinate mode for displaying complex
+numbers
+POSA        find position in alpha
+PRA     print alpha
+PRLCT       print display
+PROFF       turn off printing
+PROMPT      display a prompt
+PRON        turn printing on
+PRP label   print program
+PRSTK       print stack
+PRUSR       print user variables
+PRV variable    print variable
+PRX     print X
+PR\GS       print summation registers
+PSE     pause
+PUTM        put matrix
+PWRF        select power model
+R/S     run / stop
+R<>R        swap rows in matrix
+RAD     set radians mode
+RAN     return random number
+RCJIJ       recall pointer values
+RCL %%%     recall
+RCL +,-,x,\:- %%%   recall arithmetic
+RCLEL       recall matrix element
+RDX,        select comma as radix mark
+RDX.        select dot as radix mark
+REAL?       does X contain a real?
+REALRES     return real results only
+RECT        select rectangular mode for displaying complex numbers
+RND     round
+RNRM        compute row normal
+ROTXY       rotate binary number
+RSUM        compute row sum
+RTN     return
+Rv      roll down
+R^      roll up
+SCI 00-11   scientific notation
+SDEV        standard deviation
+SEED        store random number seed
+SF 00-35,81-99  set flag
+SIGN        sign of number
+SIN     sine
+SINH        hyperbolic sine
+SIZE        sets the number of storage registers
+SLOPE       compute slope
+SOLVE variable  solve for an unknown variable
+SQRT        square root
+STO %%%     store
+STO +,-,x,\:- %%% storage arithmetic
+STOEL       store into current matrix element
+STOIJ       store row and column pointers
+STOP        stop
+STR?        does X contain a string?
+SUM     returns the statistics sums
+TAN     tangent
+TANH        hyperbolic tangent
+TONE 0-9    tone
+TRACE       select trace printing
+TRANS       compute transpose
+UVEC        compute unit vector
+v       move down one element in matrix
+VARMENU     create a variable menu
+VIEW %%%    view
+WMEAN       compute weighted mean
+WRAP        selects wrap mode
+x       multiplication
+X<0?        comparison test
+X<> %%%     swap X and register
+X<>Y        swap
+X<Y?        comparison test
+X=0?        comparison test
+X=Y?        comparison test
+X>0?        comparison test
+X>Y?        comparison test
+XEQ label   subroutine call
+XOR     logical xor
+XTOA        x to left byte of alpha
+X\<=0?      comparison test
+X\<=Y?      comparison test
+X\=/0?      comparison test
+X\=/Y?      comparison test
+X\>=0?      comparison test
+X\>=Y?      comparison test
+X^2     square
+YINT        compute Y intercept
+Y^X     exponentiation
+\:-     division
+\GS+        summation plus
+\GS-        summation minus
+\GSREG 00-99    set summation register
+\GSREG?     what is summation register pointer
+^       move up one element in matrix
+|-      append to alpha
+
+%%% is a register designator; it can be 00-99,X,Y,Z,T,L or a variable
+name.  It can also have a leading . (displays as IND) which designates
+indirection.
+
+Non-Programmable-Operations::
+
+<-      clear digit, item, or program line 
+ALPHA       toggle alpha mode
+BASE        select BASE menu
+BST     back step
+CATALOG     select CATALOG menu
+CLALL       clear all memory
+CLEAR       select CLEAR menu
+CONVERT     select CONVERT menu
+CUSTOM      select CUSTOM menu
+CLP label   clear program
+DEL 000-999 delete N program line lines
+DISP        select DISP menu
+EXIT        exit the current menu
+EXIT + +    darken display
+EXIT + -    lighten display
+EXIT + LN   continuous self-test
+EXIT + LOG  single factory self-test, tests are:
+
+    1/x     beep
+    <-      memory scanner (see notes)
+    EXIT + \v/x exits test
+    LOG     ROM
+    LN      DRAM
+    RCL     ESD?
+    Rv      OK message
+    STO     keyboard, need to press each key from upper-left to
+            lower-right
+    XEQ     URAM
+    \GS+        SPD?
+    \v/x        DISPLAY, 7 'steps' of any key
+
+EXIT + \GS+ + XEQ   clear all memory
+EXIT + \v/x full reset
+FLAGS       select the FLAGS menu
+GTO . .     move points to new program space
+GTO . 000-999   go to line number
+GTO . label go to label
+LIST        print a program listing
+MENU        selects the programmable menu
+OFF     off
+ON      on
+PGM.FCN     select the PGM.FCN menu
+PRGM        toggle program mode
+PRINT       select the PRINT menu
+PROB        select the PROB menu
+QUIET       toggle beeper on
+SHOW        shows all 12 digits
+SOLVER      select the SOLVER menu
+SST     single step
+STAT        select the STAT menu
+TOP.FCN     select the TOP.FCN men
+\.Sf(x)     select the \.Sf(x) menu
+
+Menus::
+
+ALPHA:  ABCDE   FGHI    JKLM    NOPQ    RSTUV   WXYZ
+    ABCDE:  A   B   C   D   E
+      ^v    A:  Ao  AE
+    FGHI:   F   G   H   I
+    JKLM:   J   K   L   M
+    NOPQ:   N   O   P   Q
+      ^v    N~  O:
+    RSTUV:  R   S   T   U   V
+      ^v                U:
+    WXYZ:   W   X   Y   Z
+  ^v    ( [ {   <-^v    < = >   MATH    PUNC    MISC
+    ( [ {:  (   )   [   ]   {   }
+    <-^V:   <-  ^   v   ->
+    < = >:  =   \=/ <   >   \<= \>=
+    MATH:   \GS \.S \v/ \<) \^o \Gm
+    PUNC:   ,   ;   :   !   ?   "
+      ^v    ... _   `   '   upside? line feed
+    MISC:   $   *   #   /   square
+      ^v    L-  &   @   \   ~   |
+
+BASE:   A...F   DECM    HEXM    OCTM    BINM    LOGIC
+    A...F:  A   B   C   D   E   F
+    LOGIC:  AND OR  XOR NOT BIT?    ROTXY
+
+CATALOG:FCN PGM REAL    CPX MAT MEM
+    FCN:    all functions
+
+CLEAR:  CL\GS   CLP CLV CLST    CLR CLX
+  ^v    CLRG    DEL CLKY    CLLCD   CLMN    CLALL
+
+CONVERT:->DEG   ->RAD   ->HR    ->HMS   ->REC   ->POL
+  ^v    IP  FP  RND ABS SIGN    MOD
+
+in key assignments mode
+CUSTOM: key assignments
+in local-label mode
+CUSTOM: A   B   C   D   E   XEQ
+  ^v    F   G   H   I   J   XEQ
+
+DISP:   FIX SCI ENG ALL RDX.    RDX,
+
+FLAGS:  SF  CF  FS? FC? FS?C    FC?C
+
+MATRIX: NEW INV DET TRAN    SIMQ    EDIT
+    SIMQ:   MATA    MATB    MATX
+        then EDIT
+    EDIT:   <-  OLD ^   v   GOTO    ->
+      ^v    INSR        DELR        WRAP    GROW
+  ^v    DOT CROSS   UVEC    DIM INDEX   EDITN
+    EDITN:  to EDIT
+  ^v    STOIJ   RCLIJ   STOEL   RCLEL   PUTM    GETM
+
+MODES:  DEG RAD GRAD        RECT    POLAR
+  ^v    SIZE    QUIET   CRES    RRES    KEY LCLBL
+
+PGM.FCN:LBL RTN INPUT   VIEW    AVIEW   XEQ
+  ^v    X?0 X?Y PROM    PSE ISG DSE
+    X?0:    X=0?    X\=/0?  X<0?    X>0?    X\<=0?  X\>=0?
+    X?Y:    X=Y?    X\=/Y?  X<Y?    X>Y?    X\<=Y?  X\>=Y?
+  ^v    AIP XTOA    AGRA    PIXEL   BEEP    TONE
+  ^v    MVAR    VARM    GETK    MENU    KEYG    KEYX
+
+PRINT:  PR\GS   PRP PRV PRST    PRA PRX
+  ^v    PRUSR   LIST    ADV PRLCD       DELAY
+  ^v    PON POFF        MAN NORM    TRACE
+
+PROB:   COMB    PERM    N!  GAM RAN SEED
+
+SOLVER: catalog of programs with MVAR instructions,
+    then variable menu
+
+STAT:   \GS+    SUM MEAN    WMN SDEV    CFIT
+    CFIT:   FCSTX   FCSTY   SLOPE   YINT    CORR    MODL
+        MODL:   LINF    LOGF    EXPF    PWRF        BEST
+  ^v    ALL\GS  LIN\GS      \GSREG  \GSRG?
+
+TOP.FCN:\GS+    1/X SQRT    LOG LN  XEQ
+
+\.Sf(x):catalog of programs with MVAR instructions,
+    then variable menu,
+    LLIM    ULIM    ACC         \.S
+
+BUGS/ROM-Versions::
+
+Bug/2 (as in 1/2 a bug):  Clear REGS (do CLV "REGS") and execute \GS+. 
+RCL now recalls the contents of registers 00 through 120,930 (indirect
+above 99).  You convert a hexadecimal address to a register number by
+dividing by 16 and adding a constant (183 on the reporter's system,
+but may vary).  Exit this mode by setting SIZE to any non-zero amount. 
+Interesting addresses:
+
+    1FFC2 to 1FFFF  copyright notice
+    40300 to 40309  speed nybble, contrast nybble, clock
+
+Do COMB or PERM with X > Y.  You correctly get "INVALID DATA".  Now do
+X<>Y.  Do COMB or PERM again.  It should work.  Instead, you get
+INVALID message again.  EXIT + \v/x does not clear this condition.
+However, any arithmetic operation it! [reported by Rich Homard,
+b645zjo@utarlg.uta.edu; posted to Comp.sys.handhelds on 29 Oct 1991]
+
+John W. Loux adds: Some of the earlier HP42S calculators had this
+problem.  This problem was fixed at one point.  However, in a later
+HP42S update, the problem reappeared.  It seems that a combination of
+hardware and software caused the problem.  When the hardware problem
+was fixed, the software problem reappeared!  As far as I know, there
+are no plans to fix the "bug" on the basis of the simple workaround.
+The problem resurfaced in late REV B calcs and all REV C --- somewhere
+between #3011 and #3055 is my understanding.
+
+Notes::
+
+A variable or matrix is made complex by storing a complex value into
+it (or, say adding a complex 0 to it).  It is made real by replacing
+it with a real value.
+
+Variable menus are used by:
+
+    <start program>
+    MVAR variable
+        ...
+    VARMENU name
+
+When the program is run, the specified variables are brought up as a
+menu.  Pressing:
+
+    menu key    store
+    RCL menu key    recall
+    shift menu key  views value while held down
+
+If two menu keys are pressed in a row, the program continues and the
+name of the second one is stored in alpha.  You can also continue with
+R/S: alpha is not changed.
+
+(The following information and the tests listed above are from Jay B.
+Harlow (harlow@plains.UUCP, posted on Comp.sys.handhelds on 22 March
+1990).) There is a debugger / memory scanner. You enter it by:
+
+    EXIT + LOG
+    <-
+
+Commands are:
+
++       move by + #1h nybbles
+-       move by - #1h nybbles
+.       execute address in ROM?
+0-9,a-f     (like the BASE application) enter a digit into memory,
+move
+        by + #1h nybbles
+<-      refresh
+COS     move by + #10h nybbles, trasmit via infrared?
+v       move by - #1000h nybbles
+x       move by + #100h nybbles
+^       move by + #1000h nybbles
+\:-     move by - #100h nybbles
+
+Interesting Addresses:
+
+    00000-1FFFF ROM
+    40000-4020c display (unusual pixel mapping?, poking around here
+            may also cause a slow fade-out crash)
+    4020c-40xxx status line
+    4025f       displayed with the ROM revision; may be a one-byte
+            version of the 48S* WSLOG
+    40304       CRC register
+    403F7-403FF clock
+    50000-5FFFF memory (8K repeated four times)
+    503f6, 2    length of the alpha register
+    502f8-5044F alpha register
+    50450       flags (1-4 per nybble?)
+    50082       last key?
+    50084       key buffer head, tail 
+    50086       16 byte key buffer
+
+( Some of these may have moved between versions.  For example, the
+alpha register has also been reported to be from 583f8 to 5844b. )
+
+table of 5 nybble pointers:
+
+    500b8       ptr to top of stack, 
+            this is indirect, & points to last byte of stack,
+            go left or lower in memory
+            CAN HAVE MORE THAN ST X, ST Y, ST Z, ST T, ST L
+    500d6       ptr to program end?
+    500db       ptr to REGS var, & rest of var list
+
+instruction table (nybble len, string name, (5 nybble? )addr address):
+
+    1db62       ABS
+    1e8a8       XFCN
+    1e9fa       [MIN]
+    1ea2d       'TED4ME' ??? looks like a function but no work....
+    1ea3f       'DDST X'
+
+"additional" instuctions:
+
+    XFCN str    wants a program label?, needs something else
+            always says 'Nonexistent'
+    [FIND]      find a value in an array.
+            01 INDEX "REGS"     ; look in this array
+            02 2            ; number to look for
+            03 [FIND]       ; look for a 2 (ST X)
+            04 RCLIJ        ; where found
+    [MIN]       find the minimum in array
+    [MAX]       find the maximum in array
+            this two look in a single column
+            returns: ST Y - row where found
+                 ST X - value 
+            01 3
+            02 ENTER
+            03 DIM "AA"     ; a sqauare 3x3
+            04 1            ; starting row
+            05 3            ; column
+            06 STOIJ        ; look in third column
+            07 [MIN]        ; or [MAX]
+
+From Joseph K. Horn (akcs.joehorn@hpcvbbs.cv.hp.com, posted to
+Comp.sys.handhelds on 13 Nov 1991):
+
++------------------+
+| HP-42S Hex Table |
+| -Joseph K. Horn- |
++------------------+
+
+[Same as the HP-41 hex table, plus the following]
+
+   XROM 01
+--------------
+A0 61   SINH
+A0 62   COSH
+A0 63   TANH
+A0 64   ASINH
+A0 65   ATANH
+A0 66   ACOSH
+A0 6F   COMB
+A0 70   PERM
+A0 71   RAN
+A0 72   COMPLEX
+A0 73   SEED
+A0 74   GAMMA
+
+   XROM 02
+--------------
+A0 9F   BEST
+A0 A0   EXPF
+A0 A1   LINF
+A0 A2   LOGF
+A0 A3   PWRF
+A0 A4   SLOPE
+A0 A5   SUM
+A0 A6   YINT
+A0 A7   CORR
+A0 A8   FCSTX
+A0 A9   FCSTY
+A0 AA   INSR
+A0 AB   DELR
+A0 AC   WMEAN
+A0 AD   LIN\GS
+A0 AE   ALL\GS
+
+   XROM 03
+--------------
+A0 E2   HEXM
+A0 E3   DECM
+A0 E4   OCTM
+A0 E5   BINM
+A0 E6   BASE+
+A0 E7   BASE-
+A0 E8   BASEx
+A0 E9   BASE/
+A0 EA   BASE+/-
+
+   XROM 09
+--------------
+A2 59   POLAR
+A2 5A   RECT
+A2 5B   RDX.
+A2 5C   RDX,
+A2 5D   ALL
+A2 5E   MENU
+A2 5F   X>=0?
+A2 60   X>=Y?
+A2 61   (CLALL)
+A2 62   CLKEYS
+A2 63   KEYASN
+A2 64   LCLBL
+A2 65   REAL?
+A2 66   MAT?
+A2 67   CPX?
+A2 68   STR?
+A2 69   (QUIET)
+A2 6A   CPXRES
+A2 6B   REALRES
+A2 6C   EXITALL
+A2 6D   CLMENU
+A2 6E   GETKEY
+A2 6F   CUSTOM
+A2 70   ON
+
+   XROM 22
+--------------
+A5 87   NOT
+A5 88   AND
+A5 89   OR
+A5 8A   XOR
+A5 8B   ROTXY
+A5 8C   BIT?
+
+   XROM 24
+--------------
+A6 31   AIP
+
+   XROM 25
+--------------
+A6 41   ALENG
+A6 46   AROT
+A6 47   ATOX
+A6 5C   POSA
+A6 6F   XTOA
+A6 78   \GSREG?
+
+   XROM 27
+--------------
+A6 C9   TRANS
+A6 CA   CROSS
+A6 CB   DOT
+A6 CC   DET
+A6 CD   UVEC
+A6 CE   INVRT
+A6 CF   FNRM
+A6 D0   RSUM
+A6 D1   R<>R
+A6 D2   I+
+A6 D3   I-
+A6 D4   J+
+A6 D5   J-
+A6 D6   STOEL
+A6 D7   RCLEL
+A6 D8   STOIJ
+A6 D9   RCLIJ
+A6 DA   NEWMAT
+A6 DB   OLD
+A6 DC   {left}
+A6 DD   {right}
+A6 DE   {up}
+A6 DF   {down}
+A6 E0   (GOTO)
+A6 E1   EDIT
+A6 E2   WRAP
+A6 E3   GROW
+A6 E4   (MATA)
+A6 E5   (MATB)
+A6 E6   (MATX)
+A6 E7   DIM?
+A6 E8   GETM
+A6 E9   PUTM
+A6 EA   [MIN]
+A6 EB   [MAX]
+A6 EC   [FIND]
+A6 ED   RNRM
+
+   XROM 29
+--------------
+A7 47   (LIST)
+A7 48   PRA
+A7 4D   (PRP)
+A7 52   PRsigma
+A7 53   PRSTK
+A7 54   PRX
+A7 5B   MAN
+A7 5C   NORM
+A7 5D   TRACE
+A7 5E   PRON
+A7 5F   PROFF
+A7 60   DELAY
+A7 61   PRUSR
+A7 62   PRLCD
+A7 63   CLLCD
+A7 64   AGRAPH
+A7 65   PIXEL
+
+SPECIAL TEXT BYTES
+------------------
+
+Fn 80   VIEW name       Fn 88   VIEW IND name
+Fn 81   STO name        Fn 89   STO IND name
+Fn 82   STO+ name       Fn 8A   STO+ IND name
+Fn 83   STO- name       Fn 8B   STO- IND name
+Fn 84   STOx name       Fn 8C   STOx IND name
+Fn 85   STO/ name       Fn 8D   STO/ IND name
+Fn 86   X<> name        Fn 8E   X<> IND name
+Fn 87   INDEX name      Fn 8F   INDEX IND name
+
+Fn 90   MVAR name       Fn 98   MVAR IND name
+Fn 91   RCL name        Fn 99   RCL IND name
+Fn 92   RCL+ name       Fn 9A   RCL+ IND name
+Fn 93   RCL- name       Fn 9B   RCL- IND name
+Fn 94   RCLx name       Fn 9C   RCLx IND name
+Fn 95   RCL/ name       Fn 9D   RCL/ IND name
+Fn 96   ISG name        Fn 9E   ISG IND name
+Fn 97   DSE name        Fn 9F   DSE IND name
+
+Fn A0   --          Fn A8   SF IND name
+Fn A1   --          Fn A9   CF IND name
+Fn A2   --          Fn AA   FS?C IND name
+Fn A3   --          Fn AB   FC?C IND name
+Fn A4   --          Fn AC   FS? IND name
+Fn A5   --          Fn AD   FC? IND name
+Fn A6   --          Fn AE   GTO IND name
+Fn A7   --          Fn AF   XEQ IND name
+
+Fn B0   CLV name        Fn B8   CLV IND name
+Fn B1   PRV name        Fn B9   PRV IND name
+Fn B2   ASTO name       Fn BA   ASTO IND name
+Fn B3   ARCL name       Fn BB   ARCL IND name
+Fn B4   PGMINT name     Fn BC   PGMINT IND name
+Fn B5   PGMSLV name     Fn BD   PGMSLV IND name
+Fn B6   INTEG name      Fn BE   INTEG IND name
+Fn B7   SOLVE name      Fn BF   SOLVE IND name
+
+Fn C0   ASSIGN name     Fn C8   --
+Fn C1   VARMENU name        Fn C9   VARMENU IND name
+Fn C2   KEY # XEQ name      Fn CA   KEY # XEQ IND name
+Fn C3   KEY # GTO name      Fn CB   KEY # GTO IND name
+Fn C4   DIM name        Fn CC   DIM IND name
+Fn C5   INPUT name      Fn CD   INPUT IND name
+Fn C6   EDITN name      Fn CE   EDIT IND name
+Fn C7   --          Fn CF   --
+
+F2 D0   INPUT reg       F2 D8   (CLV reg)
+F2 D1   RCL+ reg        F2 D9   (PRV reg)
+F2 D2   RCL- reg        F2 DA   INDEX reg
+F2 D3   RCLx reg        Fn DB   \GSREG IND name
+F2 D4   RCL/ reg        Fn DC   FIX IND name
+F1 D5   FIX 10          Fn DD   SCI IND name
+F1 D6   SCI 10          Fn DE   ENG IND name
+F1 D7   ENG 10          Fn DF   TONE IND name
+
+Fn E0   --          F2 E8   (PGMINT reg)
+Fn E1   --          F2 E9   (PGMSLV reg)
+F3 E2   KEY # XEQ label     F2 EA   (INTEG reg)
+F3 E3   KEY # GTO label     F2 EB   (SOLVE reg)
+Fn E4   --          F2 EC   (DIM reg)
+F1 E5   FIX 11          Fn ED   --
+F1 E6   SCI 11          F2 EE   INPUT IND reg
+F1 E7   ENG 11          F2 EF   (EDITN reg)
+
+Fn F0   CLP label       F2 F8   (VARMENU IND reg)
+Fn F1   XFCN label      Fn F9   --
+F3 F2   GTO. nnnn       Fn FA   --
+Fn F3   GTO..           Fn FB   --
+Fn F4   GTO. label      Fn FC   --
+Fn F5   --          Fn FD   --
+F3 F6   DEL nnnn        Fn FE   --
+F3 F7   SIZE nnnn       Fn FF   --
+
+It appears that, while this calculator was originally developed as a
+-41* replacement, it got turned into a -15C replacement near the end
+of its development cycle.
+
+There was talk of a follow on model (-42SX), but that never happened.

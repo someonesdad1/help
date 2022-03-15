@@ -1,0 +1,19 @@
+*MySQL*
+
+Log in:
+    mysql -u username -p
+
+TEE file;
+SHOW databases;
+USE which_database;
+STATUS;
+
+How to do a quick query and save it in a file:
+    Log in
+    tee file;
+    use database;
+    -- Perform the query
+    select a,b,c from table;
+    exit
+
+

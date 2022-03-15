@@ -1,0 +1,593 @@
+*Cpp*
+
+|In_Out_Streams|
+|IO_Manipulators|
+|iostreams|
+|standard_exceptions|
+|gpp|
+
+Idioms
+------
+
+* Get lines from a text file (newline is the delimiter)
+    // Note the newline is not included in the line string
+    string line;
+    int line_number = 1;
+    while (getline(cin, line)) {
+        ProcessLine(line, line_number++, g);
+    }
+
+* __FILE__ and __LINE__ are macros that help with marking locations of
+  problems.  Here's a C++20 way of doing this:
+        #include <iostream>
+        #include <string_view>
+        #include <source_location>
+        
+        void log(const std::string_view message,
+                const std::source_location location = 
+                    std::source_location::current())
+        {
+            std::cout << "file: "
+                    << location.file_name() << "("
+                    << location.line() << ":"
+                    << location.column() << ") `"
+                    << location.function_name() << "`: "
+                    << message << '\n';
+        }
+        
+        template <typename T> void fun(T x)
+        {
+            log(x);
+        }
+        
+        int main(int, char*[])
+        {
+            log("Hello world!");
+            fun("Hello C++20!");
+        }
+    Compile it with 'g++ -std=c++20 a.cpp' and you'll get
+        file: a.cpp(24:8) `int main(int, char**)`: Hello world!
+        file: a.cpp(19:8) `void fun(T) [with T = const char*]`: Hello C++20!
+
+-----------------------------------------------------------------------------
+Numerical limits for MinGW g++ 3.4.5 on Windows:
+    (run d:/p/tools/floating_point.cpp to get this info)
+
+Integers:
+    short:              [-32768, 32767]
+    unsigned short      [0, 65535]
+    int                 [-2147483648, 2147483647]
+    unsigned int        [0, 4294967295]
+    long                [-2147483648, 2147483647]
+    unsigned long       [0, 4294967295]
+    long long           [-9223372036854775808, 9223372036854775807]
+    unsigned long long  [0, 18446744073709551615]
+
+Floating point
+    float
+        min               1.17549e-038
+        max               3.40282e+038
+        epsilon           1.19209e-007
+        round_error       0.5
+        min_exponent10    -37
+        max_exponent10    38
+    double
+        min               2.22507e-308
+        max               1.79769e+308
+        epsilon           2.22045e-016
+        round_error       0.5
+        min_exponent10    -307
+        max_exponent10    308
+    long double
+        min               0
+        max               inf
+        epsilon           1.0842e-019
+        round_error       0.5
+        min_exponent10    -4931
+        max_exponent10    4932
+
+-----------------------------------------------------------------------------
+Input and Output Streams                                 *In_Out_Streams*
+------------------------
+
+To read in all of stdin:
+    ostringstream os;
+    os << cin.rdbuf();
+    string bytes = os.str();
+
+To read in all of a file:
+    void ReadWholeFile(const string & filename, string & bytes)
+    {
+        /* Read all the bytes from file filename into the string bytes. */
+        ifstream in(filename.c_str(), ios::binary);
+        if (! in)
+        {
+            cerr << "Couldn't open '" << filename << "' file" << endl;
+            exit(1);
+        }
+        // Go to the end of the file so we can use in.tellg() to get the
+        // file's size in bytes
+        in.seekg(0, ios::end);
+        // Make the string bytes' size same as file
+        bytes.resize(in.tellg());
+        // Reset file pointer to beginning of file
+        in.seekg(0, ios::beg);
+        // Read all the bytes in at once
+        in.read(& bytes[0], bytes.size());
+        in.close();
+        // Ensure we have at least one byte
+        if (bytes.empty())
+        {
+            cerr << "Error:  '" << filename
+                 << "' file is empty or doesn't exist." << endl;
+            exit(1);
+        }
+    }
+
+To write to an output file:
+    #include <fstream>
+    using namespace std;
+    ...
+    string file = "myfile";
+    ofstream out(file.c_str());
+    if (not out)
+    {
+        cerr << "Error opening file" << endl;
+    }
+    else
+    {
+        out << "Stuff";
+        ...
+    }
+
+To open an input file:
+    #include <fstream>
+    using namespace std;
+    ...
+    string file = "myfile";
+    ifstream in(file.c_str());
+    if (not in)
+    {
+        cerr << "Error opening file" << endl;
+    }
+    else
+    {
+        in >> myvar;
+        ...
+    }
+
+To get a line of text line from a stream:
+
+    string s;
+    getline(stream, string s);
+  or
+    getline(stream, string s, char delim);
+
+  The delimiter character is not returned in the string.
+
+  The stream is returned.  As usual, check for errors or EOF.
+
+Redirecting standard streams (useful for e.g. unit tests)
+    // Change stdin and stdout to stringstreams.
+    #include <iostream>
+    #include <sstream>
+    #include <string>
+    using namespace std;
+    int main(int argc, char **argv)
+    {
+        { // Redirect cout to a string
+            ostringstream out;
+            // Connect out to cout
+            streambuf *coutbuf = cout.rdbuf();  // Save old buffer
+            cout.rdbuf(out.rdbuf());
+            // Send string to stringstream
+            cout << "1st message";
+            // Reconnect the original buffer
+            cout.rdbuf(coutbuf);
+            // Print the first message to the console
+            cout << "cout substitution = '" << out.str() << "'" << endl;
+        }
+        { // Redirect cin from a string
+            istringstream in;
+            // Get a pointer to in's buffer
+            stringbuf *pbuf = in.rdbuf();
+            // Initialize the buffer
+            pbuf->str("2nd message\n");
+            // Change cin's buffer
+            streambuf *cinbuf = cin.rdbuf();  // Save old buffer
+            cin.rdbuf(pbuf);
+            // Get the line from cin
+            string my_input;
+            getline(cin, my_input);
+            // Show we got it
+            cout << "cin substitution = '" << my_input << "'" << endl;
+            // Restore the original buffer
+            cin.rdbuf(cinbuf);
+        }
+        {
+            // Show we can get data from original cin
+            string s;
+            cout << "Type in some characters:  ";
+            getline(cin, s);
+            cout << "Normal input from cin = '" << s << "'" << endl;
+        } 
+        return 0;
+    }
+
+-----------------------------------------------------------------------------
+IO Manipulators                                          *IO_Manipulators*
+
+#include <iomanip>            Stroustrup p. 634
+
+boolalpha
+noboolalpha
+showbase            Prefix octal and hex
+noshowbase          No prefix octal and hex
+showpoint
+noshowpoint
+showpos
+noshowpos
+skipws              Skip whitespace
+noskipws
+uppercase           E and X rather than e and x
+nouppercase         e and x rather than E and X
+
+internal 
+left
+right
+
+dec
+hex
+oct
+
+fixed               Floating point format dddd.d
+scientific          Scientific format d.dddEdd
+
+endl                Put \n and flush
+flush               Flush stream
+ends                Put \0
+
+ws                  Eat whitespace
+
+resetiosflags       Clear flags
+setiosflags         Set flags
+setbase(int b)      Output integers in base b
+setfill(int c)      Make c the fill character
+setprecision(int n) n digits
+setw(int n)         Next field width is n characters
+
+
+-----------------------------------------------------------------------------
+*iostreams*
+ 
+Good page on basic file stuff:  
+    http://www.cplusplus.com/doc/tutorial/files/
+
+Notes on using iostreams in C++:
+
+To read from a file, use fstream.h:
+
+    ifstream istr(filename, ios::in);
+    unsigned int x;
+    istr.read(&x, sizeof(x));
+
+To write to a file:
+
+    ofstream ostr(filename, ios::out);
+    unsigned int x = 0x12234;
+    istr.write(&x, sizeof(x));
+
+Here's another chunk of code that shows file access (from "Teach Yourself
+Borland C++ Builder in 14 Days", pg 125:
+
+    #include <condefs.h>
+    #include <fstream.h>
+    #include <conio.h>
+    #pragman hdrstop
+
+    int main(int argc, char **argv)
+    {
+        char buff[80];
+        ifstream infile;
+        infile.open("readfile.cpp");
+        if (! infile) {
+            return 0;
+        }
+        while (! infile.eof()) {
+            infile.getline(buff, sizeof(buff));
+            // getline() will read to next newline
+            cout << buff << endl;
+        }
+        infile.close();
+        cout << endl << "Press any key to continue..";
+        getch();
+        return 0;
+    }
+
+Other examples
+
+    std::bitset<10> flags(7);
+    std::cout << flags;  // outputs 0000000111
+
+    std::complex<float> c(3.1, 7.4);
+    std::cout << c;      // outputs (3.1, 7.4)
+
+fstream Library
+---------------
+
+    FILE *ifd  = fopen("file", "r")     Open for reading
+    FILE *iofs = fopen("iofile", "r+")  Open for reading and writing
+    
+    ifstream ifs(ifd)       Construct an input stream connected to open stream
+    ofstream ofs("ofile", ios::out)     Open stream for writing
+    fstream fs              Construct an input/output stream without
+                            opening a file
+    fs.attach(ofs)          Attach to open stream
+    fs.close()              Close the attached file
+    fs.open("other", ios::out)          Open a file on the fs stream
+    fs.is_open()            Returns whether the file is open
+
+    fstream Mode Bits
+    -----------------
+        ios::app        Append
+        ios::ate        Seek to end
+        ios::in         Open for reading
+        ios::nocreate   Fail if file doesn't exist
+        ios::noreplace  Faile if file already exists
+        ios::out        Open for writing
+        ios::trunc      Discard old contents of file
+
+        Combinations:
+            in                  Reads (file must exist)          cmode = "r" 
+            out                 Empties & writes (creates)       cmode = "w"
+            out | trunc         Same as previous
+            out | app           Appends (creates if needed)      cmode = "a"
+            in | out            R/W, at start, file must exist   cmode = "r+"
+            int | out | trunc   Empties, R/W, creates if needed  cmode = "w+"
+
+strstream Library
+-----------------
+    char istring[100]   Array for reading
+    char ostring[100]   Array for writing
+    istrstream is(istring)      Create new stream for reading; get characters
+                                from istring
+    ostream os          Create new stream for writing
+    strstream ios       Create new stream for reading and writing
+
+Instream formatting
+-------------------
+    (Include <iomanip> for manipulators like setprecision())
+    cout << dec         Set output format to decimal
+    cin >> hex          Set input format to hex
+    cerr << oct         Set error output to octal
+    cin >> ws           Skip whitespace
+    cout << endl        Insert newline and flush
+    cout << flush       Flush output stream
+    cout << setiosflags(flags)      Set output to flags
+    cout << resetiosflags(flags)    Reset output to flags
+    cout << setw(w)     Set output width to w
+    cout << setprecision(n)         Set output to precision n
+    cout << setfill("*")            Set output to fill with "*"
+    cout << setbase(b)  Set output to base b
+    cout << boolalpha     Forces textual representation of booleans
+    cout << noboolalpha   Forces numerical representation of booleans
+
+
+iostream Format Flags
+---------------------
+    setf(flags)     Sets flags as additional format flags and returns the
+                    previous state of all flags
+    setf(flags, mask)   Sets flags as the new format flags of the group
+                        identified by mask and returns the previous state
+                    previous state of all flags
+    unset(flags)    Clears flags
+    flags()         Returns all set format flags
+    copyfmt(str)    Copies all format definitions from stream str
+
+(all prefaced by ios::)
+    dec             Convert to/from decimal (default)
+    fixed           Fixed point for floating point output
+    hex             Convert to/from hex
+    internal        Insert fill characters between prefix (if any) and value
+    left            Add fill character after value
+    oct             Convert to/from octal
+    right           Add fill characters before value
+    scientific      Use scientific notation for floating point output
+    showbase        Insert 0 before octal, 0x before hex
+    showpos         Insert + before positive decimals
+    showpoint       Insert decimal point and trailing zeroes
+    skipws          Skip whitespace on input
+    stdio           Flush output after each character
+    unitbuf         Flush output after each insertion
+    uppercase       Use uppercase for hex and scientific notation
+
+Error status
+    str == stream
+
+    str.bad()       True if unrecoverable error on stream
+    str.clear()     Clear error status of stream
+    str.clear(str1.rdstate())   Set error status of str to same as str1
+    str.eof()       True if at EOF
+    str.fail()      True if last input failed; stream is still usable
+    str.good()      True if no errors on stream
+    str.rdstate()   Get current error status of str
+    while(str>>x)   Perform statement until error or EOF on str
+    do str>>x while(str)   Same as previous
+
+Examples
+--------
+
+    Mask             Flag       Meaning
+    ---------------  ------     ----------------------------
+    adjustfield      left       Left ajusts the value
+                     right      Right ajusts the value
+                     internal   Left adjusts sign, right adjusts value
+                     None       Right adjusts value (the default)
+
+    In following, the underscore was the fill character
+
+    Adjustment    width()    -42      0.12     "Q"     'Q'
+    --------------------------------------------------------
+    left            6        -42___   0.12__   Q_____  Q_____
+    right           6        ___-42   __0.12   _____Q  _____Q
+    internal        6        -___42   __0.12   _____Q  _____Q
+
+
+                    precision()         421.0           0.0123456789
+    ----------------------------------------------------------------
+    Normal              2               4.2e+02         0.012
+                        6               421             0.0123457
+    With showpoint      2               4.2e+02         0.012
+                        6               421.000         0.0123457
+    fixed               2               421.00          0.01
+                        6               421.000000      0.012346
+    scientific          2               4.21e+02        1.23e-02
+                        6               4.210000e+02    1.234568e-02
+
+The following program opens the file charset.out and writes the current
+character set (all characters from 32 to 255) into this file.  From
+"The C++ Standard Library" by Josuttis, pg 629.
+
+#include <string>     // For strings
+#include <iostream>   // For I/O
+#include <fstream>    // For file I/O
+#include <iomanip>    // For setw()
+#include <cstdlib>    // For exit()
+using namespace std;
+
+void WriteCharsetToFile(const string &filename)
+{
+    ofstream file(filename.c_str());   // Open output file
+    if (! file) {
+        cerr << "Can't open output file '" << filename << "'" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    for (int ix = 32; ix < 256; ix++) {
+        file << "Value: " << setw(3) << ix << "   "
+             << "char:  " << static_cast<char>(ix) << endl;
+    }
+    // File closed automatically when locals go out of scope
+}
+
+void SendFileToConsole(const string &filename)
+{
+    ifstream file(filename.c_str());  // Open input file
+    if (! file) {
+        cerr << "Can't open input file '" << filename << "'" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy file contents to cout
+    char c;
+    while (file.get(c)) {
+        cout.put(c);
+    }
+    // File closed automatically when locals go out of scope
+}
+
+int main(void)
+{
+    string filename = "charset.out";
+
+    writeCharsetToFile(filename);
+    SendFileToConsole(filename);
+}
+
+----------------------------------------------------------------------
+|standard_exceptions|                       *standard_exceptions*
+
+
+Hierarchy:
+
+exception
+    bad_alloc
+    bad_cast
+    bad_typeid
+    bad_exception
+    logic_error
+        domain_error
+        invalid_argument
+        length_error
+        out_of_range
+    runtime_error
+        overflow_error
+        range_error
+        underflow_error
+
+exception          An exception and parent class of all the standard C++
+                   exceptions.
+
+bad_alloc          This can be thrown by new.
+bad_cast           This can be thrown by dynamic_cast.
+bad_exception      This is useful device to handle unexpected exceptions in
+                   a C++ program
+bad_typeid         This can be thrown by typeid.
+logic_error        An exception that theoretically can be detected by reading
+                   the code.
+domain_error       This is an exception thrown when a mathematically invalid
+                   domain is used.
+invalid_argument   This is thrown due to invalid arguments.
+length_error       This is thrown when a too big string is created
+out_of_range       This can be thrown by the at method from for example a 
+                   vector and bitset<>::operator[]().
+runtime_error      An exception that theoretically can not be detected by 
+                   reading the code.
+overflow_error     This is thrown if a mathematical overflow occurs.
+range_error        This is occured when you try to store a value which is 
+                   out of range.
+underflow_error    This is thrown if a mathematical underflow occurs.
+
+----------------------------------------------------------------------
+gpp                                                     *gpp*
+
+g++
+    /tools/showlimits.cpp
+
+This report uses the C++ <limits> include file to print information on
+the basic numerical types of C++.  Number of bytes is gotten from
+sizeof().  bits is number of non-sign bits. ddig is number of decimal
+digits.  Number in square brackets is a base 10 logarithm.
+
+  Report date  :  Sat Feb  5 22:05:08 2022
+  gcc compiler date:  201103
+
+char:  1 bytes, 7 bits, 2 ddig, inf:'', sNaN:'', qNaN:''
+    range:  -128  to  127 [2.104]
+    low     -128 high 127
+unsigned char:  1 bytes, 8 bits, 2 ddig, inf:'', sNaN:'', qNaN:''
+    range:  0  to  255 [2.407]
+    low     0 high 255
+short:  2 bytes, 15 bits, 4 ddig, inf:'0', sNaN:'0', qNaN:'0'
+    range:  -32768  to  32767 [4.515]
+    low:    -32768 high 32767
+unsigned short:  2 bytes, 16 bits, 4 ddig, inf:'0', sNaN:'0', qNaN:'0'
+    range:  0  to  65535 [4.816]
+    low:    0 high 65535
+int:  4 bytes, 31 bits, 9 ddig, inf:'0', sNaN:'0', qNaN:'0'
+    range:  -2147483648  to  2147483647 [9.332]
+    low:    -2147483648 high 2147483647
+long int:  4 bytes, 31 bits, 9 ddig, inf:'0', sNaN:'0', qNaN:'0'
+    range:  -2147483648  to  2147483647 [9.332]
+    low:    -2147483648 high 2147483647
+long long int:  8 bytes, 63 bits, 18 ddig, inf:'0', sNaN:'0', qNaN:'0'
+    range:  -9223372036854775808  to  9223372036854775807 [18.96]
+    low:    -9223372036854775808 high 9223372036854775807
+unsigned int:  4 bytes, 32 bits, 9 ddig, inf:'0', sNaN:'0', qNaN:'0'
+    range:  0  to  4294967295 [9.633]
+    low:    0 high 4294967295
+unsigned long int:  4 bytes, 32 bits, 9 ddig, inf:'0', sNaN:'0', qNaN:'0'
+    range:  0  to  4294967295 [9.633]
+    low:    0 high 4294967295
+unsigned long long int:  8 bytes, 64 bits, 19 ddig, inf:'0', sNaN:'0', qNaN:'0'
+    range:  0  to  18446744073709551615 [19.27]
+    low:    0 high 18446744073709551615
+float:  4 bytes, 24 bits, 6 ddig, inf:'inf', sNaN:'nan', qNaN:'nan'
+    range:  1.175e-38  to  3.403e+38 [38.53]
+    low:    -3.403e+38 high 3.403e+38
+double:  8 bytes, 53 bits, 15 ddig, inf:'inf', sNaN:'nan', qNaN:'nan'
+    range:  2.225e-308  to  1.798e+308 [308.3]
+    low:    -1.798e+308 high 1.798e+308
+long double:  12 bytes, 64 bits, 18 ddig, inf:'inf', sNaN:'nan', qNaN:'nan'
+    range:  3.362e-4932  to  1.19e+4932 [4932]
+    low:    -1.19e+4932 high 1.19e+4932

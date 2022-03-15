@@ -1,0 +1,122 @@
+*Postscript*
+
+|stack_operators|
+|math_operators|
+|path_construction_operators|
+|painting_operators|
+|font_operators|
+|coordinate_system_operators|
+|graphics_state_operators|
+|path_construction_operators|
+
+Miscellaneous
+
+showpage    -- ==> --
+    Print the page on the printer
+def         key value ==> --
+    Associate key with value in the current dictionary
+repeat      n proc ==> --
+    Execute proc n times
+
+
+-----------------------------------------------------------------------------
+*stack_operators*
+
+clear       o1 ... oi ==> --
+    Remove all stack contents
+dup         ob ==> ob ob
+    Duplicate top of stack
+exch        o1 o2 ==> o2 o1
+    Reverse order of top two objects on stack
+pop         o1 o2 ==> o1
+    Removes top of stack
+roll        o(n-1) ... o0 n j ==> o((j-1)mod n) ... o0 o(n-1) ... o(j mod n)
+    Rotate n elements j times
+
+-----------------------------------------------------------------------------
+*math_operators*
+
+add         n1 n2 ==> n1+n2
+    Add two numbers
+div         n1 n2 ==> n1/n2
+    Divide two numbers
+idiv        n1 n2 ==> int(n1/n2)
+    Integer division
+mod         n1 n2 ==> (n1 mod n2)
+    Modulus
+mul         n1 n2 ==> n1*n2
+    Multiply two numbers
+sub         n1 n2 ==> n1-n2
+    Subtract two numbers
+
+-----------------------------------------------------------------------------
+*path_construction_operators*
+
+closepath   -- ==> --
+    Closes the current path with a straight line to the last
+    moveto point
+lineto      x y ==> --
+    Continue the path with line to (x, y)
+moveto      x y ==> --
+    Set the current point to (x, y)
+newpath     -- ==> --
+    Clear the current path
+rlineto     x y ==> --
+    Relative lineto (currentpoint + (x, y))
+rmoveto     x y ==> --
+    Relative moveto
+
+-----------------------------------------------------------------------------
+*painting_operators*
+
+fill            -- ==> --
+    Fill the current path with the current color
+setgray         n ==> --
+    Set the color to a gray between black (0) and white (1)
+setlinewidth    n ==> --
+    Set the current line width
+stroke          -- ==> --
+    Paint the current path with the current color and line width
+
+-----------------------------------------------------------------------------
+*font_operators*
+
+findfont        key ==> fontdict
+    Returns dictionary for named font
+scalefont       fdict n ==> fdict
+    Return new scaled font dictionary
+setfont         fdict ==> --
+    Set current font
+show            str ==> --
+    Print str on the current page
+stringwidth     str ==> x y
+    Return width of str
+-----------------------------------------------------------------------------
+*coordinate_system_operators*
+
+rotate          angle ==> --
+    Rotate user space angle degrees CCW about origin
+scale           x y ==> --
+    Scale user space by x horizontally and y vertically
+translate       x y ==> --
+    Move origin of user space to (x, y)
+
+-----------------------------------------------------------------------------
+*graphics_state_operators*
+
+grestore    -- ==> --
+    Restore graphics state from last gsave
+gsave
+    Save current graphics state
+
+-----------------------------------------------------------------------------
+*path_construction_operators*
+
+arc         x y r ang1 ang2 ==> --
+    Add CCW arc to current path
+arcn        x y r ang1 ang2 ==> --
+    Add CW arc to current path
+arcto       x1 y1 x2 y2 r ==> xt1 yt1 xt2 yt2
+    Build tangent arc
+currentpoint    -- ==> x y
+    Return coordinates of current point

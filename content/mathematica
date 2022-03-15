@@ -1,0 +1,200 @@
+*Mathematica*
+
+|General|
+|Algebra|
+|PickingOut|
+|Symbolic|
+|Numerical|
+|Functions|
+
+-----------------------------------------------------------------------------
+Comments
+    (* this is a comment *)
+
+Assignment
+    x = 5
+
+Constants
+    Pi
+    E
+    Degrees = pi/180
+    I
+    Infinity
+
+Test
+    x == 5
+
+Logic
+    x == y, x != y
+    x > y, x >= y, x < y, x <= y
+    x == y == z, x != y != z
+    x > y > z ...
+    !p
+    p && q
+    p || q
+    Xor[p, q]
+    If[p, then, else]
+    LogicalExpand[expr]
+
+Remove a definition
+    x =.
+
+Numerical value
+    expr // N
+    N[expr, n]
+
+Substitution
+    expr /. x -> value
+    expr /. {x -> xvalue, y -> yvalue}
+
+command;
+    Do not print response
+
+expr // Short
+    Show one-line outline form of expr
+
+Short[expr, n]
+    Show an n-line outline of expr
+
+?f
+    Show definition of f
+
+-----------------------------------------------------------------------------
+                                                        *Algebra*
+Expand[expr]
+    Multiply out products and powers
+Expand[expr, Trig -> True]
+    Expand out trig:  write sin(x)^2 in terms of sin(2x), etc.
+ExpandAll[expr]
+    Apply Expand[] everywhere
+ComplexExpand[expr]
+    Expand assuming all variables are real
+PowerExpand[expr]
+    Transform (xy)^z to x^z y^z etc.
+
+Factor[expr]
+    Reduce to a product of factors
+Factor[expr, Trig -> True]
+    Factor trig:  sin(2x) replaced by sin(x)^2, etc.
+FactorTerms[expr, x]
+    Pull out factors that do not depend on x
+
+Simplify[expr]
+    Try various xfms & give the smallest form of expr found
+Together[expr]
+    Put all terms over a common denominator
+Apart[expr]
+    Separate into terms with simple denominators
+Cancel[expr]
+    Cancel common factors
+
+Collect[expr, x]
+    Group together powers of x
+
+-----------------------------------------------------------------------------
+                                                        *PickingOut*
+Coefficient[expr, form]
+    Return indicated coefficient.  Ex:  Coefficient[x^3 + x, x^3] == 1.
+Exponent[expr, form]
+    Maximum power of form in expr
+Part[expr, n] or expr[[n]]
+    nth term of expr
+Numerator[expr]
+Denominator[expr]
+
+-----------------------------------------------------------------------------
+                                                        *Symbolic*
+D[f, x]
+    Partial derivate wrt x
+D[f, x1, x2, ...]
+    Multiple partial derivative
+D[f, {x, n}]
+    Repeated partial derivative
+Dt[f]
+    Total differential
+Dt[f, x]
+    Total derivative
+
+Integrate[f, x]
+    Indefinite integral
+Integrate[f, {x, xmin, xmax}]
+    Definite integral
+Integrate[f, {x, xmin, xmax}, {y, ymin, ymax}]
+    Double integral
+
+Sum[f, {i, imin, imax}]
+    Sum
+Sum[f, {i, imin, imax, di}]
+    Sum with increasing steps of di
+Sum[f, {i, imin, imax}, {j, jmin, jmax}]
+    Nested sum
+Product[f, {i, imin, imax}]
+    Product
+
+Solve[lhs == rhs, x]
+    Solve the equation for x, giving the rules
+Solve[{lhs1 == rhs1, lhs2 == rhs2, ...}, {x, y, ...}]
+    Solve the simultaneous equations
+x /. solution
+    Use the list of rules to get values for x
+expr /x solution
+    Use the list of rules to get values for an expression
+Eliminate[{eqn1, eqn2, ...}, {x, ...}]
+    Eliminate x, ... from the equations
+Reduce[{eqn1, eqn2, ...}, {x, y, ...}]
+    Give a set of simplified equations, including all possible solutions
+
+DSolve[eqns, y[x], x]
+    Solve a DE for y[x] with x as independent variable
+DSolve[eqns, y, x]
+    Gives a solution for y in pure function form
+
+Series[expr, {x, x0, n}]
+    Expand expr about x0 to at most n terms
+Normal[series]
+    Truncate a power series to give an ordinary expression
+
+Limit[expr, x->x0]
+    Limit of expr as x approaches x0
+
+Symbolic summation of series
+    <<Algebra`SymbolicSum`
+    SymbolicSum[f, {i, n}]
+
+-----------------------------------------------------------------------------
+                                                        *Numerical*
+NIntegrate[f, {x, xmin, xmax}]
+NIntegrate[f, {x, xmin, xmax}, {y, ymin, ymax}]
+NSum[f, {i, imin, Infinity}]
+NProduct[f, {i, imin, Infinity}]
+NSolve[lhs == rhs, x]
+NSolve[{lhs1 == rhs1, lhs2 == rhs2, ...}, {x, y, ...}]
+FindRoot[lhs == rhs, {x, x0}]
+FindRoot[{lhs1 == rhs1, lhs2 == rhs2, ...}, {x, x0}, {y, y0}, ...}]
+FindMinimum[f, {x, x0}]
+
+NDSolve[eqns, y, {x, xmin, xmax}]
+    Numerically solve a DE for function y with x in the range xmin to xmax
+NDSolve[eqns, {y1, y2, ...}, {x, xmin, xmax}]
+    Numerically solve a system of equations
+
+Fit[{y1, y2, ...}, {f1, f2, ...}, x]
+    Fit the values yn to a linear combination of functions fi
+Fit[{{x1, y1}, {x2, y2}, ...}, {f1, f2, ...}, x]
+    Fit the points {xn, yn} to a linear combination of the fi
+
+-----------------------------------------------------------------------------
+                                                        *Functions*
+Define a function
+    f[x_] := x^2
+    g[x_, y_] := x^2*y^3
+
+    h[x_] := (Expand[Product[x + i, {i, 1, n}]]; Coefficient[%, x^i])
+
+Iteration
+    Do[expr, {i, imax}]
+        Evaluate expr with i running from 1 to imax
+    Do[expr, {i, imin, imax, di}]
+    Table[expr, {i, imax}]
+        Make a table of values.  Ex:  Table[i!, {i, 5}] = {1, 2, 6, 24, 120}
+

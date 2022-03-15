@@ -1,0 +1,765 @@
+*Chemistry*
+
+|Elements|
+|Common_Chemical_Names|
+|Elements_by_Name|
+|Elements_by_Atomic_Number|
+|Elements_by_Atomic_Weight|
+|Lead_acid_battery_V_vs_charge|
+
+
+-----------------------------------------------------------------------------
+Elements                                              *Elements*
+
+1. Order number (1 TO 101)
+2. Periodic table row (1 TO 10)
+3. Periodic table column (1 TO 18)
+4. Atomic weight
+5. Density (in grams per cubic centimeter)
+6. Atomic diameter
+7. Terrestrial abundance (in grams per metric ton)
+8. Electrical resistivity (rho * 10**-8 ohm-meters)
+
+Source--American Institute of Physics Handbook
+        McGraw-Hill, 1957, pages 7-9 TO 7-12
+ 
+ 
+ 
+Element     Symbol  Order R  C  Atomic   Density  Atom  Terr  
+                    Number      Weight   g/cm**3  Diam  Abund  Resistivity
+------------------------------------------------------------------------------
+Hydrogen      H       1   1  1  1.0080   0.763    3.0   1300    -  
+Helium        He      2   1 18  4.003    0.19      -    0.003   -  
+Lithium       Li      3   1  2  6.940    0.534    3.13  65     8.55
+Beryllium     Be      4   2  2  9.013    1.85     2.25  6      10.1
+Boron         B       5   2 13  10.82    2.535     -    3       -  
+Carbon        C       6   2 14  12.011   3.52     1.54  320     -  
+Nitrogen      N       7   2 15  14.008   1.14     1.06  46.3    -  
+Oxygen        O       8   2 16  16.0000  1.568     -    466000  -  
+Fluorine      F       9   2 17  19.00    1.5      1.36  900     -  
+Neon          Ne     10   2 18  20.183   1.204    3.20  .00007  -  
+Sodium        Na     11   3  1  22.991   0.9712   3.83  28300   -  
+Magnesium     Mg     12   3  2  24.32    1.74     3.20  20900  4.35
+Aluminum      Al     13   3 13  26.98    2.70     2.82  81300  2.828
+Silicon       Si     14   3 14  28.09    2.42     2.34  277200  -  
+Phosphorus    P      15   3 15  30.975   1.83     2.16  1180    -  
+Sulfur        S      16   3 16  32.066   2.07     2.12  520     -  
+Chlorine      Cl     17   3 17  35.457   2.2      1.94  314     -  
+Argon         A      18   3 18  39.944   1.65     3.82  0.04    -  
+Potassium     K      19   4  1  39.100   0.87     4.76  25900  6.1
+Calcium       Ca     20   4  2  40.08    1.55     3.93  36300  4.59
+Scandium      Sc     21   4  3  44.96    3.02     3.20   5      -  
+Titanium      Ti     22   4  4  47.90    4.5      2.93  4400   55
+Vanadium      V      23   4  5  50.95    5.87     2.71  150    58.5
+Chromium      Cr     24   4  6  52.01    7.14     2.57  200    2.6
+Manganese     Mn     25   4  7  54.94    7.3      2.5   1000    -  
+Iron          Fe     26   4  8  55.85    7.86     2.52  50000  8.85
+Cobalt        Co     27   4  9  58.94    8.71     2.50  23     9.7
+Nickel        Ni     28   4 10  58.69    8.8      2.49  80     7.236
+Copper        Cu     29   4 11  63.54    8.933    2.551 70     1.692
+Zinc          Zn     30   4 12  65.38    4.32     2.748 132    5.75
+Gallium       Ga     31   4 13  69.72    5.93     2.7   15     53
+Germanium     Ge     32   4 14  72.60    5.46     2.788 7       -  
+Arsenic       As     33   4 15  74.91    5.73     2.50  5      35
+Selenium      Se     34   4 16  78.96    4.82     2.32  0.09    -  
+Bromine       Br     35   4 17  79.916   4.2      2.26  1.62    -  
+Krypton       Kr     36   4 18  83.80    3.4      4.0  9.8E-6   -  
+Rubidium      Rb     37   5  1  85.48    1.53     5.02 310     11.6
+Strontium     Sr     38   5  2  87.63    2.60     4.29 300     24.8
+Yttrium       Y      39   5  3  88.92    3.8      3.62 28.1     -  
+Zirconium     Zr     40   5  4  91.22    6.44     3.19 220     41.0
+Niobium       Nb     41   5  5  92.91     -       2.94 24      21
+Molybdenum    Mo     42   5  6  95.95    9.01     2.80 15      5.14
+Technetium    Tc     43   5  7  99         -       -    -       -  
+Ruthenium     Ru     44   5  8  101.1    12.1     2.67 .004    7.64
+Rhodium       Rh     45   5  9  102.91   12.44    2.7  .001    5.11
+Palladium     Pd     46   5 10  106.7    12.16    2.745 .010   10.21
+Silver        Ag     47   5 11  107.880  10.492   2.883 .10    1.468
+Cadmium       Cd     48   5 12  112.41   8.65     3.042 .15    7.54
+Indium        In     49   5 13  114.76   7.28     3.14  .1     8.37
+Tin           Sn     50   5 14  118.70   7.29     3.164 40     11.5
+Antimony      Sb     51   5 15  121.76   6.62     3.228 1      39.1
+Tellurium     Te     52   5 16  127.61   6.25     2.9  .002     -  
+Iodine        I      53   5 17  126.91   4.94     2.7  .3       -  
+Xenon         Xe     54   5 18  131.3     -       4.4  1.2E-6   -  
+Cesium        Cs     55   6  1  132.91   1.873    5.4    7     19.0
+Barium        Ba     56   6  2  137.36   3.5      4.48  250    60
+Lanthanum     La     57   6  3  138.92   6.15     3.741 18.3   57.6
+Cerium        Ce     58   7  4  140.13   6.73     3.64  46.1    -  
+Praesodymium  Pr     59   7  5  140.92   6.48     3.65  5.53    -  
+Neodymium     Nd     60   7  6  144.27   7.00     3.63  23.9    -  
+Promethium    Pm     61   7  7  145       -        -    -       -  
+Samarium      Sm     62   7  8  150.43   7.75      -    6.47    -  
+Europium      Eu     63   7  9  152.0     -       4.08  1.06    -  
+Gadolinium    Gd     64   7 10  156.9     -       3.59  6.36    -  
+Terbium       Tb     65   7 11  158.93    -       3.54  0.91    -  
+Dyprosium     Dy     66   7 12  162.46    -       3.54  4.47    -  
+Holmium       Ho     67   7 13  164.94    -       3.52  1.15    -  
+Erbium        Er     68   7 14  167.2    4.77     3.50  2.47    -  
+Thulium       Tm     69   7 15  168.94    -       3.48  0.20    -  
+Ytterbium     Yb     70   7 16  173.04    -       3.87  2.66    -  
+Lutetium      Lu     71   7 17  174.99    -       3.47  0.75    -  
+Hafnium       Hf     72   8  4  178.6    11.3     3.17  4.5    32.1
+Tantalium     Ta     73   8  5  180.95   16.6     2.94  2.1    15.5
+Wolfram       W      74   8  6  183.92    -       2.82  69      -  
+Rhenium       Re     75   8  7  186.31   20.53    2.75 .001    18.9
+Osmium        Os     76   8  8   190.2   22.5     2.70 .005    9.5
+Iridium       Ir     77   8  9  192.2    22.42    2.709 .001   6.10
+Platinum      Pt     78   8 10  195.23   21.27    2.769 .005   9.83
+Gold          Au     79   8 11  197.0    18.88    2.878 .005   2.44
+Mercury       Hg     80   8 12  200.61   14.193   3.10   .5    95.783
+Thallium      Tl     81   8 13  204.39   11.86    3.42   3     17.60
+Lead          Pb     82   8 14  207.21   11.48    3.49  16     19.8
+Bismuth       Bi     83   8 15  209.00   9.86     3.64 .2      119.0
+Polonium      Po     84   8 16  210       -        -    3E-10   -  
+Astatine      At     85   8 17  210       -        -    -       -  
+Radon         Rn     86   8 18  222       -        -    -       -  
+Francium      Fr     87   9  1  223       -        -    -       -  
+Radium        Ra     88   9  2  226.05   5         -   13E-6    -  
+Actinium      Ac     89   9  3  227       -        -   3E-10    -  
+Thorium       Th     90  10  4  232.05    -        -   11.5    18
+Protactinium  Pa     91  10  5  231       -        -   8E-7     -  
+Uranium       U      92  10  6  238.07   18.7      -    4      29
+Neptunium     Np     93  10  7  237       -        -    -       -  
+Plutonium     Pu     94  10  8  242       -        -    -       -  
+Americium     Am     95  10  9  243       -        -    -       -  
+Curium        Cm     96  10 10  243       -        -    -       -  
+Berkelium     Bk     97  10 11  245       -        -    -       -  
+Californium   Cf     98  10 12  246       -        -    -       -  
+Einsteinium   E      99  10 13   -        -        -    -       -  
+Fermium       Fm    100  10 14   -        -        -    -       -  
+Mendelevium   Mv    101  10 15   -        -        -    -       -  
+
+-----------------------------------------------------------------------------
+Popular vs. scientific names for chemicals      *Common_Chemical_Names*
+
+Popular name                Chemical name                 Formula
+-------------------------   ---------------------------   ------------------
+Acetone                     dimethyl ketone, 2-propanone
+Acid potassium sulphate     Potassium bisulphate          KHSO4
+Acid of sugar               Oxalic acid                   H2C2O4*H20
+Ackey                       Nitric acid                   HNO3
+Alcali volatil              Ammonium hydroxide            NH4OH
+Alcohol sulphuris           Carbon disulphide             CS2
+Alcohol, grain              Ethyl alcohol (ethanol)       C2H5OH
+Alcohol, wood               Methyl alcohol (methanol)     CH3OH
+Alum                        Aluminum potassium sulfate    AlK(SO4)2*12H2O
+Alumina                     Aluminum oxide                Al2O3
+Alundum                     Fused aluminum oxide          Al2O3
+Ammonia                     Ammonium hydroxide            NH4OH
+Antichlor                   Sodium thiosulfate            Na2S2O3*5H2O
+Antimony black              antimony trisulphide          Sb2S3
+Antimony bloom              antimony trioxide             Sb2O3
+Antimony glance             antimony trisulphide          Sb2O3
+Antimony red                antimony oxysulphide          Sb2S3 + Sb2O3
+Antimony vermillion         antimony oxysulphide          Sb2S3 + Sb2O3
+Aqua ammonia                Ammonium hydroxide solution   NH4OH + H20
+Aqua fortis                 Nitric acid                   HNO3
+Aqua regia                  Nitric & hydrochloric acid    HNO3 + HCl
+Aromatic spirits of ammonia Ammonia gas in alcohol        
+Arsenic glass               Arsenic trioxide              As4O6
+Asbestos                    Magnesium silicate            Mg3Si2O7*2H2O
+Aspirin                     Acetylsalicylic acid          C2H3O2C6H4CO2H
+Azurite                     Mineral form of basic copper carbonate
+Baking soda                 Sodium bicarbonate            NaHCO3
+Banana oil                  Amyl acetate                  CH3CO2C5H11
+Barium white                Barium sulfate                BaSO4
+Baryta                      Barium oxide                  BaO
+Bauxite                     Impure aluminum oxide         Al2O3
+Benzol                      Benzene                       C6H6
+Bicarbonate of soda         Sodium hydrogen carbonate or sodium bicarbonate
+Bichloride of mercury       Mercuric chloride             HgCl2
+Bichrome                    Potassium dichromate          K2Cr2O7 
+Bitter salt                 Magnesium sulphate            MgSO*7H2O
+Black ash                   Crude form of sodium carbonate Na2CO3
+Black lead                  Graphite                      C
+Black oxide of copper       Cupric oxide                  CuO
+Black oxide of mercury      Mercurous oxide               Hg2O
+Blanc-fixe                  Barium sulfate                BaSO4
+Bleaching powder            Calcium hypochlorite          CaOCl2
+Blue copperas               Copper sulfate                CuSO4*5H2O
+Blue lead                   Lead sulfate                  PbSO4
+Blue salts                  Nickel sulfate                NiSO4*7H2O
+Blue stone                  Copper sulfate                CuSO4*5H2O
+Blue vitriol                Copper sulfate                CuSO4*5H2O
+Bone ash                    Impure calcium carbonate      CaCO3 + ?
+Bone black                  Animal charcoal               ...
+Boracic acid                Boric acid                    H3BO3
+Borax                       Sodium borate                 Na2B4O7*10H2O
+Brimstone                   Sulfur                        S
+Brine                       Strong NaCl solution          NaCl + H2O
+Burnt alum                  Anhydrous potassium aluminum sulfate
+Burnt lime                  Calcium oxide                 CaO
+Burnt ochre                 Ferric oxide                  Fe2O3
+Burnt ore                   Ferric oxide                  Fe2O3
+"Butter of ..."             Chloride or trichloride of "..."
+Butter of antimony          Antimony trichloride          SbCl3
+Butter of tin               Anhydrous stannous chloride   SnCl4 + H2O
+Butter of zinc              Zinc chloride + 1/4 its       ZnCl2 + H2O
+                              weight in water
+Caliche                     Impure sodium nitrate         NaNO3
+Calomel                     Mercurous chloride            Hg2Cl2
+Carbolic acid               Phenol                        C6H5OH
+Carbonic acid gas           Carbon dioxide                CO2
+Caustic lime                Calcium hydroxide             Ca(OH)2
+Caustic potash              Potassium hydroxide           KOH
+Caustic soda                Potassium hydroxide           KOH
+Chalk                       Calcium carbonate             CaCO3
+Chile nitre                 Sodium nitrate                NaNO3
+Chile saltpeter             Sodium nitrate                NaNO3
+Chinese red                 Basic lead chromate           PbCrO4
+Chinese white               Zinc oxide                    ZnO
+Chloride of soda            Sodium hypochlorite           NaOCl
+Chloride of lime            Calcium hypochlorite          Ca(ClO)2
+Chloroform                  Trichloromethane              CHCl3
+Chromic acid                Chromium trioxide             CrO3
+Chrome alum                 Chromium potassium sulfate    CrK(SO4)3*12H2O
+Chrome green                Chromium oxide                Cr2O3
+Chrome yellow               Lead chromate                 PbCrO4
+Copperas                    Ferrous sulfate               FeSO4*7H2O
+Corrosive sublimate         Mercuric chloride             HgCl2
+Corundum                    Aluminum oxide                Al2O3
+Cream of tartar             Potassium bitartrate          KHC4H4O6
+Crocus powder               Ferric oxide                  Fe2O3
+Crystal carbonate           Sodium carbonate              Na2CO3
+DDT                         Dichlorodiphenyltrichloroethane  (C6H)*Cl2*CH*CCl3
+Dechlor                     Sodium thiophosphate          Na3(PO3)3S XH2O  x=12-18
+Diamond                     Carbon crystal                C
+Dry ice                     Solid carbon dioxide          CO2
+Dutch liquid                Ethylene dichloride           CH2Cl*CH2Cl
+Emery powder                Impure aluminum oxide         Al2O3
+Epsom salts                 Magnesium sulfate             MgSO4*7H2O
+Ethanol                     Ethyl alcohol                 C2H5OH
+Ether                       Ethyl ether                   (C2H5)2O
+Farina                      Starch                        Complex carbohydrate
+Ferro prussiate             Potassium ferricyanide        K3Fe(CN)6
+Ferrum                      Iron                          Fe
+Fixed white                 Barium sulfate                BaSO4
+Flores Martes               Anhydrous ferric chloride     Fe2Cl6
+Flowers of sulphur          Sulfur                        S
+"Flowers of" a metal        Oxide of the metal
+Fluorspar                   Natural calcium fluoride      CaF2
+Formalin                    Formaldehyde                  HCOH
+French chalk                Natural magnesium silicate    H2Mg3(SiO3)4
+French vergidris            Basic copper acetate          Cu(C2H2O2)2*H20
+Galena                      Natural lead sulfide          PbS
+Glauber's salt              Sodium sulfate                Na2SO4*10H2O
+Grain alcohol               Ethyl alcohol                 C2H5OH
+Green verditer              Basic copper carbonate        CuCO3
+Green vitriol               Ferrous sulfate               FeSO4*7H2O
+Gun cotton                  Cellulose nitrate             C6H8(NO2)2O5
+Gypsum                      Natural calcium sulfate       CaSO4*5H2O
+Hard oil                    Boiled linseed oil            ...
+Heavy spar                  Barium sulfate                BaSO4
+Hydrocyanic acid            Hydrogen cyanide              HCN
+Hypo                        Sodium thiosulfate            Na2S2O3*5H2O
+Indian red                  Ferric oxide                  Fe2O3
+Iron perchloride            Ferric chloride               FeCl3*6H2O
+Iron pernitrate             Ferric nitrate                Fe(NO3)3*9H2O
+Iron protochloride          Ferrous chloride              FeCl2*4H2O
+Iron persulphate            Ferric sulfate                Fe(SO4)3*nH2O
+Isinglass                   Agar-agar gelatin
+Javelle water               Originally potassium
+                            hypochlorite solution, now    KOCl + H2O
+                            usually sodium hypochlorite   NaOCl + H2O
+Jeweler's etchant           3 g silver nitrate + 3 g      HgNO3*H2O + AgNO3
+                            nitric acid + 3 g mercurous   + HNO3 + H2O
+                            nitrate + 100 cc H2O
+Jeweler's rouge             Ferric oxide                  Fe2O3
+Killed spirits              Zinc chloride                 ZnCl2
+K.N.S. solution             10 g ammonium carbonate +     NH4CO3*H2O + 
+                            20 g ammonium peroxydisulphide  (NH4)2S2O8 +
+                            + 200 cc ammonium hydroxide     NH4OH
+Labarraque's solution       Sodium hypochlorite solution  NaOCl + H2O
+Lampblack                   Crude form of carbon, charcoal C
+Laughing gas                Nitrous oxide                 N2O
+Lead peroxide               Lead dioxide                  PbO2
+Lead protoxide              Lead oxide                    PbO
+lime                        Calcium oxide                 CaO
+Lime, unslaked              Calcium oxide                 CaO
+Lime, slaked                Calcium hydroxide             Ca(OH)2
+Limewater                   Calcium hydroxide solution    Ca(OH)2 + H2O
+Liquor ammonia              Ammonium hydroxide solution   NH4OH
+Litharge                    Lead oxide                    PbO
+Lithopone                   Zinc sulfide + barium sulfate ZnS + BaSO4
+Liver of sulphur            Melted potassium carbonate    K2CO3 + S
+                            + sulphur
+Lunar caustic               Silver nitrate                AgNO3
+Manganese black             Manganese dioxide             MnO2
+Magnesia                    Magnesium oxide               MgO
+Magnesite                   Magnesium carbonate           MgCO3
+Marble                      Calcium carbonate             CaCO3
+Marsh gas                   Methane                       CH4
+Mercury oxide, black        Mercury(II) oxide             HgO
+Methanol                    Methyl alcohol                CH3OH
+Methylated spirits          Methyl alcohol                CH3OH
+Milk of lime                Calcium hydroxide             Ca(OH)2
+Milk of magnesia            Magnesium hydroxide + water   Mg(OH)2
+Milk of sulfur              Precipitated sulfur           S
+Minium                      Lead tetroxide                Pb3O4
+"Muriate of ..."            Chloride of ...
+Muriate of mercury          Mercuric chloride             HgCl2
+Muriatic acid               Hydrochloric acid             HCl
+Natron                      Sodium carbonate              Na2CO3
+Natural gas                 Mostly methane                CH4
+Niter                       Potassium nitrate             KNO3
+Nitrate of silver           Silver nitrate                AgNO3
+Nitre                       Potassium nitrate             KNO3
+Nordhausen acid             Fuming sulfuric acid          H2SO4 + SO3
+Oil of bitter almonds       Benzaldehyde                  C6H5CHO
+Oil of mars                 Deliquescent anhydrous        FeCl3 + H2O
+                            ferric chloride
+Oil of mirbane              Nitrobenzene                  C6H5NO3
+Oil of vitriol              Sulfuric acid                 H2SO4
+Oil of wintergreen          Methyl salicylate             C6H4OHCOOCH3
+Oleum                       Fuming sulfuric acid          H2SO4SO3
+Orpiment                    Arsenic trisulfide            As2S3
+Orthophosphoric acid        Phosphoric acid               H3PO4
+Oxymuriate of mercury       Mercuric chloride             HgCl2
+Oxymuriate of potassium     Potassium chlorate            KClO3
+Paris blue                  Ferric ferrocyanide,          Fe7(CN)18(H2O)x where 14 <= x <= 16
+                            also called Prussian blue
+Paris green                 Copper aceto-arsenite         3Cu(AsO2)2*Cu(C2H3O2)2
+Paris white                 Powdered calcium carbonate    CaCO3
+Pear essence                Isoamyl acetate, also called  C7H14O2
+                            banana oil
+Pearl ash                   Potassium carbonate           K2CO3
+Permanent white             Barium sulfate                BaSO4
+Peroxide                    Hydrogen peroxide solution    H2O2 + H2O
+Phosgene                    Carbonyl chloride             COCl2
+Plaster of Paris            Calcium sulfate               (CaSO4)2*H2O
+Plumbago                    Graphite                      C
+Potash                      Potassium carbonate           K2CO3
+Potassa                     Potassium hydroxide           KOH
+Precipitated chalk          Calcium carbonate             CaCO3
+Prussic acid                Hydrocyanic acid              HCN
+Purple crystals             Potassium permanganate        KMnO4
+Pyro                        Pyrogallic acid               C6H3(OH)3
+Quicklime                   Calcium oxide                 CaO
+Quicksilver                 Mercury                       Hg
+Red lead                    Lead tetroxide                Pb3O4
+Red liquor                  Aluminum acetate solution     (CH3CO2)2AlOH
+Red oxide of copper         Cuprous oxide                 Cu2O
+Red oxide of mercury        Mercuric oxide                HgO
+Red prussiate of soda       Sodium ferrocyanide           Na4Fe(CN)6
+Red prussiate of potash     Potassium ferricyanide        KC3Fe(CN)6
+Rochelle salt               Potassium sodium tartrate     KNaC4H4O6*4H2O
+Rock salt                   Sodium chloride               NaCl
+Rouge                       Ferric oxide                  Fe2O3
+Rouge, jeweler's            Ferric oxide                  Fe2O3
+Rubbing alcohol             Isopropyl alcohol             CH3CHOHCH3
+Sal ammoniac                Ammonium chloride             NH4Cl
+Sal volatile                Ammonium carbonate            (NH4)2CO3
+Saleratus                   Sodium bicarbonate            NaHCO3
+Sal soda                    Crystalline sodium carbonate  NaHCO3
+Salt                        Sodium chloride               NaCl
+Salt cake                   Impure sodium sulfate         Na2SO4
+Saltpeter                   Potassium nitrate             KNO3
+Saltpeter (Chile)           Impure sodium nitrate         NaNO3
+Salts of hartshorn          Ammonium carbonate            (NH4)2CO3
+Salts of lemon              Potassium binoxalate          KHC2O4*H2O
+Salts of sorrol             Potassium acid oxalate        KHC2O4*H2O
+Salts of tartar             Potassium carbonate           K2CO3
+Salt of vitriol             Zinc sulfate                  ZnSO4*7H2O
+Salt of wormwood            Potassium carbonate           K2CO3
+Silica                      Silicon dioxide               SiO2
+Slaked lime                 Calcium hydroxide             Ca(OH)2
+Soapstone                   Impure magnesium silicate     H2Mg3(SiO3)4
+Soda ash                    Dry sodium carbonate          Na2CO3
+Spencer's acid              3 g silver nitrate + 3 g      HgNO3*H2O + AgNO3 +
+                            nitric acid + 3 g mercurous   HNO3 + H2O
+                            nitrate + 100 cc
+Spirit of hartshorn         Ammonia gas in alcohol
+                            (Given in Gunsmith Kinks II
+                            as ammonium hydroxide)
+Spirit of nitrous ether     Ethyl nitrate                 C2H5NO2
+Spirits of salt             Hydrochloric acid             HCl
+Spirits of wine             Ethyl alcohol                 C2H5OH
+Sugar of lead               Lead acetate                  Pb(C2H3O2)2*3H20
+Sulfuric ether              Ethyl ether                   (C2H5)2O
+Sweet spirits of nitre      Ethyl nitrite solution with   C2H5NO2 + C2H5OH
+                            ethyl alcohol
+Talc                        Magnesium silicate            H2Mg3(SiO3)4
+Tetrachloromethane          Carbon tetrachloride          CCl4
+Tincture of ferric chloride Ferric chloride + ethyl       FeCl3*6H2O + C2H5OH
+                            alcohol
+Tincture of steel           Ferric chloride + ethyl       FeCl3*6H2O + C2H5OH
+                            alcohol
+Tin salt                    Stannous chloride             SnCl2
+TNT                         Trinitrotoluene               C6H2CH3(NO3)3
+Toluol                      Toluene                       C6H5CH3
+Verdigris                   Copper acetate                Cu(C2H2O2)2*H20
+Vinegar                     Dilute and impure acetic acid CH3COOH
+Vitriol                     Sulfuric acid                 H2SO4
+Washing soda                Crystalline sodium carbonate  NaHCO3
+Water glass                 Sodium silicate               Na2SiO3
+Whitewash                   Solution of quick lime or 
+                            slaked lime used as a cheap 
+                            substitute for paint.
+White arsenic               Arsenic trioxide              As2O3
+White lead                  Basic lead carbonate          (PbCO3)2*Pb(OH)2
+White vitriol               Zinc sulfate                  ZnSO4*7H2O
+Whiting                     Powdered calcium carbonate    CaCO3
+Wood alcohol                Methyl alcohol                CH3OH
+Xylol                       Xylene                        C6H4(CH3)2
+Yellow prussiate of potash  Potassium ferrocyanide        K4Fe(CN)6*3H2O
+Zinc white                  Zinc oxide                    ZnO
+
+References:
+
+1.  pg 634-638 of Swezey, "Formulas, Methods, Tips, and Data for Home and 
+    Workshop", Popular Science Publishing Co., 1969.
+
+2.  Brady & Clauser, "Materials Handbook", 11th ed., McGraw-Hill, 1977
+
+3.  F. R. "Bob" Brownell, "Gunsmith Kinks II", F. Brownell & Son, 1983
+
+4.  http://chemistry.about.com/library/weekly/blcommon.htm
+-----------------------------------------------------------------------------
+Materials                                             *Elements_by_Name*
+
+The following information is primarily from Brady & Clauser, "Materials 
+Handbook", 11th ed., McGraw-Hill, 1977.  Look there for details and
+many thousands more materials; this list is just intended to be a summary
+of materials.
+
+Gum arabic (aka acacia gum)  Gum from an African tree.  Used in adhesives,
+    thickening inks, textile coatings, and in drug and cosmetic emulsions.
+
+-----------------------------------------------------------------------------
+Elements sorted by name                           
+
+                  At At
+Sym Name          No Wt
+--- -----------  --- --------
+Ac  Actinium      89 227
+Ag  Silver        47 107.868
+Al  Aluminum      13 26.98154
+Am  Americium     95 243
+Ar  Argon         18 39.948
+As  Arsenic       33 74.9216
+At  Astatine      85 210
+Au  Gold          79 196.9665
+B   Boron          5 10.81
+Ba  Barium        56 137.33
+Be  Beryllium      4 9.01218
+Bi  Bismuth       83 208.9804
+Bk  Berkelium     97 247
+Br  Bromine       35 79.904
+C   Carbon         6 12.011
+Ca  Calcium       20 40.08
+Cd  Cadmium       48 112.41
+Ce  Cerium        58 140.12
+Cf  Californium   98 251
+Cl  Chlorine      17 35.453
+Cm  Curium        96 247
+Co  Cobalt        27 58.9332
+Cr  Chromium      24 51.996
+Cs  Cesium        55 132.9054
+Cu  Copper        29 63.546
+Dy  Dysprosium    66 162.50
+Er  Erbium        68 167.26
+Es  Einsteinium   99 254
+Eu  Europium      63 151.96
+F   Fluorine       9 18.998403
+Fe  Iron          26 55.847
+Fm  Fermium      100 257
+Fr  Francium      87 223
+Ga  Gallium       31 69.735
+Gd  Gadolinium    64 157.25
+Ge  Germanium     32 72.59
+H   Hydrogen       1 1.0079
+He  Helium         2 4.0026
+Hf  Hafnium       72 178.49
+Hg  Mercury       80 200.59
+Ho  Holmium       67 164.9304
+I   Iodine        53 126.9045
+In  Indium        49 114.82
+Ir  Iridium       77 192.22
+K   Potassium     19 39.0983
+Kr  Krypton       36 83.80
+La  Lanthanum     57 138.9055
+Li  Lithium        3 6.94
+Lr  Lawrencium   103 260
+Lu  Lutetium      71 174.96
+Md  Mendelevium  101 258
+Mg  Magnesium     12 24.305
+Mn  Manganese     25 54.9380
+Mo  Molybdenum    42 95.94
+N   Nitrogen       7 14.0067
+Na  Sodium        11 22.98977
+Nb  Niobium       41 92.9064
+Nd  Neodymium     60 144.24
+Ne  Neon          10 20.17
+Ni  Nickel        28 58.71
+No  Nobelium     102 259
+Np  Neptunium     93 237.0482
+O   Oxygen         8 15.9994
+Os  Osmium        76 190.2
+P   Phosphorous   15 30.97376
+Pa  Proactinium   91 231.0359
+Pb  Lead          82 207.2
+Pd  Palladium     46 106.4
+Pm  Promethium    61 145
+Po  Polonium      84 209
+Pr  Praseodymium  59 140.9077
+Pt  Platinum      78 195.09
+Pu  Plutonium     94 244
+Ra  Radium        88 226.0254
+Rb  Rubidium      37 85.467
+Re  Rhenium       75 186.207
+Rh  Rhodium       45 102.9055
+Rn  Radon         86 222
+Ru  Ruthenium     44 101.07
+S   Sulfur        16 32.06
+Sb  Antimony      51 121.75
+Sc  Scandium      21 44.9559
+Se  Selenium      34 78.96
+Si  Silicon       14 28.0855
+Sm  Samarium      62 150.4
+Sn  Tin           50 118.69
+Sr  Strontium     38 87.62
+Ta  Tantalum      73 180.947
+Tb  Terbium       65 158.9254
+Tc  Technetium    43 98.9062
+Te  Tellurium     52 127.60
+Th  Thorium       90 232.0381
+Ti  Titanium      22 47.90
+Tl  Thallium      81 204.37
+Tm  Thulium       69 168.9342
+U   Uranium       92 238.029
+V   Vanadium      23 50.9415
+W   Tungsten      74 183.85
+Xe  Xenon         54 131.30
+Y   Yttrium       39 88.9059
+Yb  Ytterbium     70 173.04
+Zn  Zinc          30 65.38
+Zr  Zirconium     40 91.22
+
+-----------------------------------------------------------------------------
+Elements sorted by atomic number           *Elements_by_Atomic_Number*
+
+                  At At
+Sym Name          No Wt
+H   Hydrogen       1 1.0079
+He  Helium         2 4.0026
+Li  Lithium        3 6.94
+Be  Beryllium      4 9.01218
+B   Boron          5 10.81
+C   Carbon         6 12.011
+N   Nitrogen       7 14.0067
+O   Oxygen         8 15.9994
+F   Fluorine       9 18.998403
+Ne  Neon          10 20.17
+Na  Sodium        11 22.98977
+Mg  Magnesium     12 24.305
+Al  Aluminum      13 26.98154
+Si  Silicon       14 28.0855
+P   Phosphorous   15 30.97376
+S   Sulfur        16 32.06
+Cl  Chlorine      17 35.453
+Ar  Argon         18 39.948
+K   Potassium     19 39.0983
+Ca  Calcium       20 40.08
+Sc  Scandium      21 44.9559
+Ti  Titanium      22 47.90
+V   Vanadium      23 50.9415
+Cr  Chromium      24 51.996
+Mn  Manganese     25 54.9380
+Fe  Iron          26 55.847
+Co  Cobalt        27 58.9332
+Ni  Nickel        28 58.71
+Cu  Copper        29 63.546
+Zn  Zinc          30 65.38
+Ga  Gallium       31 69.735
+Ge  Germanium     32 72.59
+As  Arsenic       33 74.9216
+Se  Selenium      34 78.96
+Br  Bromine       35 79.904
+Kr  Krypton       36 83.80
+Rb  Rubidium      37 85.467
+Sr  Strontium     38 87.62
+Y   Yttrium       39 88.9059
+Zr  Zirconium     40 91.22
+Nb  Niobium       41 92.9064
+Mo  Molybdenum    42 95.94
+Tc  Technetium    43 98.9062
+Ru  Ruthenium     44 101.07
+Rh  Rhodium       45 102.9055
+Pd  Palladium     46 106.4
+Ag  Silver        47 107.868
+Cd  Cadmium       48 112.41
+In  Indium        49 114.82
+Sn  Tin           50 118.69
+Sb  Antimony      51 121.75
+Te  Tellurium     52 127.60
+I   Iodine        53 126.9045
+Xe  Xenon         54 131.30
+Cs  Cesium        55 132.9054
+Ba  Barium        56 137.33
+La  Lanthanum     57 138.9055
+Ce  Cerium        58 140.12
+Pr  Praseodymium  59 140.9077
+Nd  Neodymium     60 144.24
+Pm  Promethium    61 145
+Sm  Samarium      62 150.4
+Eu  Europium      63 151.96
+Gd  Gadolinium    64 157.25
+Tb  Terbium       65 158.9254
+Dy  Dysprosium    66 162.50
+Ho  Holmium       67 164.9304
+Er  Erbium        68 167.26
+Tm  Thulium       69 168.9342
+Yb  Ytterbium     70 173.04
+Lu  Lutetium      71 174.96
+Hf  Hafnium       72 178.49
+Ta  Tantalum      73 180.947
+W   Tungsten      74 183.85
+Re  Rhenium       75 186.207
+Os  Osmium        76 190.2
+Ir  Iridium       77 192.22
+Pt  Platinum      78 195.09
+Au  Gold          79 196.9665
+Hg  Mercury       80 200.59
+Tl  Thallium      81 204.37
+Pb  Lead          82 207.2
+Bi  Bismuth       83 208.9804
+Po  Polonium      84 209
+At  Astatine      85 210
+Rn  Radon         86 222
+Fr  Francium      87 223
+Ra  Radium        88 226.0254
+Ac  Actinium      89 227
+Th  Thorium       90 232.0381
+Pa  Proactinium   91 231.0359
+U   Uranium       92 238.029
+Np  Neptunium     93 237.0482
+Pu  Plutonium     94 244
+Am  Americium     95 243
+Cm  Curium        96 247
+Bk  Berkelium     97 247
+Cf  Californium   98 251
+Es  Einsteinium   99 254
+Fm  Fermium      100 257
+Md  Mendelevium  101 258
+No  Nobelium     102 259
+Lr  Lawrencium   103 260
+
+-----------------------------------------------------------------------------
+Elements sorted by atomic weight       *Elements_by_Atomic_Weight*
+
+                  At At
+Sym Name          No Wt
+H   Hydrogen       1 1.0079
+He  Helium         2 4.0026
+Li  Lithium        3 6.94
+Be  Beryllium      4 9.01218
+B   Boron          5 10.81
+C   Carbon         6 12.011
+N   Nitrogen       7 14.0067
+O   Oxygen         8 15.9994
+F   Fluorine       9 18.998403
+Ne  Neon          10 20.17
+Na  Sodium        11 22.98977
+Mg  Magnesium     12 24.305
+Al  Aluminum      13 26.98154
+Si  Silicon       14 28.0855
+P   Phosphorous   15 30.97376
+S   Sulfur        16 32.06
+Cl  Chlorine      17 35.453
+K   Potassium     19 39.0983
+Ar  Argon         18 39.948
+Ca  Calcium       20 40.08
+Sc  Scandium      21 44.9559
+Ti  Titanium      22 47.90
+V   Vanadium      23 50.9415
+Cr  Chromium      24 51.996
+Mn  Manganese     25 54.9380
+Fe  Iron          26 55.847
+Ni  Nickel        28 58.71
+Co  Cobalt        27 58.9332
+Cu  Copper        29 63.546
+Zn  Zinc          30 65.38
+Ga  Gallium       31 69.735
+Ge  Germanium     32 72.59
+As  Arsenic       33 74.9216
+Se  Selenium      34 78.96
+Br  Bromine       35 79.904
+Kr  Krypton       36 83.80
+Rb  Rubidium      37 85.467
+Sr  Strontium     38 87.62
+Y   Yttrium       39 88.9059
+Zr  Zirconium     40 91.22
+Nb  Niobium       41 92.9064
+Mo  Molybdenum    42 95.94
+Tc  Technetium    43 98.9062
+Ru  Ruthenium     44 101.07
+Rh  Rhodium       45 102.9055
+Pd  Palladium     46 106.4
+Ag  Silver        47 107.868
+Cd  Cadmium       48 112.41
+In  Indium        49 114.82
+Sn  Tin           50 118.69
+Sb  Antimony      51 121.75
+I   Iodine        53 126.9045
+Te  Tellurium     52 127.60
+Xe  Xenon         54 131.30
+Cs  Cesium        55 132.9054
+Ba  Barium        56 137.33
+La  Lanthanum     57 138.9055
+Ce  Cerium        58 140.12
+Pr  Praseodymium  59 140.9077
+Nd  Neodymium     60 144.24
+Pm  Promethium    61 145
+Sm  Samarium      62 150.4
+Eu  Europium      63 151.96
+Gd  Gadolinium    64 157.25
+Tb  Terbium       65 158.9254
+Dy  Dysprosium    66 162.50
+Ho  Holmium       67 164.9304
+Er  Erbium        68 167.26
+Tm  Thulium       69 168.9342
+Yb  Ytterbium     70 173.04
+Lu  Lutetium      71 174.96
+Hf  Hafnium       72 178.49
+Ta  Tantalum      73 180.947
+W   Tungsten      74 183.85
+Re  Rhenium       75 186.207
+Os  Osmium        76 190.2
+Ir  Iridium       77 192.22
+Pt  Platinum      78 195.09
+Au  Gold          79 196.9665
+Hg  Mercury       80 200.59
+Tl  Thallium      81 204.37
+Pb  Lead          82 207.2
+Bi  Bismuth       83 208.9804
+Po  Polonium      84 209
+At  Astatine      85 210
+Rn  Radon         86 222
+Fr  Francium      87 223
+Ra  Radium        88 226.0254
+Ac  Actinium      89 227
+Pa  Proactinium   91 231.0359
+Th  Thorium       90 232.0381
+Np  Neptunium     93 237.0482
+U   Uranium       92 238.029
+Am  Americium     95 243
+Pu  Plutonium     94 244
+Bk  Berkelium     97 247
+Cf  Californium   98 251
+Es  Einsteinium   99 254
+Fm  Fermium      100 257
+Md  Mendelevium  101 258
+No  Nobelium     102 259
+Lr  Lawrencium   103 260
+
+-----------------------------------------------------------------------------
+Lead acid battery voltage versus % of charge  *Lead_acid_battery_V_vs_charge*
+
+V = (%chg + 15.5151)/1.3065 + temp_correction
+temp_correction = (T - 80)*0.0024
+
+where 
+    %chg is between 0 and 1
+    T is electrolyte temperature in degrees F
+    V is open circuit voltage in Volts

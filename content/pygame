@@ -1,0 +1,234 @@
+*pygame*
+
+|pygame_text|
+|pygame_sound|
+|pygame_symbols|
+|pygame_hello_world|
+
+----------------------------------------------------------------------
+Sound                                                   *pygame_sound*
+
+import time
+file = "/usr/lib/python2.7/dist-packages/pygame/examples/data/boom.wav"
+sound = pygame.mixer.Sound(file)
+sound.play()
+time.sleep(1) # Let the sound play for 1 second
+sound.stop()
+
+----------------------------------------------------------------------
+Text                                                    *pygame_text*
+
+canvas = pygame.display.set_mode((width, height))
+white = (255, 255, 255)
+black = (0, 0, 0)
+font = pygame.font.Font('freesansbold.ttf', 32)  # 32 is ft sz in pts
+text_surface = fontObj.render('Hello world!', True, white, black)
+    # Params:  True is for antialiasing, text color, background color
+text_rect = text_surface.get_rect()
+text_rect.center = (200, 150)
+canvas.fill(white)
+canvas.blit(text_surface, text_rect)
+
+----------------------------------------------------------------------
+Rect methods/attributes
+
+Attributes
+----------
+    bottom             int
+    bottomleft         tuple
+    bottomright        tuple
+    center             tuple
+    centerx            int
+    centery            int
+    h                  int
+    height             int
+    left               int
+    midbottom          tuple
+    midleft            tuple
+    midright           tuple
+    midtop             tuple
+    right              int
+    size               tuple
+    top                int
+    topleft            tuple
+    topright           tuple
+    w                  int
+    width              int
+    x                  int
+    y                  int
+
+Functions/methods
+    clamp
+    clamp_ip
+    clip
+    collidedict
+    collidedictall
+    collidelist
+    collidelistall
+    collidepoint
+    colliderect
+    contains
+    copy
+    fit
+    inflate
+    inflate_ip
+    move
+    move_ip
+    normalize
+    union
+    union_ip
+    unionall
+    unionall_ip
+
+----------------------------------------------------------------------
+pygame symbols                                         *python_symbols*
+
+TOKENS
+------
+ 
+    Unique to pygame:
+        __color_constructor       fastevent                 quit
+        __color_reduce            font                      rect
+        __path__                  get_error                 register_quit
+        __rect_constructor        get_sdl_byteorder         scrap
+        __rect_reduce             get_sdl_version           segfault
+        __version__               image                     set_error
+        __warningregistry__       init                      sndarray
+        _arraysurfarray           joystick                  sprite
+        _numpysndarray            key                       string
+        _numpysurfarray           locals                    surface
+        base                      mask                      Surface
+        bufferproxy               Mask                      SurfaceType
+        cdrom                     mixer                     surfarray
+        colordict                 mixer_music               sysfont
+        compat                    mouse                     threads
+        constants                 movie                     time
+        cursors                   overlay                   transform
+        display                   Overlay                   ver
+        draw                      packager_imports          vernum
+        error                     PixelArray                version
+        event                     pixelarray                warn_unwanted_files
+ 
+    In pygame.locals:
+        __builtins__              K_AT                      K_PAUSE
+        __doc__                   K_b                       K_PERIOD
+        __file__                  K_BACKQUOTE               K_PLUS
+        __name__                  K_BACKSLASH               K_POWER
+        __package__               K_BACKSPACE               K_PRINT
+        ACTIVEEVENT               K_BREAK                   K_q
+        ANYFORMAT                 K_c                       K_QUESTION
+        ASYNCBLIT                 K_CAPSLOCK                K_QUOTE
+        AUDIO_S16                 K_CARET                   K_QUOTEDBL
+        AUDIO_S16LSB              K_CLEAR                   K_r
+        AUDIO_S16MSB              K_COLON                   K_RALT
+        AUDIO_S16SYS              K_COMMA                   K_RCTRL
+        AUDIO_S8                  K_d                       K_RETURN
+        AUDIO_U16                 K_DELETE                  K_RIGHT
+        AUDIO_U16LSB              K_DOLLAR                  K_RIGHTBRACKET
+        AUDIO_U16MSB              K_DOWN                    K_RIGHTPAREN
+        AUDIO_U16SYS              K_e                       K_RMETA
+        AUDIO_U8                  K_END                     K_RSHIFT
+        BIG_ENDIAN                K_EQUALS                  K_RSUPER
+        BLEND_ADD                 K_ESCAPE                  K_s
+        BLEND_MAX                 K_EURO                    K_SCROLLOCK
+        BLEND_MIN                 K_EXCLAIM                 K_SEMICOLON
+        BLEND_MULT                K_f                       K_SLASH
+        BLEND_RGB_ADD             K_F1                      K_SPACE
+        BLEND_RGB_MAX             K_F10                     K_SYSREQ
+        BLEND_RGB_MIN             K_F11                     K_t
+        BLEND_RGB_MULT            K_F12                     K_TAB
+        BLEND_RGB_SUB             K_F13                     K_u
+        BLEND_RGBA_ADD            K_F14                     K_UNDERSCORE
+        BLEND_RGBA_MAX            K_F15                     K_UNKNOWN
+        BLEND_RGBA_MIN            K_F2                      K_UP
+        BLEND_RGBA_MULT           K_F3                      K_v
+        BLEND_RGBA_SUB            K_F4                      K_w
+        BLEND_SUB                 K_F5                      K_x
+        BUTTON_X1                 K_F6                      K_y
+        BUTTON_X2                 K_F7                      K_z
+        color                     K_F8                      KEYDOWN
+        Color                     K_F9                      KEYUP
+        DOUBLEBUF                 K_FIRST                   KMOD_ALT
+        FULLSCREEN                K_g                       KMOD_CAPS
+        GL_ACCELERATED_VISUAL     K_GREATER                 KMOD_CTRL
+        GL_ACCUM_ALPHA_SIZE       K_h                       KMOD_LALT
+        GL_ACCUM_BLUE_SIZE        K_HASH                    KMOD_LCTRL
+        GL_ACCUM_GREEN_SIZE       K_HELP                    KMOD_LMETA
+        GL_ACCUM_RED_SIZE         K_HOME                    KMOD_LSHIFT
+        GL_ALPHA_SIZE             K_i                       KMOD_META
+        GL_BLUE_SIZE              K_INSERT                  KMOD_MODE
+        GL_BUFFER_SIZE            K_j                       KMOD_NONE
+        GL_DEPTH_SIZE             K_k                       KMOD_NUM
+        GL_DOUBLEBUFFER           K_KP0                     KMOD_RALT
+        GL_GREEN_SIZE             K_KP1                     KMOD_RCTRL
+        GL_MULTISAMPLEBUFFERS     K_KP2                     KMOD_RMETA
+        GL_MULTISAMPLESAMPLES     K_KP3                     KMOD_RSHIFT
+        GL_RED_SIZE               K_KP4                     KMOD_SHIFT
+        GL_STENCIL_SIZE           K_KP5                     LIL_ENDIAN
+        GL_STEREO                 K_KP6                     MOUSEBUTTONDOWN
+        GL_SWAP_CONTROL           K_KP7                     MOUSEBUTTONUP
+        HAT_CENTERED              K_KP8                     MOUSEMOTION
+        HAT_DOWN                  K_KP9                     NOEVENT
+        HAT_LEFT                  K_KP_DIVIDE               NOFRAME
+        HAT_LEFTDOWN              K_KP_ENTER                NUMEVENTS
+        HAT_LEFTUP                K_KP_EQUALS               OPENGL
+        HAT_RIGHT                 K_KP_MINUS                OPENGLBLIT
+        HAT_RIGHTDOWN             K_KP_MULTIPLY             PREALLOC
+        HAT_RIGHTUP               K_KP_PERIOD               QUIT
+        HAT_UP                    K_KP_PLUS                 Rect
+        HWACCEL                   K_l                       RESIZABLE
+        HWPALETTE                 K_LALT                    RLEACCEL
+        HWSURFACE                 K_LAST                    RLEACCELOK
+        IYUV_OVERLAY              K_LCTRL                   SCRAP_BMP
+        JOYAXISMOTION             K_LEFT                    SCRAP_CLIPBOARD
+        JOYBALLMOTION             K_LEFTBRACKET             SCRAP_PBM
+        JOYBUTTONDOWN             K_LEFTPAREN               SCRAP_PPM
+        JOYBUTTONUP               K_LESS                    SCRAP_SELECTION
+        JOYHATMOTION              K_LMETA                   SCRAP_TEXT
+        K_0                       K_LSHIFT                  SRCALPHA
+        K_1                       K_LSUPER                  SRCCOLORKEY
+        K_2                       K_m                       SWSURFACE
+        K_3                       K_MENU                    SYSWMEVENT
+        K_4                       K_MINUS                   TIMER_RESOLUTION
+        K_5                       K_MODE                    USEREVENT
+        K_6                       K_n                       UYVY_OVERLAY
+        K_7                       K_NUMLOCK                 VIDEOEXPOSE
+        K_8                       K_o                       VIDEORESIZE
+        K_9                       K_p                       YUY2_OVERLAY
+        K_a                       K_PAGEDOWN                YV12_OVERLAY
+        K_AMPERSAND               K_PAGEUP                  YVYU_OVERLAY
+        K_ASTERISK
+
+----------------------------------------------------------------------
+Hello world example                             *pygame_hello_world*
+
+from __future__ import print_function, division
+import pygame, sys
+import pygame.locals as L
+from pdb import set_trace as xx
+
+pygame.init()
+W, H = 400, 300
+canvas = pygame.display.set_mode((W, H))
+pygame.display.set_caption('Hello World!')
+
+white = (255, 255, 255)
+black = (0, 0, 0)
+width, height = W//4, H//4
+xcenter, ycenter = W//2 - width//2, H//2 - height//2
+loc = (xcenter, ycenter, width, height)
+pygame.draw.rect(canvas, white, loc, 1)
+
+font = pygame.font.Font('freesansbold.ttf', 14)
+text_surface = font.render('Hello world!', True, white, black)
+text_rect = text_surface.get_rect()
+text_rect.center = W//2, H//2
+#canvas.fill(white)
+canvas.blit(text_surface, text_rect)
+
+while True:
+    for event in pygame.event.get():
+        if event.type == L.QUIT:
+            pygame.quit()
+            sys.exit()
+    pygame.display.update()

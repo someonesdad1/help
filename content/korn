@@ -1,0 +1,264 @@
+*Korn_Shell*
+
+|korn_io_flow|
+|korn_parameter_substitution|
+|korn_quoting|
+|korn_reserved_words|
+|korn_patterns|
+|korn_getopts|
+|korn_misc|
+
+
+
+test             True if:
+----             -----------------------------------------------------------
+    -r file          file exists and is readable
+    -w file          file exists and is writable
+    -x file          file exists and is executable
+    -f file          file exists and is a regular file
+    -d file          file exists and is a directory
+    -c file          file exists and is a character special file
+    -b file          file exists and is a block special file
+    -p file          file exists and is a named pipe (fifo)
+    -u file          file exists and its set-user-id bit is set
+    -g file          file exists and its set-group-id bit is set
+    -k file          file exists and its sticky bit is set
+    -s file          file exists and it has a size greater than zero
+    -L file          file exists and is a symbolic link
+    -O file          file exists and its owner is the effective user id
+    -G file          file exists and its group is the effective group id
+    -S file          file exists and it is a special file of type socket
+    -e file          file exists (bash only)
+    -H file          file is a context dependent file (HPUX)
+
+    -t [fildes]      file whose file descriptor number is fildes
+                     (default 1) is open and is associated with a tty.
+    -o option        option is on
+    -z string        length of string is zero
+    -n string        length of string is nonzero
+
+    str1 = str2      str1 is equal to str2
+    str1 != str2     str1 is not equal to str2
+
+    file1 -nt file2  file 1 is newer than file2
+    file1 -ot file2  file 1 is older than file2
+    file1 -ef file2  file 1 is another name for file2
+
+    exp1 -eq exp2    exp1 and exp2 are equal
+    exp1 -ne exp2    exp1 and exp2 are not equal
+    exp1 -gt exp2    exp1 is greater than exp2
+    exp1 -ge exp2    exp1 is greater than or equal to exp2
+    exp1 -lt exp2    exp1 is less than exp2
+    exp1 -le exp2    exp1 is less than or equal to exp2
+
+    Use -a and -o to AND and OR together.  You can make more complex operations
+    with parentheses, but you must escape the parentheses and surround them
+    with spaces; e.g.,:
+                   \( $filename = test.txt  -a -f test.txt \)
+
+I/O Flow               *korn_io_flow*
+--------
+    <x     n<x       Open file x for reading as stdin or fildes n
+    <<x    n<<x      Here document.  Quote x to stop param expansion. 
+    <<-x   n<<-x     Here document.  Strip leading tabs.
+    <&x    n<&x      Duplicate input. x==- means close.  x==p means connect 
+                     output of coprocess to stdin or fildes n.  x==digit means 
+                     duplicate fildes n or stdin.
+    <>x    n<>x      Open x for reading & writing as stdin or fildes n.
+    >x     n>x       Write to stdout or fildes n.
+    >|x    n>|x      Write to stdout or fildes n even if noclobber is on.
+    >>x    n>>x      Append
+    >&x    n>&x      Duplicate output (similar to duplicate input).
+
+    The way to think of this syntax is to say 'n>&x' as "send the data from
+    output stream n to the same place where output stream x is going".
+
+    Example:  Here's how you would read the first line from a file:
+
+        exec 3<&0           # Save stdin in a temporary file descriptor 3
+        command >$tmpfile   # Put some results in a file
+        exec <$tmpfile      # stdin now comes from the file
+        read first_line
+        exec <&-            # Close stdin
+        exec <&3            # Connect stdin to where fd 3 is coming from
+        exec 3<&-           # Close fd 3
+
+Logic
+-----
+x && y        Execute y iff x returns true
+x || y        Execute y iff x returns false
+
+Parameter & Substitution           *korn_parameter_substitution*
+------------------------
+Note:  the : character in the next group is optional
+$x            Substitute the value of x
+${x}          Substitute the value of x
+${x:-y}       (Use default value)  If x unset, use y
+${x:=y}       (Assign default value)  If x unset, set x to y, expand to y
+${x:?y}       (Display error) If x null: y on stderr, then exit.  y optional.
+${x:+y}       (Use alternate value) If x unset, use null, otherwise use y.
+
+(, *, ?, [...], !, @, ) may be used in pattern matching
+${x#p}        Remove small left pattern
+${x##p}       Remove large left pattern
+${x%p}        Remove small right pattern
+${x%%p}       Remove large right pattern
+
+${#x}         String length of x
+${#x[*]}      Number of elements in the array that are set
+${#x[@]}      Number of elements in the array that are set
+
+$*            Positional parameters separated by spaces
+"$*"          Positional parameters separated by first char of IFS.
+$@            Positional parameters separated by spaces
+"$@"          Positional parameters separated by spaces  "$@" == "$1" "$2" ...
+              If this char is d, then "$*" == "$1d$2d..."
+$#            Number of positional parameters
+$-            Option flags via invocation or set
+$?            Return value of last executed command.  If terminated by signal,
+              has return value of 128 + signal number.
+$$            pid of this shell
+$!            pid of last background command or co-process invoked
+
+?             Any single character
+*             Zero or more characters
+[chars]       Any single character in chars (use [a-z] for range)
+[!chars]      Any single character not in chars
+?(pattern)    Zero or one occurrence of pattern
+@(pattern)    Exactly one occurrence of pattern
+*(pattern)    Zero or more occurrences of pattern
++(pattern)    One or more occurrences of pattern
+!(pattern)    Strings not containing pattern
+
+ERRNO         Error number of most recent failed system call.  Impl. dependent.
+LINENO        Current line number.  A typical use is in the PS4 prompt:
+              PS4='+$LINENO--> ' let's you see approximate line numbers during
+              script execution with set -x; especially useful in functions.
+OLDPWD        Last working directory
+OPTARG        Option argument (set by getopts sees option that requires value)
+OPTIND        Index of arg to search for next option
+PPID          Parent pid
+PWD           Working directory
+RANDOM        Random number generator (0 to 32767)
+REPLY         Default var for read with no args.  select cmd's chars you type
+SECONDS       Elapsed time in seconds since shell was invoked.
+
+Control Flow
+------------
+    if A ; then B; [elif C ; then ... ] else C ; fi
+    while A ; do B ; done
+    until A ; do B ; done
+    for var [ in list ] ; do A ; done
+    case string in
+        patternlist1) commands for patternlist1;;
+        patternlist2) commands for patternlist2;;
+        ...
+        *) default action if no match above ;;
+    esac
+    patternlist could be e.g. y|Y|Yes|YES|yes), y*|Y*), or [yY]*).
+
+    Use break [n] to break out of a loop.  break n breaks out of n loops.
+    Use continue [n] to jump to next iteration of a loop.
+
+Quoting                *korn_quoting*
+-------
+    Hard quotes ('') don't allow any expansion
+    Soft quotes ("") allow variable name and command substitution
+    "$*" is equivalent to "$1x$2x..." where x is first char of IFS
+    "$@" is equivalent to "$1"x"$2x"... where x is first char of IFS
+    Example:
+        #!/bin/ksh
+
+        IFS=q
+        echo $*
+        echo "$*"
+        echo $@
+        echo "$@"
+    run with parameters '1 2 3' gives:
+        1 2 3
+        1q2q3
+        1 2 3
+        1 2 3
+
+Reserved words           *korn_reserved_words*
+--------------
+    {  }  case   do   done   elif   else   esac   fi   for    function
+    if   in   select   then   time   until   while   [[    ]]
+
+Patterns                 *korn_patterns*
+--------
+[...]                    Delimit a set of characters, any of which will match.
+                         - indicates range, is itself when first char after [.
+                         ! first negates.  ] is itself after [ or [!.
+?                        Match any single character.
+*                        Match zero or more occurrences of any characters.
+?(pattern[|pattern]...)  Matches 0 or one occurrence of any pattern.
+*(pattern[|pattern]...)  Matches 0 or more occurrences of any pattern.
++(pattern[|pattern]...)  Matches one or more occurrences of any pattern.
+@(pattern[|pattern]...)  Matches exactly one occurrence of any pattern.
+!(pattern[|pattern]...)  Matches all strings except those matched by pattern
+
+getopts                  *korn_getopts*
+-------
+    Put a : at beginning of optstring to do your own error processing for an
+    unknown option letter.  For each option that needs an argument, put a :
+    after the letter.
+
+            while getopts optstring optlettervar
+            do case $optlettervar in
+                     # Cases go here; $OPTARG contains the option argument
+                 esac
+            done
+            shift $(expr $OPTIND - 1)  # Remove all option arguments
+
+    Then handle the actual arguments.
+
+    Example of a complex trap command:
+
+      trap "trap '' INT QUIT TERM; \
+           echo 'interrupt'; \
+           echo 'interrupt' > ./status; \
+           SetResult "ERROR" \
+           exit 1" INT QUIT TERM
+
+Misc. Shell Stuff            *korn_misc*
+-----------------
+    1.  Use 'set -e' or 'set -o errexit' to cause a script to exit if one of
+        its commands fails.
+    2.  To get version of ksh, set -o emacs, then ^v.
+    3.  Useful error function:  
+          Error()
+          {
+            echo >&2 $*
+            exit 1
+          }
+    4.  You can pipe the output of a for loop (also other loops):
+          for i in list ; do
+             xxx
+          done | action      
+    5.  To detect errors:
+          status=0
+          for i ; do
+            mv $i ${i}.old || { echo "Couldn't move $i" ; status = 1 }
+          done
+          if [ $status -ne 0 ] ; then exit $status ; fi
+    6.  You can run a loop in the background:
+          ( until xxx ; do
+              yyy
+            done
+            print zzz ) &
+    7.  Redirecting output of commands:
+          (xxx; yyy; zzz) >www
+    8.  Bourne/bash arrays:
+          make them:  eval a$n=xxx
+          use them:   eval echo \${a$n}
+        Note these arrays are actually more general than ksh arrays, since 
+        they simulate associative arrays.
+        Example:
+            for i in 1 2 3 ; do
+                eval a$i=$(expr $i \* $i);
+            done
+
+            for i in 1 2 3 ; do
+                echo "Value of a$i is $(eval echo \${a$i})"
+            done

@@ -1,0 +1,438 @@
+*scipy*
+
+|Stats|
+|Nonlinear_regression|
+|Interpolation|
+|Integration|
+|Polynomials|
+|LinearAlgebra|
+|Vectorizing_a_Function|
+
+Note on how to easily construct arrays:
+
+r_[3,[0]*5,-1:1:10j] yields a row vector:
+
+[ 3.          0.          0.          0.          0.          0.         -1.
+ -0.77777778 -0.55555556 -0.33333333 -0.11111111  0.11111111  0.33333333
+  0.55555556  0.77777778  1.        ]
+
+c_ yields a column vector.  Note the unconventional use of j to
+indicate the number of elements to make including the ends.
+
+-----------------------------------------------------------------------------
+Stats                                                  *Stats*
+
+IMPORTANT:  to use scipy's stats stuff with matplotlib, always import
+matplotlib stuff first:
+
+    from pylab import *
+    from scipy.stats import norm
+
+  If you don't, you'll get confusing behavior because some function called
+  norm will be called rather than the norm object of scipy.
+
+The scipy.stats module provides probability functions for numerous
+continuous and discrete distributions.
+
+How to set the RNG seed:
+    from numpy.random import seed
+    seed(0)
+
+The following methods are available:
+
+    rvs     Random variates
+    pdf     Probability density function
+    cdf     Cumulative density function
+    sf      Survival function (1 - CDF)
+    ppf     Percentage point function (inverse of CDF)
+    isf     Inverse of survival function
+    stats   Return mean, variance, Fisher's skew or kurtosis
+    moment  Non-central moments of the distribution
+
+All continuous distributions take loc and scale as keyword parameters.
+Discrete distributions replace pdf with pmf.
+
+The typical calling syntax of these functions is
+
+    xxx(x, *args, **kwds)
+        x is the argument or q, lower tail probability.  It can be an
+            array-like object besides a single value.
+        args are shape parameters for the distribution (see docstring of
+            instance object for more details)
+        kwds are as needed
+
+Some examples:
+
+    stats.norm.cdf(2) = 0.97724986805182079
+    stats.norm.ppf(0.97724986805182079) = 2.0000000000000004
+    stats.f.ppf(0.95, 9, 5) = 3.6766746989395105 (N&W table pg 808)
+
+In the scipy manual 0.11, go to page 670 to see the table of these
+distributions; you can click on the links to the individual distributions
+for their details.
+
+Here's a list of the available distributions:
+    from scipy import stats
+    l = [d for d in dir(stats) if isinstance(getattr(stats, d),
+         stats.rv_continuous)]
+
+Continuous distributions:
+    alpha              foldnorm           invweibull         pareto
+    anglit             frechet_l          johnsonsb          powerlaw
+    arcsine            frechet_r          johnsonsu          powerlognorm
+    beta               gamma              ksone              powernorm
+    betaprime          gausshyper         kstwobign          rayleigh
+    bradford           genexpon           laplace            rdist
+    burr               genextreme         levy               recipinvgauss
+    cauchy             gengamma           levy_l             reciprocal
+    chi                genhalflogistic    levy_stable        rice
+    chi2 (chi squared) genlogistic        loggamma           semicircular
+    cosine             genpareto          logistic           t
+    dgamma             gilbrat            loglaplace         triang
+    dweibull           gompertz           lognorm            truncexpon
+    erlang             gumbel_l           lomax              truncnorm
+    expon              gumbel_r           maxwell            tukeylambda
+    exponpow           halfcauchy         mielke             uniform
+    exponweib          halflogistic       nakagami           vonmises
+    f                  halfnorm           ncf                wald
+    fatiguelife        hypsecant          nct                weibull_max
+    fisk               invgamma           ncx2               weibull_min
+    foldcauchy         invnorm            norm               wrapcauchy
+
+Discrete distributions:
+    bernoulli        geom             planck           zipf
+    binom            hypergeom        poisson
+    boltzmann        logser           randint
+    dlaplace         nbinom           skellam
+
+-----------------------------------------------------------------------------
+Interpolation                                          *Interpolation*
+
+Use the interpolation method to define a new function that evaluates
+the table values anywhere inside the defined region.  The x array
+must be monotonically increasing and cannot include duplicate values.
+
+    from pylab import *
+    from scipy import *
+
+    x = arange(0,10)
+    y = exp(-x/3.0)
+    func = interpolate.interp1d(x, y, copy=0, kind="linear")
+    xnew = arange(0, 9, 0.1)
+    plot(x, y, 'x', xnew, func(xnew), '.')
+    show()
+
+kw args to interp1d:
+    copy   : means to make copies of the given arrays (copy made by default).
+    kind   : "linear", "nearest", "cubic", "spline".  Linear is default.
+    bounds_error: 0 or 1, 1 means throw exception when x is outside
+        the defined range.  0 means assign NaN.  1 is default.
+    axis   : Which axis of y to use.  Defaults to -1.
+
+Also can do 2D interpolation:
+    func = interpolate.interp2d(x, y, z, kind='linear', copy=True,
+                                bounds_error=False, fill_value=None)
+
+    x and y are 1D arrays defining the grid.
+    z is a 2D array of grid values.
+    kind can be "linear", "cubic", "quintic".
+    bounds_error:  if true, raise error.  False:  fill with fill value.
+    fill_value:  if None, then fill with NaN.
+
+-----------------------------------------------------------------------------
+Integration                                          *Integration*
+
+odeint        Integrate ordinary differential equations
+quad          General purpose integration
+dblquad       General purpose double integration
+tplquad       General purpose triple integration
+gauss_quad    Integrate func(x) using Gaussian quadrature of order n
+gauss_quadtol Integrate with given tolerance using Gaussian quadrature
+
+Use integrate.inf for a limit of infinity.
+
+Example:  integrate a Bessel function:
+    result = integrate.quad(lambda x: special.jv(2.5,x), 0, 4.5)
+    print result
+    (1.1178179380783249, 7.8663172481899801e-09)
+         Answer             Error estimate
+
+trapz and simps are also provided
+
+-----------------------------------------------------------------------------
+Polynomials                                          *Polynomials*
+
+Use the poly1d class:
+    >>> p = poly1d([3,4,5])
+    >>> print p
+       2
+    3 x + 4 x + 5
+    >>> print p*p
+       4    3        2
+    9 x + 24 x + 46 x + 40 x + 25
+    >>> print p.integ(k=6)
+       3     2
+    x + 2 x + 5 x + 6
+    >>> print p.deriv()
+    6 x + 4
+    >>> p([4,5])
+    array([ 69, 100])
+
+-----------------------------------------------------------------------------
+Linear Algebra                                          *LinearAlgebra*
+
+Matrix example from Neter & Wasserman, pg 235:
+
+    # Two variable multiple linear regression example from Neter &
+    # Wasserman, pg 235.
+
+    from numpy import *
+    from scipy.linalg import inv
+    from pylab import *
+
+    sales = [162, 120, 223, 131, 67, 169, 81, 192, 116, 55, 252, 232,
+            144, 103, 212]
+    pop   = [274, 180, 375, 205, 86, 265, 98, 330, 195, 53, 430, 372,
+            236, 157, 370]
+    inc   = [2450, 3254, 3802, 2838, 2347, 3782, 3008, 2450, 2137, 2560,
+            4020, 4427, 2660, 2088, 2605]
+    n  = len(sales)
+    p  = 3
+    Y  = matrix((sales)).transpose()    # Dependent variable
+    Xp = matrix(([1]*n, pop, inc))      # X'
+    X  = Xp.transpose()
+    inverse = inv(Xp*X)
+    b = inverse*Xp*Y                    # Regression parameters
+    Yhat = X*b                          # Predicted values
+
+    # Print out statistics on the variables
+    def Stats(name, data):
+        a = array(data)
+        mean = a.sum()/len(a)
+        s = a - mean
+        stddev = sqrt((s.sum())**2/(n-1))
+        med = median(a)
+        f = "    %-10s " + ("%10.4g "*5)
+        print f % (name, mean, med, stddev, min(data), max(data))
+    print "Statistics:          Mean     Median     Stddev        Min        Max"
+    Stats("Sales", sales)
+    Stats("Population", pop)
+    Stats("Income", inc)
+    print " "*3, "n =", n
+    print
+
+    # Print matrix calculations
+    print "Equation 7.59 X'X\n", Xp*X, "\n"
+    print "Equation 7.60 X'Y\n", Xp*Y, "\n"
+    print "Equation 7.61 (X'X)^(-1)\n", inv(Xp*X), "\n"
+
+    # Calculate and plot residuals
+    Residuals = Y - Yhat
+    plot(Yhat, Residuals, "ko")
+    xlabel("Predicted value")
+    title("Neter & Wasserman, figure 7.5")
+    axhline(color="k")
+    savefig("residuals.png")
+
+    # Print out an ANOVA table
+    ypy = (Y.transpose()*Y).sum()
+    n_ybar_sq = (Y.sum())**2/float(n)
+    SSTO = ypy -n_ybar_sq
+    SSE = (ypy - b.transpose()*Xp*Y).sum()
+    SSR = SSTO - SSE
+    dfSSR = p - 1
+    dfSSE = n - p
+    dfSSTO = n - 1
+    MSR = SSR/(p - 1)
+    MSE = SSE/(n - p)
+    print '''ANOVA table 7.4 on pg. 242
+
+    Source of
+    Variation               SS            df             MS
+    ---------------------------------------------------------
+    Regression      SSR = %(SSR)9.3f       %(dfSSR)2d  MSR = %(MSR)9.3f
+    Error           SSE = %(SSE)9.3f       %(dfSSE)2d  MSE = %(MSE)9.3f
+    ---------------------------------------------------------
+    Total          SSTO = %(SSTO)9.3f       %(dfSSTO)2d
+    ''' % globals()
+    print "Adjusted R^2 = %6.2f" % (100*(1 - ((n-1)/(n-p))*(SSE/SSTO)))
+    print "         R^2 = %6.2f" % (100*(1 - SSE/SSTO))
+    print
+    print "F statistic with df=(%d,%d) = %.4g" % (p-1, n-p, MSR/MSE)
+    print
+
+    print "Covariance matrix:"
+    print MSE*inverse
+    print
+
+    print "Model parameters:  Estimate        StdDev    100*StdDev/Est"
+    for i in xrange(p):
+        est = b[i].sum()
+        std = sqrt(MSE*inverse[i][i])
+        print "    b%d         %12.4g  %12.4g          %8.2f" % \
+            (i, est, std, 100*std/est)
+    print
+
+    print "Residuals = Res:"
+    width = 12
+    resolution = (width, 4)
+    headings = ("Y", "Yhat", "Res", "100*Res/Y")
+    print ("     " + ("%%%ds " % width)*len(headings)) % headings
+    for i in xrange(n):
+        y = Y[i].sum()
+        yhat = Yhat[i].sum()
+        resid = y - yhat
+        f = " %%%d.%dg" % resolution
+        g = " %%%d.%df" % resolution
+        print ("%4d" + f*3 + g) % (i+1, y, yhat, resid, 100*resid/y)
+
+
+Older stuff:
+    A = mat('[1 3 5; 2 5 1; 2 3 8]')
+
+    linalg.det(A)
+
+    Inverse:  linalg.inv(A) or A.I
+
+    Solving linear systems
+        >>> A = mat('[1 3 5; 2 5 1; 2 3 8]')
+        >>> b = mat('[10;8;3]')
+        >>> A.I*b
+        Matrix([[-9.28],
+        [ 5.16],
+        [ 0.76]])
+        >>> linalg.solve(A,b)
+        array([[-9.28],
+        [ 5.16],
+        [ 0.76]])
+
+    Linear regression
+        Fit some data to y = c1*exp(-xi) + c2*xi
+
+        from scipy import *
+        from pylab import *
+
+        c1,c2= 5.0,2.0
+        i = r_[1:11]
+        xi = 0.1*i
+        yi = c1*exp(-xi)+c2*xi
+        zi = yi + 0.05*max(yi)*randn(len(yi))
+        A = c_[exp(-xi)[:,NewAxis],xi[:,NewAxis]]
+        c,resid,rank,sigma = linalg.lstsq(A,zi)
+        xi2 = r_[0.1:1.0:100j]
+        yi2 = c[0]*exp(-xi2) + c[1]*xi2
+        plot(xi,zi,'x',xi2,yi2)
+        axes((0,1.1,3.0,5.5))
+        xlabel('x_i')
+        title('Data fitting with linalg.lstsq')
+        show()
+
+    Eigenvalues and eigenvectors
+        >>> A = mat('[1 5 2; 2 4 1; 3 6 2]')
+        >>> la,v = linalg.eig(A)
+        >>> l1,l2,l3 = la
+        >>> print l1, l2, l3
+        (7.95791620491+0j) (-1.25766470568+0j) (0.299748500767+0j)
+        >>> print v[:,0]
+        array([-0.5297, -0.4494, -0.7193])
+        >>> print v[:,1]
+        [-0.9073 0.2866 0.3076]
+        >>> print v[:,2]
+        [ 0.2838 -0.3901 0.8759]
+        >>> print sum(abs(v**2),axis=0)
+        [ 1. 1. 1.]
+
+-----------------------------------------------------------------------------
+Vectorizing a Function                             *Vectorizing_a_Function*
+
+How to change a normal scalar function to accept vector arguments
+
+    >>> def addsubtract(a,b):
+        if a > b:
+            return a - b
+        else:
+            return a + b
+
+    >>> vec_addsubstract = vectorize(addsubtract)
+
+    >>> vec_addsubtract([0,3,6,9],[1,3,5,7])
+    array([1, 6, 1, 2])
+
+-----------------------------------------------------------------------------
+Nonlinear regression                               *Nonlinear_regression*
+
+'''
+Example of how to fit one dimensional data to a function with arbitrary
+parameters.  The fit is done by the least squares regression function of
+SciPy.
+
+We'll use the example of a capacitor being charged through a resistor.  The
+voltage across the capacitor is V*(1 - exp(-t/(R*C))).  Assume we know R;
+we'll estimate V and C from the data.  We'll add some random noise to the
+data.
+
+The model we'll fit is A[0]*(1 - exp(-t/(R*A[1]))); A is a sequence of
+parameters and t is the time.
+'''
+
+from __future__ import division
+from numpy.random import normal
+from scipy.optimize.minpack import leastsq
+from pylab import *
+
+R = 1500    # Resistance in ohms
+
+def Model(A, t):
+    return A[0]*(1 - exp(-t/(R*A[1])))
+
+def Residuals(A, t, y0, func):
+    '''Calculate the residuals of the model data from the numerical data.
+    '''
+    return y0 - func(A, t)
+
+# Generate our numerical data.  The charging voltage will be 10 volts and
+# the capacitor is 1000 uF.
+A_orig = array((10, 1e-3))
+N, t0 = 50, 10*R*A_orig[1] # Number of points, 10 time constants max time
+t = arange(t0/N, t0, t0/N)
+# Add some normally-distributed noise to the model
+mean, std_deviation = 0, 0.2
+V_data = Model(A_orig, t) + normal(mean, std_deviation, len(t))
+
+# Set up our regression:
+#   t = independent variable
+#   V_data = dependent variable data values
+#   Model = the model function
+parameters = (t, V_data, Model)
+A_init = A_orig*10  # Initial model parameter estimates
+# Perform least squares regression to minimize the Residuals function
+A, cov_x, infodict, msg, err = leastsq(Residuals, A_init, args=parameters,
+            full_output=True, warning=True)
+if err != 1:
+    print "Couldn't fit the model:"
+    print msg
+    exit(1)
+V = Model(A, t)     # Predicted values from fitted model
+
+print "Fitted model parameters:"
+for i in range(len(A)):
+    print "  A[%d] = %g +- %.2g" % (i, A[i], sqrt(cov_x[i,i]))
+
+# Plot the data points and the fitted model
+subplot(211)
+plot(t, V_data, ".", label="Data")
+plot(t, V, "r", label="Predicted")
+title("Fitted model")
+s = r"Fitted model is $V = V_0(1-e^{-t/(RC)})$"
+fs, x, y, dy = 16, 3, 6, 1.3
+text(x, y, s, fontsize=fs)
+s = r"Parameters: $V_0 = %.4g,\, C = %.4g$" % tuple(A)
+text(x, y-dy, s, fontsize=fs)
+s = r"Std dev of params: $\sigma_V = %.2g,\, \sigma_C = %.2g$"
+c = (sqrt(cov_x[0, 0]), sqrt(cov_x[1, 1]))
+text(x, y-2*dy, s % c, fontsize=fs)
+# Plot the residuals
+subplot(212)
+plot(t, V - V_data, "o-")
+title("Residuals")
+show()

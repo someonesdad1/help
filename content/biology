@@ -1,0 +1,238 @@
+*Biology*
+
+|Body_Size|
+|Skin_Properties|
+|Organ_Mass|
+|Mortality_1958|
+
+-----------------------------------------------------------------------------
+Body size of young adults                               *Body_Size*
+
+Dimensions in inches, nude.
+
+                                       Males                   Females
+                                 5%    Median    95%      5%    Median    95%
+                                ---    ------    ---     ---    ------    ---
+Approximate weight, lb.         132     155      200     100     122      150          
+Height                           63      68       73      60      64       68.5     
+Vertical (functional) reach      76      82       89      69      76       81.5            
+Horizontal spread reach          58      64       68      54      59       65          
+Forward reach                    29      33       35      25      30       32       
+Crotch to floor                  30      32.5     36      24      29       31  
+Shoulder width                   16      18       20      14      17       19 
+Hip width                        13      14       15.5    12.5    14       15.5 
+Foot length                       9.8    10.5     11.3     8.7     9.5     10.2   
+Head circumference               21.5    22.5     23.5    20.4    21.5     22.7          
+Chest circumference              35      39       43      30      33.5     37      
+Waist circumference              28      33       37      23.5    25.5     28.5    
+Thigh circumference              20      23       25      19      22       24      
+Calf circumference               13      14.5     16      11.7    13.5     15     
+Wrist circumference               6.3     7        7.5     5.5     6.5      6.9     
+Knee clearance to floor          20      21.5     23      17      21       22          
+Body surface area, sq. in.     2400    2800     3200    2150    2300     2800             
+
+From CRC "Handbook of Tables for Applied Engineering Science", pg 702.
+
+-----------------------------------------------------------------------------
+Properties of the skin for an average man           *Skin_Properties*
+
+Surface area                                         1.9   m^2
+Specific gravity                                     1.1
+Water content                                        70-75 %
+Thickness                                            0.5-5 mm
+Thermal conductivity, room temperature               0.63  W/m*K
+Sensation vs mean skin temperature (entire body):
+    Extremely cold                                   84    deg F
+    Shivering cold                                   86    def F
+    Uncomfortably cold                               < 88  deg F
+    Comfortably warm                                 93    deg F
+    Uncomfortably warm                               > 95  deg F
+Pain threshold                                       113   deg F
+                                                     45    deg C
+Infrared emissivity                                  0.99
+Solar reflectivity:
+    Very white                                       42    %
+    Medium-colored                                   20    %
+    Very black                                       10    %
+
+From CRC "Handbook of Tables for Applied Engineering Science", pg 702.
+
+-----------------------------------------------------------------------------
+Organs of the standard man                              *Organ_Mass*
+
+Values for a 70 kg (154 lb) "standard" man.
+
+                                                               % of Total
+Organ                                               Mass, kg      Body
+-------------------------------------------         --------    --------
+Total body                                          70          100                          
+Muscle                                              30           43
+Skin and subcutaneous tissue [1]                     6.1          8.7           
+Fat                                                 10           14             
+Skeleton without bone marrow                         7           10             
+Red marrow                                           1.5          2.1           
+Yellow marrow                                        1.5          2.1           
+Blood                                                5.4          7.7           
+Gastrointestinal tract, excluding contents           2            2.9           
+Contents of lower large intestine                    0.15
+Contents of stomach                                  0.25
+Contents of small intestine                          1.1 
+Contents of upper large intestine                    0.135
+Liver                                                1.7          2.4           
+Brain                                                1.5          2.1           
+Lungs (2)                                            1.0          1.4           
+Lymphoid tissue                                      0.7          1.0           
+Kidneys (2)                                          0.3          0.43          
+Heart                                                0.3          0.43          
+Spleen                                               0.15         0.21          
+Urinary bladder                                      0.15         0.21          
+Pancreas                                             0.07         0.10          
+Salivary glands (6)                                  0.05         0.071         
+Testes (2)                                           0.04         0.057         
+Spinal cord                                          0.03         0.043         
+Eyes (2)                                             0.03         0.043         
+Thyroid gland                                        0.02         0.029         
+Teeth                                                0.02         0.029         
+Prostate gland                                       0.02         0.029         
+Adrenal glands (2)                                   0.02         0.029         
+Thymus                                               0.01         0.014         
+Ovaries (2)                                          0.008        0.011         
+Pituitary                                            0.0006       8.6e-6        
+Pineal gland                                         0.0002       2.9e-6        
+Parathyroids (4)                                     0.00015      2.1e-6        
+Miscellaneous:  blood vessels, cartilage, nerves     0.39         0.56          
+
+[1] Skin mass alone is 2.0 kg.
+
+From CRC "Handbook of Tables for Applied Engineering Science", pg 703.
+
+-----------------------------------------------------------------------------
+Mortality table                                       *Mortality_1958*
+
+    From CRC "Handbook of Tables for Applied Engineering Science", pg.
+    705.  Also on pg 663 of CRC "Standard Mathematical Tables", 21st
+    edition, 1973.
+
+    The table shows a standard normal population of 1e7 people being
+    born, then the death rates for that group through 99 years.  In year
+    0, 70800 people die, leaving 9929200 to live the second year.  The
+    deaths per 1000 column is calculated by dividing the number dying
+    by the number living and multiplying by 1000.  Plotting the deaths
+    per 1000 gives the famous 'bathtub' curve.
+
+    Commissioners 1958 Standard Ordinary Mortality Table
+
+                                    Deaths
+            Number      Number       per   
+    Age     Living      Dying       1000
+    ---    --------     ------      -----
+      0    10000000      70800       7.08
+      1     9929200      17475       1.76
+      2     9911725      15066       1.52
+      3     9896659      14449       1.46
+      4     9882210      13835       1.40
+      5     9868375      13322       1.35
+      6     9855053      12812       1.30
+      7     9842241      12401       1.26
+      8     9829840      12091       1.23
+      9     9817749      11879       1.21
+
+     10     9805870      11865       1.21
+     11     9794005      12047       1.23
+     12     9781958      12325       1.26
+     13     9769633      12896       1.32
+     14     9756737      13562       1.39
+     15     9743175      14225       1.46
+     16     9728950      14983       1.54
+     17     9713967      15737       1.62
+     18     9698230      16390       1.69
+     19     9681840      16846       1.74
+
+     20     9664994      17300       1.79
+     21     9647694      17655       1.83
+     22     9630039      17912       1.86
+     23     9612127      18167       1.89
+     24     9593960      18324       1.91
+     25     9575636      18481       1.93
+     26     9557155      18732       1.96
+     27     9538423      18981       1.99
+     28     9519442      19324       2.03
+     29     9500118      19760       2.08
+
+     30     9480358      20193       2.13
+     31     9460165      20718       2.19
+     32     9439447      21239       2.25
+     33     9418208      21850       2.32
+     34     9396358      22551       2.40
+     35     9373807      23528       2.51
+     36     9350279      24685       2.64
+     37     9325594      26112       2.80
+     38     9299482      27991       3.01
+     39     9271491      30132       3.25
+
+     40     9241359      32622       3.53
+     41     9208737      35362       3.84
+     42     9173375      38253       4.17
+     43     9135122      41382       4.53
+     44     9093740      44741       4.92
+     45     9048999      48412       5.35
+     46     9000587      52473       5.83
+     47     8948114      56910       6.36
+     48     8891204      61794       6.95
+     49     8829410      67104       7.60
+
+     50     8762306      72902       8.32
+     51     8689404      79160       9.11
+     52     8610244      85758       9.96
+     53     8524486      92832      10.89
+     54     8431654     100337      11.90
+     55     8331317     108307      13.00
+     56     8223010     116849      14.21
+     57     8106161     125970      15.54
+     58     7980191     135663      17.00
+     59     7844528     145830      18.59
+
+     60     7698698     156592      20.34
+     61     7542106     167736      22.24
+     62     7374370     179271      24.31
+     63     7195099     191174      26.57
+     64     7003925     203394      29.04
+     65     6800531     215917      31.75
+     66     6584614     228749      34.74
+     67     6355865     241777      38.04
+     68     6114088     254835      41.68
+     69     5859253     267241      45.61
+
+     70     5592012     278426      49.79
+     71     5313586     287731      54.15
+     72     5025855     294766      58.65
+     73     4731089     299289      63.26
+     74     4431800     301894      68.12
+     75     4129906     303011      73.37
+     76     3826895     303014      79.18
+     77     3523881     301997      85.70
+     78     3221884     299829      93.06
+     79     2922055     295683     101.19
+
+     80     2626372     288848     109.98
+     81     2337524     278983     119.35
+     82     2058541     265902     129.17
+     83     1792639     249858     139.38
+     84     1542781     231433     150.01
+     85     1311348     211311     161.14
+     86     1100037     190108     172.82
+     87      909929     168455     185.13
+     88      741474     146997     198.25
+     89      594477     126303     212.46
+
+     90      468174     106809     228.14
+     91      361365      88813     245.77
+     92      272552      72480     265.93
+     93      200072      57881     289.30
+     94      142191      45026     316.66
+     95       97165      34128     351.24
+     96       63037      25250     400.56
+     97       37787      18456     488.42
+     98       19331      12916     668.15
+     99        6415       6415    1000.00
+

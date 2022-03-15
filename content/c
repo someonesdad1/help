@@ -1,0 +1,3216 @@
+*C*
+
+|gcc_options|
+|C_escapes|
+|C_operator_precedence|
+|C_iostreams|
+|C_prototypes| 
+|C_Functions_by_Type|
+
+
+|C_vc|                  Microsoft VC2003 C/C++ compiler options
+|C_Borland_options|     Borland 5.5 compiler options
+|C_Borland_warnings|    Borland 5.5 compiler warnings
+|Endianness|
+
+Wikipedia pages:
+  C     https://en.wikipedia.org/wiki/C_syntax
+  cpp   https://en.wikipedia.org/wiki/C_preprocessor
+
+-----------------------------------------------------------------------------
+gcc options                                        *gcc_options*
+
+General stuff
+    -x lang     Specify language
+    -c          Compile/assemble but do not link
+    -E          Stop after preprocessing (sent to stdout)
+    -S          Stop after compilation (gives *.s assembler output)
+    -o file     Where to put output
+    -v          Commands executed & version to stderr
+    -###        Live -v except output usable in shell scripts
+    --help      Help on commands
+    --version   Version number
+    @file       Read commands from file
+    -fno-show-column    Don't show column numbers
+    -p          Extra code for prof profiling information
+    -pg         Extra code for gprof profiling information
+    -I dir      List of directories to search for include files
+    -iquote dir      Same, but only apply to quoted includes
+    -isystem dir     Same, marks it as a system directory
+    -Ldir       Search director for libraries
+    -fpic       Generate PIC for use in a shared library
+    -fPIC       Generate PIC for dynamic linking
+
+Preprocessor
+    -D name     Define name with value 1
+    -D name=val Define the value
+    -D 'name()=val' Define function-like macro
+    -U name     Undefine a name
+    -MM         Write dependencies for e.g. make (no system stuff)
+    -C          Do not discard comments
+    -P          Don't emit linemarkers
+    -H          Print name of each header file used (indent level
+                indicates how deep in the include stack it is)
+
+Controlling C dialect
+    -ansi       Same as -std=c90
+    -std=x      x can be c90, c99, c11, gnu90, gnu99, gnu11 (default)
+        
+Warnings
+    -fsyntax-only
+    -fmax-errors=n
+    -w          Inhibit all warning messages 
+    -Werror     Make all warnings into errors 
+    -Wfatal-errors  Abort on first error
+    -pedantic   Follow ISO C exactly
+    -Wall       Enable all warnings
+    -Wextra     More than -Wall.
+
+Optimization
+    -O0         Default (reduce compilation time)
+    -O, -O1 
+    -O2
+    -O3
+    -Os         Optimize for size
+    -Og         Optimize for debugging
+    -Ofast      Disregard strict standards compliance
+
+Linker
+    -c          Linker isn't run
+    -S          Linker isn't run
+    -E          Linker isn't run
+    -lx         Link with libx.a
+    -s          Strip symbols & relcation data
+    -pthread    Link with POSIX threads library
+    -static     Prevent linking with shared libraries
+    -shared     Produce a shared object
+    -u sym      Pretend sym is undefined to force module linking
+
+-----------------------------------------------------------------------------
+C escape sequences                                 *C_escapes*
+
+                        \a      Bell
+                        \b      Backspace
+                        \f      Form feed
+                        \n      Line feed
+                        \r      Carriage return
+                        \t      Horizontal tab
+                        \v      Vertical tab
+                        \'      Single quote
+                        \"      Double quote
+                        \\      Backslash
+                        \0      NULL character
+                        \7      Bell
+                        \ddd    Octal value
+                        \xddd   Hexadecimal value
+
+-----------------------------------------------------------------------------
+C Operator precedence                              *C_operator_precedence*
+
+        Operation           C Operator          Associativity
+
+        Array                   []                --> 
+        Function                                  -->  
+        Member                  ->                --> 
+        Member                  .                 --> 
+
+        Unary minus             -                 <-- 
+        Unary plus              +                 <-- 
+        Logical NOT             !                 <-- 
+        Bitwise complement      ~                 <-- 
+        Address of              &                 <-- 
+        Indirection             *                 <-- 
+        Sizeof                  sizeof            <-- 
+        Increment               ++                <-- 
+        Decrement               --                <-- 
+        Cast                     type             <--  
+
+        Multiplication          *                 --> 
+        Division                /                 --> 
+        Modulus                 %                 --> 
+
+        Addition                +                 --> 
+        Subtraction             -                 --> 
+
+        Shift right             >>                --> 
+        Shift left              <<                --> 
+
+        Greater than            >                 --> 
+        Greater or equal        >=                --> 
+        Less than               <                 --> 
+        Less or equal           <=                --> 
+
+        Equal                   ==                --> 
+        Not equal               !=                --> 
+
+        Bitwise AND             &                 --> 
+
+        Bitwise XOR             ^                 --> 
+
+        Bitwise OR              |                 --> 
+
+        Logical AND             &&                --> 
+
+        Logical OR              ||                --> 
+
+        Conditional             ?:                <-- 
+
+        Simple assignment       =                 <-- 
+        Addition assignment     +=                <-- 
+        Subtraction assignment  -=                <-- 
+        Multiplication assign   *=                <-- 
+        Division assignment     \=                <-- 
+        Modulus assignment      %=                <-- 
+        Left shift assignment   <<=               <-- 
+        Right shift assignment  >>=               <-- 
+        Bitwise XOR assignment  ^=                <-- 
+        Bitwise AND assignment  &=                <-- 
+        Bitwise OR assignment   |=                <-- 
+        Complement assignment   ~=                <-- 
+
+        Sequence operator       ,                 --> 
+
+
+        - all operations grouped together have the same precedence
+
+--------------------------------------------------------------------------
+void 
+abort(void)
+        - prototype in stdlib.h & process.h
+        - terminates a process & calls exit(3)
+
+--------------------------------------------------------------------------
+int 
+abs(int n)
+        - prototype in stdlib.h
+        - returns the absolute value of int n
+
+--------------------------------------------------------------------------
+int 
+access(const char *filename, int amode)
+        - prototype in io.h
+        - checks filename for existence & R/W access
+        - amode = 06 -- check for R/W permission
+                  04 -- check for R
+                  02 -- check for W
+                  01 -- execute (ignored)
+                  00 -- check if filename exists
+        - filename can be directory
+        - returns 0 if OK
+                 -1 on error
+                    errno = ENOENT if path or filename not found
+                    errno = EACCES if permission denied
+
+--------------------------------------------------------------------------
+double 
+acos(double x)
+        - prototype in math.h
+        - returns arc cosine of x
+        - values must be in range -1 to 1
+
+--------------------------------------------------------------------------
+char *
+asctime(const struct tm *tm)
+        - prototype in time.h
+        - converts time in struct tm to 26-character ASCII string
+        - returns a pointer to the ASCII string
+
+--------------------------------------------------------------------------
+double 
+asin(double x)
+        - prototype in math.h
+        - returns arc sine of x
+        - values must be in range -1 to 1
+
+--------------------------------------------------------------------------
+void 
+assert(int test)
+        - prototype in assert.h
+        - if test fails, prints error message & aborts program
+        - test can be a condition
+
+--------------------------------------------------------------------------
+double 
+atan(double x)
+        - prototype in math.h
+        - returns arc tangent of x
+
+--------------------------------------------------------------------------
+double 
+tan(double y, double x)
+        - prototype in math.h
+        - returns arc tangent of x*2
+        - used instead of atan when the resulting angle is near
+          pi/2 or -pi/2
+
+--------------------------------------------------------------------------
+int 
+atexit(void func)
+        - prototype in stdlib.h
+        - func is defined as void (*func)(void)
+        - calls func() before exiting to DOS
+        - up to 32 functions can be called (if 32 atexit calls registered)
+        - should be located in main & executed before anything else
+        - returns 0 if OK, else nonzero if no space to register function
+
+--------------------------------------------------------------------------
+double 
+atof(const char *s)
+        - prototype in math.h & stdlib.h
+        - converts ASCII string "s" to a double value
+        - common problems with this function include forgetting to include
+          the header file that contains the prototype.  In this case atof()
+          will incorrectly return an "int"
+
+--------------------------------------------------------------------------
+int 
+atoi(const char *s)
+        - prototype in stdlib.h
+        - converts ASCII string to integer value
+
+--------------------------------------------------------------------------
+long 
+atol(const char *s)
+        - prototype in stdlib.h
+        - converts ASCII string "s" to a long value
+        - common problems with this function include forgetting to include
+          the header file that contains the prototype.  In this case atol()
+          will incorrectly return an "int"
+
+--------------------------------------------------------------------------
+int brk(void *endds)
+        - prototype in alloc.h (malloc.h for MS C)
+        - dynamically changes the amount of space allocated to the calling
+          programs data segment.  Amount of allocated space increases as
+          the break value increases.
+        - returns 0 if OK
+                 -1 with errno set to ENOMEM
+
+--------------------------------------------------------------------------
+void *
+bsearch(void *key, void *base, int nelem, int width, int (*fcmp)())
+        - prototype in stdlib.h
+        - does binary search for items in a table which is
+          ALREADY sorted in ascending order
+        - base points to 0th element of table
+        - nelem contains number of entries in table
+        - width contains number of bytes in each entry
+        - key points to the search key
+        - fcmp() points to comparison routine, where key and elem are
+          passed to it as pointers.  Function fcmp() returns:
+                integer < 0 if search key < elem;
+                integer = 0 if equal;
+                returns > 0 if search key > elem
+        - returns 0 if no match found, else address of first
+          entry that matches
+
+--------------------------------------------------------------------------
+double 
+cabs(struct complex z)
+        - prototype in math.h
+        - returns absolute value of int n
+
+--------------------------------------------------------------------------
+void *
+calloc(unsigned count, unsigned sizeeach)
+        - prototype in stdlib.h & alloc.h (malloc.h for MS C)
+        - allocates main memory
+        - see malloc()
+
+--------------------------------------------------------------------------
+double 
+ceil(double x)
+        - prototype in math.h
+        - rounds up x to nearest integer
+
+--------------------------------------------------------------------------
+char *
+cgets(char *s)
+        - prototype in conio.h
+        - reads string from console
+        - CR/LF combination is replaced by \0
+        - before calling, s[0] should be the max length of string to input
+        - on return, s[1] contains the actual string length
+        - returns pointer to s[2], the actual data input
+
+--------------------------------------------------------------------------
+int 
+chdir(const char *path)
+        - prototype in dir.h
+        - changes current working directory to path.
+        - returns 0 if OK; else -1 with errno set to ENOENT
+
+--------------------------------------------------------------------------
+int 
+chmod(const char *filename, int permiss)
+        - prototype in io.h, also include stat.h
+        - changes access mode of file according to mask given by permiss,
+          where permiss is:
+                        S_IWRITE
+                        S_IREAD
+                        S_IWRITE | S_IREAD
+        - returns 0 if OK
+                 -1 with errno set to ENOENT or EACCES
+
+--------------------------------------------------------------------------
+unsigned int 
+_clear87(void)
+        - prototype in float.h
+        - clears 8087/80287 status word & other exceptions
+        - returns old status word
+        - see   _status87()   _control87()
+
+--------------------------------------------------------------------------
+void 
+clearerr(FILE *stream)
+        - prototype in stdio.h
+        - resets error indication
+        - see   ferror()
+
+--------------------------------------------------------------------------
+clock_t 
+clock(void)
+        - prototype in time.h
+        - returns elapsed processor time used by the calling process,
+          or -1L on error
+        - C startup code retrieves the clock count as preparation for a 
+          later call to clock()  (Turbo C++ and some versions of MS C)
+        - resolution is limited to 54ms for both MS C and Turbo C due
+          to the dependency on INT 8 clock tics
+        - CLK_TCK is shouldn't be used unless CLOCKS_PER_SEC isn't available
+          since the latter is defined by ANSI.
+        - MS C uses INT 21,2C to get the processor time with 1000 as the
+          value of CLK_TCK
+        - Turbo C uses INT 1A,2 to get the processor time with 18 as the
+          value of CLK_TCK
+        - Example usage:
+              clock_t start, finish, duration;
+              start = clock();
+              delay(2000);
+              finish = clock();
+              duration = finish - start;
+              printf("%ld - %ld = %ld tics\n", start, finish, duration);
+
+--------------------------------------------------------------------------
+int 
+close(int fh)
+        - prototype in io.h
+        - closes file fh where fh is file handle from _creat(), creat(),
+          creatnew(), creattemp(), dup(), dup2(), _open(), or
+          open()
+        - use fdopen() to change file handle to file stream
+        - does not write a Ctrl-Z to a text file on closing
+        - returns 0 if OK; else -1 & errno may be set of EBADF
+
+--------------------------------------------------------------------------
+double 
+cos(double x)
+        - prototype in math.h
+        - returns the cosine of angle x
+        - x must be in radians
+
+--------------------------------------------------------------------------
+double 
+cosh(double x)
+        - prototype in math.h
+        - returns the hyperbolic cosine of angle x
+        - x must be in radians
+
+--------------------------------------------------------------------------
+int 
+cprintf(char *format [, argument,...])
+        - prototype in conio.h
+        - sends formatted output to the console
+        - TC use either direct memory writes or BIOS calls depending on the
+          value of the external integer directvideo
+        - see PRINTF SPEC for format specifications
+
+--------------------------------------------------------------------------
+void 
+cputs(char *s)
+        - prototype in conio.h
+        - writes string s to console
+        - TC: uses either direct memory writes or BIOS calls depending
+          on the value of the extern directvideo
+
+--------------------------------------------------------------------------
+int 
+creat(const char *filename, int permis)
+        - prototype in io.h, also include stat.h
+        - creates new file (overwrites existing file) of filename
+          with access permission "permis" which is:
+                S_IWRITE
+                S_IREAD
+                S_IWRITE | S_IREAD
+          for permission to write, read or read/write.
+        - file is created set to _fmode (O_TEXT or O_BINARY)
+
+--------------------------------------------------------------------------
+int 
+cscanf(const char *format [,argument,...])
+        - prototype in conio.h
+        - performs formatted input from console
+        - see   SCANF  and  SCANF SPEC
+
+--------------------------------------------------------------------------
+char *
+ctime(const long *clock)
+        - prototype in time.h
+        - converts date and time to a string
+        - clock is a long integer (such as that returned by time())
+        - generates a 26-character string for date and time
+        - returns pointer to string
+
+--------------------------------------------------------------------------
+double 
+difftime(time_t time2, time_t time1)
+        - prototype in time.h
+        - returns (time2-time1) difference in seconds (double)
+
+--------------------------------------------------------------------------
+int 
+dup(int handle)
+        - prototype in io.h
+        - returns a new file handle that duplicates the old handle
+        - returns -1 on error
+
+--------------------------------------------------------------------------
+int 
+dup2(int oldhandle, int newhandle)
+        - prototype in io.h
+        - returns a new file handle that duplicates the old handle
+          equal to newhandle.  If newhandle exists, the corresponding
+          file is closed.
+        - returns -1 on error
+
+--------------------------------------------------------------------------
+char *
+ecvt(double value, int ndigit, int *decpt, int *sign)
+        - prototype in stdlib.h
+        - converts a floating pt number to a string of ndigit digits,
+          returning pointer to that string
+        - decpt is position of decimal point (negative value means
+          to left of returned digits) and sign is 0 if positive,
+          else negative
+
+--------------------------------------------------------------------------
+int 
+eof(int handle)
+        - prototype in io.h
+        - returns 1 if end of file for file associated with handle,
+                  0 if not end of file
+                 -1 if bad file number
+
+--------------------------------------------------------------------------
+exec Function Calls
+        - prototype in process.h
+        int execl(pathname,arg0,arg1,arg2,...,argN,NULL)
+        int execle(pathname,arg0,arg1,arg2,...,argN,NULL,envp)
+        int execlp(pathname,arg0,arg1,arg2,...,argN,NULL)
+        int execlpe(pathname,arg0,arg1,arg2,....,argN,NULL,envp)
+            char *pathname,*arg0,*arg1,*arg2,....,*argN,*envp[];
+
+        int execv(pathname,arg,NULL)
+        int execve(pathname,arg,NULL,envp)
+        int execvp(pathname,arg,NULL)
+        int execvpe(pathname,arg,NULL,envp)
+            char *pathname,*arg[],*envp[];
+        - loads and runs child processes
+        - pathname search based on MS-DOS search algorithm
+          * if no extension or period - search for exact file name -
+            if not found, add .exe and search again
+          * if extension given, search only for exact file name
+          * if period given, search for file name with no extension
+        - arg0 can be the same as the pathname
+        - at least one argument must be passed
+        - combined argument list cannot exceed 128 bytes
+        - execl..: arg0, arg1,...,argN passed as SEPARATE arguments
+        - execv..: arg[0], arg[1],...,arg[N] passed as argument ARRAY
+        - execlp, execlpe, execvp, execvpe: search for child in PATH
+        - returns no value if OK,
+          returns -1, with  errno set to:
+                E2BIG  (too many args)
+                EACCES (permission denied)
+                EMFILE (too many open files)
+                ENOENT (path or file not found)
+                ENOEXEC (exec format error)
+                ENOMEM (not enough memory).
+        - if successful, there is no return to the caller; the
+          caller is killed off
+
+--------------------------------------------------------------------------
+void 
+exit(int completioncode)
+        - prototype in process.h and stdlib.h
+        - terminates program, closes all files, buffered output is written,
+          and any registered exit functions (via atexit()) are called
+
+--------------------------------------------------------------------------
+void 
+_exit(int completioncode)
+        - prototype in process.h
+        - terminates program, BUT doesn't close files or write the buffered
+          output and NO registered exit functions (via atexit()) are called
+
+--------------------------------------------------------------------------
+double 
+exp(double x)
+        - prototype in math.h
+        - returns y = e**x or HUGE_VAL on error
+
+--------------------------------------------------------------------------
+double 
+fabs(double x)
+        - prototype in math.h
+        - returns absolute value of x
+
+--------------------------------------------------------------------------
+char *
+fcvt(double value, int ndigit, int *decpt, int *sign)
+        - prototype in stdlib.h
+        - converts a floating pt number to a string of ndigit digits,
+          returning pointer to that string
+        - correct digit is rounded for Fortran-F format output of the
+          number of digits equal to ndigit
+        - decpt is position of decimal point (negative value means to left
+          of returned digits) and sign is 0 if positive, else negative
+
+--------------------------------------------------------------------------
+int 
+fclose(FILE *fp)
+        - prototype in stdio.h
+        - closes a file stream (see fdopen() to convert handle to stream)
+        - generally flushes buffers, too
+        - return code should be checked.  Attempts to delete an open file
+          will damage the file system.
+        - returns 0 on success or EOF on error
+
+--------------------------------------------------------------------------
+int 
+fcloseall(void)
+        - prototype in stdio.h
+        - closes all file streams except stdin & stdout
+        - returns 0 on success or EOF on error
+
+--------------------------------------------------------------------------
+FILE *
+fdopen(int handle, char *type)
+        - prototype in dos.h
+        - associates a file STREAM with a file HANDLE
+        - handle is returned by creat(), dup(), dup2() or open()
+        - type must match mode of the handle
+        - returns file stream or NULL on error
+        - see fopen()
+
+--------------------------------------------------------------------------
+int 
+feof(FILE *stream)
+        - prototype in stdio.h
+        - detects end of file on a file stream
+        - returns zero if NOT eof, else nonzero
+
+--------------------------------------------------------------------------
+int 
+ferror(FILE *stream)
+        - prototype in stdio.h
+        - tests stream for read/write error, return nonzero if error
+        - error remains set until clearerr() or rewind() is called
+
+--------------------------------------------------------------------------
+int 
+fflush(FILE *fp)
+        - prototype in stdio.h
+        - writes contents of output buffers associated with fp to stream
+          and clears input buffer contents; fp is NOT closed
+        - returns 0 on success or EOF on error
+
+--------------------------------------------------------------------------
+int 
+fgetc(FILE *fp)
+        - prototype in stdio.h
+        - function (not a macro) which gets character from stream
+        - returns char (converted to an int) or EOF
+        - see getc()
+
+--------------------------------------------------------------------------
+int 
+fgetchar(void)
+        - prototype in stdio.h
+        - gets character from stream
+        - same as fgetc(stdin)
+        - returns char (converted to an int) or EOF
+        - see getc()
+
+--------------------------------------------------------------------------
+char *
+fgets(char *s, int size, FILE *fp)
+        - prototype in stdio.h
+        - gets a string from a stream, reading until size - 1 characters
+          have been read or a newline is detected
+        - newline character is retained
+        - returns s argument if OK, else NULL on eof or error
+
+--------------------------------------------------------------------------
+long 
+filelength(int handle)
+        - prototype in io.h
+        - gets file size in bytes for file associated with handle
+        - value returned includes ^Z in ASCII files;  value is the same as
+          displayed in the DOS DIR command
+        - returns -1L on error
+
+--------------------------------------------------------------------------
+int 
+fileno(FILE *stream)
+        - prototype in stdio.h
+        - gets file handle for the given stream
+        - error return undefined
+
+--------------------------------------------------------------------------
+double 
+floor(double x)
+        - prototype in math.h
+        - returns largest integer <= x
+
+--------------------------------------------------------------------------
+int 
+flushall(void)
+        - prototype in stdio.h
+        - same as fflush() except ALL open file streams are done
+        - returns integer indicating number of open file streams
+
+--------------------------------------------------------------------------
+double 
+fmod(double x, double y)
+        - prototype in math.h
+        - calculates x modulo y, the remainder of x/y,
+          returning the remainder
+
+    fmod(x, y) = signum(x)*(x - floor(x/y)*y)
+
+    Examples:
+        fmod(7.3, 1.75)  =  1*(7.3 - floor(7.3/1.75)*1.75) =  0.3
+        fmod(-7.3, 1.75) = -1*(7.3 - floor(7.3/1.75)*1.75) = -0.3
+
+--------------------------------------------------------------------------
+FILE *
+fopen(const char *filename, const char *type)
+        - prototype in stdio.h
+        - type is a combination of the following:
+                Mode       Description
+                "r"     read text/binary
+                "w"     write text/binary
+                "a"     append text/binary
+                "+"     allow update access
+                "t"     text file
+                "b"     binary file
+
+                Read    Write   Append
+                "rt"    "wt"    "at"    (text)
+                "rb"    "wb"    "ab"    (binary)
+                "r+"    "w+"    "a+"    (update)
+                "r+t"   "w+t"   "a+t"   (update text)
+                "r+b"   "w+b"   "a+b"   (update binary)
+        read   - read only (unless "r+")
+        write  - create
+        append - seek to end of file or create file
+        - text mode input, will have CRs discarded
+        - using any of the stdio functions results in a default allocation
+          of 512 bytes for the I/O buffer and the inclusion of the standard
+          memory allocation functions
+        - returns stream or NULL on error
+
+--------------------------------------------------------------------------
+unsigned 
+FP_OFF(void far *fptr)
+        - prototype in dos.h
+        - gets offset of far pointer fptr
+        - returns unsigned integer value
+        - not available in earlier versions of MS C; use the following:
+              #define FP_OFF(fptr)  ((unsigned)(fptr))
+        - see   FP_SEG()
+
+--------------------------------------------------------------------------
+unsigned 
+FP_SEG(void far *fptr)
+        - prototype in dos.h
+        - gets segment of far pointer fptr
+        - returns unsigned integer value
+        - not available in some versions of MS C; use the following:
+              #define FP_SEG(fptr) ((unsigned)((unsigned long)(fptr) >> 16))
+        - see FP_OFF()
+
+--------------------------------------------------------------------------
+void 
+_fpreset(void)
+        - prototype in float.h
+        - resets floating point math package, usually used with signal(),
+          system(), exec...(), spawn...()
+        - should be called before using 8087/80287 after using one of the
+          above functions
+        - define identically for Turbo C and MS C
+
+--------------------------------------------------------------------------
+int 
+fprintf(FILE *fp, const char *format [, arg1, arg2, ...])
+        - prototype in stdio.h
+        - returns number of bytes it attempted to write regardless of
+          success.  To check for a successful fprintf call on a buffered
+          stream, use fflush which returns accurate error information.
+        - using printf or any of the stdio functions results in a default
+          allocation of 512 bytes for the I/O buffer and the inclusion of
+          the standard memory allocation functions
+        - see printf() and PRINTF SPEC
+
+--------------------------------------------------------------------------
+int 
+fputc(int c, FILE *fp)
+        - prototype in stdio.h
+        - puts char c to stream fp
+        - using fputc or any of the stdio functions results in a default
+          allocation of 512 bytes for the I/O buffer and the inclusion of
+          the standard memory allocation functions
+        - returns c or EOF
+
+--------------------------------------------------------------------------
+int 
+fputs(const char *s, FILE *fp)
+        - prototype in stdio.h
+        - writes string "s" to stream
+        - does not add a newline or null character to the stream
+        - using fputs or any of the stdio functions results in a default
+          allocation of 512 bytes for the I/O buffer and the inclusion of
+          the standard memory allocation functions
+        - see puts()
+
+--------------------------------------------------------------------------
+size_t 
+fread(void *buf, size_t block_size, size_t block_count, FILE *fp)
+        - prototype in stdio.h
+        - reads  (block_count*block_size)  bytes from file stream "fp"
+        - returns the number of blocks actually read
+        - To get better feedback from this function, set the
+          block_size to 1 and the block_count to number of bytes.
+          Then the function returns the number of bytes read.
+        - using fread or any of the stdio functions results in a default
+          allocation of 512 bytes for the I/O buffer and the inclusion of
+          the standard memory allocation functions
+        - returns 0 (or short count) on eof or error
+        - see fopen(), setvbuf()
+
+--------------------------------------------------------------------------
+void 
+free(void *pseg)
+        - prototype in stdlib.h, alloc.h (malloc.h for MS C)
+        - frees allocated block located at pseg
+        - MS C ignores a NULL parameter (see _ffree())
+
+--------------------------------------------------------------------------
+FILE *
+freopen(const char *fname, const char *type, FILE *fp)
+        - prototype in stdio.h
+        - substitutes named file in place of open fp and closes original fp
+        - useful for changing file attached to stdin, stdout, or stderr
+        - returns fp on success or NULL on error
+        - see fopen()
+
+--------------------------------------------------------------------------
+double 
+frexp(double value, int eptr)
+        - prototype in math.h
+        - calculates mantissa x (a double < 1) and n (integer) such
+          that value = x * 2**n, storing n in word that eptr points
+
+--------------------------------------------------------------------------
+int 
+fscanf(FILE *fp, const char *format, arg1, arg2, ...)
+        - prototype in stdio.h
+        - gets formatted input from a stream fp
+        - see scanf() and SCANF SPECS
+
+--------------------------------------------------------------------------
+int 
+fseek(FILE *fp, long offset, int mode)
+        - prototype in stdio.h
+        - sets file pointer associated with fp to position which is offset
+          bytes beyond file location given by mode
+        - mode is 0 (beginning of file or SEEK_SET)
+                  1 (current position or SEEK_CUR)
+                  2 (end of file or SEEK_END
+        - discards any character pushed back by ungetc()
+        - fseek() clears eof indicator but not file error indicator
+        - returns 0 if pointer moved OK, nonzero if file not opened or
+          invalid seek for device.  DOS does not report an error if an
+          attempt to seek past EOF is made
+        - see   ftell()
+
+--------------------------------------------------------------------------
+int 
+fstat(int handle, struct stat *buff)
+        - prototype in stat.h
+        - see stat()
+
+--------------------------------------------------------------------------
+long 
+ftell(FILE *fp)
+        - prototype in stdio.h
+        - returns current file position in bytes from beginning of file
+          or -1L on error
+        - see fseek()
+
+--------------------------------------------------------------------------
+size_t 
+fwrite(const void *buf, size_t size, size_t count, FILE *fp)
+        - prototype in stdio.h
+        - writes  (count * size)  bytes to file stream "fp"
+        - swapping parameters "size" and "count" can often provide more
+          exact feedback (exactly how many bytes were written)
+        - returns number of data blocks actually written or a short count
+          on error
+        - see fopen(), fread(), setvbuf()
+
+--------------------------------------------------------------------------
+char *
+gcvt(double value, int ndigit, char *buf)
+        - prototype in stdlib.h
+        - converts a floating point number to a string of ndigit digits,
+          storing string into buf and returning pointer to that string
+        - outputs in Fortran-F format if possible, else in Fortran-E format
+
+--------------------------------------------------------------------------
+int 
+getc(FILE *fp)
+        - prototype in stdio.h
+        - macro which returns next character in file stream "fp" or EOF
+          on end of file or error
+
+--------------------------------------------------------------------------
+int 
+getch(void)
+        - prototype in conio.h
+        - returns next character from console without echoing
+
+--------------------------------------------------------------------------
+int 
+getchar(void)
+        - prototype in stdio.h
+        - returns next character in file stream stdin or EOF on end of
+          file or error
+        - implemented as a macro
+
+--------------------------------------------------------------------------
+int 
+getche(void)
+        - prototype in conio.h
+        - function which returns next character from console WITH echoing
+
+
+--------------------------------------------------------------------------
+char *
+getcwd(char *buf, int n)
+        - prototype in dir.h
+        - gets full path name of current working directory up to n bytes,
+          placed into buf
+        - returns buf pointer, else NULL
+
+--------------------------------------------------------------------------
+char *
+getenv(const char *envvar)
+        - prototype in stdlib.h
+        - gets string from environment
+        - MSDOS environment consists of strings of form envvar=varvalue,...
+        - returns varvalue or 0 if envvar not found in environment
+
+--------------------------------------------------------------------------
+char *
+gets(char *s)
+        - prototype in stdio.h
+        - reads string from stdin until newline character is read
+        - newline character is replaced by \0
+        - returns string or NULL on end-of-file or error
+
+--------------------------------------------------------------------------
+int 
+getw(FILE *fp)
+        - prototype in stdio.h
+        - gets integer from file stream fp
+        - returns EOF (-1) on eof or error
+        - use feof() or ferror() to verify -1 is an integer data word, and
+          not an error return
+
+--------------------------------------------------------------------------
+struct tm *
+gmtime(const time_t *clock)
+        - prototype in time.h
+        - clock is a long integer (such as that returned by time())
+        - returns GMT time in struct tm (see time.h) correcting for time
+          zone and any daylight savings time
+        - global variable timezone is difference in seconds between GMT
+          and local standard time
+
+--------------------------------------------------------------------------
+int 
+gsignal(int sig)
+        - prototype in signal.h
+        - ssignal() and gsignal() implement a software-signaling facility
+          where software signals are integers 1-15
+        - gsignal() raises the signal given by sig and executes the action
+          routine
+        - gsignal() returns value by action or SIG_IGN or SIG_DFL
+        - UNIX based
+        - see ssignal()
+
+--------------------------------------------------------------------------
+double 
+hypot(double x, double y)
+        - prototype in math.h
+        - returns z where z**2 = x**2 + y**2, or HUGE_VAL on error
+
+--------------------------------------------------------------------------
+int 
+int86(int intr_num, union REGS *inregs, union REGS *outregs)
+        - prototype in dos.h
+        - executes 8086 software interrupt specified by intr_num
+        - copies register values from inregs into the registers
+        - if CF is set, an error has occurred
+        - preserves SP register so calls to INT 25 and INT 26 via this
+          function don't require a stack adjustment
+        - unique to DOS
+        - see int86x(), intdos(), intdosx(), intr(), REGS
+
+--------------------------------------------------------------------------
+int 
+int86x(int intr_num, union REGS *inregs, 
+       union REGS *outregs, struct SREGS *segregs)
+        - prototype in dos.h
+        - Executes 8086 software interrupt specified by intr_num
+        - Copies register values from inregs into the registers
+        - also copies segregs->x.ds and segregs->y.es into DS/ES
+        - if CF is set, an error has occurred
+        - preserves SP register so calls to INT 25 and INT 26 via this
+          function don't require a stack adjustment
+        - unique to DOS
+        - see int86(), intdos(), intdosx(), intr(), REGS
+
+--------------------------------------------------------------------------
+int 
+intdos(union REGS *inregs, union REGS *outregs)
+        - prototype in dos.h
+        - Executes 8086 software interrupt INT 21
+        - Copies register values from inregs into the registers
+        - if CF is set, an error has occurred
+        - unique to DOS
+        - see intdosx(), int86(), int86x(), intr(), REGS
+
+--------------------------------------------------------------------------
+int 
+intdosx(union REGS *inregs, union REGS *outregs, struct SREGS *segregs)
+        - prototype in dos.h
+        - executes 8086 software interrupt INT 21
+        - copies register values from inregs into the registers
+        - copies segregs->x.ds and segregs->y.es into DS/ES
+        - if CF is set, an error has occurred
+        - unique to DOS
+        - see intdos(), int86(), int86x(), intr(), REGS
+
+--------------------------------------------------------------------------
+Character Test Macros
+        - prototypes in ctype.h
+        int isalnum(int c)    - nonzero if letter or digit
+        int isalpha(int c)    - nonzero if letter
+        int isascii(int c)    - nonzero if in range 0-127
+        int iscntrl(int c)    - nonzero if 0x7F, or 0x00-0x1F
+        int isdigit(int c)    - nonzero if digit
+        int isgraph(int c)    - nonzero if printable 0x21-0x7E excl space
+        int islower(int c)    - nonzero if lowercase
+        int isprint(int c)    - nonzero if printable 0x20-0x7E
+        int ispunct(int c)    - nonzero if punct char (iscntrl | isspace)
+        int isspace(int c)    - nonzero if space,tab, CR, LF, VT or FF
+        int isupper(int c)    - nonzero if uppercase
+        int isxdigit(int c)   - nonzero if hexadecimal digit
+            
+--------------------------------------------------------------------------
+int 
+isatty(int handle)
+        - prototype in io.h
+        - if handle is associated with a character device like tty,
+          console, printer, or serial port returns a non-zero integer
+          otherwise returns zero
+
+--------------------------------------------------------------------------
+char *
+itoa(int value, char *string, int radix)
+        - prototype in stdlib.h
+        - converts value to string where radix specifies base (2-36)
+
+--------------------------------------------------------------------------
+int 
+kbhit(void)
+        - prototype in conio.h
+        - returns nonzero if keystroke available else 0
+
+--------------------------------------------------------------------------
+long 
+labs(long n)
+        - prototype in stdlib.h
+        - returns absolute long value of n
+
+--------------------------------------------------------------------------
+double 
+ldexp(double value, int exp)
+        - prototype in math.h
+        - returns value x 2**exp
+
+--------------------------------------------------------------------------
+void *
+lfind(void *key,void *base,int *nelem,int width,int (*fcmp)())
+        - prototype in stdlib.h
+        - does linear search for items in an unsorted table;
+        - base points to 0th element of table
+        - nelem points to int containing number of entries in table
+        - width contains number of bytes in each entry
+        - key points to the search key
+        - fcmp points to user-written comparison routine, where key and
+          elem are passed to it as pointers.  fcmp returns:
+               integer < 0 if search key < elem
+               integer = 0 if equal
+               integer > 0 if search key > elem
+        - returns 0 if no match found, else address of first matching entry
+
+--------------------------------------------------------------------------
+struct tm *
+localtime(const time_t *clock)
+        - prototype in time.h
+        - clock is a long int (such as that returned by time())
+        - returns time in struct tm (see time.h) correcting for time zone
+          and any daylight savings time
+        - global variable timezone is difference in seconds between GMT
+          and local standard time
+
+--------------------------------------------------------------------------
+double 
+log(double x)
+        - prototype in math.h
+        - returns natural logarithm of x, or -HUGE_VAL on error
+
+--------------------------------------------------------------------------
+double 
+log10(double x)
+        - prototype in math.h
+        - returns base 10 logarithm of x, or -HUGE_VAL on error
+
+--------------------------------------------------------------------------
+void 
+longjmp(jmp_buf env, int id)
+        - prototype in setjmp.h
+        - call to longjmp() with env restores task state (set by setjmp()),
+          returning value id
+        - cannot return 0; if id == 0, returns 1
+--------------------------------------------------------------------------
+void *
+lsearch(void *key,void *base,int *nelem,int width,int (*fcmp)())
+        - prototype in stdlib.h
+        - does linear search in unsorted table for key
+        - base points to 0th element of table
+        - nelem integer pointer to number of entries in table
+        - width contains number of bytes in each entry
+        - key points to the search key
+        - fcmp points to comparison routine, where key and elem are passed
+          to it as pointers.  fcmp returns:
+                integer < 0 if search key < elem
+                integer = 0 if equal;
+                integer > 0 if search key > elem
+        - returns 0 if no match found, else address of first matching entry
+
+--------------------------------------------------------------------------
+long 
+lseek(int handle, long offset, int mode)
+        - prototype in io.h
+        - moves file position of "handle"  to  "offset"  relative to "mode"
+               mode = 0 - SEEK_SET beginning of file
+               mode = 1 - SEEK_CUR current position
+               mode = 2 - SEEK_END or end of file
+        - returns -1L on error
+
+        - see tell()
+
+--------------------------------------------------------------------------
+char *
+ltoa(long value, char *string, int radix)
+        - prototype in stdlib.h
+        - converts value to string where radix specifies
+          base (2-36) for conversion
+
+--------------------------------------------------------------------------
+void *
+malloc(unsigned size)
+        - prototype in stdlib.h, alloc.h (malloc.h for MS C)
+        - allocates memory of length size in bytes
+        - returns pointer if successful, else NULL
+        - MS C will return a zero length block (allocates header only)
+
+--------------------------------------------------------------------------
+double 
+_matherr(_mexcep why, char *fun, double *arg1p, double *arg2p, double retval)
+        - prototype in math.h
+        - used with matherr(), calling matherr() and processes the return
+          value from matherr()
+        - floating point error handling routine
+
+--------------------------------------------------------------------------
+int matherr(struct exception *e)
+        - prototype in math.h
+        - provided as customizable math error-handling routine
+
+--------------------------------------------------------------------------
+Memory Manipulation Functions
+        void  *memccpy(void *dest, const void *src, int c, size_t n)
+        void  *memchr(const void *s, int c, size_t n)
+        int    memcmp(const void *s1, const void *s2, size_t n)
+        void  *memcpy(void *dest, const void *src, size_t n)
+        int    memicmp(const void *s1, const void *s2, size_t n)
+        void  *memmove(void *dest, const void *src, size_t n)
+        void  *memset(void *s, int c, size_t n)
+        void   movedata(unsigned srcseg, unsigned srcoff,
+                        unsigned dstseg, unsigned dstoff, size_t n)
+        - prototypes for the preceding functions are in mem.h, string.h
+        - the following are prototyped in mem.h only (TC):
+        void  movmem(void *src, void *dest, unsigned length)  (mem.h only)
+        void  setmem(void *dest, unsigned length, char value) (mem.h only)
+
+--------------------------------------------------------------------------
+void *
+memccpy(void *dest, const void *src, int ch, size_t n)
+        - prototype in string.h, mem.h
+        - copies from src to dest until ch is copied or n bytes are copied
+          returning a ptr to byte in dest immediately following ch or NULL
+
+--------------------------------------------------------------------------
+void *
+memchr(const void *s, int ch, size_t n)
+        - prototype in string.h, mem.h
+        - searches first n bytes in s for ch, returning pointer to first
+          occurrence or NULL if not found
+
+--------------------------------------------------------------------------
+int 
+memcmp(const void *s1, const void *s2, size_t n)
+        - prototype in string.h, mem.h
+        - compares two strings s1 & s2 for a length of n bytes,
+          returning a value:
+                < 0   if s1 < s2
+                = 0   if s1 = s2
+                > 0   if s1 > s2
+
+--------------------------------------------------------------------------
+void *
+memcpy(void *dest, const void *src, size_t n)
+        - prototype in string.h, mem.h
+        - copies n bytes from src to dest; returns dest
+        - if overlap occurs, result is undefined (ANSI)
+
+--------------------------------------------------------------------------
+int 
+memicmp(const void *s1, const void *s2, size_t n)
+        - prototype in string.h, mem.h
+        - compares first n bytes of s1 & s2, case insensitive
+
+--------------------------------------------------------------------------
+void *
+memmove(void *dest, const void *src, size_t n)
+        - prototype in string.h, mem.h
+        - copies n bytes from src to dest; returns dest
+        - allows copying overlapped strings (ANSI)
+
+--------------------------------------------------------------------------
+void *
+memset(void *s, int ch, size_t n)
+        - prototype in string.h, mem.h
+        - memset sets all bytes of s to byte ch, with size of s = n;
+          returns value of s
+
+--------------------------------------------------------------------------
+void far *
+MK_FP(unsigned segment, unsigned offset)
+        - prototype in dos.h
+        - returns a far pointer from offset and segment
+        - not available in some Microsoft C versions; use the following:
+            #define MK_FP(seg,off) \
+             ((void far *) (((unsigned long)(seg) << 16) | (unsigned)(off))
+        - see FP_OFF() and FP_SEG()
+
+--------------------------------------------------------------------------
+int 
+mkdir(const char *pathname)
+        - prototype in dir.h
+        - takes pathname & creates new directory with that name
+        - returns 0 if successful, else -1
+
+--------------------------------------------------------------------------
+char *
+mktemp(char *template)
+        - prototype in dir.h
+        - replaces template by unique file name & returns address of
+          template if successful
+        - template should be string with six trailing Xs
+
+--------------------------------------------------------------------------
+double 
+modf(double value, double *iptr)
+        - prototype in math.h
+        - splits value in integer and fraction part, storing integer part
+          in area pointed to by iptr, returning the fractional part
+
+--------------------------------------------------------------------------
+void 
+movedata(unsigned segsrc, unsigned offsrc, unsigned segdest, 
+         unsigned offdest, size_t n)
+        - prototype in mem.h, string.h
+        - copies n bytes from segsrc:offsrc to segdest:offdest
+
+--------------------------------------------------------------------------
+void 
+movmem(void *src, void *dest, unsigned len)
+        - prototype in mem.h
+        - copies len bytes from src to dest
+
+--------------------------------------------------------------------------
+int open(const char *path, int access [, unsigned permis])
+        - prototype in io.h, also include stat.h & fcntl.h
+        - open attribute flags are defined in fcntl.h
+        - opens file "path" with access and optionally permis
+        - access is a combination of the following ("permis" follows):
+          Read/Write Access Flags (mutually exclusive):
+           O_RDONLY     open read only
+           O_WRONLY     open write only
+           O_RDWR       open read/write
+          Other Access Mode Flags:
+           O_APPEND     file pointer is placed at EOF before each write
+           O_CREAT      if file doesn't exist, create with "permis" attributes
+           O_TRUNC      if exists, truncate length to zero, but leave file
+                        attributes unchanged
+           O_BINARY     binary mode
+           O_TEXT       text mode
+           O_EXCL       used with O_CREAT, error occurs if file already exists
+           O_NDELAY     UNIX only
+          Permission Attributes (if creating):
+           S_IWRITE     write permission
+           S_IREAD      read permission
+           S_IREAD | S_IWRITE read/write permission
+        - if O_BINARY nor O_TEXT is given, file is opened in translation
+          mode (O_TEXT) given by global variable _fmode
+        - returns nonnegative number as file HANDLE, or -1 on error
+        - see sopen()
+
+--------------------------------------------------------------------------
+void 
+perror(const char *string)
+        - prototype in stdio.h
+        - prints error message to stderr, describing most recent call
+          found in system call from current program
+
+--------------------------------------------------------------------------
+double 
+poly(double x, int n, double coeff[])
+        - prototype in math.h
+        - generates polynominal in x of degree n, with coefficients coeff,
+          returning the value of this polynominal evaluated for x
+
+--------------------------------------------------------------------------
+double 
+pow(double x, double y)
+        - prototype in math.h
+        - returns p where p = x ** y or +/- HUGE_VAL on error
+
+--------------------------------------------------------------------------
+double 
+pow10(double x)
+        - prototype in math.h
+        - returns y where y = 10 ** x or HUGE_VAL on overflow error
+
+--------------------------------------------------------------------------
+int 
+printf(const char *format [, arg1, arg2, ...])
+        - prototype in stdio.h
+        - printf formatted string
+        - see PRINTF SPEC for format specifiers
+
+--------------------------------------------------------------------------
+Specifications for printf()
+        %[-][+][space][#][width][.prec][size]type
+
+        Field                   Description
+        -----                   -----------
+        -       left justify
+        +       prefix positive numbers with '+', overrides blank
+        space   prefix positive numbers with space
+        #       prefix octal or hex with 0, (see manual for Turbo C)
+        width   width of output string in total characters, a 0 before
+                width causes padding with zeros on left.
+        .prec   decimal precision in characters
+        size    F       far pointer
+                N       near pointer
+                h       specifies short
+                l       specifies long
+                L       long double
+        type    c       single character
+                d       signed decimal integer
+                e       signed exponential, 'e' is output in string
+                E       signed exponential, 'E' is output in string
+                f       signed floating point in form of sddd.ddd
+                g       formats e or f (depends on size), e is output
+                G       formats e or f (depends on size), E is output
+                i       signed decimal integer
+                n       integer pointer
+                o       unsigned octal integer
+                p       void pointer;  MS C always uses far pointers, in
+                        Turbo C, size is dependent on memory model
+                s       string pointer
+                u       unsigned decimal integer
+                x       unsigned integer in lower case hex format
+                X       unsigned integer in upper case hex format
+
+        - if width or precision are specified as an asterisk '*', an int
+          from the argument list is used as the width or precision. If the
+          width is too small the field is expanded.  Example:
+                int len = 5;
+                char *string = "This is a string"
+                printf("%*.*s", len, len, "string");
+          is functionally similar to a specification string of "%5.5s"
+          which prints a max of 5 characters of the string.
+
+--------------------------------------------------------------------------
+int 
+putc(int c, FILE *fp)
+        - prototype in stdio.h
+        - puts char "c" to stream "fp"
+        - returns c on success, EOF on error
+
+--------------------------------------------------------------------------
+int 
+putch(int ch)
+        - prototype in conio.h
+        - puts char ch to console with BEL, BS, TAB, LF and BEL characters
+          are converted similar to DOS I/O
+        - TC uses direct video or BIOS depending on value of external
+          variable directvideo
+        - returns nothing
+
+--------------------------------------------------------------------------
+int 
+putchar(char c)
+        - prototype in stdio.h
+        - same as putc(c,stdout)
+
+--------------------------------------------------------------------------
+int 
+putenv(const char *envvar)
+        - prototype in stdlib.h
+        - adds string to environment
+        - DOS environment consists of strings of form envvar=varvalue,...
+        - returns 0 if OK
+                  1 on failure
+
+--------------------------------------------------------------------------
+int 
+puts(const char *string)
+        - prototype in stdio.h
+        - copies string to stdout and appends a newline
+
+--------------------------------------------------------------------------
+int 
+putw(int n, FILE *fp)
+        - prototype in stdio.h
+        - puts integer word n to stream fp
+        - returns n or EOF on error.  Use ferror() to verify
+          if EOF is returned, since -1 is a legitimate integer.
+
+--------------------------------------------------------------------------
+void qsort(void *array, size_t n_elem, size_t elem_size,
+            int (*fcmp)(const void *, const void *))
+        - prototype in stdlib.h
+        - sorts the given array using the ACM quick sort routine
+        - fcmp() is the same as for bsearch()
+
+--------------------------------------------------------------------------
+int rand(void)
+void srand(unsigned seed)
+        - prototype in stdlib.h
+        - rand() returns pseudorandom numbers
+        - re-initialize generator with srand(1) or set to new starting
+          point with seed set other than to 1
+
+--------------------------------------------------------------------------
+int 
+read(int handle, char *buf, int size)
+        - prototype in io.h
+        - reads "size" bytes from file "handle" into "buf"
+        - removes CR's & reports EOF on a Ctrl-Z for text mode file
+        - returns number of bytes read, 0 on EOF, or -1 on error
+
+--------------------------------------------------------------------------
+void *
+realloc(void *pseg, unsigned size)
+        - prototype in stdlib.h & alloc.h (malloc.h for MS C)
+        - see malloc()
+
+--------------------------------------------------------------------------
+int 
+remove(char *filename)
+        - prototype in stdio.h
+        - implemented as a macro of function unlink()
+        - attempts to delete an open file may damage the file system
+
+--------------------------------------------------------------------------
+int 
+rename(const char *oldf, const char *newf)
+        - prototype in stdio.h
+        - rename file from oldf to newf
+        - attempts to rename an open file may damage the file system
+        - returns 0 if OK, else -1 on error
+
+--------------------------------------------------------------------------
+void 
+rewind(FILE *fp)
+        - prototype in stdio.h
+        - equivalent to fseek(fp,0L,SEEK_SET), except EOF and
+          error indicators are cleared
+        - returns 0 if pointer moved OK, else nonzero
+
+--------------------------------------------------------------------------
+int 
+rmdir(const char *path)
+        - prototype in dir.h
+        - takes path & deletes directory with that name
+        - returns 0 if successful, else -1
+
+--------------------------------------------------------------------------
+void *
+sbrk(int incr)
+        - prototype in alloc.h (malloc.h for MS C)
+        - dynamically changes the amount of space allocated to the calling
+          programs data segment.  Amount of allocated space is increased by
+          amount incr (can be negative).
+        - returns 0 if OK
+                 -1 & errno is set to ENOMEM
+
+--------------------------------------------------------------------------
+int 
+scanf(const char *format, arg1, arg2, ...)
+        - prototype in stdio.h
+        - accepts input from stdin and converts to format specs
+        - see SCANF SPEC
+
+--------------------------------------------------------------------------
+Specifications for scanf()
+        %[*][width][size]type
+
+        Field                     Description
+        -----                     -----------
+        *       read next field but suppress assignment
+        width   maximum number of characters to read
+        size    F       far pointer
+                N       near pointer
+                h       specifies short
+                l       specifies long
+        type    %       prints % character
+                c       character data
+                d       signed decimal integer
+                D       signed long int
+                e,E     signed exponential
+                f       signed floating point in form of sddd.ddd
+                g,G     used for e and f formats
+                i       signed decimal, octal or hex integer
+                I       signed decimal, octal, or hex long integer
+                n       integer pointer
+                o       unsigned octal integer
+                O       unsigned octal long integer
+                p       void pointer;  MS C always uses far pointers, in
+                        Turbo C, size is dependent on memory model
+                s       string pointer
+                u       unsigned decimal integer
+                U       unsigned decimal long integer
+                x       unsigned hexadecimal integer
+                X       unsigned hexadecimal long integer
+        - The unpredictability of scanf() in the DOS environment precludes
+          its use in a user friendly user interface.
+
+--------------------------------------------------------------------------
+void 
+segread(struct SREGS *segregs)
+        - prototype in dos.h
+        - places current values of segment registers (SEGREGS) into segtbl
+        - available in Turbo C and MS C
+        - unique to DOS
+        - see REGS
+
+--------------------------------------------------------------------------
+void 
+setbuf(FILE *stream, char *buf)
+        - prototype in stdio.h
+        - causes "buf" to be used for I/O buffering instead of the
+          automatically allocated buffer, and are used after given
+          stream is opened
+        - if "buf" is NULL, I/O is unbuffered
+        - no I/O to the file should occur after opening file until
+          buffering is set
+        - see setvbuf()
+
+--------------------------------------------------------------------------
+int 
+setjmp(jmp_buf env)
+        - prototype in setjmp.h
+        - captures callers task state in env and returns 0
+        - see longjmp()
+
+--------------------------------------------------------------------------
+struct xycoord far 
+_setlogorg(short x, short y)
+        - prototype in graph.h
+        - moves the logical origin (0,0) to the physical point (x,y)
+        - returns previous logical origin in physical coordinates to:
+            struct xycoord
+            {
+                short xcoord;
+                short ycoord;
+            };
+
+--------------------------------------------------------------------------
+void 
+setmem(void *addr, int len, char value)
+        - prototype in mem.h
+        - sets len bytes in addr to value
+
+--------------------------------------------------------------------------
+int 
+setmode(int handle, int mode)
+        - prototype in io.h
+        - sets mode of file associated with handle to binary (O_BINARY) or
+          text (O_TEXT) but not both
+        - returns 0 if successful, else -1 on error
+
+--------------------------------------------------------------------------
+int 
+setvbuf(FILE *stream, char *buf, int type, size_t size)
+        - prototype in stdio.h
+        - causes buf to be used for I/O buffering instead of the auto-
+          matically allocated buffer; used after given stream is opened
+          and before output
+        - in setvbuf, if buf is NULL, a buffer is allocated via malloc()
+        - no I/O to the file should occur until after buffering is set
+        - see setbuf()
+
+--------------------------------------------------------------------------
+double 
+sin(double x)
+        - prototype in math.h
+        - returns sine of x
+        - x must be in radians
+
+--------------------------------------------------------------------------
+double 
+sinh(double x)
+        - prototype in math.h
+        - returns hyperbolic sine of x
+        - x must be in radians
+
+--------------------------------------------------------------------------
+Function spawn(), etc...
+        - prototype in process.h
+        int spawnl(int mode, char *path, char *arg0,
+                        char *arg1, ..., NULL)
+        int spawnle(int mode, char *path, char *arg0,
+                        char *arg1, ..., NULL, char *envp[])
+        int spawnlp(int mode, char *path, char *arg0,
+                        char *arg1, ..., NULL)
+        int spawnlpe(int mode, char *path, char *arg0,
+                        char *arg1, ..., NULL, char *envp[])
+        int spawnv(int mode, char *path, char *argv)
+        int spawnve(int mode, char *path, char *argv, char *envp[])
+        int spawnvp(int mode, char *path, char *argv)
+        int spawnvpe(int mode, char *path, char *argv, char *envp[])
+        - creates & runs child processes
+        - mode is P_WAIT which puts parent process "on hold" until child
+          completes execution; P_NOWAIT which continues to run parent
+          while child runs (not supported yet); or P_OVERLAY which overlays
+          child in memory location formerly occupied by parent (same as
+          exec... call)
+        - use P_WAIT to perform a DOS shell
+        - returns 0 for SUCCESS and non-zero for failure based on the
+          errorlevel set by the application
+        - see exec
+
+--------------------------------------------------------------------------
+int 
+sprintf(char *s, const char *format [, arg1, arg2, ...])
+        - prototype in stdio.h
+        - prints formatted data into string s
+        - see PRINTF SPEC for format specifiers
+
+--------------------------------------------------------------------------
+double 
+sqrt(double x)
+        - prototype in math.h
+        - returns square root of x, or 0 on error
+
+--------------------------------------------------------------------------
+void 
+srand(unsigned seed)
+        - prototype in stdlib.h
+        - re-initializes the random number generator with seed
+        - see rand()
+
+--------------------------------------------------------------------------
+int 
+sscanf(const char *s, const char *format, arg1, arg2, ...)
+        - prototype in stdio.h
+        - see scanf() and SCANF SPECS
+
+--------------------------------------------------------------------------
+int 
+(*ssignal(int sig, int (*action)))) (void)
+        - prototype in signal.h
+        - ssignal() and gsignal() implement a software-signaling facility
+          where software signals are integers 1-15
+        - ssignal() establishes an action routine for servicing a signal
+          where sig is associated with the action routine
+        - ssignal() returns action previously established for ssignal()
+          or SIG_DFL
+        - UNIX based
+
+--------------------------------------------------------------------------
+int 
+stat(char *pathname, struct stat *buff)
+
+int 
+fstat(char *handle, struct stat *buff)
+        - prototype in stat.h
+        - stat() and fstat() store information about a given open file
+          (or directory) in the stat structure (in stat.h)
+        - stat() gets information about the open file or directory, while
+          fstat() gets info about the open file associated with handle
+        - returns 0 if successful, else -1 on error
+
+--------------------------------------------------------------------------
+unsigned int 
+_status87(void)
+        - prototype in float.h
+        - returns floating-point status word & other conditions detected
+          by 8087/80287 exception handler
+        - see _clear87(), _control87(), float.h also
+
+--------------------------------------------------------------------------
+int 
+stime(time_t *tp)
+        - prototype in time.h
+        - sets system time & date, where tp to value of time in seconds
+          since 00:00:00 GMT Jan 1, 1970
+
+--------------------------------------------------------------------------
+String Manipulation Functions
+        - prototype in string.h (a few also exist in stdlib.h)
+      Conversion:
+        char  *strlwr(char *s)
+        char  *strrev(char *s)
+        double strtod(const char *s, char **endptr)
+        long  strtol(const char *s, char **endptr, int radix)
+        unsigned long strtoul(const char *s, char **endptr, int radix)
+        char  *strupr(char *s)
+        char  *strdup(const char *s)
+      Search:
+        char  *strchr(char *s, int c)
+        size_t strcspn(const char *s1, const char *s2)
+        char  *strpbrk(const char *s1, const char *s2)
+        char  *strrchr(const char *s, int c)
+        size_t strspn(const char *s1, const char *s2)
+        char  *strstr(const char *s1, const char *s2)
+        char  *strtok(char *s1, const char *s2)
+      Comparison:
+        int strcmp(const char *s1, const char *s2)
+        int strcmpi(const char *s1, const char *s2)
+        int stricmp(const char *s1, const char *s2)
+        int strncmp(const char *s1, const char *s2, size_t maxlen)
+        int strncmpi(const char *s1, const char *s2, size_t maxlen)
+        int strnicmp(const char *s1, const char *s2, size_t maxlen)
+      Copy:
+        char *stpcpy(char *dest, const char *src)
+        char *strcpy(char *dest, const char *src)
+        char *strcat(char *dest, const char *src)
+        char *strncat(char *dest, const char *src, size_t maxlen)
+        char *strncpy(char *dest, const char *src, size_t maxlen)
+      Miscellaneous:
+        size_t strlen(const char *s)
+        char  *strnset(char *s, int ch, size_t n)
+        char  *strset(char *s, int ch)
+        char  *strerror(int errnum)
+        char  *_strerror(const char *s)
+
+--------------------------------------------------------------------------
+char *
+stpcpy(char *dest, const char *src)
+        - prototype in string.h
+        - copies src into dest
+        - returns dest+strlen(src)
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strcat(char *dest, const char *src)
+        - prototype in string.h
+        - appends src to dest
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strchr(const char *str, int c)
+        - prototype in string.h
+        - scans str for first occurrence of c
+        - returns pointer to c in str, or NULL if not found
+        - see str...
+
+--------------------------------------------------------------------------
+int 
+strcmp(const char *str1, const char *str2)
+        - prototype in string.h
+        - compares str1 to str2
+        - returns < 0 if str1 < str2, = 0 if str1 = str2, or > 0
+          if str1 > str2, using a signed comparison
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strcpy(char *dest, const char *src)
+        - prototype in string.h
+        - copies src into dest
+        - returns dest
+        - see str...
+
+--------------------------------------------------------------------------
+size_t 
+strcspn(const char *str1, const char *str2)
+        - prototype in string.h
+        - returns length of initial segment of str1 that consists
+          entirely of characters NOT from str2
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strdup(const char *str)
+        - prototype in string.h
+        - duplicates str, getting space with a call to malloc()
+        - returns pointer to duplicated string, or NULL if space could not
+          be allocated
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strerror(char *str)
+        - prototype in string.h
+        - str should contain your customized error message to which a system
+          error message will be appended
+        - allows you to generate customized error messages, returning a
+          pointer to a null-terminated string containing an error message
+        - if str is NULL, the return value contains the most recently
+          generated system error message; this string is null-terminated
+        - if str is not NULL, the return value contains, a colon, a space,
+          the most recently generated system error message, and a newline;
+          with length of str being 94 characters or less
+        - this function generates the error string but does NOT print it
+        - for accurate error-handling, strerror should be called as soon
+          as a library routine generates an error return
+        - see str...
+
+--------------------------------------------------------------------------
+int 
+strcmpi(const char *str1, const char *str2)
+
+int 
+stricmp(const char *str1, const char *str2)
+        - prototype in string.h
+        - unsigned comparision of str1 to str2, case insensitive
+        - stricmp() is implemented as a macro using strcmpi()
+        - returns < 0 if str1 < str2
+                  = 0 if str1 = str2
+                  > 0 if str1 > str2
+        - see str...
+
+--------------------------------------------------------------------------
+size_t 
+strlen(const char *str)
+        - prototype in string.h
+        - returns number of characters in str, not counting the null
+          terminating character
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strlwr(char *str)
+        - prototype in string.h
+        - converts str to all lower case
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strncat(char *dest, const char *src, size_t maxlen)
+        - prototype in string.h
+        - appends up to maxlen characters of src to dest and then
+          appends a null character
+        - see str...
+
+--------------------------------------------------------------------------
+int 
+strncmp(const char *str1, const char *str2, size_t maxlen)
+        - prototype in string.h
+        - compares str1 to str2 up to maxlen characters using a
+          signed comparison
+        - returns < 0 if str1 < str2
+                  = 0 if str1 = str2
+                  > 0 if str1 > str2
+
+--------------------------------------------------------------------------
+char *
+strncpy(char *dest, const char *src, size_t maxlen)
+        - prototype in string.h
+        - copies exactly maxlen characters from src to dest, truncating
+          or null-padding dest
+        - dest might NOT be null-terminated if length of src >= maxlen
+        - see str...
+
+--------------------------------------------------------------------------
+int 
+strnicmp(const char *str1, const char *str2, size_t maxlen)
+        - prototype in string.h
+        - compares str1 to str2 up to maxlen chars ignoring case
+          using a signed comparison
+        - returns < 0 if str1 < str2
+                  = 0 if str1 = str2
+                  > 0 if str1 > str2
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strnset(char *str, int ch, size_t n)
+        - prototype in string.h
+        - sets up to first n bytes of str to ch
+        - if n > strlen(str) then strlen(str) replaces n
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strpbrk(const char *str1, const char *str2)
+        - prototype in string.h
+        - scans str1 for first occurrence of any character appearing in str2
+        - returns pointer to first occurrence; NULL if not found
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strrchr(const char *str, int c)
+        - prototype in string.h
+        - scans a string in reverse direction for specified character c
+        - strrchr finds the LAST occurrence of c in str
+        - returns pointer to LAST occurrence, or NULL if not found
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strrev(char *str)
+        - prototype in string.h
+        - reverses all characters in str, except null terminator
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strset(char *str, int ch)
+        - prototype in string.h
+        - sets all characters in str to ch
+        - see str...
+
+--------------------------------------------------------------------------
+size_t 
+strspn(const char *str1, const char *str2)
+        - prototype in string.h
+        - returns length of initial segment of str1 that consists
+          entirely of characters from str2
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strstr(const char *anchor, const char *testpattern)
+        - prototype in string.h
+        - returns a pointer within anchor where testpattern is found,
+          or NULL if testpattern is not found in anchor
+        - may be incompatible with Microsoft C
+        - see str...
+
+--------------------------------------------------------------------------
+double 
+strtod(const char *str, char **endptr)
+        - prototype in string.h
+        - converts string str to a double value
+        - stops reading at tfirst character that cannot be interpreted
+          as part of a double value, returning in *endptr
+        - str must have format:
+              [ws][sn][ddd][.][ddd][fmt[sn]ddd]
+          where [ws]  = optional whitespace
+                [sn]  = optional sign (+-)
+                [ddd] = optional digits
+                [fmt] = option e or E
+                [.]   = optional decimal point
+        - see str...
+
+--------------------------------------------------------------------------
+char *
+strtok(char *str1, const char *str2)
+        - prototype in string.h
+        - parses str1 for tokens and separators, where separators are
+          defined in str2
+        - first call returns a pointer to the first character of the first
+          token in str1 and writes a null character into str1 immediately
+          following the returned token;   subsequent calls with NULL for
+          the first argument will work through the string str1 in this way
+          until no tokens remain
+        - when tokens are exhausted, returns NULL
+        - see str...
+
+--------------------------------------------------------------------------
+long 
+strtol(const char *str, char **endptr, int base)
+
+unsigned long 
+strtoul(const char *s, char **endptr, int radix)
+        - prototype in string.h
+        - converts string str to long (or unsigned long) value
+        - stops reading at first character that cannot be interpreted
+          as part of a long value, returning in *endptr
+        - str must have format:
+              [ws][sn][0][x][ddd]
+          where [ws]  = optional whitespace
+                [sn]  = optional sign (+-)
+                [0]   = optional zero
+                [x]   = optional x or X
+                [ddd] = optional digits
+         - base is between 2 and 36; if 0, first few characters of str
+           determines base to be used (oct,hex or dec) any other value
+           of base is illegal
+         - see str...
+
+--------------------------------------------------------------------------
+char *
+strupr(char *str)
+        - prototype in string.h
+        - converts to all uppercase
+        - see str...
+
+--------------------------------------------------------------------------
+void 
+swab(char *src, char *dest, int nbytes)
+        - prototype in stdlib.h
+        - copies nbytes bytes from src into dest, with adjacent even and
+          odd-byte positions being swapped
+        - nbytes should therefore be an even number
+        - a standard way of performing this is to use the XCHG instruction
+
+--------------------------------------------------------------------------
+int 
+system(const char *command)
+        - prototype in stdlib.h
+        - invokes MS-DOS COMMAND.COM to execute "command", returning exit
+          status of COMMAND.COM;  the COMSPEC environment variable is
+          automatically searched if necessary
+        - a CR/LF pair in the command string will result in an error
+        - see exec, spawn
+
+--------------------------------------------------------------------------
+double 
+tan(double x)
+        - prototype in math.h
+        - returns tangent of x
+        - x must be in radians
+
+--------------------------------------------------------------------------
+double 
+tanh(double x)
+        - prototype in math.h
+        - returns hyperbolic tangent of x
+        - x must be in radians
+
+--------------------------------------------------------------------------
+long 
+tell(int handle)
+        - prototype in io.h
+        - returns offset within file corresponding to handle
+        - returns -1L on error
+        - see lseek()
+
+--------------------------------------------------------------------------
+time_t 
+time(time_t *tloc)
+        - prototype in time.h
+        - gives current time in seconds elapsed since 00:00:00 GMT,
+          January 1, 1970, and stores it into tloc
+
+--------------------------------------------------------------------------
+int 
+toascii(int c)
+        - prototype in ctype.h
+        - clears all but lower 7 bits in c, converting to ASCII
+
+--------------------------------------------------------------------------
+int 
+_tolower(int c)
+        - prototype in ctype.h
+        - converts c to lowercase if c is UPPER case
+        - use tolower() preferentially
+
+--------------------------------------------------------------------------
+int 
+tolower(int c)
+        - prototype in ctype.h
+        - converts c to LOWER case only if c is UPPER case
+
+--------------------------------------------------------------------------
+int 
+_toupper(int c)
+        - prototype in ctype.h
+        - converts c to UPPER case only if c is  LOWER case
+        - use toupper() preferentially
+
+--------------------------------------------------------------------------
+int 
+toupper(int c)
+        - prototype in ctype.h
+        - converts c to UPPER case only if c is  LOWER case
+
+--------------------------------------------------------------------------
+void 
+tzset(void)
+        - prototype in time.h
+        - included for UNIX compatibility but does nothing in DOS
+
+--------------------------------------------------------------------------
+char *
+ultoa(unsigned long value, char *string, int radix)
+        - prototype in stdlib.h
+        - converts value to string where radix specifies base
+          (2-36) for conversion
+
+--------------------------------------------------------------------------
+int 
+ungetc(int c, FILE *fp)
+        - prototype in stdio.h
+        - pushes character "c" back into file stream "fp"
+
+--------------------------------------------------------------------------
+void 
+ungetch(int c)
+        - prototype in conio.h
+        - similar to ungetc() except pushes character back to keyboard buffer
+
+--------------------------------------------------------------------------
+int 
+unlink(const char *filename)
+        - prototype in dos.h or io.h
+        - returns 0 if successful, else -1
+        - attempts to delete an open file may damage the file system
+
+--------------------------------------------------------------------------
+int 
+vfprintf(FILE *stream, const char *format, va_list param)
+        - prototype in stdio.h
+        - sends formatted output to a stream
+
+--------------------------------------------------------------------------
+int 
+vfscanf(FILE *stream, const char *format, va_list argp)
+        - prototype in stdio.h
+        - like fscanf(), except arguments accepted from va_arg array from
+          va_list parm
+
+--------------------------------------------------------------------------
+int 
+vprintf(const char *format, va_list param)
+        - prototype in stdio.h
+        - sends formatted output to stdout
+
+--------------------------------------------------------------------------
+int 
+vscanf(const char *format, va_list argp)
+        - prototype in stdio.h
+        - like scanf(), except arguments accepted from va_arg array from
+          va_list parm
+
+--------------------------------------------------------------------------
+int 
+vsprintf(char *string, const char *format, va_list param)
+        - prototype in stdio.h
+        - sends formatted output to a string
+
+--------------------------------------------------------------------------
+int 
+vsscanf(const char *string, const char *format, va_list argp)
+        - prototype in stdio.h
+        - like sscanf(), except arguments accepted from va_list parm
+
+--------------------------------------------------------------------------
+int 
+write(int handle, char *buf, int count)
+        - prototype in io.h
+        - writes "count" bytes from "buf" to file or device at "handle"
+        - converts LF to CR-LF for text output
+        - returns a count of bytes written (excluding any CRs
+          generated for a text file), or -1 on error
+
+--------------------------------------------------------------------------
+Example of variable arguments in C
+    Use stdarg.h
+        void myprintf(char *format, ...)
+        {
+           va_list argptr;
+           va_start (argptr, format);
+           vsprintf (text, format, argptr);
+           va_end (argptr);
+           write (1, text, strlen (text));
+        }
+
+--------------------------------------------------------------------------
+*C_Functions_by_Type*
+
+Diagnostics (assert.h)
+    assert
+
+Character handling (ctype.h)
+    isalnum       isdigit       isprint       isupper       toupper
+    isalpha       isgraph       ispunct       isxdigit
+    iscntrl       islower       isspace       tolower
+
+Standard I/O (stdio.h)
+    clearerr      fprint        fwrite        remove        tmpnam
+    fclose        fputc         getc          rename        ungetc
+    feof          fputs         getchar       rewind        vfprintf
+    ferror        fread         gets          scanf         vprintf
+    fflush        freopen       perror        setbuf        vsprintf
+    fgetc         fscanf        printf        setvbuf
+    fgetpos       fseek         putc          sprintf
+    fgets         fsetpos       putchar       sscanf
+    fopen         ftell         puts          tmpfile
+
+String and character handling functions (string.h)
+    memchr        strcat        strcspn       strncpy       strtok
+    memcmp        strchr        strerror      strpbrk       strxfrm
+    memcpy        strcmp        strlen        strrchr
+    memmove       strcoll       strncat       strspn
+    memset        strcpy        strncmp       strstr
+
+Math functions (math.h)
+    acos       ceil       fabs       ldexp      pow        tan
+    asin       cos        floor      log        sin        tanh
+    atan       cosh       fmod       log10      sinh
+    atan2      exp        frexp      modf       sqrt
+
+Time and date functions (time.h)
+    asctime        ctime          gmtime         mktime         time
+    clock          difftime       localtime      strftime
+
+General utilities (stdlib.h)
+    abort         bsearch       labs          qsort         strtoul
+    abs           calloc        ldiv          rand          system
+    atexit        div           malloc        realloc       wcstombs
+    atof          exit          mblen         srand         wctomb
+    atoi          free          mbstowcs      strtod
+    atol          getenv        mbtowc        strtol
+
+Nonlocal jumps (setjmp.h)
+    longjump
+    setjmp
+
+Signal handling (signal.h)
+    raise
+    signal
+
+Variable function arguments (stdarg.h)
+    va_arg
+    va_end
+    va_start
+
+-----------------------------------------------------------------------------
+*C_iostreams*
+ 
+Notes on using iostreams in C++:
+
+To read from a file, use fstream.h:
+
+    ifstream istr(filename, ios::in);
+    unsigned int x;
+    istr.read(&x, sizeof(x));
+
+To write to a file:
+
+    ofstream ostr(filename, ios::out);
+    unsigned int x = 0x12234;
+    istr.write(&x, sizeof(x));
+
+Here's another chunk of code that shows file access (from "Teach Yourself
+Borland C++ Builder in 14 Days", pg 125:
+
+    #include <condefs.h>
+    #include <fstream.h>
+    #include <conio.h>
+    #pragman hdrstop
+
+    int main(int argc, char **argv)
+    {
+        char buff[80];
+        ifstream infile;
+        infile.open("readfile.cpp");
+        if (! infile) {
+            return 0;
+        }
+        while (! infile.eof()) {
+            infile.getline(buff, sizeof(buff));
+            // getline() will read to next newline
+            cout << buff << endl;
+        }
+        infile.close();
+        cout << endl << "Press any key to continue..";
+        getch();
+        return 0;
+    }
+
+Other examples
+
+    std::bitset<10> flags(7);
+    std::cout << flags;  // outputs 0000000111
+
+    std::complex<float> c(3.1, 7.4);
+    std::cout << c;      // outputs (3.1, 7.4)
+
+fstream Library
+---------------
+
+    FILE *ifd  = fopen("file", "r")     Open for reading
+    FILE *iofs = fopen("iofile", "r+")  Open for reading and writing
+    
+    ifstream ifs(ifd)       Construct an input stream connected to open stream
+    ofstream ofs("ofile", ios::out)     Open stream for writing
+    fstream fs              Construct an input/output stream without
+                            opening a file
+    fs.attach(ofs)          Attach to open stream
+    fs.close()              Close the attached file
+    fs.open("other", ios::out)          Open a file on the fs stream
+    fs.is_open()            Returns whether the file is open
+
+    fstream Mode Bits
+    -----------------
+        ios::app        Append
+        ios::ate        Seek to end
+        ios::in         Open for reading
+        ios::nocreate   Fail if file doesn't exist
+        ios::noreplace  Faile if file already exists
+        ios::out        Open for writing
+        ios::trunc      Discard old contents of file
+
+        Combinations:
+            in                  Reads (file must exist)          cmode = "r" 
+            out                 Empties & writes (creates)       cmode = "w"
+            out | trunc         Same as previous
+            out | app           Appends (creates if needed)      cmode = "a"
+            in | out            R/W, at start, file must exist   cmode = "r+"
+            int | out | trunc   Empties, R/W, creates if needed  cmode = "w+"
+
+strstream Library
+-----------------
+    char istring[100]   Array for reading
+    char ostring[100]   Array for writing
+    istrstream is(istring)      Create new stream for reading; get characters
+                                from istring
+    ostream os          Create new stream for writing
+    strstream ios       Create new stream for reading and writing
+
+Instream formatting
+-------------------
+    (Include <iomanip> for manipulators like setprecision())
+    cout << dec         Set output format to decimal
+    cin >> hex          Set input format to hex
+    cerr << oct         Set error output to octal
+    cin >> ws           Skip whitespace
+    cout << endl        Insert newline and flush
+    cout << flush       Flush output stream
+    cout << setiosflags(flags)      Set output to flags
+    cout << resetiosflags(flags)    Reset output to flags
+    cout << setw(w)     Set output width to w
+    cout << setprecision(n)         Set output to precision n
+    cout << setfill("*")            Set output to fill with "*"
+    cout << setbase(b)  Set output to base b
+    cout << boolalpha     Forces textual representation of booleans
+    cout << noboolalpha   Forces numerical representation of booleans
+
+
+iostream Format Flags
+---------------------
+    setf(flags)     Sets flags as additional format flags and returns the
+                    previous state of all flags
+    setf(flags, mask)   Sets flags as the new format flags of the group
+                        identified by mask and returns the previous state
+                    previous state of all flags
+    unset(flags)    Clears flags
+    flags()         Returns all set format flags
+    copyfmt(str)    Copies all format definitions from stream str
+
+(all prefaced by ios::)
+    dec             Convert to/from decimal (default)
+    fixed           Fixed point for floating point output
+    hex             Convert to/from hex
+    internal        Insert fill characters between prefix (if any) and value
+    left            Add fill character after value
+    oct             Convert to/from octal
+    right           Add fill characters before value
+    scientific      Use scientific notation for floating point output
+    showbase        Insert 0 before octal, 0x before hex
+    showpos         Insert + before positive decimals
+    showpoint       Insert decimal point and trailing zeroes
+    skipws          Skip whitespace on input
+    stdio           Flush output after each character
+    unitbuf         Flush output after each insertion
+    uppercase       Use uppercase for hex and scientific notation
+
+Error status
+    str == stream
+
+    str.bad()       True if unrecoverable error on stream
+    str.clear()     Clear error status of stream
+    str.clear(str1.rdstate())   Set error status of str to same as str1
+    str.eof()       True if at EOF
+    str.fail()      True if last input failed; stream is still usable
+    str.good()      True if no errors on stream
+    str.rdstate()   Get current error status of str
+    while(str>>x)   Perform statement until error or EOF on str
+    do str>>x while(str)   Same as previous
+
+Examples
+--------
+
+    Mask             Flag       Meaning
+    ---------------  ------     ----------------------------
+    adjustfield      left       Left ajusts the value
+                     right      Right ajusts the value
+                     internal   Left adjusts sign, right adjusts value
+                     None       Right adjusts value (the default)
+
+    In following, the underscore was the fill character
+
+    Adjustment    width()    -42      0.12     "Q"     'Q'
+    --------------------------------------------------------
+    left            6        -42___   0.12__   Q_____  Q_____
+    right           6        ___-42   __0.12   _____Q  _____Q
+    internal        6        -___42   __0.12   _____Q  _____Q
+
+
+                    precision()         421.0           0.0123456789
+    ----------------------------------------------------------------
+    Normal              2               4.2e+02         0.012
+                        6               421             0.0123457
+    With showpoint      2               4.2e+02         0.012
+                        6               421.000         0.0123457
+    fixed               2               421.00          0.01
+                        6               421.000000      0.012346
+    scientific          2               4.21e+02        1.23e-02
+                        6               4.210000e+02    1.234568e-02
+
+The following program opens the file charset.out and writes the current
+character set (all characters from 32 to 255) into this file.  From
+"The C++ Standard Library" by Josuttis, pg 629.
+
+#include <string>     // For strings
+#include <iostream>   // For I/O
+#include <fstream>    // For file I/O
+#include <iomanip>    // For setw()
+#include <cstdlib>    // For exit()
+using namespace std;
+
+void WriteCharsetToFile(const string &filename)
+{
+    ofstream file(filename.c_str());   // Open output file
+    if (! file) {
+        cerr << "Can't open output file '" << filename << "'" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    for (int ix = 32; ix < 256; ix++) {
+        file << "Value: " << setw(3) << ix << "   "
+             << "char:  " << static_cast<char>(ix) << endl;
+    }
+    // File closed automatically when locals go out of scope
+}
+
+void SendFileToConsole(const string &filename)
+{
+    ifstream file(filename.c_str());  // Open input file
+    if (! file) {
+        cerr << "Can't open input file '" << filename << "'" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy file contents to cout
+    char c;
+    while (file.get(c)) {
+        cout.put(c);
+    }
+    // File closed automatically when locals go out of scope
+}
+
+int main(void)
+{
+    string filename = "charset.out";
+
+    writeCharsetToFile(filename);
+    SendFileToConsole(filename);
+}
+
+--------------------------------------------------------------------------
+Borland 5.5 compiler options                   *C_Borland_options*
+----------------------------
+
+@<filename>	Read compiler options from the response file filename
++<filename>	Use alternate compiler configuration file filename
+-3	Generate 80386 protected-mode compatible instructions (Default)
+-4	Generate 80386/80486 protected-mode compatible instructions
+-5	Generate Pentium instructions
+-6	Generate Pentium Pro instructions
+
+-A	Use ANSI keywords and extensions
+-AK	Use Kernighan and Ritchie keywords and extensions
+-AT	Use Borland C++ keywords and extensions (also -A-)
+-AU	Use UNIX V keywords and extensions
+-a	Default (-a4) data alignment; -a- is byte alignment (-a1)
+-an	Align data on "n" boundaries, where 1=byte, 2=word (2 bytes), 4=double word (4 bytes), 8=quad word (8 bytes), 16=paragraph (16 bytes) (Default: -a4)
+
+-B	Compile to .ASM (-S), then assemble to .OBJ
+-b	Make enums always integer-sized (Default: -b makes enums integer size)
+-b-	Makes enums byte-sized when possible
+-C	Turn nested comments on (Default: -C- turn nested comments off)
+-CP	Enable code paging (for MBCS)
+-c	Compile to .OBJ, no link
+-D<name>	Define "name" to the null string
+-D<name=string>	Define "name" to "string"
+
+-d	Merge duplicate strings
+-d-	Does not merge duplicate strings (Default)
+-E<filename>	Specify assembler
+-e<filename>	Specify executable file name
+-f	Emulate floating point
+-f-	No floating point
+-ff	Fast floating point
+-fp	Correct Pentium FDIV flaw
+-gb	Stop batch compilation after first file with warnings (Default = OFF)
+-gn	Warnings: stop after n messages (Default = 255)
+
+-G, -G-	Optimize for size/speed; use -O1 and -O2 instead
+-H	Generate and use precompiled headers
+-H-	Does not generate or use precompiled headers (Default)
+-H=<filename>	Set the name of the file for precompiled headers
+-H"xxx"	Stop precompiling after header file xxx
+-Hc	Cache precompiled header (Must be used with -H or -H"xxx"
+-He	Enable precompiled headers with external type files (Default)
+
+-Hh=xxx	Stop precompiling after header file xxx
+-Hs	Enable smart cached precompiled headers (Default)
+-Hu	Use but do not generate precompiled headers
+-I<path>	Include file search path
+-in	Make significant identifier length to be n (Default = 250)
+-Ja	Expand all template members (including unused members)
+-jb	Stop batch compilation after first file with errors (Default = OFF)
+
+-Jgd	Generate definitions for all template instances and merge duplicates (Default)
+-Jgx	Generate external references for all template instances
+-jn	Errors: stop after n messages (Default = 25)
+-K	Default character type unsigned (Default: -K- default character type signed)
+-k	Turn on standard stack frame (Default)
+-L<path>	Library file search path
+-lx	Pass option x to linker
+
+-l-x	Disables option x for the linker
+-M	Create a Map file
+-n<path>	Sets output directory to path
+-O	Optimize jumps
+-O1	Generate smallest possible code
+-O2	Generate fastest possible code
+-Oc	Eliminate duplicate expressions within basic blocks and functions
+-Od	Disable all optimizations
+-Oi	Expand common intrinsic functions
+
+-OS	Pentium instruction scheduling
+-O-S	Disables instruction scheduling
+-Og	Optimize for speed; use -O2 instead
+-Os	Optimize for speed; use -O2 instead
+-Ot	Optimize for size; use -O1 instead
+-Ov	Enable loop induction variable and strength reduction
+-Ox	Optimize for speed; use -O2 instead
+-o<filename>	Compile .OBJ to filename
+
+-P	Perform C++ compile regardless of source extension
+-P-	Perform C++ compile depending on source file extension
+-P<ext>	Perform C++ compile, set output to extension to .ext
+-p	Use Pascal calling convention
+-p-	Use C calling convention
+-pc	Use C calling convention (Default: -pc, -p-)
+-pm	Functions without an explicit calling convention to use __msfastcall.
+
+-pr	Use fastcall calling convention for passing parameters in registers
+-ps	Use stdcall calling convention
+-Q	Extended compiler error information(Default = OFF)
+-q	Suppress compiler identification banner (Default = OFF)
+-R	Include browser information in generated .OBJ files
+-RT	Enable runtime type information (Default)
+-r	Use register variables (Default)
+-r-	Disable the use of register variables
+
+-rd	Use register variables only when register keyword is employed
+-S	Compile to assembler
+-T-	Removes all assembler options
+-Tx	Specify assembler option x
+-tW	Target is a Windows application (same as -W)
+-tWC	Target is a console application (same as -WC)
+-tWD	Generate a .DLL executable (same as -WD)
+-tWM	Generate a 32-bit multi-threaded target (same as -WM)
+
+-tWR	Target uses the dynamic RTL (same as -WR)
+-tWV	Target uses the VCL
+-U<name>	Undefine any previous definitions of name
+-u	Generate underscores (Default)
+-V	Use smart C++ virtual tables (Default)
+-V0	External C++ virtual tables
+-V1	Public C++ virtual tables
+-VC	Calling convention mangling compatibility
+-Vd	for loop variable scoping
+
+-Ve	Zero-length empty base classes
+-VM	Microsoft Visual C++ compatibility
+-VI-	Use old Borland search algorithm to locate header files (look first in current working directory)
+-Vl	Use old-style Borland C++ structure layout (for compatibility with older versions of BCC32.EXE)
+-VF	MFC compatibility
+-Vmd	Use the smallest possible representation for member pointers 
+-Vmm	Support multiple inheritance for member pointers
+
+-Vmp	Honor declared precision of member pointers
+-Vms	Support single inheritance for member pointers
+-Vmv	Place no restrictions on where member pointers can point (Default)
+-Vx	Zero-length empty class member functions
+-v	Turn on source debugging
+-vG	All Codeguard options on
+-vGc	Inline pointer access (Codeguard)
+
+-vGd	Global and stack data accesses (Codeguard)
+-vGt	this pointer on member function entry (Codeguard)
+-vi	Control expansion of inline functions
+-W	Target is a Windows application (same as -tW)
+-WC	Target is a console application (same as -tWC)
+-WD	Generate a .DLL executable (same as -tWD)
+-WM	Generate a 32-bit multi-threaded target (same as -tWM)
+
+-WR	Target uses the dynamic RTL (same as -tWR)
+-WU	Generates Unicode application
+-w	Display warnings on
+-w!	Returns non-zero from compiler on warnings
+-wxxx	Enable xxx warning message
+-w-xxx	Disable xxx warning message
+-wmsg	User-defined warnings
+-X	Disable compiler autodependency output (Default: -X- use compiler autodependency output)
+
+-x	Enable exception handling (Default)
+-xd	Enable destructor cleanup (Default)
+-xdg	Use global destructor count (for compatibility with older versions of BCC32.EXE)
+-xf	Enable fast exception prologs
+-xp	Enable exception location information
+-xs	Enable slow exception epilogues
+-y	Debug line numbers on
+
+-----------------------------------------------------------------------------
+Endianness                                               *Endianness*
+----------
+
+On a 32 bit Windows box, here's how a 32 bit integer is written:
+
+The code
+
+    #include <stdio.h>
+    int main(int argc, char **argv)
+    {
+        FILE *ofp;
+        int x = 0xdeadbeef;
+
+        ofp = fopen("x", "wb");
+        fwrite(&x, 4, 1, ofp);
+        fclose(ofp);
+        return 0;
+    }
+
+will produce a file that hexdumps to:
+
+    00000000  ef be ad de
+
+-----------------------------------------------------------------------------
+Borland 5.5 compiler warnings                            *C_Borland_warnings*
+-----------------------------
+
+Use 
+    #pragma warn -xxx      Turns off a warning
+    #pragma warn +xxx      Turns on a warning
+    #pragma warn .xxx      Toggles the warning state
+
+
+Most commonly needed warning switches:      -w-rvl -w-par -w-aus
+    -w-rvl	-w-8070	Function should return a value
+    -w-par	-w-8057	Parameter 'parameter' is never used
+    -w-aus	-w-8004	'identifier' is assigned a value that is never used
+
+Option	Number (Alias)	Warning Message
+
+-w-ali	-w-8086	Incorrect use of #pragma alias "aliasName" = "substitutename" 
+                (Default ON)
+-wamb	-w8000	Ambiguous operators need parentheses (Default OFF)
+-wamp	-w8001	Superfluous & with function (Default OFF)
+-w-asc	-w-8002	Restarting compile using assembly (Default ON)
+-wasm	-w8003	Unknown assembler instruction (Default OFF)
+-w-aus	-w-8004	'identifier' is assigned a value that is never used (Default 
+                ON)
+-wbbf	-w8005	Bit fields must be signed or unsigned int (Default OFF)
+-w-bei	-w-8006	Initializing 'identifier' with 'identifier' (Default ON)
+-w-big	-w-8007	Hexadecimal value contains more than three digits (Default ON)
+-w-ccc	-w-8008	Condition is always true OR Condition is always false 
+                (Default ON)
+-wcln	-w8009	Constant is long (Default OFF)
+-w-cod	-w-8093	Incorrect use of #pragma codeseg (Default ON)
+
+-w-com	-w-8010	Continuation character \ found in // comment (Default ON)
+-w-cpt	-w-8011	Nonportable pointer comparison (Default ON)
+-w-csu	-w-8012	Comparing signed and unsigned values (Default ON)
+-wdef	-w8013	Possible use of 'identifier' before definition (Default OFF)
+-w-dig	-w-8014	Declaration ignored (Default ON)
+-w-dpu	-w-8015	Declare 'type' prior to use in prototype (Default ON)
+
+-w-dsz	-w-8016	Array size for 'delete' ignored (Default ON)
+-w-dup	-w-8017	Redefinition of 'macro' is not identical (Default ON)
+-w-eas	-w-8018	Assigning 'type' to 'enum'  (Default ON)
+-w-eff	-w-8019	Code has no effect (Default ON)
+-w-ext	-w-8020	'identifier' is declared as both external and static 
+                (Default ON)
+-w-hch	-w-8021	Handler for 'type1' Hidden by Previous Handler for 'type2'
+                (Default ON)
+
+-w-hid	-w-8022	'function1' hides virtual function 'function2' (Default ON)
+-w-ias	-w-8023	Array variable 'identifier' is near (Default ON)
+-w-ibc	-w-8024	Base class 'class1' is also a base class of 'class2' 
+                (Default ON)
+-w-ifr	-w-8085	Function 'function' redefined as non-inline (Default ON)
+-w-ill	-w-8025	Ill-formed pragma (Default ON)
+-w-inl	-w-8026	Functions containing certain constructs are not expanded 
+                inline (Default ON)
+
+-w-inl	-w-8027	Functions containing reserved words are not expanded 
+                inline (Default ON)
+-w-lin	-w-8028	Temporary used to initialize 'identifier' (Default ON)
+-w-lvc	-w-8029	Temporary used for parameter 'parameter' (Default ON)
+-w-lvc	-w-8030	Temporary used for parameter 'parameter' in call to 
+                'function' (Default ON)
+-w-lvc	-w-8031	Temporary used for parameter number (Default ON)
+
+-w-lvc	-w-8032	Temporary used for parameter number in call to 'function' 
+                (Default ON)
+-w-mcs	-w-8096	Incorrect use of #pragma code_seg (Default ON)
+-w-mes	-w-8095	Incorrect use of #pragma message (Default ON)
+-w-mpc	-w-8033	Conversion to 'type' fails for members of virtual base 
+                'base' (Default ON)
+-w-mpd	-w-8034	Maximum precision used for member pointer type 'type'
+                (Default ON)
+
+-w-msg	-w-8035	User-defined warnings (Default ON)
+-wnak	-w8036	Non-ANSI Keyword Used: 'keyword' (Default OFF) 
+                (Note: Use of this option is required for ANSI conformance)
+-w-ncf	-w-8037	Non-const function 'function' called for const object 
+                (Default ON)
+-w-nci	-w-8038	Constant member 'identifier' is not initialized (Default ON)
+-w-ncl	-w-8039	Constructor initializer list ignored (Default ON)
+
+-w-nfd	-w-8040	Function body ignored (Default ON)
+-w-ngu	-w-8041	Negating unsigned value (Default ON)
+-w-nin	-w-8042	Initializer for object 'identifier' ignored (Default ON)
+-w-nma	-w-8043	Macro definition ignored (Default ON)
+-w-nmu	-w-8044	#undef directive ignored (Default ON)
+-wnod	-w8045	No declaration for function 'function' (Default OFF)
+-w-nop	-w-8046	Pragma option pop with no matching option push (Default ON)
+
+-w-npp	-w-8083	Pragma pack pop with no matching pack push (Default ON)
+-w-nsf	-w-8047	Declaration of static function 'function(...)' ignored 
+                (Default ON)
+-w-nst	-w-8048	Use qualified name to access nested type 'type' (Default ON)
+-w-ntd	-w-8049	Use '> >' for nested templates instead of '>>' (Default ON)
+-w-nto	-w-8050	No type OBJ file present. Disabling external types option. 
+                (Default ON)
+
+-w-nvf	-w-8051	Non-volatile function 'function' called for volatile object 
+                (Default ON)
+-w-obi	-w-8052	Base initialization without a class name is now obsolete 
+                (Default ON)
+-w-obs	-w-8053	'identifier' is obsolete (Default ON)
+-w-ofp	-w-8054	Style of function definition is now obsolete (Default ON)
+-w-onr	-w-8097	Not all options can be restored at this time (Default ON)
+-w-osh	-w-8055	Possible overflow in shift operation (Default ON)
+
+-w-ovf	-w-8056	Integer arithmetic overflow (Default ON)
+-w-par	-w-8057	Parameter 'parameter' is never used (Default ON)
+-w-pch	-w-8058	Cannot create pre-compiled header: 'header' (Default ON)
+-w-pck	-w-8059	Structure packing size has changed (Default ON)
+-w-pcm	-w-8094	Incorrect use of #pragma comment (Default ON)
+-w-pia	-w-8060	Possibly incorrect assignment (Default ON)
+
+-wpin	-w8061	Initialization is only partially bracketed (Default OFF)
+-w-pow	-w-8062	Previous options and warnings not restored (Default ON)
+-w-prc	-w-8084	Suggest parentheses to clarify precedence (Default OFF)
+-w-pre	-w-8063	Overloaded prefix operator 'operator' used as a postfix 
+                operator (Default ON)
+-w-pro	-w-8064	Call to function 'function' with no prototype (Default ON)
+-w-pro	-w-8065	Call to function 'function' with no prototype (Default ON)
+
+-w-rch	-w-8066	Unreachable code (Default ON)
+-w-ret	-w-8067	Both return and return of a value used (Default ON)
+-w-rng	-w-8068	Constant out of range in comparison (Default ON)
+-w-rpt	-w-8069	Nonportable pointer conversion (Default ON)
+-w-rvl	-w-8070	Function should return a value (Default ON)
+-wsig	-w8071	Conversion may lose significant digits (Default OFF)
+-w-spa	-w-8072	Suspicious pointer arithmetic (Default ON)
+
+-w-stl	-w-8087	'operator==' must be publicly visible to be contained by 
+                a 'name' (Default OFF)
+-w-stl	-w-8089	'operator<' must be publicly visible to be contained by a 
+                'name' (Default OFF)
+-w-stl	-w-8090	'operator<' must be publicly visible to be used by a 
+                'name' (Default OFF)
+-w-stl	-w-8091	'type' argument 'argument' passed to 'function' is a 
+                'type' iterator. 'type' iterator required (Default OFF)
+-w-stl	-w-8092	'type' argument 'argument' passed to 'function' is not an 
+                iterator. 'type' iterator required (Default OFF)
+
+-wstu	-w8073	Undefined structure 'structure' (Default OFF)
+-wstv	-w8074	Structure passed by value (Default OFF)
+-w-sus	-w-8075	Suspicious pointer conversion (Default ON)
+-w-tai	-w-8076	Template instance 'instance' is already instantiated 
+                (Default ON)
+-w-tes	-w-8077	Explicitly specializing an explicitly specialized class 
+                member makes no sense (Default ON)
+-w-thr	-w-8078	Throw expression violates exception specification (Default ON)
+
+-wucp	-w8079	Mixing pointers to different 'char' types (Default OFF)
+-wuse	-w8080	'identifier' declared but never used (Default OFF)
+-w-voi	-w-8081	void functions may not return a value (Default ON)
+-w-zdi	-w-8082	Division by zero (Default ON)
+
+-----------------------------------------------------------------------------
+C prototypes                                        *C_prototypes*
+
+void          abort(void)
+int           abs(int x)
+double        acos(double x)
+long double   acosl(long double x)
+char         *asctime(const struct tm *tblock)
+double        asin(double x)
+long double   asinl(long double x)
+void          assertfail(char *msg, char *cond, char *file, int line)
+double        atan(double x)
+double        atan2(double y, double x)
+long double   atan2l(long double x, long double y)
+long double   atanl(long double x)
+int           atexit(void (*func)(void))
+double        atof(const char *s)
+int           atoi(const char *s)
+long          atol(const char *s)
+long double   _atold(const char *s)
+void          bsearch(const void *key, const void *base, size_t nelem, size_t width, int (*fcmp)(const void *, const void *))
+void          calloc(size_t nitems, size_t size)
+double        ceil(double x)
+long double   ceill(long double x)
+void          clearerr(FILE *stream)
+clock_t       clock(void)
+double        cos(double x)
+double        cosh(double x)
+long double   coshl(long double x)
+long double   cosl(long double x)
+char         *ctime(const time_t *time)
+double        difftime(time_t time2, time_t time1)
+div_t         div(int numer, int denom)
+void          exit(int status)
+double        exp(double x)
+long double   expl(long double x)
+double        fabs(double x)
+long double   fabsl(long double x)
+int           fclose(FILE *stream)
+int           fcloseall(void)
+int           feof(FILE *fp)
+int           ferror(FILE *fp)
+int           fflush(FILE *stream)
+int           fgetc(FILE *stream)
+int           fgetchar(void)
+int           fgetpos(FILE *stream, fpos_t *pos)
+char         *fgets(char *s, int n, FILE *stream)
+double        floor(double x)
+long double   floorl(long double x)
+double        fmod(double x, double y)
+long double   fmodl(long double x, long double y)
+FILE          fopen(const char *path, const char *mode)
+int           fprintf(FILE *stream, const char *format, ...)
+int           fputc(int c, FILE *stream)
+int           fputchar(int c)
+int           fputs(const char *s, FILE *stream)
+size_t        fread(void *ptr, size_t size, size_t n, FILE *stream)
+void          free(void *block)
+FILE          freopen(const char *path, const char *mode)
+double        frexp(double x, int *exponent)
+long double   frexpl(long double x, int *exponent)
+int           fscanf(FILE *stream, const char *format, ...)
+int           fseek(FILE *stream, long offset, int whence)
+int           fsetpos(FILE *stream, const fpos_t *pos)
+long          ftell(FILE *stream)
+size_t        fwrite(const void *ptr, size_t size, size_t n, FILE *stream)
+int           getc(FILE *fp)
+int           getchar(void)
+char         *getenv(const char *name)
+char         *gets(char *s)
+struct tm     gmtime(const time_t *timer)
+int           isalnum(int c)
+int           isalpha(int c)
+int           iscntrl(int c)
+int           isdigit(int c)
+int           isgraph(int c)
+int           islower(int c)
+int           isprint(int c)
+int           ispunct(int c)
+int           isspace(int c)
+int           isupper(int c)
+int           isxdigit(int c)
+long          labs(long x)
+double        ldexp(double x, int exponent)
+long double   ldexpl(long double x, int exponent)
+ldiv_t        ldiv(long numer, long denom)
+struct tm     localtime(const time_t *timer)
+double        log(double x)
+double        log10(double x)
+long double   log10l(long double x)
+long double   logl(long double x)
+long          _lrand(void)
+void          malloc(size_t size)
+int           mblen(const char *s, size_t n)
+size_t        mbstowcs(wchar_t *pwcs, const char *s, size_t n)
+int           mbtowc(wchar_t *pwc, const char *s, size_t n)
+void          memchr(const void *s, int c, size_t n)
+void          memchr(void *s, int c, size_t n)
+int           memcmp(const void *s1, const void *s2, size_t n)
+void          memcpy(void *dest, const void *src, size_t n)
+void          memmove(void *dest, const void *src, size_t n)
+void          memset(void *s, int c, size_t n)
+time_t        mktime(struct tm *timeptr)
+double        modf(double x, double *ipart)
+long double   modfl(long double x, long double *ipart)
+void          perror(const char *s)
+double        pow(double x, double y)
+double        pow10(int p)
+long double   pow10l(int p)
+long double   powl(long double x, long double y)
+int           printf(const char *format, ...)
+int           putc(const int c, FILE *fp)
+int           putchar(const int c)
+int           puts(const char *s)
+void          qsort(void *base, size_t nelem, size_t width, int (*fcmp)(const void *, const void *))
+int           raise(int sig)
+int           rand(void)
+int           random(int num)
+void          randomize(void)
+void          realloc(void *block, size_t size)
+int           remove(const char *path)
+int           rename(const char *oldname,const char *newname)
+void          rewind(FILE *stream)
+int           scanf(const char *format, ...)
+void          setbuf(FILE *stream, char *buf)
+int           setjmp(jmp_buf jmpb)
+int           setvbuf(FILE *stream, char *buf, int type, size_t size)
+void       (* signal(int sig, void (* func)())) (int)
+double        sin(double x)
+double        sinh(double x)
+long double   sinhl(long double x)
+long double   sinl(long double x)
+int           sprintf(char *buffer, const char *format, ...)
+double        sqrt(double x)
+long double   sqrtl(long double x)
+void          srand(unsigned seed)
+int           sscanf(const char *buffer,  const char *format, ...)
+int           stime(time_t *tp)
+char         *strcat(char *dest, const char *src)
+char         *strchr(char *s, int c)
+char         *strcpy(char *dest, const char *src)
+int           strcmp(const char *s1, const char *s2)
+int           strcoll(const char *s1, const char *s2)
+size_t        strcspn(const char *s1, const char *s2)
+char         *strerror(int errnum)
+size_t        strftime(char *s, size_t maxsize, const char *fmt, const struct tm *t)
+size_t        strlen(const char *s)
+char         *strncat(char *dest, const char *src, size_t maxlen)
+int           strncmp(const char *s1, const char *s2, size_t __maxlen)
+char         *strncpy(char *dest, const char *src, size_t maxlen)
+char         *strpbrk(char *s1, const char *s2)
+char         *strrchr(char *s, int c)
+size_t        strspn(const char *s1, const char *s2)
+char         *strstr(char *s1, const char *s2)
+double        strtod(const char *s, char *endptr)
+char         *strtok(char *s1, const char *s2)
+long          strtol(const char *s, char *endptr, int radix)
+long double   _strtold(const char *s, char *endptr)
+unsigned long strtoul(const char *s, char *endptr, int radix)
+size_t        strxfrm(char *s1, const char *s2, size_t n)
+int           swprintf(wchar_t buffer, const wchar_t format, ...)
+int           system(const char *command)
+double        tan(double x)
+double        tanh(double x)
+long double   tanhl(long double x)
+long double   tanl(long double x)
+time_t        time(time_t *timer)
+FILE          tmpfile(void)
+char         *tmpnam(char *s)
+int           tolower(int ch)
+int           toupper(int ch)
+int           ungetc(int c, FILE *stream)
+int           vfprintf(FILE *stream, const char *format, void *arglist)
+int           vfscanf(FILE *stream, const char *format, void *arglist)
+int           vprintf(const char *format, void *arglist)
+int           vscanf(const char *format, void *arglist)
+int           vsprintf(char *buffer, const char *format, void *arglist)
+int           vsscanf(const char *buffer, const char *format, void *arglist)
+size_t        wcstombs(char *s, const wchar_t *pwcs, size_t n)
+int           wctomb(char *s, wchar_t wc)
+
+---------------------------------------------------------------------------
+Microsoft VC C/C++ compiler options                        *C_vc*
+
+                      VC 2003 C/C++ COMPILER OPTIONS
+
+                              -OPTIMIZATION-
+
+/O1 minimize space                       /Op[-] improve floating-pt consistency
+/O2 maximize speed                       /Os favor code space
+/Oa assume no aliasing                   /Ot favor code speed
+/Ob<n> inline expansion (default n=0)    /Ow assume cross-function aliasing
+/Od disable optimizations (default)      /Ox maximum opts. (/Ogityb2 /Gs)
+/Og enable global optimization           /Oy[-] enable frame pointer omission
+/Oi enable intrinsic functions
+
+                             -CODE GENERATION-
+
+/G3 optimize for 80386                   /Gh enable _penter function call
+/G4 optimize for 80486                   /GH enable _pexit function call
+/G5 optimize for Pentium                 /GR[-] enable C++ RTTI
+/G6 optimize for PPro, P-II, P-III       /GX[-] enable C++ EH (same as /EHsc)
+/G7 optimize for Pentium 4 or Athlon     /EHs enable C++ EH (no SEH exceptions)
+/GB optimize for blended model (default) /EHa enable C++ EH (w/ SEH exceptions)
+/Gd __cdecl calling convention           /EHc extern "C" defaults to nothrow
+/Gr __fastcall calling convention        /GT generate fiber-safe TLS accesses
+/Gz __stdcall calling convention         /Gm[-] enable minimal rebuild
+/GA optimize for Windows Application     /GL[-] enable link-time code generation
+/Gf enable string pooling                /QIfdiv[-] enable Pentium FDIV fix
+/GF enable read-only string pooling      /QI0f[-] enable Pentium 0x0f fix
+/Gy separate functions for linker        /QIfist[-] use FIST instead of ftol()
+/GZ Enable stack checks (/RTCs)          /RTC1 Enable fast checks (/RTCsu)
+/Ge force stack checking for all funcs   /RTCc Convert to smaller type checks
+/Gs[num] control stack checking calls    /RTCs Stack Frame runtime checking
+/GS enable security checks               /RTCu Uninitialized local usage checks
+/clr[:noAssembly] compile for the common language runtime
+    noAssembly - do not produce an assembly
+/arch:<SSE|SSE2> minimum CPU architecture requirements, one of:
+    SSE - enable use of instructions available with SSE enabled CPUs
+    SSE2 - enable use of instructions available with SSE2 enabled CPUs
+
+                              -OUTPUT FILES-
+
+/Fa[file] name assembly listing file     /Fo<file> name object file
+/FA[sc] configure assembly listing       /Fp<file> name precompiled header file
+/Fd[file] name .PDB file                 /Fr[file] name source browser file
+/Fe<file> name executable file           /FR[file] name extended .SBR file
+/Fm[file] name map file
+
+                              -PREPROCESSOR-
+
+/AI<dir> add to assembly search path     /Fx merge injected code to file
+/FU<file> forced using assembly/module   /FI<file> name forced include file
+/C don't strip comments                  /U<name> remove predefined macro
+/D<name>{=|#}<text> define macro         /u remove all predefined macros
+/E preprocess to stdout                  /I<dir> add to include search path
+/EP preprocess to stdout, no #line       /X ignore "standard places"
+/P preprocess to file
+
+                                -LANGUAGE-
+
+/Zi enable debugging information         /Ze enable extensions (default)
+/ZI enable Edit and Continue debug info  /Zl omit default library name in .OBJ
+/Z7 enable old-style debug info          /Zg generate function prototypes
+/Zd line number debugging info only      /Zs syntax check only
+/Zp[n] pack structs on n-byte boundary   /vd{0|1} disable/enable vtordisp
+/Za disable extensions (implies /Op)     /vm<x> type of pointers to members
+/Zc:arg1[,arg2] C++ language conformance, where arguments can be:
+    forScope - enforce Standard C++ for scoping rules
+    wchar_t - wchar_t is the native type, not a typedef
+
+                              -MISCELLANEOUS-
+
+@<file> options response file            /wo<n> issue warning n once
+/?, /help print this help message        /w<l><n> set warning level 1-4 for n
+/c compile only, no link                 /W<n> set warning level (default n=1)
+/H<num> max external name length         /Wall enable all warnings
+/J default char type is unsigned         /Wp64 enable 64 bit porting warnings
+/nologo suppress copyright message       /WX treat warnings as errors
+/showIncludes show include file names    /WL enable one line diagnostics
+/Tc<source file> compile file as .c      /Yc[file] create .PCH file
+/Tp<source file> compile file as .cpp    /Yd put debug info in every .OBJ
+/TC compile all files as .c              /Yl[sym] inject .PCH ref for debug lib
+/TP compile all files as .cpp            /Yu[file] use .PCH file
+/V<string> set version string            /YX[file] automatic .PCH
+/w disable all warnings                  /Y- disable all PCH options
+/wd<n> disable warning n                 /Zm<n> max memory alloc (% of default)
+/we<n> treat warning n as an error
+
+                                 -LINKING-
+
+/MD link with MSVCRT.LIB                 /MDd link with MSVCRTD.LIB debug lib
+/ML link with LIBC.LIB                   /MLd link with LIBCD.LIB debug lib
+/MT link with LIBCMT.LIB                 /MTd link with LIBCMTD.LIB debug lib
+/LD Create .DLL                          /F<num> set stack size
+/LDd Create .DLL debug library           /link [linker options and libraries]
+
+Alphabetical
+------------
+
+    /?, /help print this help message
+    /AI<dir> add to assembly search path
+    /arch:<SSE|SSE2> minimum CPU architecture requirements, one of:
+        SSE - enable use of instructions available with SSE enabled CPUs
+        SSE2 - enable use of instructions available with SSE2 enabled CPUs
+    /c compile only, no link
+    /C don't strip comments
+    /clr[:noAssembly] compile for the common language runtime
+        noAssembly - do not produce an assembly
+    /D<name>{=|#}<text> define macro
+    /E preprocess to stdout
+    /EHa enable C++ EH (w/ SEH exceptions)
+    /EHc extern "C" defaults to nothrow
+    /EHs enable C++ EH (no SEH exceptions)
+    /EP preprocess to stdout, no #line
+    /F<num> set stack size
+    /Fa[file] name assembly listing file
+    /FA[sc] configure assembly listing
+    /Fd[file] name .PDB file
+    /Fe<file> name executable file
+    /FI<file> name forced include file
+    /Fm[file] name map file
+    /Fo<file> name object file
+    /Fp<file> name precompiled header file
+    /FR[file] name extended .SBR file
+    /Fr[file] name source browser file
+    /FU<file> forced using assembly/module
+    /Fx merge injected code to file
+    /G3 optimize for 80386
+    /G4 optimize for 80486
+    /G5 optimize for Pentium
+    /G6 optimize for PPro, P-II, P-III
+    /G7 optimize for Pentium 4 or Athlon
+    /GA optimize for Windows Application
+    /GB optimize for blended model (default)
+    /Gd __cdecl calling convention
+    /Ge force stack checking for all funcs
+    /GF enable read-only string pooling
+    /Gf enable string pooling
+    /Gh enable _penter function call
+    /GH enable _pexit function call
+    /GL[-] enable link-time code generation
+    /Gm[-] enable minimal rebuild
+    /Gr __fastcall calling convention
+    /GR[-] enable C++ RTTI
+    /GS enable security checks
+    /Gs[num] control stack checking calls
+    /GT generate fiber-safe TLS accesses
+    /GX[-] enable C++ EH (same as /EHsc)
+    /Gy separate functions for linker
+    /GZ Enable stack checks (/RTCs)
+    /Gz __stdcall calling convention
+    /H<num> max external name length
+    /I<dir> add to include search path
+    /J default char type is unsigned
+    /LD Create .DLL
+    /LDd Create .DLL debug library
+    /link [linker options and libraries]
+    /MD link with MSVCRT.LIB
+    /MDd link with MSVCRTD.LIB debug lib
+    /ML link with LIBC.LIB
+    /MLd link with LIBCD.LIB debug lib
+    /MT link with LIBCMT.LIB
+    /MTd link with LIBCMTD.LIB debug lib
+    /nologo suppress copyright message
+    /O1 minimize space
+    /O2 maximize speed
+    /Oa assume no aliasing
+    /Ob<n> inline expansion (default n=0)
+    /Od disable optimizations (default)
+    /Og enable global optimization
+    /Oi enable intrinsic functions
+    /Op[-] improve floating-pt consistency
+    /Os favor code space
+    /Ot favor code speed
+    /Ow assume cross-function aliasing
+    /Ox maximum opts. (/Ogityb2 /Gs)
+    /Oy[-] enable frame pointer omission
+    /P preprocess to file
+    /QI0f[-] enable Pentium 0x0f fix
+    /QIfdiv[-] enable Pentium FDIV fix
+    /QIfist[-] use FIST instead of ftol()
+    /RTC1 Enable fast checks (/RTCsu)
+    /RTCc Convert to smaller type checks
+    /RTCs Stack Frame runtime checking
+    /RTCu Uninitialized local usage checks
+    /showIncludes show include file names
+    /TC compile all files as .c
+    /Tc<source file> compile file as .c
+    /TP compile all files as .cpp
+    /Tp<source file> compile file as .cpp
+    /u remove all predefined macros
+    /U<name> remove predefined macro
+    /V<string> set version string
+    /vd{0|1} disable/enable vtordisp
+    /vm<x> type of pointers to members
+    /w disable all warnings
+    /w<l><n> set warning level 1-4 for n
+    /W<n> set warning level (default n=1)
+    /Wall enable all warnings
+    /wd<n> disable warning n
+    /we<n> treat warning n as an error
+    /WL enable one line diagnostics
+    /wo<n> issue warning n once
+    /Wp64 enable 64 bit porting warnings
+    /WX treat warnings as errors
+    /X ignore "standard places"
+    /Y- disable all PCH options
+    /Yc[file] create .PCH file
+    /Yd put debug info in every .OBJ
+    /Yl[sym] inject .PCH ref for debug lib
+    /Yu[file] use .PCH file
+    /YX[file] automatic .PCH
+    /Z7 enable old-style debug info
+    /Za disable extensions (implies /Op)
+    /Zc:arg1[,arg2] C++ language conformance, where arguments can be:
+        forScope - enforce Standard C++ for scoping rules
+        wchar_t - wchar_t is the native type, not a typedef
+    /Zd line number debugging info only
+    /Ze enable extensions (default)
+    /Zg generate function prototypes
+    /Zi enable debugging information
+    /ZI enable Edit and Continue debug info
+    /Zl omit default library name in .OBJ
+    /Zm<n> max memory alloc (% of default)
+    /Zp[n] pack structs on n-byte boundary
+    /Zs syntax check only
+    @<file> options response file
+

@@ -1,0 +1,655 @@
+*bash*
+
+|Testing|
+|Variables|
+|Arrays|
+|Quoting|
+|Arithmetic|
+|Pattern_matching|
+|Conditionals|
+|String_operations|
+|Arithmetic_operators|
+|Arithmetic_evaluation|
+|Process_substitution|
+|Other_stuff|
+|Reserved_words|
+|Bourne_builtins|
+|Bash_builtins|
+|Grouping|
+|Command_line_parsing|
+|Conditionals|
+|Case|
+|Select|
+|Iteration|
+|Functions|
+
+Xubuntu 14.04 came with version 4.3.11 of bash
+
+Prompt special characters
+    \d  the date in "Weekday Month Date" format 
+    \t  the current time in 24-hour HH:MM:SS format
+    \w  the current working directory
+    \s  the name of the shell
+    \n  newline
+    \[  begin a sequence of non-printing characters, for embedding a
+        terminal control sequence into the prompt
+    \]  end a sequence of non-printing characters
+
+*Reserved_words*
+    ! case  do done elif else esac fi for function if in select then  until
+     while { } time [[ ]]
+
+*Bourne_builtins*
+    :  .  break  cd  continue  eval  exec  exit  export  getopts  hash
+    pwd  readonly  return  shift  test  [  times  trap  umask unset
+
+*Bash_builtins*
+    alias  bind  builtin  caller  command  declare  echo  enable  help
+    let  local  logout  mapfile  printf  read  readarray  source  type  
+    typeset  ulimit  unalias
+
+*Quoting*
+    "" allows shell to ignore whitespace and count as one argument.  
+    Variables will be expanded within the quote marks.
+
+    '' allows exact quoting; no expansions take place.
+    
+        Exception:  $'\n\r' expands ANSI escape sequences
+
+    `` (backquotes) allow a command to be executed and the quotes are
+    replaced by the stdout of the command.  I recommend never using these,
+    as they are hard to see; use $(cmd) form instead.  This is called
+    command substitution.
+
+*Variables*
+    Scope is global unless declared with 'typeset' or 'local' or if a
+    function parameter.  Note local variables are dynamically scoped,
+    meaning they are visible to any functions you call.
+
+    Built-ins
+        $1-$N   Stores command line arguments.  Use "set -- string_expr" to set
+        $?      Exit status of last command
+        $$      PID of script
+        $-      Flags passed to script using set
+        $_      Last argument of previous command
+        $!      PID of last background job
+
+        $0      Name of shell program
+        $*      Command line arguments ($1 $2 ...)
+        "$*"    Command line arguments as single string
+        "$@"    Command line arguments individually quoted ("$1"  "$2"  ...)
+    
+      Note:  you should virtually always use "$@" if you're passing
+      arguments to functions, scripts, or programs.  This allows the
+      arguments to be e.g. filenames with embedded spaces or other
+      characters that are in IFS and would cause the shell problems if
+      they weren't quoted.
+
+    Accessing and default values
+        ${v}        Use when follow-on characters could be interpreted as part
+                    of variable name
+        ${v:o:l}    Substring:  return string at offset o and up to l
+                    characters; if l is omitted, return to end of string.
+
+        NOTE how the ':' changes the interpretation:  when it's
+        included, the operator tests for both the parameter's
+        existence and that its value is not null; if the colon is
+        omitted, the operator only tests for existence.
+
+        ${v-w}      If v not set, use $w
+        ${v:-w}     If v not set or is empty, use $w
+        ${v=w}      If v not set, evaluate expression as $w
+        ${v=w}      If v not set or is empty, evaluate expression as $w
+        ${v+w}      If v set, evaluate expression as $w; otherwise null
+        ${v:+w}     Same as ${v+w}
+            Example:  a=${b:-*} fills a with files in current directory if
+            b is null.
+        ${v:=w}     Set v to w if v null and return value
+        ${v:?msg}   If null, exit with error and print msg
+        ${v:+w}     If not null, return w; if set, return null
+
+    Variable indirection
+        ${!a} means to expand name to a string and use it as the name
+        of the variable.
+
+        ${!name[@]} and ${!name[@]} are special if name is an array
+        variable; they expand to a list of the indexes.  When '@' is
+        used and the expansion is in double quotes, each index expands
+        to a separate word.
+
+    Declaring
+        typeset         Synonym of declare (compatible with ksh)
+        declare -a v    Declare v as array
+        declare -i v    Declare v as integer
+        declare -r v    Declare v as read-only
+        declare -x v    Declare v and export to environment
+        local v         Declare v as a local to a function
+            Note:  local by itself lists the local variables.  local
+            outside the scope of a function is an error.  that typeset
+            and declare also result in local variables when used
+            inside functions.
+        local, typeset, and declare all take the same options:
+            [-aAfFilrtux] [-p] [name[=value] ...]
+            -g      Forces a variable's scope to be global
+            -a      Indexed arrays 0-based
+            -A      Associative array
+            -i      Integer
+            -l      Convert upper case chars to lower
+            -r      Read-only
+            -t      Give trace attribute (only meaningful for functions)
+            -u      Convert lower case chars to upper
+            -x      Export to environment
+
+        Examples
+            local -ar v=(11 22 33)      Declare a read-only array
+
+      Note:  you can define multiple variables on one line:
+            a=3 b=4 c=7
+      However, note that following with a command does something
+      entirely different
+            a=3 b=4 c=7  ls
+      sets the variables only for the ls command.
+
+*Arrays*
+    Array indexing is 0-based and uses only integer values
+    Storing
+        a[2]=value
+        a=(val1 val2 ...)
+    Recalling
+        ${a[0]}     Return element 0
+        ${a[*]}     Return all elements
+        ${!a[*]}    Return occupied indexes
+        ${#a[1]}    Return length of element 1
+        ${#a[*]}    Return length of array
+    Destroying
+        unset a     Destroys whole array
+        unset a[*]  Destroys whole array
+        unset a[@]  Destroys whole array
+        unset a[4]  Destroys only the element at this index
+    Examples
+        a=(11 22 
+           33 0 44)
+        ${!a[*]}    0 1 2 3 4
+        ${#a[*]}    5
+        ${a[1]}     22
+        ${a[8]}     Error:  unbound variable
+        set -- 11 22 33 44
+        a=($*)
+        ${a[3]}     44
+
+    The bash builtin 'mapfile' can be used to put stdin into an
+    array variable ('readarray' is a synonym):
+
+      mapfile var <input_file
+
+    Then line 0 of the file will be ${var[0]}, etc.  Note there is a
+    limit to the number of lines that can be read in; on bash version
+    4.3.11, trying to read in a long file resulted in 68 components.
+    A shorter file of 1000 numbers, one number per line, resulted in
+    an array of all the numbers.  The conclusion is that the shell
+    probably utilizes a fixed size buffer.
+
+  Other stuff
+    echo ${!a}      Indirect variable reference
+        Example:    a=44; b=a
+                    echo ${!b} returns 44
+    echo ${!a*}     Show all variables that begin with a
+    echo ${!a@}     Show all variables that begin with a
+    echo ${#a}      Number of characters in parameter a
+    echo ${a}x      Concatenate a's value with "x"
+
+*Associative_arrays*
+    declare -A name
+  Reference elements by ${name[subscript]}.  If subscript is '@' or
+  '*', the word expands to all members of name.  ${#name[@]} or
+  ${#name[*]} is the number of elements in array. 
+
+  unset name
+    Destroys array
+  unset name[subscript] 
+    Destroys element
+
+*Arithmetic*
+    Operator precedence is the same as in C.
+
+    typeset -i a=4    # Define an integer variable (signed 64 bit for > 2.05b)
+    (( a == 4 )) && echo "Hello"    # Does print "Hello"
+    (( a > 10 && a < 20 ))
+    Increment a:
+        a=$((a + 1))
+        a=$((a++))
+        let a++
+
+    Using 'let' can make things a bit more readable:
+        let "a = a + 7"
+      vs.
+        a=$((a + 7))
+
+    This gives bash a for loop that looks like C's:
+        for ((i=1 ; i <= 10 ; i++ )) ; do
+            echo $i
+        done
+      Use a comma operator for more complexity:
+        for (( i=0, j=0 ; i < 10 ; i++, j++ )) ; do
+            echo $((i*j))
+        done
+
+    Bases
+        var=base#value       2 <= base <= 64
+      e.g.
+        a=16#ff
+      sets a to 255 in decimal.
+      Note you can also use more conventional notation:
+        a=0xff
+      ((i = 0xff + 16#ff)) sets i to 510
+
+      Warning:  ksh is similar, but it will keep track of the base you
+      initialized the variable.
+
+    Ternary operator
+        t=$((a < 7 ? 44 : 0))
+      or
+        let "t = a < 7 ? 44 : 0"
+
+    Gotchas:
+        1.  i = $((i + 5))
+            is not what you think.  The space characters cause bash to
+            try to run i as a program with its first argument being
+            '='.
+        2.  Integer variables on the RHS of an expression don't need
+            to be prefaced with '$'.  Positional parameters still do.
+
+    Cascading
+        echo $((i+=2, j++))
+
+*Grouping*
+
+    { list; }   Executes the list in the current shell context.  Note
+    the ';' (or newline) is required.
+
+    ( list )    Executes the list in a subshell.  Variables defined in
+    the list won't exist when the subshell returns.
+
+*Command_line_parsing*
+    IFS is the internal field separator and is what the shell parses
+    command lines on.  The default value is to contain a space, tab,
+    and newline characters.  You can temporarily set IFS to something
+    else and have the shell split a string.  Example: suppose you have
+    the string "This:is:a:test" and you want to split it on the ':'
+    characters.
+
+        test="This:is:a:test"
+        old_IFS="$IFS"
+        IFS=":"
+        echo "test is '$test'"
+        echo "IFS is '$IFS'"
+        set -- $test
+        IFS="$old_IFS"
+        echo "IFS is set back to '$IFS'"
+
+        echo "Showing \"\$*\" is a single string:"
+        for i in "$*" ; do
+            echo $i $IFS
+        done
+
+        echo
+        echo "Showing \"\$@\" is set of strings:"
+        for i in "$@" ; do
+            echo $i $IFS
+        done
+
+    produces
+
+        test is 'This:is:a:test'
+        IFS is ':'
+        IFS is set back to ' 	
+        '
+        Showing "$*" is a single string:
+        This is a test
+
+        Showing "$@" is set of strings:
+        This
+        is
+        a
+        test
+
+*Testing*
+    test expression
+        or
+    [ expression ]
+        or
+    [[ expression ]]        (extended test construct)
+
+    Numbers
+        int1 -eq int2
+        int1 -ne int2
+        int1 -gt int2
+        int1 -ge int2
+        int1 -lt int2
+        int1 -le int2
+
+      You can use the usual conditional operators if you use double
+      parentheses:  echo $((x <= y)) && $((y > 5))
+
+      Arithmetical testing syntax is better with ((...)).  You don't
+      need to put '$' in front of variable names:
+        ((x > 3 && y < 8))
+
+    Other
+        -o opt      Shell option is enabled
+        -v var      True if variable var has been assigned a value
+
+    Strings
+        s1 = s2     s1 matches s2
+        s1 != s2    s1 does not match s2
+        s1 == s2    s1 is equal to s2
+        s1 !== s2   s1 is not equal to s2
+        s1 < s2     s1 is less than s2
+        s1 > s2     s1 is greater than s2
+        s           True if s not null
+        -n s        True if len(s) > 0
+        -z s        True if len(s) == 0 (NOT the same as null!)
+
+    Files etc.
+      If f is a symbolic link, these tests operate on the target
+      rather than the link (unless they're specifically testing the
+      link).
+        -G f        Group ID is same as yours
+        -L f        File exists and is symbolic link
+        -N f        f has been modified since it was last read
+        -O f        You own the file
+        -S f        f is a socket
+        -a f        True if file exists
+        -b f        f is a block device
+        -c f        f is a character device
+        -d f        Directory
+        -e f        True if file exists
+        -f f        Ordinary file
+        -g f        sgid flag set
+        -h f        Is symbolic link
+        -k f        sticky bit set
+        -p f        f is a named pipe (FIFO)
+        -r f        File exists and can be read
+        -s f        File size > 0
+        -t f        f is associated with a terminal
+        -u f        suid flag set
+        -w f        Can be written
+        -x f        Is executable
+        f1 -nt f2   File f1 is newer than f2
+        f1 -ot f2   File f1 is older than f2
+        f1 -ef f2   Hard links to the same file
+
+    Expressions
+        ! expression    True if expression not true
+        expr1 -a expr2  True if both expressions are true (logical and)
+        expr1 -o expr2  True if either expression is true (logical or)
+
+*Conditionals*
+    &&      Logical and; example:  cmd1 %% cmd2 will execute cmd 2 if cmd1
+            returns true
+    ||      Logical or; example:  cmd1 || cmd2 will execute cmd 2 if cmd1
+            returns false
+
+*Pattern_matching*
+    (v = variable, p = pattern)
+    ${v#p}      If match at beginning, delete shortest part and return rest
+    ${v##p}     If match at beginning, delete longest part and return rest
+    ${v%p}      If match at end, delete shortest part and return rest
+    ${v%%p}     If match at end, delete longest part and return rest
+    ${v/p/s}    Replace longest match to p by s (replace as few as possible)
+    ${v//p/s}   All matches to p replaced by s (replace as many as possible)
+
+    Examples
+        a="hello there"
+        ${a}x               hello therex
+        ${a#he*l}           lo there
+        ${a##he*l}          o there
+        ${a%e*e}            hello th
+        ${a%%e*e}           h
+        ${a#??}             llo there   [i.e., removes 1st 2 characters]
+        ${a%??}             hello the   [i.e., removes last 2 characters]
+
+*String_operations*
+    s  = string
+    ss = substring
+
+    expr match "$s" '$ss'	    Length of matching $ss@ at beginning of $s
+    expr "$s" : '$ss'	        Length of matching $ss@ at beginning of $s
+    expr index "$s" $ss	        Numerical position in $s of first character in 
+                                $ss that matches
+    expr substr $s $pos $len    Extract $len characters from $s starting at $pos
+    expr match "$s" '\($ss\)'	Extract $ss@ at beginning of $s
+    expr "$s" : '\($ss\)'	    Extract $ss@ at beginning of $s
+    expr match "$s" '.*\($ss\)'	Extract $ss@ at end of $s
+    expr "$s" : '.*\($ss\)'	   Extract $ss@ at end of $s
+
+      NOTE:  @ indicates $ss is a regular expression
+
+*Arithmetic_operators*
+    Example:  echo $((var1++))
+    ++      Increment (prefix and postfix)
+    --      Decrement (prefix and postfix)
+    + - * / Add, subtract, multiply, divide
+    %       Remainder after integer division
+    **      Exponentiation
+
+    Examples
+        a=5; b=8
+        $((a++))           5
+        $((++a))           7
+        $((b/a))           1
+        $((b%a))           3
+        $((a**b))          390625
+        $((2**63))          -9223372036854775808
+            Shows that it's signed 64 bit arithmetic (no doubt gcc long
+            longs).  Thus, exponentiation is a potential source of
+            calculational bugs.
+
+*Conditionals*
+    if [ expression ] 
+    then
+        commands
+    elif [ expression ]
+        commands
+    else
+        commands
+    fi
+
+        or
+
+    if [ expression ] ; then
+        commands
+    elif [ expression ]
+        commands
+    else
+        commands
+    fi
+
+
+    [[ expression ]]
+        Returns 0 or 1 depending on the outcome of expression.  Parameter 
+        and variable expansion, tilde expansion, arithemetic expansion, 
+        command substitution, process substitution, and quote removal are
+        performed.
+
+        You can use the operator =~ for regexp(3) matches; return value is
+        0 for match and 1 otherwise.
+
+        Expressions can be combined with:
+            ( expr )
+            ! expr
+            e1 && e2 (lazy eval)
+            e1 || e2 (lazy eval)
+
+*Case*
+    case string1 in 
+        str1|str2)
+            commands
+            ;;
+        str3)
+            commands
+            ;;
+        *)
+            commands
+            ;;
+    esac
+
+*Select*
+    select name [ in word ] ; do list ; done
+        Prompts to stderr with PS3 for a number mapped to items (command
+        line items if word omitted).  name is then set to the selected
+        value.
+
+*Iteration*
+    for name [in list] ; do
+        commands that can use $name
+    done
+        Note:  if [in list] is not used, the loop iterates over the command
+        line parameters.
+
+    for (( expr1 ; expr2 ; expr3 )) ; do list ; done
+        (C-style for loop) Arithmetic expression expr1 is evaluated.  Then
+        expr2 is evaluated repeatedly until it evaluates to 0.  Each time
+        expr2 is nonzero, list is executed and expr3 is evaluated.  If any
+        expression is omitted, it's as if it evaluated to 1.  Example:
+            for (( i=0 ; i < 10 ; i++ )); do echo $i ; done
+        prints 0 through 9 inclusive on separate lines.
+
+    while [ expression ] ; do
+        commands
+    done
+
+    until [ expression ] ; do
+        commands
+    done
+
+*Functions*
+    function name()
+    {
+        commands
+    }
+
+        or
+
+    name()       # Older Bourne shell style
+    {
+        commands
+    }
+
+*Arithmetic_evaluation*
+    x++ x--
+           variable post-increment and post-decrement
+    ++x --x
+           variable pre-increment and pre-decrement
+    - +    unary minus and plus
+    ! ~    logical and bitwise negation
+    **     exponentiation
+    * / %  multiplication, division, remainder
+    + -    addition, subtraction
+    << >>  left and right bitwise shifts
+    <= >= < >
+           comparison
+    == !=  equality and inequality
+    &      bitwise AND
+    ^      bitwise exclusive OR
+    |      bitwise OR
+    &&     logical AND
+    ||     logical OR
+    expr?expr:expr
+           conditional operator
+    = *= /= %= += -= <<= >>= &= ^= |=
+           assignment
+    expr1 , expr2
+           comma
+
+*Other_stuff*
+    printf -v var fmt var1 ...
+        -v puts formatted output into a variable
+
+    let arg [arg ...]
+        Each arg is an arithmetic expression to be evaluated.
+
+    let a=20#12
+        Set a to a hex constant.  Here, it's in base 20 and the decimal
+        value is 22.  Base can be from 2 to 64.
+        You can also use 0n... for octal and 0xn... for hex.
+
+    let "a = 44 + b"
+        Quoting allows more normal expression use.
+
+    a=3 b=4
+    readonly a=3 b=4
+        Multiple variable assignments can be made on one line.
+
+    cmd1 ; cmd2
+        The shell waits for each command to finish before starting the next
+        one.  The return status is that of the last command.
+
+    Here strings
+        Pared down form of a here document:  cmd <<<word
+        word is expanded, then it is fed to the standard input of cmd.
+        Example: a="hello there"; cat - <<<$a results in 
+            hello there
+        Note
+        a="hello there"; a="you"; cat - <<<$a <<<$b results in 
+            you
+        not the concatenated form you might expect.
+
+    Brace expansion
+        echo a{p,c,d,b}e    -->     ape ace ade abe
+        ls *.{jpg,jpeg,png}   
+            Expands to *.jpg *.jpeg *.png, after which the wildcards are
+            expanded.
+
+    History
+        history
+            Shows a list of the historical commands.  The number is in the
+            HISTSIZE variable.  Options
+                -c          Clear the history
+                -d offset   Delete history at offset
+                -r file     Read the file and use as current history
+                -w file     Write history to the file
+        ![-]n[:w[:mod]]
+            n is a number indicating the command's history number.  If the
+            "-" is used, then count from most recent backwards.  Thus, !-1 is
+            the last command.  !! is an alias for "!-1".
+
+        !string means the most recent command starting with string.
+
+        w is a word designator and is usually a number; however, ^ can be
+        used for the first word and lets you eliminate the colon; $ is the
+        last word.  x-y is a range of words. * is all the arguments except
+        the 0th one.  The zeroth word is the command.  Example
+            $cat ~/.bashrc
+            $vi !!^
+                Equivalent to "vi !!:1", which is "vi ~/.bashrc".
+
+        mod is a modifier:
+            h       Leave the head:
+                        $cat /home/donp/.bashrc
+                        $ls !!:1:h 
+                            expands to "ls /home/donp"
+            t       Leave the tail
+            r       Remove .xxx, leaving basename
+            e       Leave trailing suffix
+            p       print the command but do not execute it
+            s/o/n   Substitution of first o with n
+            g       Used with s as in !!:gs/o/n to make all substitutions
+            &       Repeat previous substitution
+        There are a few more features -- see the man page.
+
+*Process_substitution*
+    <(list) 
+  or
+    >(list)
+
+    The list of commands is run with input or output connected to a
+    FIFO or a file in /dev/fd.  The name of this file is then passed
+    as an argument to the current command because of the expansion.
+
+  Examples:
+    echo <(ls)
+      --> /dev/fd/63        (name of the file)
+    Compare the contents of two directories
+        diff <(ls dir1) <(ls dir2)
+

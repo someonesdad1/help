@@ -1,0 +1,124 @@
+*gdb*
+
+Note:  to enable vi command editing of gdb command lines, put the following
+line in ~/.inputrc:  
+    set editing-mode vi
+
+    Without this, you can still turn on vi mode at the gdb prompt by
+    ctrl-alt-l.
+
+Breakpoints
+-----------
+    b arg                Set a breakpoint at arg.  arg can be:
+                           function name
+                           +offset, -offset
+                           linenum
+                           file:linenum
+                           file:function
+                           *address
+    b if cond            Break on a condition
+    tb arg               Set a temporary breakpoint
+    info breakpoints     List the breakpoints
+    d [b nums]           Delete breakpoints.  No args deletes all.
+    ignore bnum count    Ignore a breakpoint a specified number of times (can
+                         also do this with an argument to continue)
+
+    A breakpoint can have a command list with it:
+      break foo if x > 0
+      commands
+      silent
+      printf "x is %d\n", x
+      cont
+      end
+    To delete a command list, use commands\nend by itself.
+
+
+Continuing & Stepping
+---------------------
+    c [num]        Continues.  If you were stopped at a breakpoint, num 
+                   specifies how many times to subsequently ignore that 
+                   breakpoint.
+    step           Step into
+    next           Step over
+    finish         Finishes current function & print returned value
+    until          Finishes a loop
+    until location Continue until location (same as a breakpoint) is reached
+                   or until current stack frame returns.
+    stepi or si    Execute next machine instruction
+    nexti or ni    Same as si, but if a function call, step over it.
+
+Examining the stack
+-------------------
+    bt [n]         Show a backtrace [n innermost frames]
+    f              Shows the current stack frame
+    info f         Show more detail about the current stack frame
+    f n            Select frame n (0 is innermost)
+    up [n]         Go up one [n] frame(s)
+    down [n]       Go down one [n] frame(s)
+    info args      Show frame's arguments
+    info locals    Show frame's locals
+
+Examining source files
+----------------------
+    list           Look at source lines.  Use 'help list' for more details.
+    search regexp  Search forward for regexp and print when found.  Abbr. fo.
+    reverse-search regexp   Search backwards.
+    info line linespec   Show starting and ending addresses of compiled code
+                   for the specified line.
+
+Examining data
+--------------
+    print /f expr
+                   Prints an expression.  The values for /f are:
+                     x     Hex integer
+                     d     Signed decimal
+                     u     Unsigned decimal
+                     o     Octal
+                     t     Binary
+                     a     Print as address
+                     c     Character
+                     f     Floating point
+      example:  to print the program counter in hex, use p/x $pc
+
+    x/nfu addr     Examine memory.  n is count, f is format, u is unit size:
+                     Format:
+                       any used by print, or
+                       s     Null terminated string
+                       i     Machine instruction (disassembles)
+                     Unit size:
+                       b     Bytes
+                       h     Halfword (2 bytes)
+                       w     Word (4 bytes)
+                       g     Giant word (8 bytes)
+    display/fmt expr
+                   Displays an expression every time your program stops.
+    undisplay dnums
+                   Removes display items
+    info registers Show contents of registers
+    p/x special    Special can be $pc for program counter, $sp for stack 
+                   pointer, $fp for pointer to current stack frame, $ps for 
+                   register that contains processor status.
+    set $sp += 4   Remove a stack frame (assumes stack grows downward)
+    set $foo = *object_ptr
+                   Sets a convenience variable.  An example use would be:
+                      set $i = 0
+                      print bar[$i++]->contents
+                   Then repeat the last command to print subsequent values in
+                   an array.
+    show con       Show convenience variables.
+
+Examining the symbol table
+--------------------------
+    info address symbol
+                   Describes where data for symbol is stored.  Can be register
+                   variables or locals.
+    whatis exp     Prints data type of exp.
+    ptype typename Prints a description of a type.
+    ptype exp      More detailsed than whatis.
+    info source    Shows current source file
+
+Altering execution
+------------------
+    return [expr]  Cancels execution of a function [and returns expr].  The
+                   caller becomes the current stack frame.  Does not resume
+                   execution, in contrast to finish.

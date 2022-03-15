@@ -1,0 +1,486 @@
+*pandoc*
+
+|Input_formats|
+|Output_Formats|
+|Common_in_out_formats|
+
+|Lists|
+|Links|
+|Images|
+|Tables|
+|Footnotes|
+|Definition|
+|Inline_formatting|
+|Blocks|
+|Equations|
+|Word_styles_used|
+|Templates|
+
+|Command_line_syntax|
+|Where_to_get|
+
+
+pandoc is a tool to convert to and from various markdown and rendering
+file formats.
+
+----------------------------------------------------------------------
+Common input/output formats                 *Common_in_out_formats*
+
+commonmark
+docbook
+docx
+epub
+haddock
+html
+json
+latex
+markdown
+markdown_github
+markdown_mmd
+markdown_phpextra
+markdown_strict
+mediawiki
+native
+odt
+opml
+org
+rst
+textile
+
+----------------------------------------------------------------------
+Input Formats                                   *Input_formats*
+
+markdown, reStructuredText, textile, HTML, DocBook, LaTeX, MediaWiki
+markup, TWiki markup, OPML, Emacs Org-Mode, Txt2Tags, Microsoft Word
+docx, LibreOffice ODT, EPUB, or Haddock markup.  The relevant command
+line options are:
+
+    commonmark        json              markdown_strict   org
+    docbook           latex             mediawiki         rst
+    docx              markdown          native            t2t
+    epub              markdown_github   odt               textile
+    haddock           markdown_mmd      opml              twiki
+    html              markdown_phpextra
+
+----------------------------------------------------------------------
+Output (rendered) Formats                            *Output_Formats*
+
+The command line options for these output formats are:
+    asciidoc          fb2               markdown_mmd      revealjs
+    beamer            haddock           markdown_phpextra rst
+    commonmark        html              markdown_strict   rtf
+    context           html5             mediawiki         s5
+    docbook           icml              native            slideous
+    docbook5          json              odt               slidy
+    docx              latex             opendocument      tei
+    dokuwiki          man               opml              texinfo
+    dzslides          markdown          org               textile
+    epub              markdown_github   plain             zimwiki
+    epub3
+
+HTML formats:
+    XHTML, HTML5, and HTML slide shows using Slidy, reveal.js, Slideous,
+    S5, or DZSlides.
+
+Word processor formats: 
+    Microsoft Word docx, OpenOffice/LibreOffice ODT, OpenDocument XML
+
+Ebooks:
+    EPUB version 2 or 3, FictionBook2
+
+Documentation formats:
+    DocBook, TEI Simple, GNU TexInfo, Groff man pages, Haddock markup
+
+Page layout formats:
+    InDesign ICML
+
+Outline formats: 
+    OPML
+
+TeX formats:
+    LaTeX, ConTeXt, LaTeX Beamer slides
+
+PDF via LaTeX
+
+Lightweight markup formats:
+    Markdown (including CommonMark), reStructuredText, AsciiDoc,
+    MediaWiki markup, DokuWiki markup, Emacs Org-Mode, Textile
+
+Custom formats: custom writers can be written in lua.
+
+Pandoc understands a number of useful markdown syntax extensions,
+including document metadata (title, author, date); footnotes; tables;
+definition lists; superscript and subscript; strikeout; enhanced ordered
+lists (start number and numbering style are significant); running
+example lists; delimited code blocks with syntax highlighting; smart
+quotes, dashes, and ellipses; markdown inside HTML blocks; and inline
+LaTeX. If strict markdown compatibility is desired, all of these
+extensions can be turned off.
+
+LaTeX math (and even macros) can be used in markdown documents. Several
+different methods of rendering math in HTML are provided, including
+MathJax and translation to MathML. LaTeX math is rendered in docx using
+native Word equation objects.
+
+Pandoc includes a powerful system for automatic citations and
+bibliographies, using pandoc-citeproc (which derives from Andrea
+Rossato’s citeproc-hs). This means that you can write a citation like
+
+[see @doe99, pp. 33-35; also @smith04, ch. 1]
+
+and pandoc will convert it into a properly formatted citation using any
+of hundreds of CSL styles (including footnote styles, numerical styles,
+and author-date styles), and add a properly formatted bibliography at
+the end of the document. Many forms of bibliography database can be
+used, including bibtex, RIS, EndNote, ISI, MEDLINE, MODS, and JSON
+citeproc. Citations work in every output format.
+
+----------------------------------------------------------------------
+Command line syntax                             *Command_line_syntax*
+
+pandoc.exe [OPTIONS] [FILES]
+
+  -f FORMAT, -r FORMAT  --from=FORMAT, --read=FORMAT                    
+  -t FORMAT, -w FORMAT  --to=FORMAT, --write=FORMAT                     
+  -o FILENAME           --output=FILENAME                               
+                        --data-dir=DIRECTORY                            
+  -R                    --parse-raw                                     
+  -S                    --smart                                         
+                        --old-dashes                                    
+                        --base-header-level=NUMBER                      
+                        --indented-code-classes=STRING                  
+  -F PROGRAM            --filter=PROGRAM                                
+                        --normalize                                     
+  -p                    --preserve-tabs                                 
+                        --tab-stop=NUMBER                               
+                        --track-changes=accept|reject|all               
+                        --file-scope                                    
+                        --extract-media=PATH                            
+  -s                    --standalone                                    
+                        --template=FILENAME                             
+  -M KEY[:VALUE]        --metadata=KEY[:VALUE]                          
+  -V KEY[:VALUE]        --variable=KEY[:VALUE]                          
+  -D FORMAT             --print-default-template=FORMAT                 
+                        --print-default-data-file=FILE                  
+                        --dpi=NUMBER                                    
+                        --no-wrap                                       
+                        --wrap=auto|none|preserve                       
+                        --columns=NUMBER                                
+                        --toc, --table-of-contents                      
+                        --toc-depth=NUMBER                              
+                        --no-highlight                                  
+                        --highlight-style=STYLE                         
+  -H FILENAME           --include-in-header=FILENAME                    
+  -B FILENAME           --include-before-body=FILENAME                  
+  -A FILENAME           --include-after-body=FILENAME                   
+                        --self-contained                                
+                        --html-q-tags                                   
+                        --ascii                                         
+                        --reference-links                               
+                        --reference-location=block|section|document     
+                        --atx-headers                                   
+                        --chapters                                      
+                        --top-level-division=section|chapter|part       
+  -N                    --number-sections                               
+                        --number-offset=NUMBERS                         
+                        --no-tex-ligatures                              
+                        --listings                                      
+  -i                    --incremental                                   
+                        --slide-level=NUMBER                            
+                        --section-divs                                  
+                        --default-image-extension=extension             
+                        --email-obfuscation=none|javascript|references  
+                        --id-prefix=STRING                              
+  -T STRING             --title-prefix=STRING                           
+  -c URL                --css=URL                                       
+                        --reference-odt=FILENAME                        
+                        --reference-docx=FILENAME                       
+                        --epub-stylesheet=FILENAME                      
+                        --epub-cover-image=FILENAME                     
+                        --epub-metadata=FILENAME                        
+                        --epub-embed-font=FILE                          
+                        --epub-chapter-level=NUMBER                     
+                        --latex-engine=PROGRAM                          
+                        --latex-engine-opt=STRING                       
+                        --bibliography=FILE                             
+                        --csl=FILE                                      
+                        --citation-abbreviations=FILE                   
+                        --natbib                                        
+                        --biblatex                                      
+  -m[URL]               --latexmathml[=URL], --asciimathml[=URL]        
+                        --mathml[=URL]                                  
+                        --mimetex[=URL]                                 
+                        --webtex[=URL]                                  
+                        --jsmath[=URL]                                  
+                        --mathjax[=URL]                                 
+                        --katex[=URL]                                   
+                        --katex-stylesheet=URL                          
+                        --gladtex                                       
+                        --trace                                         
+                        --dump-args                                     
+                        --ignore-args                                   
+                        --verbose                                       
+                        --bash-completion                               
+                        --list-input-formats                            
+                        --list-output-formats                           
+                        --list-extensions                               
+                        --list-highlight-languages                      
+                        --list-highlight-styles                         
+  -v                    --version                                       
+  -h                    --help                                          
+----------------------------------------------------------------------
+Where to get                                        *Where_to_get*
+
+asciidoc-8.6.9.zip
+    https://sourceforge.net/projects/asciidoc/files/latest/download
+
+txt2tags
+    http://txt2tags.org/
+
+----------------------------------------------------------------------
+Word styles used                                  *Word_styles_used*
+
+The pandoc manual states these are used, but I haven't seen any evidence
+of the table style in a document.
+
+Paragraph
+    Normal
+    Body Text
+    First Paragraph
+    Compact
+    Title
+    Subtitle
+    Author
+    Date
+    Abstract
+    Bibliography
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Block Text
+    Footnote Text
+    Definition Term
+    Definition
+    Caption
+    Table Caption
+    Image Caption
+    Figure
+    Figure With Caption
+    TOC Heading
+
+Character
+    Default Paragraph Font
+    Body Text Char
+    Verbatim Char
+    Footnote Reference
+    Hyperlink
+
+Table
+    Normal Table
+
+
+----------------------------------------------------------------------
+Basic Markdown                                
+
+<<style>> denotes the style used by Word 2016 for a given pandoc syntax
+element.
+
+*Lists* (all list items have <<Compact>> style)
+    * Bullet list
+        1. Ordered sublist
+        1. Numbers need not be consecutive.
+            An inline image:··  (Note the two following spaces)
+            ![](sample_word_doc/word/media/image54.png)
+        1. Other stuff··
+            Plain paragraph··
+            Another plain paragraph
+    * Next bullet
+    - Another bullet
+    + Another bullet
+
+    1. Numbered
+    1. Again
+
+    You can have a paragraph interruption.  For a numbered list, count
+    the previous first levels and put in an integer one greater to
+    resume the count:
+
+    3. Resume previous numbering.
+    1. Once counting is synchronized, you can use any digit again.
+
+*Links*
+    External links
+        Automatic:  enclose in < and >:  <http://google.com>
+
+        Inline:  link text in [], followed by URL in parentheses: [Link to
+        google](http://google.com "Google's website").  An optional title can
+        be in double quotes after the URL (hover your mouse over it to see
+        it).  Email:  [My email address](mailto:abc@xyz.com).  Note you have
+        to include the *mailto:*.
+
+        Reference links.  First type is an  explicit reference [This is the
+        link text][link_label].  Link labels are case-insensitive.
+        Implicit references: The second pair of brackets are empty [my
+        website][].
+        Shortcut reference links omit the second brackets [my website].
+
+        [my website]: /foo/bar.html "My website's title"
+        [link_label]: /foo/bar.html "Optional title"
+
+    Internal links
+
+        For a header's text, remove punctuation and replace spaces with
+        hyphens.  Then [link](#my-header) is an internal link that will jump
+        to the section header 'My header'.  Though pandoc's manual says it's
+        only supported for HTML, epub, LaTeX, and ConTeXt, it seems to work
+        in Word too.
+
+*Images*
+    ![Caption text](pictures/psu.jpg)
+    The figure has the style <<Figure with Caption>>.
+
+    Inline figure:
+        ![](pictures/image54.png)
+
+*Tables*
+    Simple table.  Column alignment determined by header.  Contents must
+    fit on one line:
+
+          Right     Left     Center     Default
+        -------     ------ ----------   -------
+             12     12        12            12
+            123      123      123          123
+              1     1          1             1
+
+        Table caption:  Demonstration of simple table syntax.
+
+    Note the table caption gets put before the table.  It has style
+    <<Table Caption>>.
+
+    The table header row can be omitted if the same line of hyphens is
+    put at the bottom of the table.
+
+    Simple table of one row and column:
+
+        ------------------------------------------------------------
+        This is a message inside a table.  I checked this in Word
+        and it is in fact a table.
+        ------------------------------------------------------------
+
+    Table spanning multiple lines:
+
+        -------------------------------------------------------------
+         Centered   Default           Right Left
+          Header    Aligned         Aligned Aligned
+        ----------- ------- --------------- -------------------------
+           First    row                12.0 Example of a row that
+                                            spans multiple lines.
+
+          Second    row                 5.0 Here's another one. Note
+                                            the blank line between
+                                            rows.
+        -------------------------------------------------------------
+
+    Table: Here's the caption. It may span multiple lines.  
+
+    Rows must be separated by blank lines.  You can omit the header if
+    you wish, same as the one-line table above.
+
+    If a column is too narrow, try widening it in the source.
+
+    Grid tables
+
+        +---------------+---------------+--------------------+
+        | Fruit         | Price         | Advantages         |
+        +===============+===============+====================+
+        | Bananas       | $1.34         | - built-in wrapper |
+        |               |               | - bright color     |
+        +---------------+---------------+--------------------+
+        | Oranges       | $2.10         | - cures scurvy     |
+        |               |               | - tasty            |
+        +---------------+---------------+--------------------+
+
+    Can contain arbitrary elements.  Colons can be used for alignment marks
+    after the header
+
+        +---------------+---------------+--------------------+
+        | Fruit         | Price         | Advantages         |
+        +===============+===============+====================+
+        | Bananas       | $1.34         | - built-in wrapper |
+        |               |               | - bright color     |
+        +---------------+---------------+--------------------+
+        | Oranges       | $2.10         | - cures scurvy     |
+        |               |               | - tasty            |
+        +---------------+---------------+--------------------+
+
+    For headerless tables:
+
+        +--------------:+:--------------+:------------------:+
+        | Right         | Left          | Centered           |
+        +---------------+---------------+--------------------+
+
+    Pipe tables:
+
+        | Right | Left | Default | Center |
+        |------:|:-----|---------|:------:|
+        |   12  |  12  |    12   |    12  |
+        |  123  |  123 |   123   |   123  |
+        |    1  |    1 |     1   |     1  |
+
+    Begin/end pipes optional; colons indicate alignment.  Must have header.
+    Put blank cells in header to simulate headerless table.  Cannot contain
+    block elements like paragraphs and lists.
+
+    You don't need
+    to align the pipes:
+
+        fruit| price
+        -----|-----:
+        apple|2.05
+        pear|1.37
+        orange|3.09
+
+*Footnotes*         <<Footnote Text>>
+        Simple[^1] and using a label[^longnote].  
+    The number is just a placeholder; they'll get numbered
+    automatically.  Elsewhere you put in the contents:
+        [^1]: This is for the first footnote.
+
+        [^longnote]: This is for the second footnote.
+    A footnote's text can span multiple lines by indenting the following
+    stuff.  You can inlcude links.
+
+    Inline footnotes are easy^[Inline footnotes are simple but can't
+    contain multiple  lines]
+
+*Definition*
+    A first term <<Definition Term>>
+    : Definition of first term with some *markup* <<Definition>>
+
+    A second term **also** with markup
+    : Definition 2
+
+            A code block,
+            part of definition 2
+
+        Third paragraph of definition 2
+
+*Inline_formatting*
+
+    *word* and _word_           Italics
+    **word** and __word__       Bold
+    ***word*** and ___word___   Bold italics
+    ~~word~~                    Strikethrough
+    `verbatim`                  Monospaced font
+    \*word\* can be used to escape these symbols.
+    Small caps:
+        [Small caps]{style="font-variant:small-caps;"}
+
+*Blocks*
+
+*Equations*
+
+*Templates*

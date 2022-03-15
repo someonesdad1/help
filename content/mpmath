@@ -1,0 +1,1564 @@
+*mpmath*
+
+|basics|
+|arithmetic|
+|elem_functions|
+|interval_numbers|
+|nonelem_functions|
+|matrices|
+|random_numbers|
+|polynomial_eval|
+|numerical_integration|
+|solving_odes|
+|summation|
+|derivatives|
+|finding_roots|
+|limits|
+|function_approximation|
+|number_identification|
+|number_properties|
+
+Based on the online documentation for version 0.19; however, results are
+shown using 0.18.
+
+Set mp.pretty = True to avoid seeing types in interactive sessions:
+    mp.pretty = False
+        >>> limit(lambda x: (x-sin(x))/x**3, 0)
+        mpf('0.16666666666666666')
+    mp.pretty = True
+        >>> limit(lambda x: (x-sin(x))/x**3, 0)
+        0.166666666666667
+
+-----------------------------------------------------------------------------
+Basics                                                          *basics*
+
+from mpmath import *
+
+Precision:  mp object
+    mp.dps = 15   # Set decimal places
+
+Numerical types:  mpf() and mpc()
+    Can hold inf, -inf, nan
+    mpf(4), mpf("3"), mpf(1.23e6), mpf("1.23e6")
+    mpc(4, 5), mpc(complex(4, 5))
+        .real, .imag
+
+mpmathify(x, strings=True)  
+    Converts to mpf or mpc.  Strings representing fractions or
+    complex numbers are permitted.
+
+fraction(p, q)
+    Returns lazy mpf representing p/q.  Note the value is updated
+    with the precision.
+
+chop(x, tol=None):
+    Chops off small real or imaginary parts, or converts numbers
+    close to zero to exact zeros. The input can be a single
+    number or an iterable:
+
+        >>> from mpmath import *
+        >>> mp.dps = 15; mp.pretty = False
+        >>> chop(5+1e-10j, tol=1e-9)
+        mpf('5.0')
+        >>> nprint(chop([1.0, 1e-20, 3+1e-18j,
+        >>> -4, 2]))
+        [1.0, 0.0, 3.0, -4.0, 2.0]
+
+    The tolerance defaults to 100*eps.
+
+almosteq(s, t, rel_eps=None, abs_eps=None)
+    If no epsilons are given, both are set to 2^(-p+m) where p is
+    the working precision and m is a small integer.  This allows
+    checking for equality in the presence of small rounding errors.
+
+arange(a, b, c):  Extension of range.
+
+linspace(a, b, n)
+
+    Returns a list of evenly-spaced samples from a to b.  This is useful
+    for partitioning an interval into subintervals, including the
+    endpoint.  Can also use linspace(mpi(a, b), n).
+
+Printing
+    mp.dps = 15
+    a = mpf(1)/6
+    nstr(a, 8)      # Print object at 8 significant figures
+        '0.16666667'
+    nprint(a, 8)    # Same, but send to stdout
+        0.16666667
+
+    To always print an mpf number in scientific notation:
+        from mpmath.libmp import to_str
+        a, dps = , mpf(2222), 20
+        print(to_str(a._mpf_, dps, min_fixed=2, max_fixed=1,
+                     show_zero_exponent=True))
+        --> 2.2222e+4
+
+        The a._mpf_ is the "raw" form of the floating point number,
+        which is used internally and, in this case, is the tuple 
+        (0, mpz(11111), 1, 14).  Having min_fixed > max_fixed forces
+        scientific notation.
+    To always print an mpf number in fixed point:  set min_fixed to -inf
+    and max_fixed to +inf.
+
+Temporarily changing precision:  workdps, extradps
+
+    from __future__ import with_statement
+    mp.dps = 15
+    with workdps(20):
+        print mpf(1)/7
+        with extradps(10)
+            print mpf(1)/7
+
+    Prints:
+        0.14285714285714285714
+        0.142857142857142857142857142857
+    The with statement ensures the precision gets reset when exiting the
+    block even if an exception is raised.
+
+    Can also use them as function decorators
+        @workdps(6)
+        def f():
+            return mpf(1)/3
+
+        f()
+        prints:  mpf('0.33333331346511841')
+
+Plotting (need matplotlib)
+    plot(exp)
+    plot([cos, sin], [-4, 4])
+    cplot(lambda z: exp(1/z), [-2, 2], [-2, 2])
+    See help(plot) and help(cplot) for details.
+
+Speeding things up
+    * Precompute constants
+    * (2x) Use JIT compiler psyco
+    * (2x) Use low-level functions in mpmath.lib instead of mpf instances
+    * Use the fp context if you can use platform floating point, as
+      these are wrappers for math and cmath.  Note they'll generate
+      complex numbers as needed like mpmath does rather than raise an
+      exception.
+
+-----------------------------------------------------------------------------
+Interval numbers                                         *interval_numbers*
+
+from mpmath import iv
+iv.dps = 15
+a = iv.mpf('0.1')
+    >>> mpi('0.099999999999999992', '0.10000000000000001')
+    print(a)
+        --> [0.099999999999999991673, 0.10000000000000000555]
+Recommended forms:
+    iv.mpf(0.1)             # Don't use
+        --> [0.10000000000000000555, 0.10000000000000000555]
+    iv.mpf('0.1')           # Good -- gets a bounding interval
+        --> [0.099999999999999991673, 0.10000000000000000555]
+        0.1 can't be represented in binary floating point at any
+        precision.
+    iv.mpf(['0.1', '0.2'])  # Defines an interval
+        --> [0.099999999999999991673, 0.2000000000000000111]
+Complex numbers supported by iv.mpc.
+    a = iv.mpc(('1', '2'), ('3', '4'))
+    print(a)
+        --> ([1.0, 2.0] + [3.0, 4.0]*j)
+
+Interval numbers can be used to put bounds on calculations and
+provide rigorous error tracking.  Example:  suppose we have 3
+measurements of a rectangular solid with an estimated uncertainty of
+0.1 in the measured dimension.  The measurements were 10, 20, and 30.
+Intervals allow us to calculate the bounds of the volume:
+    u = 0.1
+    a = mpi('9.9', '10.1')
+    b = mpi('19.9', '20.1')
+    c = mpi('29.9', '30.1')
+    print(a*b*c)
+        --> [5890.5989999999974316, 6110.6010000000023865]
+    which we'd interpret as
+        [5890.599, 6110.601].
+mpi attributes:
+    .a, .b: endpoints
+    .mid    midpoint
+    .delta  width
+Can be half-infinite:
+    b = mpi(1, 'inf')
+    >>> mpi('0.0', '+inf')
+Test for interval inclusion
+    a in b
+    >>> True
+Equality
+    == and != check whether the intervals have the same endpoints.
+Ordering
+    Guaranteed inequality returns True or False.
+    Indeterminate inequality returns None.
+        mpi([1, 2]) > 0
+            --> True
+        mpi([1, 2]) < 1
+            --> False
+        mpi([1, 2]) < 2
+            --> None
+Some transcendental functions supported
+    a**0.5
+    >>> mpi('0.31622776601683789', '0.316227766016838')
+    Also:  iv.exp, iv.log, iv.ln2, iv.sin, iv.cos
+    a = iv.mpf(('1', '2'))
+    print(iv.ln(a))
+        --> [0.0, 0.69314718055994539725]
+
+Matrices
+    The iv.matrix and fp.matrix classes convert inputs to intervals and
+    Python floating-point numbers respectively.
+
+    Interval matrices can be used to perform linear algebra operations with
+    rigorous error tracking:
+
+    >>> a = iv.matrix([['0.1','0.3','1.0'],
+    ...                ['7.1','5.5','4.8'],
+    ...                ['3.2','4.4','5.6']])
+    >>>
+    >>> b = iv.matrix(['4','0.6','0.5'])
+    >>> c = iv.lu_solve(a, b)
+    >>> print c
+    [  [5.2582327113062393041, 5.2582327113062749951]]
+    [[-13.155049396267856583, -13.155049396267821167]]
+    [  [7.4206915477497212555, 7.4206915477497310922]]
+    >>> print a*c
+    [  [3.9999999999999866773, 4.0000000000000133227]]
+    [[0.59999999999972430942, 0.60000000000027142733]]
+    [[0.49999999999982236432, 0.50000000000018474111]]
+
+
+-----------------------------------------------------------------------------
+Arithmetic                                               *arithmetic*
+
+fadd(x, y, **kwargs)
+fsub(x, y, **kwargs)
+fneg(x, **kwargs)
+fmul(x, y, **kwargs)
+fdiv(x, y, **kwargs)
+
+    Arithmetic & negation using specified precision and rounding.
+    Use prec or dps keyword for a custom precision.  Note you can set
+    prec to inf or exact=True so that exact arithmetic with no rounding
+    is performed.
+
+    If precision is finite, the rounding keyword can be 'n' nearest
+    (default), 'f' floor, 'c' ceiling, 'd' down, 'u' up.
+
+    Exact addition avoids cancellation errors, enforcing familiar laws of
+    numbers such as x+y-x = y, which don't hold in floating-point arithmetic
+    with finite precision:
+
+    >>> x, y = mpf(2), mpf('1e-1000')
+    >>> print(x + y - x)
+    0.0
+    >>> print(fadd(x, y, prec=inf) - x)
+    1.0e-1000
+    >>> print(fadd(x, y, exact=True) - x)
+    1.0e-1000
+
+fmod(x, y)
+    Converts x and y to mpmath numbers and returns x \mod y. For mpmath
+    numbers, this is equivalent to x % y.
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = True
+    >>> fmod(100, pi)
+    2.61062773871641
+
+    You can use fmod() to compute fractional parts of numbers:
+
+    >>> fmod(10.25, 1)
+    0.25
+
+fsum(terms, absolute=False, squared=False)
+    Calculates a sum containing a finite number of terms (for infinite
+    series, see nsum()). The terms will be converted to mpmath numbers.
+    For len(terms) > 2, this function is generally faster and produces
+    more accurate results than the builtin Python function sum().
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = False
+    >>> fsum([1, 2, 0.5, 7])
+    mpf('10.5')
+
+    With squared=True each term is squared, and with absolute=True the
+    absolute value of each term is used.
+
+fprod(factors)
+    Calculates a product containing a finite number of factors (for
+    infinite products, see nprod()). The factors will be converted to
+    mpmath numbers.
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = False
+    >>> fprod([1, 2, 0.5, 7])
+    mpf('7.0')
+
+fdot(A, B=None, conjugate=False)
+    Computes the dot product of the iterables A and B,
+
+        \sum_{k=0} A_k B_k.
+
+    Alternatively, fdot() accepts a single iterable of pairs. In other
+    words, fdot(A,B) and fdot(zip(A,B)) are equivalent. The elements are
+    automatically converted to mpmath numbers.
+
+    With conjugate=True, the elements in the second vector will be
+    conjugated:
+
+        \sum_{k=0} A_k \overline{B_k}
+
+    Examples
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = False
+    >>> A = [2, 1.5, 3]
+    >>> B = [1, -1, 2]
+    >>> fdot(A, B)
+    mpf('6.5')
+    >>> list(zip(A, B))
+    [(2, 1), (1.5, -1), (3, 2)]
+    >>> fdot(_)
+    mpf('6.5')
+    >>> A = [2, 1.5, 3j]
+    >>> B = [1+j, 3, -1-j]
+    >>> fdot(A, B)
+    mpc(real='9.5', imag='-1.0')
+    >>> fdot(A, B, conjugate=True)
+    mpc(real='3.5', imag='-5.0')
+
+fabs(x)
+    Returns the absolute value of x, |x|. Unlike abs(), fabs() converts
+    non-mpmath numbers (such as int) into mpmath numbers:
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = False
+    >>> fabs(3)
+    mpf('3.0')
+    >>> fabs(-3)
+    mpf('3.0')
+    >>> fabs(3+4j)
+    mpf('5.0')
+
+sign(x)
+    Returns the sign of x, defined as \mathrm{sign}(x) = x / |x| (with
+    the special case \mathrm{sign}(0) = 0):
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = False
+    >>> sign(10)
+    mpf('1.0')
+    >>> sign(-10)
+    mpf('-1.0')
+    >>> sign(0)
+    mpf('0.0')
+
+    Note that the sign function is also defined for complex numbers, for
+    which it gives the projection onto the unit circle:
+
+    >>> mp.dps = 15; mp.pretty = True
+    >>> sign(1+j)
+    (0.707106781186547 + 0.707106781186547j)
+
+re()
+    Returns the real part of x, \Re(x). Unlike x.real, re() converts x
+    to a mpmath number:
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = False
+    >>> re(3)
+    mpf('3.0')
+    >>> re(-1+4j)
+    mpf('-1.0')
+
+im()
+    Returns the imaginary part of x, \Im(x). Unlike x.imag, im()
+    converts x to a mpmath number:
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = False
+    >>> im(3)
+    mpf('0.0')
+    >>> im(-1+4j)
+    mpf('4.0')
+
+arg()
+    Computes the complex argument (phase) of x, defined as the signed
+    angle between the positive real axis and x in the complex plane:
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = True
+    >>> arg(3)
+    0.0
+    >>> arg(3+3j)
+    0.785398163397448
+    >>> arg(3j)
+    1.5707963267949
+    >>> arg(-3)
+    3.14159265358979
+    >>> arg(-3j)
+    -1.5707963267949
+
+    The angle is defined to satisfy -pi < arg(x) <= pi and with the
+    sign convention that a nonnegative imaginary part results in a
+    nonnegative argument.
+
+    The value returned by arg() is an mpf instance.
+
+conj()
+    Returns the complex conjugate of x. Unlike x.conjugate(), im()
+    converts x to a mpmath number:
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = False
+    >>> conj(3)
+    mpf('3.0')
+    >>> conj(-1+4j)
+    mpc(real='-1.0', imag='-4.0')
+
+polar()
+    Returns the polar representation of the complex number z as a pair
+    (r, phi) such that z = r e^{i*phi}:
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = True
+    >>> polar(-2)
+    (2.0, 3.14159265358979)
+    >>> polar(3-4j)
+    (5.0, -0.927295218001612)
+
+rect()
+    Returns the complex number represented by polar coordinates
+    (r, phi):
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = True
+    >>> chop(rect(2, pi))
+    -2.0
+    >>> rect(sqrt(2), -pi/4)
+    (1.0 - 1.0j)
+
+----------------------------------------------------------------------------
+Elementary Functions                                     *elem_functions*
+
+Predefined objects:
+    j, inf, nan
+    pi
+    degree = pi/180
+    e
+    phi (Golden ratio (1+sqrt(5))/2)
+    ln2, ln10
+    euler (0.5772... Euler's constant)
+
+    eps:  difference between 1 and the smallest floating point number 
+        after 1.  Useful for convergence checks.
+
+Elementary functions
+    sin(45*degree)
+    sin(3*pi)
+        3.67394039744206e-16
+    sinpi(3) # For multiples of pi
+        0.0
+
+    sqrt(x)         Square root, x^(1/2)
+    cbrt(x)         Cube root, x^(1/3)
+    nthroot(x)      Nth root, x^(1/n)
+    hypot(x,y)      Euclidean norm, sqrt(x^2+y^2)
+    exp(x)          Exponential function
+    log(x,b)        Natural logarithm (optionally base-b logarithm)
+    ln(x)           Natural logarithm
+    log10(x)        Base-10 logarithm
+    power(x,y)      Power, x**y
+    modf(x,y)       Modulo, x mod y
+    ldexp(x,n)      Fast calculation of x * 2**n
+    frexp(x)        Scales x to the range [0.5, 1), returning value and 
+                    exponent
+    floor(x)        Floor function (round to integer in the direction of -inf)
+    ceil(x)         Ceiling function (round to integer in the direction of +inf)
+    arg(z)          Complex argument of z
+    degrees(x)      Convert radians to degrees
+    radians(x)      Convert degrees to radians
+    cos(x)          Cosine
+    sin(x)          Sine
+    tan(x)          Tangent
+    sec(x)          Secant
+    csc(x)          Cosecant
+    cot(x)          Cotangent
+    cosh(x)         Hyperbolic cosine
+    sinh(x)         Hyperbolic sine
+    tanh(x)         Hyperbolic tangent
+    sech(x)         Hyperbolic secant
+    csch(x)         Hyperbolic cosecant
+    coth(x)         Hyperbolic cotangent
+    acos(x)         Inverse cosine
+    asin(x)         Inverse sine
+    atan(x)         Inverse tangent
+    atan2(y,x)      Inverse tangent atan(y/x) with attention to signs of 
+                    both x and y
+    asec(x)         Inverse secant
+    acsc(x)         Inverse cosecant
+    acot(x)         Inverse cotangent
+    acosh(x)        Inverse hyperbolic cosine
+    asinh(x)        Inverse hyperbolic sine
+    atanh(x)        Inverse hyperbolic tangent
+    asech(x)        Inverse hyperbolic secant
+    acsch(x)        Inverse hyperbolic cosecant
+    acoth(x)        Inverse hyperbolic cotangent
+
+    factorial(z)    Supports complex z
+    fac(x)          Use for large values of x
+
+-----------------------------------------------------------------------------
+Nonelementary Functions                                   *nonelem_functions*
+
+    lambertw(x,k)            Lambert W function
+    gamma(x)                 Gamma function G(x)
+    rgamma(x)                Reciprocal of gamma function 1/G(x)
+    binomial(x,y)            Binomial coefficient
+    loggamma(x)              ln(G(x))
+    gammaprod(x,y)           Gamma function product (x, y iterables)
+                             G(x[0])*G(x[1])... / (G(y[0])*G(y[1])...)
+    rf(x,n)                  Rising factorial (Pochhammer symbol), x^(n)
+                             = G(x + n)/G(x) = x(x+1)...(x+n-1)
+    ff(x,n)                  Falling factorial, x_(n)
+                             = G(x + 1)/G(x-n+1) = x(x01)...(x-n+1)
+    lower_gamma(a,x)         Lower incomplete gamma function
+    upper_gamma(a,x)         Upper incomplete gamma function
+    beta(x, y)               Beta function G(x)G(y)/G(x+y)
+    betainc(a, b, x1=0, x2=1) Incomplete beta function (same as beta
+                             when x1=0, x2=1)
+    superfac(x)              sf(n) = Prod(k=1,n) k! = 1!2!3!...n!
+    hyperfac(x)              H(n) = Prod(k=1,n) k^k
+    psi(n,x)                 Polygamma function of order n
+                             = (n+1)th deriv of log(G(x))
+    harmonic(n)              = Sum(k=1,n) 1/n
+    erf(x)                   Error function
+    erfc(x)                  Complementary error function
+    erfi(x)                  Imaginary error function
+    npdf(x, mu, sigma)       Normal probability density function
+    ncdf(x, mu, sigma)       Normal cumulative distribution function
+    zeta(x)                  Riemann zeta function
+    bernoulli(n)             Bernoulli number, B_n
+    bernfrac(n)              Bernoulli number as an exact fraction
+    ei(x)                    Exponential integral, Ei(x)
+    li(x)                    Logarithmic integral, li(x)
+    ci(x)                    Cosine integral, Ci(x)
+    si(x)                    Sine integral, Si(x)
+    chi(x)                   Hyperbolic cosine integral, Ci(x)
+    shi(x)                   Hyperbolic sine integral, Si(x)
+    j0(x)                    Bessel function J_0(x)
+    j1(x)                    Bessel function J_1(x)
+    jn(n,x)                  Bessel function J_n(x)
+    ellipe(x)                Complete elliptic integral E
+    ellipk(x)                Complete elliptic integral K
+    airyai(x)                Airy function Ai(x)
+    airybi(x)                Airy function Bi(x)
+    fresnels(x)              Fresnel integral S(x)
+    fresnelc(x)              Fresnel integral C(x)
+    agm(x,y)                 Arithmetic geometric mean
+    hyper(as,bs,z)           Hypergeometric function PFQ
+    hyp0f1(a,z)              Hypergeometric function 0F1
+    hyp1f1(a,b,z)            Hypergeometric function 1F1
+    hyp2f1(a,b,c,z)          Hypergeometric function 2F1
+    jacobi(n,a,b,x)          Jacobi polynomial / Jacobi function
+    legendre(n,x)            Legendre polynomial / Legendre function
+    chebyt(n,x)              Chebyshev polynomial of the first kind, T_n(x)
+    chebyu(n,x)              Chebyshev polynomial of the second kind, U_n(x)
+    jacobi_elliptic_xx(u,m)  Jacobi elliptic functions, xx = cn, sn, dn
+    jacobi_theta_x(u,m)      Jacobi theta functions, x = 1, 2, 3, 4
+
+-----------------------------------------------------------------------------
+Random numbers                                      *random_numbers*
+
+rand()  Returns number from [0, 1).  All bits up to working precision
+    are random.
+
+-----------------------------------------------------------------------------
+Polynomial Evaluation                               *polynomial_eval*
+
+Polynomial coefficients are a sequence with the highest-degree
+coefficient as the first element.
+
+x^3 + 5x + 2 at x = 3.5:
+    polyeval([1, 0, 5, 2], mpf('3.5'))
+    mpf('62.375')
+
+Include derivative:
+    polyval([1, 0, 5, 2], mpf('3.5'), derivative=True)
+    (mpf('62.375'), mpf('41.75'))
+
+Points and coefficients may be complex.
+
+Roots of polynomials
+
+    polyroots(coeffs, maxsteps=50, cleanup=True, extraprec=10, error=False)
+
+roots, err = polyroots([4,3,2], error=True)
+
+    roots = [mpc(real='-0.375', imag='0.59947894041408989'),
+             mpc(real='-0.375', imag='-0.59947894041408989')]
+    err = mpf('2.2204460492503131e-16')
+    err is an estimate of the maximum error among the computed roots.
+
+    The roots are computed to the current working precision accuracy. If
+    this accuracy cannot be achieved in maxsteps steps, then a
+    NoConvergence exception is raised.
+
+    The user should always do a convergence study with regards to
+    extraprec to ensure accurate results. It is possible to get
+    convergence to a wrong answer with too low extraprec.
+
+    Provided there are no repeated roots, polyroots() can typically
+    compute all roots of an arbitrary polynomial to high precision.
+
+-----------------------------------------------------------------------------
+Numerical Integration                            *numerical_integration*
+
+quad(func, [a, b]):   1, 2, 3 dimensional integrals
+    Keywords:
+    method='tanh-sinh'  quadts shortcut (default)
+        Tends to handle endpoint singularities well; nodes are cheap to 
+        compute on first run.
+    method='gauss-legendre'  quadgl shortcut
+        Fewer function evals, faster for repeated use.  Nodes are more
+        expensive to compute.  Good choice if integrand is smooth and 
+        repeated integrations needed.
+    error=True
+        Returns error estimate (not always correct)
+    verbose=True
+        Detailed progress
+
+    Example:  quad(sin, [0, pi]) --> 2.0
+    2D integral:
+        f = lambda x, y: cos(x+y/2)
+        quad(f, [-pi/2, pi/2], [0, pi]) --> 4.0
+
+    Neither algorithm copes well with mid-interval singularities (such
+    as mid-interval discontinuities in f(x) or f'(x)). The best solution
+    is to split the integral into parts:
+
+    mp.dps = 15
+    quad(lambda x: abs(sin(x)), [0, 2*pi])   # Bad
+        --> 3.99900894176779
+    >>> quad(lambda x: abs(sin(x)), [0, pi, 2*pi])  # Good
+        --> 4.0
+
+Oscillatory integrands
+    quadosc(f, [a, b], omega=None, period=None, zeros=None)
+
+    Calculates integral from a to b (where at least one of a or b are
+    infinite) of g(x)*cos(omega*x + phi) for some slowly-decreasing
+    function g(x).  For a periodic function, you can specify the zeros
+    by either the angular frequency omega or the period 2*pi/omega.  Or,
+    specify the n-th zero:
+
+        quadosc(f, [a, b], zeros=lambda n: n*pi) (e.g.)
+
+Examples
+--------
+    * Calculate integral representations
+        def Gamma(z):
+            return quadts(lambda t: exp(-t)*t**(z-1), [0, inf])
+
+        Gamma(1+1j)
+        (0.498015668118356 - 0.154949828301811j)
+
+    * Complex integrals are supported.  Compute Euler's constant gamma by
+      integrating around the pole of the Riemann zeta function at z = 1:
+
+        print 1/(2*pi)*quadts(lambda x: zeta(exp(j*x)+1), [0, 2*pi])
+        (0.577215664901533 - 1.04534339656676e-23j)
+
+    * Double and triple integrals supported
+        f = lambda x, y: cos(x+y/2)
+        print quadts(f, [-pi/2, pi/2], [0, pi])
+        4.0
+
+    * quadosc(lambda x: sin(x)/x, [0, inf], period=2*pi)
+      1.57079632679489661923132169164
+
+    * Nonperiodic integrands
+        def j0zero(n):
+            return findroot(j0, pi*(n-0.25))
+        j0 is normalized so that int from 0 to inf is 1:
+        quadosc(j0, [0, inf], zeros=j0zero)
+        1.0
+
+-----------------------------------------------------------------------------
+Solving ODEs                                     *solving_odes*
+
+odefun(F, x0, y0, tol=None, degree=None, method='taylor', verbose=False)
+
+    Returns a function y(x) = [y_0(x), y_1(x), ... , y_n(x)] that is a
+    numerical solution of the n+1-dimensional first-order ordinary
+    differential equation (ODE) system
+
+        y_0'(x) = F_0(x, [y_0(x), y_1(x), ... , y_n(x)])
+        y_1'(x) = F_1(x, [y_0(x), y_1(x), ... , y_n(x)]) 
+        ...
+        y_n'(x) = F_n(x, [y_0(x), y_1(x), ..., y_n(x)])
+
+    The derivatives are specified by the vector-valued function F that
+    evaluates [y_0', ... , y_n'] = F(x, [y_0, ... , y_n]). The initial
+    point x_0 is specified by the scalar argument x0, and the initial value
+    y(x_0) = [y_0(x_0), ... , y_n(x_0)] is specified by the vector
+    argument y0.
+
+Example:  harmonic oscillator y''(x) + y(x) = 0.  Rewrite to
+    y0 = y
+    y1 = y0'
+resulting in the system
+    y0' = y1
+    y1' = -y0
+For the IVP, use y0(0) = 1 and y1(0) = 0, which will yield y = cos(x):
+    f = odefun(lambda x, y: [-y[1], y[0]], 0, [1, 0])
+    for x in [0, 1, 2.5, 10]:
+        nprint(f(x), 15)
+        nprint([cos(x), sin(x)], 15)
+        print("---")
+
+    which prints
+        [1.0, 0.0]
+        [1.0, 0.0]
+        ---
+        [0.54030230586814, 0.841470984807897]
+        [0.54030230586814, 0.841470984807897]
+        ---
+        [-0.801143615546934, 0.598472144103957]
+        [-0.801143615546934, 0.598472144103957]
+        ---
+        [-0.839071529076452, -0.54402111088937]
+        [-0.839071529076452, -0.54402111088937]
+
+    Note that we get both the sine and the cosine solutions
+    simultaneously.
+
+-----------------------------------------------------------------------------
+Summation                                        *summation*
+
+fsum(terms, absolute=False, squared=False)
+    Finite sums.  If absolute is True, use |x| of each term.  If squared
+    is True, use x**2.
+
+fprod(terms)
+    Finite products.
+
+nsum(func, *intervals, **options)
+    Infinite products:  sum(from k=a to b of f(k))
+    where interval = [a, b].  Note a and/or b can be +/-inf.
+
+    Can also sum
+        sum(from k1=a1 to b1, ..., kn=an to bn of f(k1, ..., kn)
+    using intervals = [[a1, b1], [a2, b2], ..., [an, bn]]
+
+  Options
+    tol         Desired maximum final error.
+    method      Algorithm ('richardson+shanks' is default)
+    maxterms    Cancel after at most this number of terms. [10*dps]
+    steps       Iterable giving number of terms to add between each 
+                extrapolation attempt.  Default is [10, 20, 30, ...].
+    verbose     Print details about progress.
+    ignore      Any term that raises ArithmeticError or ValueError is
+                replaced by zero.
+
+    Method details:
+
+        'richardson' / 'r':
+            Uses Richardson extrapolation. Provides useful extrapolation
+            when f(k) \sim P(k)/Q(k) or when f(k) \sim (-1)^k P(k)/Q(k)
+            for polynomials P and Q. See richardson() for additional
+            information.
+
+        'shanks' / 's':
+            Uses Shanks transformation. Typically provides useful
+            extrapolation when f(k) \sim c^k or when successive terms
+            alternate signs. Is able to sum some divergent series. See
+            shanks() for additional information.
+
+        'levin' / 'l':
+            Uses the Levin transformation. It performs better than the
+            Shanks transformation for logarithmic convergent or
+            alternating divergent series. The 'levin_variant'-keyword
+            selects the variant. Valid choices are "u", "t", "v" and
+            "all" whereby "all" uses all three u,t and v simultanously
+            (This is good for performance comparison in conjunction with
+            "verbose=True"). Instead of the Levin transform one can also
+            use the Sidi-S transform by selecting the method 'sidi'.
+            See levin() for additional details.
+
+        'alternating' / 'a':
+            This is the convergence acceleration of alternating series
+            developped by Cohen, Villegras and Zagier. See cohen_alt()
+            for additional details.
+
+        'euler-maclaurin' / 'e':
+            Uses the Euler-Maclaurin summation formula to approximate
+            the remainder sum by an integral. This requires high-order
+            numerical derivatives and numerical integration. The
+            advantage of this algorithm is that it works regardless of
+            the decay rate of f, as long as f is sufficiently smooth.
+            See sumem() for additional information.
+
+        'direct' / 'd':
+            Does not perform any extrapolation. This can be used (and
+            should only be used for) rapidly convergent series. The
+            summation automatically stops when the terms decrease below
+            the target tolerance. 
+
+Examples:
+    A finite sum:
+        >>> nsum(lambda k: 1/k, [1, 6])
+        2.45
+
+    Summation of a series going to negative infinity and a doubly infinite
+    series:
+        >>> nsum(lambda k: 1/k**2, [-inf, -1])
+        1.64493406684823
+        >>> nsum(lambda k: 1/(1+k**2), [-inf, inf])
+        3.15334809493716
+
+    nsum() handles sums of complex numbers:
+        >>> nsum(lambda k: (0.5+0.25j)**k, [0, inf])
+        (1.6 + 0.8j)
+
+    The following sum converges very rapidly, so it is most efficient to
+    sum it by disabling convergence acceleration:
+        >>> mp.dps = 1000
+        >>> a = nsum(lambda k: -(-1)**k * k**2 / fac(2*k), [1, inf],
+        ...     method='direct')
+        >>> b = (cos(1)+sin(1))/4
+        >>> abs(a-b) < mpf('1e-998')
+        True
+
+-----------------------------------------------------------------------------
+Derivatives                                      *derivatives*
+
+diff(func, x, n=1, **options)
+    Numerically computes the derivative of f, f'(x), or generally for an
+    integer n > 0, the n-th derivative f^{(n)}(x).
+
+    If x is a tuple of arguments (x1, ..., xk) and order (n1, ..., nk),
+    the partial derivative is evaluated as
+
+    diff(func, (x1, ..., xk), order (n1, ..., nk))
+
+    Example:  diff(lambda x,y: 3*x*y + 2*y - x, (0.25, 0.5), (0,1)) gives
+    2.75.
+
+  Options
+    method
+        Supported methods are 'step' or 'quad': derivatives may be
+        computed using either a finite difference with a small step size
+        h (default), or numerical quadrature.
+
+    direction
+        Direction of finite difference: can be -1 for a left difference,
+        0 for a central difference (default), or +1 for a right
+        difference; more generally can be any complex number.
+
+    addprec
+        Extra precision for h used to account for the function's
+        sensitivity to perturbations (default = 10).
+
+    relative
+        Choose h relative to the magnitude of x, rather than an absolute
+        value; useful for large or tiny x (default = False).
+
+    h
+        As an alternative to addprec and relative, manually select the
+        step size h.
+
+    singular
+        If True, evaluation exactly at the point x is avoided; this is
+        useful for differentiating functions with removable
+        singularities.  Default = False.
+
+    radius
+        Radius of integration contour (with method = 'quad'). Default =
+        0.25. A larger radius typically is faster and more accurate, but
+        it must be chosen so that f has no singularities within the
+        radius from the evaluation point. 
+
+diffs(func, x, n=None, **options)
+    Returns a generator that returns the sequence of 0th, first, second,
+    etc. derivatives.  Same options as diff.  Maximum diff calculated is
+    n.
+
+Composition of derivatives
+    diffs_prod
+    diffs_exp
+    See manual for details
+
+-----------------------------------------------------------------------------
+Finding Roots                                    *finding_roots*
+
+findroot(func, x0, solver=Secant, tol=None, verbose=False, verify=True, **kw)
+    Finds a solution to func(x) = 0 using x0 as starting point or
+    interval for x.  Multidimensional overdetermined systems are
+    supported. You can specify them using a function or a list of
+    functions.
+
+Arguments
+    f
+        One dimensional function.
+    x0
+        Starting point, several starting points or interval (depends on
+        solver).
+    tol
+        The returned solution has an error smaller than this.
+    verbose
+        Print additional information for each iteration if true.
+    verify
+        Verify the solution and raise a ValueError if |f(x) > tol|.
+    solver
+        A generator for f and x0 returning approximative solution and
+        error.  For complex roots, solver='muller' is recommended.
+    maxsteps
+        After how many steps the solver will cancel.
+    df
+        First derivative of f (used by some solvers).
+    d2f
+        Second derivative of f (used by some solvers).
+    multidimensional
+        Force multidimensional solving.
+    J
+        Jacobian matrix of f (used by multidimensional solvers).
+    norm
+        Used vector norm (used by multidimensional solvers).
+
+Example:  Compute root of sin(x) near 3:
+    findroot(sin, 3)
+        --> mpf('3.1415926535897932')
+
+You can find roots of analytic functions, but you must give it a nonreal
+starting value, otherwise it won't leave the real line:
+    findroot(lambda x: x**3 + 2*x + 1, j)
+        --> mpc(real='0.22669882575820188', imag='1.4677115087102243')
+
+Multidimensional roots:
+    f = [lambda x1, x2: x1**2 + x2, lambda x1, x2: 5*x1**2 - 3*x1 + 2*x2 - 3]
+        --> matrix(
+        [['-0.618033988749895'],
+         ['-0.381966011250105']])
+
+-----------------------------------------------------------------------------
+Limits                                           *limits*
+
+limit(ctx, f, x, direction=1, exp=False, **kwargs)
+    Estimates
+        lim (t --> x) of f(t)
+    where x is finite or infinite.
+
+    For finite x, limit() evaluates f(x + d/n) for consecutive integer
+    values of n, where the approach direction d may be specified using
+    the direction keyword argument.  For infinite x, limit() evaluates
+    values of f(sign(x)*n).
+
+  Options
+      The options are available with essentially the same meaning as for
+      nsum(): tol, method, maxterms, steps, verbose.
+
+Example:
+     limit(lambda x: (x-sin(x))/x**3, 0)
+        --> mpf('0.16666666666666666')
+
+-----------------------------------------------------------------------------
+Function Approximation                             *function_approximation*
+
+taylor(f, x, n, **options)
+    Taylor series approximation of f around the point x of degree n.
+    The coefficients are returned as a list.
+
+    nprint(chop(taylor(sin, 0, 5)))
+        --> [0.0, 1.0, 0.0, -0.166667, 0.0, 0.00833333]
+    
+    Note that to evaluate the coefficients with polyeval(), you must
+    reverse the coefficients and subtract the point x from the argument:
+
+    p = taylor(exp, 2.0, 10)
+    polyval(p[::-1], 2.5 - 2.0)
+        --> 12.1824939606092
+    exp(2.5)
+        --> 12.1824939607035
+
+pade(a, L, M)
+    Pade approximation of degree (L, M) to a function.
+
+    def f(x):
+         return sqrt((one + 2*x)/(one + x))
+    a = taylor(f, 0, 6)
+    p, q = pade(a, 3, 3)
+    x = 10
+    polyval(p[::-1], x)/polyval(q[::-1], x)
+        --> 1.38169105566806
+    f(x)
+        --> 1.38169855941551
+
+chebyfit(ctx, f, interval, N, error=False)
+
+    Computes a polynomial of degree N-1 that approximates the given
+    function f on the interval [a, b]. With error=True, chebyfit() also
+    returns an accurate estimate of the maximum absolute error; that is,
+    the maximum value of |f(x) - P(x)| for x is an element in [a, b].
+
+    chebyfit() uses the Chebyshev approximation formula, which gives a
+    nearly optimal solution: that is, the maximum error of the
+    approximating polynomial is very close to the smallest possible for
+    any polynomial of the same degree.
+
+    Chebyshev approximation is very useful if one needs repeated
+    evaluation of an expensive function, such as function defined
+    implicitly by an integral or a differential equation. (For example,
+    it could be used to turn a slow mpmath function into a fast
+    machine-precision version of the same.)
+
+  Examples
+
+  Here we use chebyfit() to generate a low-degree approximation of f(x)
+  = cos(x), valid on the interval [1, 2]:
+
+  >>> from mpmath import *
+  >>> mp.dps = 15; mp.pretty = True
+  >>> poly, err = chebyfit(cos, [1, 2], 5, error=True)
+  >>> nprint(poly)
+  [0.00291682, 0.146166, -0.732491, 0.174141, 0.949553]
+  >>> nprint(err, 12)
+  1.61351758081e-5
+
+  The polynomial can be evaluated using polyval:
+
+  >>> nprint(polyval(poly, 1.6), 12)
+  -0.0291858904138
+  >>> nprint(cos(1.6), 12)
+  -0.0291995223013
+
+  Sampling the true error at 1000 points shows that the error estimate
+  generated by chebyfit is remarkably good:
+
+  >>> error = lambda x: abs(cos(x) - polyval(poly, x))
+  >>> nprint(max([error(1+n/1000.) for n in range(1000)]), 12)
+  1.61349954245e-5
+
+  Choice of degree
+
+  The degree N can be set arbitrarily high, to obtain an arbitrarily
+  good approximation. As a rule of thumb, an N-term Chebyshev
+  approximation is good to N/(b-a) decimal places on a unit interval
+  (although this depends on how well-behaved f is). The cost grows
+  accordingly: chebyfit evaluates the function (N^2)/2 times to compute
+  the coefficients and an additional N times to estimate the error.
+
+  Possible issues
+
+  One should be careful to use a sufficiently high working precision
+  both when calling chebyfit and when evaluating the resulting
+  polynomial, as the polynomial is sometimes ill-conditioned. It is for
+  example difficult to reach 15-digit accuracy when evaluating the
+  polynomial using machine precision floats, no matter the theoretical
+  accuracy of the polynomial. (The option to return the coefficients in
+  Chebyshev form should be made available in the future.)
+
+  It is important to note the Chebyshev approximation works poorly if f
+  is not smooth. A function containing singularities, rapid oscillation,
+  etc can be approximated more effectively by multiplying it by a weight
+  function that cancels out the nonsmooth features, or by dividing the
+  interval into several segments.
+
+fourier(f, interval, N)
+    Computes the Fourier series of degree N of the given function on the
+    interval [a, b]. More precisely, fourier() returns two lists (c, s)
+    of coefficients (the cosine series and sine series, respectively),
+    such that
+
+    f(x) \sim \sum_{k=0}^N c_k \cos(k m x) + s_k \sin(k m x)
+
+    where m = 2 \pi / (b-a).
+
+    Note that many texts define the first coefficient as 2 c_0 instead
+    of c_0. The easiest way to evaluate the computed series correctly is
+    to pass it to fourierval().
+
+fourierval(ctx, series, interval, x)
+
+    Evaluates a Fourier series (in the format computed by by fourier()
+    for the given interval) at the point x.
+
+    The series should be a pair (c, s) where c is the cosine series
+    and s is the sine series. The two lists need not have the same
+    length.
+
+
+-----------------------------------------------------------------------------
+Matrices                                           *matrices*
+
+Matrices are implemented using dictionaries, only storing nonzero values
+(thus, sparse matrices are efficient).
+
+>>> a = matrix(2, 3)
+matrix(
+[['0.0', '0.0', '0.0'],
+ ['0.0', '0.0', '0.0']])
+
+    a.rows is 2.  Allows resizing.
+    a.cols is 3.  Allows resizing.
+    a[1,1] = 1+1j
+
+    If resized, new elements are zero; old ones are discarded if out of
+    range.
+
+    You can use nested lists to create a matrix:
+    >>> matrix([[1, 2], [3, 4]])
+    matrix(
+    [['1.0', '2.0'],
+     ['3.0', '4.0']])
+
+Creating standard matrices
+    zeros(n)
+    ones(n)
+    diag([1, 2, 3])
+    eye(2)  Identity
+    randmatrix(n)
+
+Vectors
+    matrix([1, 2, 3])       Column vector
+    matrix([[1, 2, 3]])     Row vector
+    Can be accessed like lists:  v[2]
+
+Use nprint or nstr to print
+
+Matrices are mutable, so can make copy:  B = A.copy()
+
+a.tolist()  Converts to nested list
+
+Operators
+    +  Works for both matrices and matrices/scalars
+    *  Ditto
+    a**2 of square matrices
+    a**-1 calculates inverse
+    a.T Transpose
+
+Linear equations
+    A = matrix([[1, 2], [3, 4]])
+    b = matrix([-10, 10])
+    x = lu_solve(A, b)
+    x
+    matrix(
+    [['30.0'],
+     ['-20.0']])
+
+    residual(A, x, b)
+    matrix(
+    [['3.46944695195361e-18'],
+     ['3.46944695195361e-18']])
+    str(eps)
+     '2.22044604925031e-16'
+
+LU factorization
+    P, L, U = lu(matrix([[0,2,3],[4,5,6],[7,8,9]]))
+
+Cholesky decomposition
+    cholesky(ctx, A, tol=None)
+
+    A must be symmetric and positive-definite.  Returns a lower
+    triangular matrix L such that A is the product of L and its
+    transpose.  Or if A is Hermitian positive-definite, L is such that A
+    is the product of L and its Hermitian conjugate.
+
+    >>> A = eye(3) + hilbert(3)
+    >>> nprint(A)
+    [     2.0      0.5  0.333333]
+    [     0.5  1.33333      0.25]
+    [0.333333     0.25       1.2]
+    >>> L = cholesky(A)
+    >>> nprint(L)
+    [ 1.41421      0.0      0.0]
+    [0.353553  1.09924      0.0]
+    [0.235702  0.15162  1.05899]
+    >>> chop(A - L*L.T)
+    [0.0  0.0  0.0]
+    [0.0  0.0  0.0]
+    [0.0  0.0  0.0]
+
+Linear equations
+    Basic linear algebra is implemented; you can for example solve the
+    linear equation system:
+
+      x + 2*y = -10
+    3*x + 4*y =  10
+
+    using lu_solve:
+
+    >>> A = matrix([[1, 2], [3, 4]])
+    >>> b = matrix([-10, 10])
+    >>> x = lu_solve(A, b)
+    >>> x
+    matrix(
+    [['30.0'],
+     ['-20.0']])
+
+    If you don't trust the result, use residual to calculate the residual
+    ||A*x-b||:
+
+    >>> residual(A, x, b)
+    matrix(
+    [['3.46944695195361e-18'],
+     ['3.46944695195361e-18']])
+    >>> str(eps)
+    '2.22044604925031e-16'
+
+    As you can see, the solution is quite accurate. The error is caused by
+    the inaccuracy of the internal floating point arithmetic. Though, it's
+    even smaller than the current machine epsilon, which basically means you
+    can trust the result.
+
+SVD
+    The routines svd_r and svd_c compute the singular value decomposition of
+    a real or complex matrix A. svd is an unified interface calling either
+    svd_r or svd_c depending on whether A is real or complex.
+
+    Given A, two orthogonal (A real) or unitary (A complex) matrices U and V
+    are calculated such that
+
+        A = U*S*V, U'*U = 1, V*V' = 1
+
+    where S is a suitable shaped matrix whose off-diagonal elements are
+    zero. Here ' denotes the hermitian transpose (i.e. transposition and
+    complex conjugation). The diagonal elements of S are the singular values
+    of A, i.e. the square roots of the eigenvalues of A' A or A A'.
+
+    Examples:
+
+    >>> from mpmath import mp
+    >>> A = mp.matrix([[2, -2, -1], [3, 4, -2], [-2, -2, 0]])
+    >>> S = mp.svd_r(A, compute_uv = False)
+    >>> print S
+    [6.0]
+    [3.0]
+    [1.0]
+    >>> U, S, V = mp.svd_r(A)
+    >>> print mp.chop(A - U * mp.diag(S) * V)
+    [0.0  0.0  0.0]
+    [0.0  0.0  0.0]
+    [0.0  0.0  0.0]
+
+
+The eigenvalue problem
+    The routine eig solves the (ordinary) eigenvalue problem for a real or
+    complex square matrix A. Given A, a vector E and matrices ER and EL are
+    calculated such that
+
+            A ER[:,i] =         E[i] ER[:,i]
+    EL[i,:] A         = EL[i,:] E[i]
+
+    E contains the eigenvalues of A. The columns of ER contain the right
+    eigenvectors of A whereas the rows of EL contain the left eigenvectors.
+
+    Examples:
+
+    >>> from mpmath import mp
+    >>> A = mp.matrix([[3, -1, 2], [2, 5, -5], [-2, -3, 7]])
+    >>> E, ER = mp.eig(A)
+    >>> print(mp.chop(A * ER[:,0] - E[0] * ER[:,0]))
+    [0.0]
+    [0.0]
+    [0.0]
+    >>> E, EL, ER = mp.eig(A,left = True, right = True)
+    >>> E, EL, ER = mp.eig_sort(E, EL, ER)
+    >>> mp.nprint(E)
+    [2.0, 4.0, 9.0]
+    >>> print(mp.chop(A * ER[:,0] - E[0] * ER[:,0]))
+    [0.0]
+    [0.0]
+    [0.0]
+    >>> print(mp.chop( EL[0,:] * A - EL[0,:] * E[0]))
+    [0.0  0.0  0.0]
+
+The symmetric eigenvalue problem
+
+    The routines eigsy and eighe solve the (ordinary) eigenvalue problem for
+    a real symmetric or complex hermitian square matrix A. eigh is an
+    unified interface for this two functions calling either eigsy or eighe
+    depending on whether A is real or complex.
+
+    Given A, an orthogonal (A real) or unitary matrix Q (A complex) is
+    calculated which diagonalizes A:
+
+    Q' A Q = \operatorname{diag}(E), \quad Q Q' = Q' Q = 1
+
+    Here diag(E) a is diagonal matrix whose diagonal is E. ' denotes the
+    hermitian transpose (i.e. ordinary transposition and complex
+    conjugation).
+
+    The columns of Q are the eigenvectors of A and E contains the
+    eigenvalues:
+
+    A Q[:,i] = E[i] Q[:,i]
+
+    Examples:
+
+    >>> from mpmath import mp
+    >>> A = mp.matrix([[3, 2], [2, 0]])
+    >>> E = mp.eigsy(A, eigvals_only = True)
+    >>> print E
+    [-1.0]
+    [ 4.0]
+    >>> A = mp.matrix([[1, 2], [2, 3]])
+    >>> E, Q = mp.eigsy(A)                     # alternative: E, Q =
+    >>> mp.eigh(A)
+    >>> print mp.chop(A * Q[:,0] - E[0] * Q[:,0])
+    [0.0]
+    [0.0]
+    >>> A = mp.matrix([[1, 2 + 5j], [2 - 5j, 3]])
+    >>> E, Q = mp.eighe(A)                     # alternative: E, Q =
+    >>> mp.eigh(A)
+    >>> print mp.chop(A * Q[:,0] - E[0] * Q[:,0])
+    [0.0]
+    [0.0]
+
+Matrix functions
+    expm(A, method='taylor')  Can also use 'pade'.
+        Note exp(A+B) = exp(A)*exp(B) if [A, B] != 0.
+    cosm(A)
+    sinm(A)
+    sqrtm(A, _may_rotate=2)
+    logm(A)
+    powm(A, r)
+
+-----------------------------------------------------------------------------
+Number identification                               *number_identification*
+
+identify(x, constants=[], tol=None, maxcoeff=1000, full=False, verbose=False)
+
+    Given a real number x, identify(x) attempts to find an exact formula
+    for x. This formula is returned as a string. If no match is found,
+    None is returned. With full=True, a list of matching formulas is
+    returned.
+
+    As a simple example, identify() will find an algebraic formula for
+    the golden ratio:
+
+    >>> from mpmath import *
+    >>> mp.dps = 15; mp.pretty = True
+    >>> identify(phi)
+    '((1+sqrt(5))/2)'
+
+    identify() can identify simple algebraic numbers and simple
+    combinations of given base constants, as well as certain basic
+    transformations thereof. More specifically, identify() looks for the
+    following:
+
+            Fractions
+            Quadratic algebraic numbers
+            Rational linear combinations of the base constants
+
+            Any of the above after first transforming x into f(x) where
+            f(x) is 1/x, \sqrt x, x^2, \log x or \exp x, either directly
+            or with x or f(x) multiplied or divided by one of the base
+            constants
+
+            Products of fractional powers of the base constants and
+            small integers
+
+    Base constants can be given as a list of strings representing mpmath
+    expressions (identify() will eval the strings to numerical values
+    and use the original strings for the output), or as a dict of
+    formula:value pairs.
+
+    In order not to produce spurious results, identify() should be used
+    with high precision; preferably 50 digits or more.
+
+  Examples
+
+    Simple identifications can be performed safely at standard
+    precision. Here the default recognition of rational, algebraic, and
+    exp/log of algebraic numbers is demonstrated:
+
+    >>> mp.dps = 15
+    >>> identify(0.22222222222222222)
+    '(2/9)'
+    >>> identify(1.9662210973805663)
+    'sqrt(((24+sqrt(48))/8))'
+    >>> identify(4.1132503787829275)
+    'exp((sqrt(8)/2))'
+    >>> identify(0.881373587019543)
+    'log(((2+sqrt(8))/2))'
+
+    By default, identify() does not recognize \pi. At standard precision
+    it finds a not too useful approximation. At slightly increased
+    precision, this approximation is no longer accurate enough and
+    identify() more correctly returns None:
+
+    >>> identify(pi)
+    '(2**(176/117)*3**(20/117)*5**(35/39))/(7**(92/117))'
+    >>> mp.dps = 30
+    >>> identify(pi)
+    >>>
+
+    Numbers such as \pi, and simple combinations of user-defined
+    constants, can be identified if they are provided explicitly:
+
+    >>> identify(3*pi-2*e, ['pi', 'e'])
+    '(3*pi + (-2)*e)'
+
+    Here is an example using a dict of constants. Note that the
+    constants need not be "atomic"; identify() can just as well express
+    the given number in terms of expressions given by formulas:
+
+    >>> identify(pi+e, {'a':pi+2, 'b':2*e})
+    '((-2) + 1*a + (1/2)*b)'
+
+    Next, we attempt some identifications with a set of base constants.
+    It is necessary to increase the precision a bit.
+
+    >>> mp.dps = 50
+    >>> base = ['sqrt(2)','pi','log(2)']
+    >>> identify(0.25, base)
+    '(1/4)'
+    >>> identify(3*pi + 2*sqrt(2) + 5*log(2)/7, base)
+    '(2*sqrt(2) + 3*pi + (5/7)*log(2))'
+    >>> identify(exp(pi+2), base)
+    'exp((2 + 1*pi))'
+    >>> identify(1/(3+sqrt(2)), base)
+    '((3/7) + (-1/7)*sqrt(2))'
+    >>> identify(sqrt(2)/(3*pi+4), base)
+    'sqrt(2)/(4 + 3*pi)'
+    >>> identify(5**(mpf(1)/3)*pi*log(2)**2, base)
+    '5**(1/3)*pi*log(2)**2'
+
+    An example of an erroneous solution being found when too low
+    precision is used:
+
+    >>> mp.dps = 15
+    >>> identify(1/(3*pi-4*e+sqrt(8)), ['pi', 'e', 'sqrt(2)'])
+    '((11/25) + (-158/75)*pi + (76/75)*e + (44/15)*sqrt(2))'
+    >>> mp.dps = 50
+    >>> identify(1/(3*pi-4*e+sqrt(8)), ['pi', 'e', 'sqrt(2)'])
+    '1/(3*pi + (-4)*e + 2*sqrt(2))'
+
+    Finding approximate solutions
+
+    The tolerance tol defaults to 3/4 of the working precision. Lowering
+    the tolerance is useful for finding approximate matches. We can for
+    example try to generate approximations for pi:
+
+    >>> mp.dps = 15
+    >>> identify(pi, tol=1e-2)
+    '(22/7)'
+    >>> identify(pi, tol=1e-3)
+    '(355/113)'
+    >>> identify(pi, tol=1e-10)
+    '(5**(339/269))/(2**(64/269)*3**(13/269)*7**(92/269))'
+
+    With full=True, and by supplying a few base constants, identify can
+    generate almost endless lists of approximations for any number (the
+    output below has been truncated to show only the first few):
+
+    >>> for p in identify(pi, ['e', 'catalan'], tol=1e-5, full=True):
+    ...     print(p)
+    ...  
+    e/log((6 + (-4/3)*e))
+    (3**3*5*e*catalan**2)/(2*7**2)
+    sqrt(((-13) + 1*e + 22*catalan))
+    log(((-6) + 24*e + 4*catalan)/e)
+    exp(catalan*((-1/5) + (8/15)*e))
+    catalan*(6 + (-6)*e + 15*catalan)
+    sqrt((5 + 26*e + (-3)*catalan))/e
+    e*sqrt(((-27) + 2*e + 25*catalan))
+    log(((-1) + (-11)*e + 59*catalan))
+    ((3/20) + (21/20)*e + (3/20)*catalan)
+    ...
+
+    The numerical values are roughly as close to \pi as permitted by the
+    specified tolerance:
+
+    >>> e/log(6-4*e/3)
+    3.14157719846001
+    >>> 135*e*catalan**2/98
+    3.14166950419369
+    >>> sqrt(e-13+22*catalan)
+    3.14158000062992
+    >>> log(24*e-6+4*catalan)-1
+    3.14158791577159
+
+    Symbolic processing
+
+    The output formula can be evaluated as a Python expression. Note
+    however that if fractions (like '2/3') are present in the formula,
+    Python's eval() may erroneously perform integer division. Note also
+    that the output is not necessarily in the algebraically simplest
+    form:
+
+    >>> identify(sqrt(2))
+    '(sqrt(8)/2)'
+
+    As a solution to both problems, consider using SymPy's sympify() to
+    convert the formula into a symbolic expression. SymPy can be used to
+    pretty-print or further simplify the formula symbolically:
+
+    >>> from sympy import sympify 
+    >>> sympify(identify(sqrt(2))) 
+    2**(1/2)
+
+    Sometimes identify() can simplify an expression further than a
+    symbolic algorithm:
+
+    >>> from sympy import simplify 
+    >>> x =
+    >>> sympify('-1/(-3/2+(1/2)*5**(1/2))*(3/2-1/2*5**(1/2))**(1/2)') 
+    >>> x 
+    (3/2 - 5**(1/2)/2)**(-1/2)
+    >>> x = simplify(x) 
+    >>> x 
+    2/(6 - 2*5**(1/2))**(1/2)
+    >>> mp.dps = 30 
+    >>> x = sympify(identify(x.evalf(30))) 
+    >>> x 
+    1/2 + 5**(1/2)/2
+
+    (In fact, this functionality is available directly in SymPy as the
+    function nsimplify(), which is essentially a wrapper for
+    identify().)
+
+    Miscellaneous issues and limitations
+
+    The input x must be a real number. All base constants must be
+    positive real numbers and must not be rationals or rational linear
+    combinations of each other.
+
+    The worst-case computation time grows quickly with the number of
+    base constants. Already with 3 or 4 base constants, identify() may
+    require several seconds to finish. To search for relations among a
+    large number of constants, you should consider using pslq()
+    directly.
+
+    The extended transformations are applied to x, not the constants
+    separately. As a result, identify will for example be able to
+    recognize exp(2*pi+3) with pi given as a base constant, but not
+    2*exp(pi)+3. It will be able to recognize the latter if exp(pi) is
+    given explicitly as a base constant.
+
+findpoly(x, n=1, **kwargs)
+    findpoly(x, n) returns the coefficients of an integer polynomial P
+    of degree at most n such that P(x) is approximately 0. If no
+    polynomial having x as a root can be found, findpoly() returns None.
+
+    You can pass the returned coefficient list to polyval and polyroots.
+
+-----------------------------------------------------------------------------
+Number properties                                   *number_properties*
+
+isinf(x)
+isnan(x)        True if x is Nan or complex with one component NaN
+isnormal(x)     False if x is zero, an infinity or NaN.  Test mag for mpc.
+isfinite(x)     True if not inf or Nan.
+isint(x, gaussian=False)
+ldexp(x, n)     Compute x*2^n with no rounding.
+frexp(x, n)     Given a real number x, returns (y, n) with y in [0.5, 1), n a
+                Python integer, and such that x = y 2^n. No rounding is 
+                performed.
+mag(x)          Quick logarithmic magnitude estimate of a number.  Returns an
+                integer or infinity m such that |x| <= 2^m.
+nint_distance(x) Return (n,d) where n is the nearest integer to x and d is an
+                estimate of \log_2(|x-n|). If d < 0, -d gives the precision
+                (measured in bits) lost to cancellation when computing x-n.
+

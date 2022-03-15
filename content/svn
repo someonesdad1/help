@@ -1,0 +1,26 @@
+
+Basic work cycle
+    Update your working copy
+        update
+    Make changes
+        add
+        delete
+        copy (cp)
+        move (mv)
+    Examine changes
+        status
+        diff
+        revert
+    Merge others' changes
+        merge
+        resolved
+    Commit your changes
+        commit
+
+Update codes
+    U     File was updated
+    A     File added to working copy
+    D     File deleted from working copy
+    R     File replaced in working copy
+    G     Indicates an automatic merge
+    C     Conflicts in a merge

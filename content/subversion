@@ -1,0 +1,1088 @@
+*Subversion*
+
+|add|
+|blame|
+|cat|
+|checkout|
+|cleanup|
+|commit|
+|copy|
+|delete|
+|diff|
+|export|
+|help|
+|import|
+|info|
+|list|
+|lock|
+|log|
+|merge|
+|mkdir|
+|move|
+|propdel|
+|propedit|
+|propget|
+|proplist|
+|propset|
+|resolved|
+|revert|
+|status|
+|switch|
+|unlock|
+|update|
+
+            usage: svn <subcommand> [options] [args]
+
+Typical usage
+
+    * Update your working copy
+            svn update
+
+    * Make changes
+            svn add
+            svn delete
+            svn copy
+            svn move
+
+    * Examine your changes
+            svn status
+            svn diff
+            svn revert
+
+    * Merge others' changes into your working copy
+            svn update
+            svn resolved
+
+    * Commit your changes
+            svn commit
+
+svn co svn+ssh://kennydog.net/subversion/repository/magnets Magnet_Game
+
+To use a different user name:
+    svn co svn+ssh://donp@kennydog.net/subversion/repository/magnets Magnet_Game
+
+How to create a new repository:
+
+    cd /subversion/repository 
+    svnadmin create <repository name> 
+    chmod and chgrp the directory and contents to your liking... 
+
+    The repository URL is 
+    kennydog.net/subversion/repository/OfficeSecuritySolution.
+
+
+Basic work cycle
+    Update your working copy
+        update
+    Make changes
+        add
+        delete
+        copy (cp)
+        move (mv)
+    Examine changes
+        status
+        diff
+        revert
+    Merge others' changes
+        merge
+        resolved
+    Commit your changes
+        commit
+
+Update codes
+------------
+  L    abc.c               # svn has a lock in its .svn directory for abc.c
+M      bar.c               # the content in bar.c has local modifications
+ M     baz.c               # baz.c has property but no content modifications
+X      3rd_party           # this dir is part of an externals definition
+?      foo.o               # svn doesn't manage foo.o
+!      some_dir            # svn manages this, but it's either missing or incomplete
+~      qux                 # versioned as file/dir/link, but type has changed
+I      .screenrc           # svn doesn't manage this, and is configured to ignore it
+A  +   moved_dir           # added with history of where it came from
+M  +   moved_dir/README    # added with history and has local modifications
+D      stuff/fish.c        # this file is scheduled for deletion
+A      stuff/loot/bloo.h   # this file is scheduled for addition
+C      stuff/loot/lump.c   # this file has conflicts from an update
+R      xyz.c               # this file is scheduled for replacement
+    S  stuff/squawk        # this file or dir has been switched to a branch
+
+-----------------------------------------------------------------------------
+add                 *add*
+
+add: Put files and directories under version control, scheduling
+them for addition to repository.  They will be added in next commit.
+usage: add PATH...
+
+Valid options:
+  --targets arg            : pass contents of file ARG as additional args
+  -N [--non-recursive]     : operate on single directory only
+  -q [--quiet]             : print as little as possible
+  --config-dir arg         : read user configuration files from directory ARG
+  --force                  : force operation to run
+  --auto-props             : enable automatic properties
+  --no-auto-props          : disable automatic properties
+
+-----------------------------------------------------------------------------
+blame                 *blame*
+
+blame (praise, annotate, ann): Output the content of specified files or
+URLs with revision and author information in-line.
+usage: blame TARGET[@REV]...
+
+  If specified, REV determines in which revision the target is first
+  looked up.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -v [--verbose]           : print extra information
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+cat                 *cat*
+
+cat: Output the content of specified files or URLs.
+usage: cat TARGET[@REV]...
+
+  If specified, REV determines in which revision the target is first
+  looked up.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+checkout                 *checkout*
+
+checkout (co): Check out a working copy from a repository.
+usage: checkout URL[@REV]... [PATH]
+
+  If specified, REV determines in which revision the URL is first
+  looked up.
+
+  If PATH is omitted, the basename of the URL will be used as
+  the destination. If multiple URLs are given each will be checked
+  out into a sub-directory of PATH, with the name of the sub-directory
+  being the basename of the URL.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -q [--quiet]             : print as little as possible
+  -N [--non-recursive]     : operate on single directory only
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+  --ignore-externals       : ignore externals definitions
+
+-----------------------------------------------------------------------------
+cleanup                 *cleanup*
+
+cleanup: Recursively clean up the working copy, removing locks, resuming
+unfinished operations, etc.
+usage: cleanup [PATH...]
+
+Valid options:
+  --diff3-cmd arg          : use ARG as merge command
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+commit                 *commit*
+
+commit (ci): Send changes from your working copy to the repository.
+usage: commit [PATH...]
+
+  A log message must be provided, but it can be empty.  If it is not
+  given by a --message or --file option, an editor will be started.
+  If any targets are (or contain) locked items, those will be
+  unlocked after a successful commit.
+
+Valid options:
+  -q [--quiet]             : print as little as possible
+  -N [--non-recursive]     : operate on single directory only
+  --targets arg            : pass contents of file ARG as additional args
+  --no-unlock              : don't unlock the targets
+  -m [--message] arg       : specify commit message ARG
+  -F [--file] arg          : read data from file ARG
+  --force-log              : force validity of log message source
+  --editor-cmd arg         : use ARG as external editor
+  --encoding arg           : treat value as being in charset encoding ARG
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+copy                 *copy*
+
+copy (cp): Duplicate something in working copy or repository, remembering history.
+usage: copy SRC DST
+
+  SRC and DST can each be either a working copy (WC) path or URL:
+    WC  -> WC:   copy and schedule for addition (with history)
+    WC  -> URL:  immediately commit a copy of WC to URL
+    URL -> WC:   check out URL into WC, schedule for addition
+    URL -> URL:  complete server-side copy;  used to branch & tag
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -q [--quiet]             : print as little as possible
+  -m [--message] arg       : specify commit message ARG
+  -F [--file] arg          : read data from file ARG
+  --force-log              : force validity of log message source
+  --editor-cmd arg         : use ARG as external editor
+  --encoding arg           : treat value as being in charset encoding ARG
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+delete                 *delete*
+
+delete (del, remove, rm): Remove files and directories from version control.
+usage: 1. delete PATH...
+       2. delete URL...
+
+  1. Each item specified by a PATH is scheduled for deletion upon
+    the next commit.  Files, and directories that have not been
+    committed, are immediately removed from the working copy.
+    PATHs that are, or contain, unversioned or modified items will
+    not be removed unless the --force option is given.
+
+  2. Each item specified by a URL is deleted from the repository
+    via an immediate commit.
+
+Valid options:
+  --force                  : force operation to run
+  -q [--quiet]             : print as little as possible
+  --targets arg            : pass contents of file ARG as additional args
+  -m [--message] arg       : specify commit message ARG
+  -F [--file] arg          : read data from file ARG
+  --force-log              : force validity of log message source
+  --editor-cmd arg         : use ARG as external editor
+  --encoding arg           : treat value as being in charset encoding ARG
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+diff                 *diff*
+
+diff (di): Display the differences between two paths.
+usage: 1. diff [-r N[:M]] [TARGET[@REV]...]
+       2. diff [-r N[:M]] --old=OLD-TGT[@OLDREV] [--new=NEW-TGT[@NEWREV]] \
+               [PATH...]
+       3. diff OLD-URL[@OLDREV] NEW-URL[@NEWREV]
+
+  1. Display the changes made to TARGETs as they are seen in REV between
+     two revisions.  TARGETs may be working copy paths or URLs.
+
+     N defaults to BASE if any TARGET is a working copy path, otherwise it
+     must be specified.  M defaults to the current working version if any
+     TARGET is a working copy path, otherwise it defaults to HEAD.
+
+  2. Display the differences between OLD-TGT as it was seen in OLDREV and
+     NEW-TGT as it was seen in NEWREV.  PATHs, if given, are relative to
+     OLD-TGT and NEW-TGT and restrict the output to differences for those
+     paths.  OLD-TGT and NEW-TGT may be working copy paths or URL[@REV]. 
+     NEW-TGT defaults to OLD-TGT if not specified.  -r N makes OLDREV default
+     to N, -r N:M makes OLDREV default to N and NEWREV default to M.
+
+  3. Shorthand for 'svn diff --old=OLD-URL[@OLDREV] --new=NEW-URL[@NEWREV]'
+
+  Use just 'svn diff' to display local modifications in a working copy.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  --old arg                : use ARG as the older target
+  --new arg                : use ARG as the newer target
+  -N [--non-recursive]     : operate on single directory only
+  --diff-cmd arg           : use ARG as diff command
+  -x [--extensions] arg    : pass ARG to --diff-cmd as options (default: '-u')
+  --no-diff-deleted        : do not print differences for deleted files
+  --notice-ancestry        : notice ancestry when calculating differences
+  --force                  : force operation to run
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+export                 *export*
+
+export: Create an unversioned copy of a tree.
+usage: 1. export [-r REV] URL[@PEGREV] [PATH]
+       2. export [-r REV] PATH1[@PEGREV] [PATH2]
+
+  1. Exports a clean directory tree from the repository specified by
+     URL, at revision REV if it is given, otherwise at HEAD, into
+     PATH. If PATH is omitted, the last component of the URL is used
+     for the local directory name.
+
+  2. Exports a clean directory tree from the working copy specified by
+     PATH1, at revision REV if it is given, otherwise at WORKING, into
+     PATH2.  If PATH2 is omitted, the last component of the PATH1 is used
+     for the local directory name. If REV is not specified, all local
+     changes will be preserved, but files not under version control will
+     not be copied.
+
+  If specified, PEGREV determines in which revision the target is first
+  looked up.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -q [--quiet]             : print as little as possible
+  -N [--non-recursive]     : operate on single directory only
+  --force                  : force operation to run
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+  --native-eol arg         : use a different EOL marker than the standard
+                             system marker for files with a native svn:eol-style
+                             property.  ARG may be one of 'LF', 'CR', 'CRLF'
+  --ignore-externals       : ignore externals definitions
+
+-----------------------------------------------------------------------------
+help                 *help*
+
+help (?, h): Describe the usage of this program or its subcommands.
+usage: help [SUBCOMMAND...]
+
+Valid options:
+  --version                : print client version info
+  -q [--quiet]             : print as little as possible
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+import                 *import*
+
+import: Commit an unversioned file or tree into the repository.
+usage: import [PATH] URL
+
+  Recursively commit a copy of PATH to URL.
+  If PATH is omitted '.' is assumed.  Parent directories are created
+  as necessary in the repository.
+
+Valid options:
+  -q [--quiet]             : print as little as possible
+  -N [--non-recursive]     : operate on single directory only
+  --auto-props             : enable automatic properties
+  --no-auto-props          : disable automatic properties
+  -m [--message] arg       : specify commit message ARG
+  -F [--file] arg          : read data from file ARG
+  --force-log              : force validity of log message source
+  --editor-cmd arg         : use ARG as external editor
+  --encoding arg           : treat value as being in charset encoding ARG
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+info                 *info*
+
+info: Display information about a local or remote item.
+usage: info [TARGET...]
+
+  Print information about each TARGET (default: '.')
+  TARGET may be either a working-copy path or URL.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -R [--recursive]         : descend recursively
+  --targets arg            : pass contents of file ARG as additional args
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+list                 *list*
+
+list (ls): List directory entries in the repository.
+usage: list [TARGET[@REV]...]
+
+  List each TARGET file and the contents of each TARGET directory as
+  they exist in the repository.  If TARGET is a working copy path, the
+  corresponding repository URL will be used. If specified, REV determines
+  in which revision the target is first looked up.
+
+  The default TARGET is '.', meaning the repository URL of the current
+  working directory.
+
+  With --verbose, the following fields show the status of the item:
+
+    Revision number of the last commit
+    Author of the last commit
+    Size (in bytes)
+    Date and time of the last commit
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -v [--verbose]           : print extra information
+  -R [--recursive]         : descend recursively
+  --incremental            : give output suitable for concatenation
+  --xml                    : output in XML
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+lock                 *lock*
+
+lock: Lock working copy paths or URLs in the repository, so that
+no other user can commit changes to them.
+usage: lock TARGET...
+
+  Use --force to steal the lock from another user or working copy.
+
+Valid options:
+  --targets arg            : pass contents of file ARG as additional args
+  -m [--message] arg       : specify commit message ARG
+  -F [--file] arg          : read data from file ARG
+  --force-log              : force validity of log message source
+  --encoding arg           : treat value as being in charset encoding ARG
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+  --force                  : force operation to run
+
+-----------------------------------------------------------------------------
+log                 *log*
+
+log: Show the log messages for a set of revision(s) and/or file(s).
+usage: 1. log [PATH]
+       2. log URL [PATH...]
+
+  1. Print the log messages for a local PATH (default: '.').
+     The default revision range is BASE:1.
+
+  2. Print the log messages for the PATHs (default: '.') under URL.
+     The default revision range is HEAD:1.
+
+  With -v, also print all affected paths with each log message.
+  With -q, don't print the log message body itself (note that this is
+  compatible with -v).
+
+  Each log message is printed just once, even if more than one of the
+  affected paths for that revision were explicitly requested.  Logs
+  follow copy history by default.  Use --stop-on-copy to disable this
+  behavior, which can be useful for determining branchpoints.
+
+  Examples:
+    svn log
+    svn log foo.c
+    svn log http://www.example.com/repo/project/foo.c
+    svn log http://www.example.com/repo/project foo.c bar.c
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -q [--quiet]             : print as little as possible
+  -v [--verbose]           : print extra information
+  --targets arg            : pass contents of file ARG as additional args
+  --stop-on-copy           : do not cross copies while traversing history
+  --incremental            : give output suitable for concatenation
+  --xml                    : output in XML
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+  --limit arg              : maximum number of log entries
+
+-----------------------------------------------------------------------------
+merge                 *merge*
+
+merge: Apply the differences between two sources to a working copy path.
+usage: 1. merge sourceURL1[@N] sourceURL2[@M] [WCPATH]
+       2. merge sourceWCPATH1@N sourceWCPATH2@M [WCPATH]
+       3. merge -r N:M SOURCE[@REV] [WCPATH]
+
+  1. In the first form, the source URLs are specified at revisions
+     N and M.  These are the two sources to be compared.  The revisions
+     default to HEAD if omitted.
+
+  2. In the second form, the URLs corresponding to the source working
+     copy paths define the sources to be compared.  The revisions must
+     be specified.
+
+  3. In the third form, SOURCE can be a URL, or working copy item
+     in which case the corresponding URL is used.  This URL in
+     revision REV is compared as it existed between revisions N and 
+     M.  If REV is not specified, HEAD is assumed.
+
+  WCPATH is the working copy path that will receive the changes.
+  If WCPATH is omitted, a default value of '.' is assumed, unless
+  the sources have identical basenames that match a file within '.':
+  in which case, the differences will be applied to that file.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -N [--non-recursive]     : operate on single directory only
+  -q [--quiet]             : print as little as possible
+  --force                  : force operation to run
+  --dry-run                : try operation but make no changes
+  --diff3-cmd arg          : use ARG as merge command
+  --ignore-ancestry        : ignore ancestry when calculating merges
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+mkdir                 *mkdir*
+
+mkdir: Create a new directory under version control.
+usage: 1. mkdir PATH...
+       2. mkdir URL...
+
+  Create version controlled directories.
+
+  1. Each directory specified by a working copy PATH is created locally
+    and scheduled for addition upon the next commit.
+
+  2. Each directory specified by a URL is created in the repository via
+    an immediate commit.
+
+  In both cases, all the intermediate directories must already exist.
+
+Valid options:
+  -q [--quiet]             : print as little as possible
+  -m [--message] arg       : specify commit message ARG
+  -F [--file] arg          : read data from file ARG
+  --force-log              : force validity of log message source
+  --editor-cmd arg         : use ARG as external editor
+  --encoding arg           : treat value as being in charset encoding ARG
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+move                 *move*
+
+move (mv, rename, ren): Move and/or rename something in working copy or repository.
+usage: move SRC DST
+
+  Note:  this subcommand is equivalent to a 'copy' and 'delete'.
+
+  SRC and DST can both be working copy (WC) paths or URLs:
+    WC  -> WC:   move and schedule for addition (with history)
+    URL -> URL:  complete server-side rename.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -q [--quiet]             : print as little as possible
+  --force                  : force operation to run
+  -m [--message] arg       : specify commit message ARG
+  -F [--file] arg          : read data from file ARG
+  --force-log              : force validity of log message source
+  --editor-cmd arg         : use ARG as external editor
+  --encoding arg           : treat value as being in charset encoding ARG
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+propdel                 *propdel*
+
+propdel (pdel, pd): Remove PROPNAME from files, dirs, or revisions.
+usage: 1. propdel PROPNAME [PATH...]
+       2. propdel PROPNAME --revprop -r REV [URL]
+
+  1. Removes versioned props in working copy.
+  2. Removes unversioned remote prop on repos revision.
+
+Valid options:
+  -q [--quiet]             : print as little as possible
+  -R [--recursive]         : descend recursively
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  --revprop                : operate on a revision property (use with -r)
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+propedit                 *propedit*
+
+propedit (pedit, pe): Edit property PROPNAME with an external editor on targets.
+usage: 1. propedit PROPNAME PATH...
+       2. propedit PROPNAME --revprop -r REV [URL]
+
+  1. Edits versioned props in working copy.
+  2. Edits unversioned remote prop on repos revision.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  --revprop                : operate on a revision property (use with -r)
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --encoding arg           : treat value as being in charset encoding ARG
+  --editor-cmd arg         : use ARG as external editor
+  --force                  : force operation to run
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+propget                 *propget*
+
+propget (pget, pg): Print value of PROPNAME on files, dirs, or revisions.
+usage: 1. propget PROPNAME [TARGET[@REV]...]
+       2. propget PROPNAME --revprop -r REV [URL]
+
+  1. Prints versioned prop. If specified, REV determines in which
+     revision the target is first looked up.
+  2. Prints unversioned remote prop on repos revision.
+
+  By default, this subcommand will add an extra newline to the end
+  of the property values so that the output looks pretty.  Also,
+  whenever there are multiple paths involved, each property value
+  is prefixed with the path with which it is associated.  Use
+  the --strict option to disable these beautifications (useful,
+  for example, when redirecting binary property values to a file).
+
+Valid options:
+  -R [--recursive]         : descend recursively
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  --revprop                : operate on a revision property (use with -r)
+  --strict                 : use strict semantics
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+proplist                 *proplist*
+
+proplist (plist, pl): List all properties on files, dirs, or revisions.
+usage: 1. proplist [TARGET[@REV]...]
+       2. proplist --revprop -r REV [URL]
+
+  1. Lists versioned props. If specified, REV determines in which
+     revision the target is first looked up.
+  2. Lists unversioned remote props on repos revision.
+
+Valid options:
+  -v [--verbose]           : print extra information
+  -R [--recursive]         : descend recursively
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -q [--quiet]             : print as little as possible
+  --revprop                : operate on a revision property (use with -r)
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+propset                 *propset*
+
+propset (pset, ps): Set PROPNAME to PROPVAL on files, dirs, or revisions.
+usage: 1. propset PROPNAME [PROPVAL | -F VALFILE] PATH...
+       2. propset PROPNAME --revprop -r REV [PROPVAL | -F VALFILE] [URL]
+
+  1. Creates a versioned, local propchange in working copy.
+  2. Creates an unversioned, remote propchange on repos revision.
+
+  Note: svn recognizes the following special versioned properties
+  but will store any arbitrary properties set:
+    svn:ignore     - A newline separated list of file patterns to ignore.
+    svn:keywords   - Keywords to be expanded.  Valid keywords are:
+      URL, HeadURL             - The URL for the head version of the object.
+      Author, LastChangedBy    - The last person to modify the file.
+      Date, LastChangedDate    - The date/time the object was last modified.
+      Rev, Revision,           - The last revision the object changed.
+      LastChangedRevision
+      Id                       - A compressed summary of the previous
+                                   4 keywords.
+    svn:executable - If present, make the file executable.
+    svn:eol-style  - One of 'native', 'LF', 'CR', 'CRLF'.
+    svn:mime-type  - The mimetype of the file.  Used to determine
+      whether to merge the file, and how to serve it from Apache.
+      A mimetype beginning with 'text/' (or an absent mimetype) is
+      treated as text.  Anything else is treated as binary.
+    svn:externals  - A newline separated list of module specifiers,
+      each of which consists of a relative directory path, optional
+      revision flags, and an URL.  For example
+        foo             http://example.com/repos/zig
+        foo/bar -r 1234 http://example.com/repos/zag
+    svn:needs-lock - If present, indicates that the file should be locked
+      before it is modified.  Makes the working copy file read-only
+      when it is not locked.
+  The svn:keywords, svn:executable, svn:eol-style, svn:mime-type and
+  svn:needs-lock properties cannot be set on a directory.  A non-recursive
+  attempt will fail, and a recursive attempt will set the property
+  only on the file children of the directory.
+
+Valid options:
+  -F [--file] arg          : read data from file ARG
+  --encoding arg           : treat value as being in charset encoding ARG
+  -q [--quiet]             : print as little as possible
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  --targets arg            : pass contents of file ARG as additional args
+  -R [--recursive]         : descend recursively
+  --revprop                : operate on a revision property (use with -r)
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --force                  : force operation to run
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+resolved                 *resolved*
+
+resolved: Remove 'conflicted' state on working copy files or directories.
+usage: resolved PATH...
+
+  Note:  this subcommand does not semantically resolve conflicts or
+  remove conflict markers; it merely removes the conflict-related
+  artifact files and allows PATH to be committed again.
+
+Valid options:
+  --targets arg            : pass contents of file ARG as additional args
+  -R [--recursive]         : descend recursively
+  -q [--quiet]             : print as little as possible
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+revert                 *revert*
+
+revert: Restore pristine working copy file (undo most local edits).
+usage: revert PATH...
+
+  Note:  this subcommand does not require network access, and resolves
+  any conflicted states.  However, it does not restore removed directories.
+
+Valid options:
+  --targets arg            : pass contents of file ARG as additional args
+  -R [--recursive]         : descend recursively
+  -q [--quiet]             : print as little as possible
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+status                 *status*
+
+status (stat, st): Print the status of working copy files and directories.
+usage: status [PATH...]
+
+  With no args, print only locally modified items (no network access).
+  With -u, add working revision and server out-of-date information.
+  With -v, print full revision information on every item.
+
+  The first six columns in the output are each one character wide:
+    First column: Says if item was added, deleted, or otherwise changed
+      ' ' no modifications
+      'A' Added
+      'C' Conflicted
+      'D' Deleted
+      'G' Merged
+      'I' Ignored
+      'M' Modified
+      'R' Replaced
+      'X' item is unversioned, but is used by an externals definition
+      '?' item is not under version control
+      '!' item is missing (removed by non-svn command) or incomplete
+      '~' versioned item obstructed by some item of a different kind
+    Second column: Modifications of a file's or directory's properties
+      ' ' no modifications
+      'C' Conflicted
+      'M' Modified
+    Third column: Whether the working copy directory is locked
+      ' ' not locked
+      'L' locked
+    Fourth column: Scheduled commit will contain addition-with-history
+      ' ' no history scheduled with commit
+      '+' history scheduled with commit
+    Fifth column: Whether the item is switched relative to its parent
+      ' ' normal
+      'S' switched
+    Sixth column: Repository lock token
+      (without -u)
+      ' ' no lock token
+      'K' lock token present
+      (with -u)
+      ' ' not locked in repository, no lock token
+      'K' locked in repository, lock toKen present
+      'O' locked in repository, lock token in some Other working copy
+      'T' locked in repository, lock token present but sTolen
+      'B' not locked in repository, lock token present but Broken
+
+  The out-of-date information appears in the eighth column (with -u):
+      '*' a newer revision exists on the server
+      ' ' the working copy is up to date
+
+  Remaining fields are variable width and delimited by spaces:
+    The working revision (with -u or -v)
+    The last committed revision and last committed author (with -v)
+    The working copy path is always the final field, so it can
+      include spaces.
+
+  Example output:
+    svn status wc
+     M     wc/bar.c
+    A  +   wc/qax.c
+
+    svn status -u wc
+     M           965    wc/bar.c
+           *     965    wc/foo.c
+    A  +         965    wc/qax.c
+    Status against revision:   981
+
+    svn status --show-updates --verbose wc
+     M           965       938 kfogel       wc/bar.c
+           *     965       922 sussman      wc/foo.c
+    A  +         965       687 joe          wc/qax.c
+                 965       687 joe          wc/zig.c
+    Status against revision:   981
+
+Valid options:
+  -u [--show-updates]      : display update information
+  -v [--verbose]           : print extra information
+  -N [--non-recursive]     : operate on single directory only
+  -q [--quiet]             : print as little as possible
+  --no-ignore              : disregard default and svn:ignore property ignores
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+  --ignore-externals       : ignore externals definitions
+
+-----------------------------------------------------------------------------
+switch                 *switch*
+
+switch (sw): Update the working copy to a different URL.
+usage: 1. switch URL [PATH]
+       2. switch --relocate FROM TO [PATH...]
+
+  1. Update the working copy to mirror a new URL within the repository.
+     This behaviour is similar to 'svn update', and is the way to
+     move a working copy to a branch or tag within the same repository.
+
+  2. Rewrite working copy URL metadata to reflect a syntactic change only.
+     This is used when repository's root URL changes (such as a scheme
+     or hostname change) but your working copy still reflects the same
+     directory within the same repository.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -N [--non-recursive]     : operate on single directory only
+  -q [--quiet]             : print as little as possible
+  --diff3-cmd arg          : use ARG as merge command
+  --relocate               : relocate via URL-rewriting
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+
+-----------------------------------------------------------------------------
+unlock                 *unlock*
+
+unlock: Unlock working copy paths or URLs.
+usage: unlock TARGET...
+
+  Use --force to break the lock.
+
+Valid options:
+  --targets arg            : pass contents of file ARG as additional args
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+  --force                  : force operation to run
+
+-----------------------------------------------------------------------------
+update                 *update*
+
+update (up): Bring changes from the repository into the working copy.
+usage: update [PATH...]
+
+  If no revision given, bring working copy up-to-date with HEAD rev.
+  Else synchronize working copy to revision given by -r.
+
+  For each updated item a line will start with a character reporting the
+  action taken.  These characters have the following meaning:
+
+    A  Added
+    D  Deleted
+    U  Updated
+    C  Conflict
+    G  Merged
+
+  A character in the first column signifies an update to the actual file,
+  while updates to the file's properties are shown in the second column.
+  A 'B' in the third column signifies that the lock for the file has
+  been broken or stolen.
+
+Valid options:
+  -r [--revision] arg      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                "{" DATE "}" revision at start of the date
+                                "HEAD"       latest in repository
+                                "BASE"       base rev of item's working copy
+                                "COMMITTED"  last commit at or before BASE
+                                "PREV"       revision just before COMMITTED
+  -N [--non-recursive]     : operate on single directory only
+  -q [--quiet]             : print as little as possible
+  --diff3-cmd arg          : use ARG as merge command
+  --username arg           : specify a username ARG
+  --password arg           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir arg         : read user configuration files from directory ARG
+  --ignore-externals       : ignore externals definitions
+

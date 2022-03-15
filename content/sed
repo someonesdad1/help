@@ -1,0 +1,93 @@
+*sed*
+
+General form of sed commands:
+  [address],[address][!]command[arguments]
+
+Addresses:
+  Line number
+  $   (Means the last line)
+  /regexp/
+
+Newlines:  \n will match any newline except at the end of the pattern space
+
+If the command specifies:            Then it is applied to:
+-------------------------            ----------------------
+  No address                         Each input line
+  One address                        Any line matching the address.  Some
+                                     commands accept only one address:
+                                     a, i, r, q, and =.
+  Two comma separated addresses      First matching line and all succeeding
+                                     lines up to and including a line matching
+                                     the second address.
+  An address followed by !           All lines that do not match the address.
+
+Summary of commands   PS = pattern space, HS = hold space
+-------------------
+  #           Begin a comment (must be in first column)
+  #n          If first line of script, equivalent to -n on command line.  
+              This means only print a line if explicitly told to (e.g., by 
+              p command).
+  :      :label
+              Label for transfer of control by b or t commands.
+  =      [/pattern/]=
+              Write to stdout each line number addressed by pattern.
+  a      [address]a\
+            text
+              Append text following each line matched by address.  All lines
+              of text must have \ to escape newline except last.
+  b      [address1][,address2]b[label]
+              Branch to label or end of script if label not specified.
+  c      [address1][,address2]c\
+            text
+              Replace the lines selected with text.  text rules same as a.
+              Contents of PS are deleted.
+  d      [address1][,address2]d
+              Delete lines from PS, then read new line and go to
+              beginning of script.
+  D      [address1][,address2]D
+              Delete up to first newline in PS, then go to first 
+              line in script.  If resulting PS is empty, then a
+              new line is loaded.
+  g      [address1][,address2]g
+              Write the HS over the PS.
+  G      [address1][,address2]G
+              Same as g, but HS is appended to PS.
+  h      [address1][,address2]h
+              Copy PS to HS.
+  H      [address1][,address2]H
+              Append a newline to the HS, then append the PS.
+  i      [address1]i\
+            text
+              Insert text before each matched line.
+  l      [address1][,address2]l
+              List PS.  Nonprinting characters shown as ASCII codes
+              and long lines are wrapped.
+  n      [address1][,address2]n
+              Print PS, then read next line into PS.  Control passes to line
+              following n rather than top of script.
+  N      [address1][,address2]N
+              Append newline then next line to PS.
+  p      [address1][,address2]p
+              Print PS to stdout.  Duplicates lines unless used -n option.
+  P      [address1][,address2]P
+              Print up to newline of PS.
+  q      [address]q
+              Quit when address is encountered. PS is first printed.
+  r      [address1][,address2]r file
+              Append contents of file and append to PS.
+  s      [address1][,address2]s/pattern/replacement/[flags]
+              Substitution.  Flags: 
+                n   Replace nth instance.
+                g   Replace all instances.
+                p   Print line if successful substitution done (can result in
+                    multiple copies of line for > 1 substitution).
+                w file    Write line to file if successful replacement.
+  t      [address1][,address2]t[label]
+              Branch if successful substitution made.  Control goes to bottom
+              of script if label not present.
+  w      [address1][,address2]w file
+              Append PS to file.
+  x      [address1][,address2]x
+              Exchange PS with HS.
+  y      [address1][,address2]y/set1/set2/
+              Translate characters.

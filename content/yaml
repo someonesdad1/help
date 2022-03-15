@@ -1,0 +1,272 @@
+*yaml*
+
+|yaml_scalars|
+|yaml_mappings|
+|yaml_lists|
+|yaml_inline|
+|yaml_ref_card|
+|yaml_interface|
+
+YAML is a data serialization format designed for human readability and
+interaction with scripting languages.  It was designed so its syntax
+easily maps to the common data structures of high-level languages:
+arrays, maps, and scalars.  See http://yaml.org/ and
+https://en.wikipedia.org/wiki/YAML.
+
+This document concerns PyYAML, which is a YAML parser and emitter for
+python.  PyYAML 3.11 is a YAML 1.1 parser and parses all examples from
+the spec.  Supports python
+>=2.5 and 3.  See http://pyyaml.org/wiki/PyYAML.
+
+Why you'd want to use it:  you can organize information in human
+readable form and get it into and out of a computer with little fuss.
+Benefits:
+    * Unicode support
+    * Works with python 2.5 or later (including python 3)
+    * Sensible error messages
+
+NOTE:  tabs are never allowed as indentation; this is a good thing.
+
+Comments:  '# ' begins a comment and continues to end of line.
+
+----------------------------------------------------------------------
+Scalars                                         *yaml_scalars*
+
+There are 5 types of scalars:
+
+    import yaml
+    from pprint import pprint
+    s = '''
+        # YAML
+        plain : string 1
+        single-quoted:  'string 2'
+        double-quoted:  "string 3"
+        literal: |  # Note the pipe symbol syntax
+            This results in a
+            literal "translation"
+            of the string elements.
+        folded: >
+            This will result in a single string where
+            the newlines are converted to a space
+            character.
+    '''
+    pprint(yaml.load(s))
+
+Python output:
+
+    {'double-quoted': 'string 3',
+     'folded': 'This will result in a single string where the newlines are '
+               'converted to a space character.\n',
+     'literal': 'This results in a\n'
+                'literal "translation"\n'
+                'of the string elements.\n',
+     'plain': 'string 1',
+     'single-quoted': 'string 2'}
+
+----------------------------------------------------------------------
+Lists                                                   *yaml_lists*
+
+Lists are indicated by '-' for line-oriented entry and '[' and ']' for
+inline entry.  Entries are separated by ', ' (comma-space).
+
+
+----------------------------------------------------------------------
+Mappings                                        *yaml_mappings*
+
+The keys and values of maps are separated by ': ' characters.  The
+example under *yaml_scalars* demonstrates this.
+
+?
+    Use '?' to encode more complicated keys for a mapping.  Example:
+
+    ? !!python/tuple [0, 0] 
+    : a string
+
+will result in the mapping
+
+    {(0, 0) : 'a string'}
+
+Note that putting things on a single line won't work:  
+    ? !!python/tuple [0, 0] : a string
+results in a syntax error because it can't hash the key.
+
+----------------------------------------------------------------------
+Inline notation                                 *yaml_inline*
+
+YAML syntax maps nicely onto python's syntax.  Here's the block form
+of a list and the inline form:
+
+    - Element 1
+    - 2
+    - "Third"
+
+Inline:  [Element 1 , 2, "Third"]
+
+This gives the user freedom to define structures as desired and
+maintain readability.  Note the string as the first element didn't
+need to be quoted; the ending whitespace was removed, however.
+
+----------------------------------------------------------------------
+Reference card                                        *yaml_ref_card*
+
+%YAML 1.1   # Reference card
+---
+Collection indicators:
+    '? ' : Key indicator.
+    ': ' : Value indicator.
+    '- ' : Nested series entry indicator.
+    ', ' : Separate in-line branch entries.
+    '[]' : Surround in-line series branch.
+    '{}' : Surround in-line keyed branch.
+Scalar indicators:
+    '''' : Surround in-line unescaped scalar ('' escaped ').
+    '"'  : Surround in-line escaped scalar (see escape codes below).
+    '|'  : Block scalar indicator.
+    '>'  : Folded scalar indicator.
+    '-'  : Strip chomp modifier ('|-' or '>-').
+    '+'  : Keep chomp modifier ('|+' or '>+').
+    1-9  : Explicit indentation modifier ('|1' or '>2').
+           # Modifiers can be combined ('|2-', '>+1').
+Alias indicators:
+    '&'  : Anchor property.
+    '*'  : Alias indicator.
+Tag property: # Usually unspecified.
+    none    : Unspecified tag (automatically resolved by application).
+    '!'     : Non-specific tag (by default, "!!map"/"!!seq"/"!!str").
+    '!foo'  : Primary (by convention, means a local "!foo" tag).
+    '!!foo' : Secondary (by convention, means "tag:yaml.org,2002:foo").
+    '!h!foo': Requires "%TAG !h! <prefix>" (and then means "<prefix>foo").
+    '!<foo>': Verbatim tag (always means "foo").
+Document indicators:
+    '%'  : Directive indicator.
+    '---': Document header.
+    '...': Document terminator.
+Misc indicators:
+    ' #' : Throwaway comment indicator.
+    '`@' : Both reserved for future use.
+Special keys:
+    '='  : Default "value" mapping key.
+    '<<' : Merge keys from another mapping.
+Core types: # Default automatic tags.
+    '!!map' : { Hash table, dictionary, mapping }
+    '!!seq' : { List, array, tuple, vector, sequence }
+    '!!str' : Unicode string
+More types:
+    '!!set' : { cherries, plums, apples }
+    '!!omap': [ one: 1, two: 2 ]
+Language Independent Scalar types:
+    { ~, null }              : Null (no value).
+    [ 1234, 0x4D2, 02333 ]   : [ Decimal int, Hexadecimal int, Octal int ]
+    [ 1_230.15, 12.3015e+02 ]: [ Fixed float, Exponential float ]
+    [ .inf, -.Inf, .NAN ]    : [ Infinity (float), Negative, Not a number ]
+    { Y, true, Yes, ON  }    : Boolean true
+    { n, FALSE, No, off }    : Boolean false
+    ? !!binary >
+        R0lG...BADS=
+    : >-
+        Base 64 binary value.
+Escape codes:
+ Numeric   : { "\x12": 8-bit, "\u1234": 16-bit, "\U00102030": 32-bit }
+ Protective: { "\\": '\', "\"": '"', "\ ": ' ', "\<TAB>": TAB }
+ C         : { "\0": NUL, "\a": BEL, "\b": BS, "\f": FF, "\n": LF, "\r": CR,
+               "\t": TAB, "\v": VTAB }
+ Additional: { "\e": ESC, "\_": NBSP, "\N": NEL, "\L": LS, "\P": PS }
+
+----------------------------------------------------------------------
+Module's Interface                                    *yaml_interface*
+
+load()
+    Load a single document from a stream
+load_all()
+    Load multiple documents from a stream
+safe_load()  
+    Same as load(), but recognizes only standard YAML tags (thus,
+    arbitrary python objects cannot be constructed).
+safe_load_all()
+    Same as load_all(), but safe.
+
+Note:  dump and dump_all have the same keyword arguments
+
+dump(data, stream=None, Dumper=Dumper,
+        default_style=None, default_flow_style=None,
+        canonical=None, indent=None, width=None,
+        allow_unicode=None, line_break=None,
+        encoding=None, explicit_start=None, explicit_end=None,
+        version=None, tags=None)
+    Dump an object to a stream.  If stream is None, it returns the
+    produced string.  All of the keywords except stream go to the 
+    Dumper object.
+
+dump_all(documents, **kw)
+    Dump an object sequence to a stream.
+
+safe_dump(obj, stream=None)
+safe_dump_all(objseq, stream=None)
+
+scan(stream)
+    Scans the stream and produces a sequence of tokens.
+parse(stream, Loader=loader)
+    Scans the stream and produces a sequence of parsing events.
+emit(events, stream=None)
+    Serializes the given stream of parsing events and writes to
+    the stream.  If stream is None, return the produced string.
+
+compose(stream)
+    Parse the stream and return the root of the representation
+    graph for the first document.
+compose_all(stream)
+    Parse the stream and return a sequence of representation
+    graphs for the documents in the stream.
+serialize(node, stream=None)
+    Node is a representation graph; serializes the given node to
+    the stream.
+serialize_all(node_seq, stream=None)
+    Serialize the sequence of representation graph nodes.
+
+
+add_constructor(tag, constructor_func)
+    Specify a constructor function for a given tag.
+    constructor_func is a function that converts a node of a
+    representation graph to a native python object.
+
+Example:  Simulate two bibtex entries.  The '---' delimits two
+"documents" in the YAML input stream.  
+
+    import yaml
+    from pprint import pprint
+
+    s = '''
+---
+type: article
+key: Gettys90
+author : Jim Gettys and Phil Karlton and Scott McGregor
+title : The X Window System, Version 11
+journal : Software Practice and Experience
+volume : 20
+number : S2
+pages : 46-129
+year : 1990
+abstract : >
+    A technical overview of the X11 functionality.  This is
+    an update of the X10 TOG paper by Scheifler & Gettys.
+---
+type: article
+key: SomeOther
+'''
+    for i in yaml.load_all(s):
+        pprint(i)
+
+results in:
+
+    {'abstract': 'A technical overview of the X11 functionality.  This is an '
+                 'update of the X10 TOG paper by Scheifler & Gettys.\n',
+     'author': 'Jim Gettys and Phil Karlton and Scott McGregor',
+     'journal': 'Software Practice and Experience',
+     'key': 'Gettys90',
+     'number': 'S2',
+     'pages': '46-129',
+     'title': 'The X Window System, Version 11',
+     'type': 'article',
+     'volume': 20,
+     'year': 1990}
+    {'key': 'SomeOther', 'type': 'article'}

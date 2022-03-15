@@ -1,0 +1,523 @@
+*HTML*
+
+|Tables|
+|Special_Characters|
+|Links|
+|Formatting|
+|Pictures|
+|Frames|
+|Forms|
+|Redirection|
+|CSS|
+
+----------------------------------------------------------------------
+
+    If you create a hypertext tag such as the following, you'll
+    get a new browser window that it opens in:
+
+    <a <a href=""></a>="xxx" target="_blank">Link text</a>
+
+    This works in both IE and Mozilla.
+
+Redirection:  see the end
+
+Basic Tags
+----------
+    <html></html>
+        Creates an HTML document
+    <head></head>
+        Sets off the title and other information that isn't 
+        displayed on the Web page itself
+    <body></body>
+        Sets off the visible portion of the document
+
+Header Tags
+-----------
+    <title></title>
+        Puts the name of the document in the title bar 
+
+Body Attributes
+---------------
+    <body bgcolor=?>
+        Sets the background color, using name or hex value
+    <body text=?>
+        Sets the text color, using name or hex value
+    <body link=?>
+        Sets the color of links, using name or hex value
+    <body vlink=?>
+        Sets the color of followed links, using name or hex value
+    <body alink=?>
+        Sets the color of links on click
+
+Text Tags
+---------
+    <pre></pre>
+        Creates preformatted text
+    <hl></hl>
+        Creates the largest headline
+    <h6></h6>
+        Creates the smallest headline
+    <b></b>
+        Creates bold text
+    <i></i>
+        Creates italic text
+    <tt></tt>
+        Creates teletype, or typewriter-style text
+    <cite></cite>
+        Creates a citation, usually italic
+    <em></em>
+        Emphasizes a word (with italic or bold)
+    <strong></strong> 
+        Emphasizes a word (with italic or bold)
+    <font size=?></font>
+        Sets size of font, from 1 to 7)
+    <font color=?></font>
+        Sets font color, using name or hex value
+
+Links                                               *Links*
+-----
+    <a href="URL"></a>
+        Creates a hyperlink
+    <a href="mailto:EMAIL"></a>
+        Creates a mailto link
+    <a href="mailto:EMAIL?Subject=My&nbsp;Subject"></a>
+        Creates a mailto link with a subject (note you must use
+        non-breaking spaces)
+    <a name="NAME"></a>
+        Creates a target location within a document
+    <a href="#NAME"></a>
+        Links to that target location from elsewhere in the 
+        document
+
+Formatting                                          *Formatting*
+----------
+    <p></p>
+        Creates a new paragraph
+    <p align=?>
+        Aligns a paragraph to the left, right, or center
+    <br>
+        Inserts a line break
+    <blockquote>
+    </blockquote> 
+        Indents text from both sides
+    <dl></dl>
+        Creates a definition list
+    <dt>
+        Precedes each definition term
+    <dd>
+        Precedes each definition
+    <ol></ol>
+        Creates a numbered list
+    <li></li>
+        Precedes each list item, and adds a number
+    <ul></ul>
+        Creates a bulleted list
+    <div align=?>
+        A generic tag used to format large blocks of HTML, also 
+        used for stylesheets
+
+Graphical Elements                                  *Pictures*
+------------------
+    <img src="name">
+        Adds an image
+    <img src="name" align=?>
+        Aligns an image: left, right, center; bottom, top, middle
+    <img src="name" border=?>
+        Sets size of border around an image
+    <hr>
+        Inserts a horizontal rule
+    <hr size=?>
+        Sets size (height) of rule
+    <hr width=?>
+        Sets width of rule, in percentage or absolute value
+    <hr noshade>
+        Creates a rule without a shadow
+
+
+Tables                                                *Tables*
+------
+    <table></table>
+        Creates a table
+    <tr></tr>
+        Sets off each row in a table
+    <td></td>
+        Sets off each cell in a row
+    <th></th>
+        Sets off the table header (a normal cell with bold, 
+        centered text)
+
+
+Table Attributes 
+----------------
+    <table border=#>
+        Sets width of border around table cells
+    <table cellspacing=#>
+        Sets amount of space between table cells
+    <table cellpadding=#>
+        Sets amount of space between a cell's border and its 
+        contents
+    <table width=# or %>
+        Sets width of table in pixels or as a percentage of 
+        document width
+    <tr align=?> or <td align=?>
+        Sets alignment for cell(s) (left, center, or right)
+    <tr valign=?> or <td valign=?>
+        Sets vertical alignment for cell(s) (top, middle, or 
+        bottom)
+    <td colspan=#>
+        Sets number of columns a cell should span
+    <td rowspan=#>
+        Sets number of rows a cell should span (default=1)
+    <td nowrap>
+        Prevents the lines within a cell from being broken to fit
+
+Frames                                              *Frames*
+------
+    <frameset></frameset>
+        Replaces the <body> tag in a frames document; can also 
+        be nested in other framesets
+    <frameset rows="value,value">
+        Defines the rows within a frameset, using number in 
+        pixels, or percentage of w idth
+    <frameset cols="value,value">
+        Defines the columns within a frameset, using number in 
+        pixels, or percentage of width
+    <frame>
+        Defines a single frame or region within a frameset
+    <noframes></noframes>
+        Defines what will appear on browsers that don't support 
+        frames
+
+Frames Attributes 
+-----------------
+    <frame src="URL">
+        Specifies which HTML document should be displayed
+    <frame name="name">
+        Names the frame, or region, so it may be targeted by 
+        other frames
+    <frame marginwidth=#>
+        Defines the left and right margins for the frame; must 
+        be equal to or greater than 1
+    <frame marginheight=#>
+        Defines the top and bottom margins for the frame; must 
+        be equal to or greater than 1
+    <frame scrolling=VALUE>
+        Sets whether the frame has a scrollbar; value may equal 
+        "yes," "no," or "auto." The default, as in ordinary 
+        documents, is auto.
+    <frame noresize>
+        Prevents the user from resizing a frame
+
+Forms                                               *Forms*
+-----
+    For functional forms, you'll have to run a CGI script. 
+    The HTML just creates the appearance of a form.
+
+    <form></form>
+        Creates all forms
+    <select multiple name="NAME" size=?></select>
+        Creates a scrolling menu. Size sets the number of menu 
+        items visible before you need to scroll.
+    <option>
+        Sets off each menu item
+    <select name="NAME"></select>
+        Creates a pulldown menu
+    <option>
+        Sets off each menu item
+    <textarea name="NAME" cols=40 rows=8></textarea>
+        Creates a text box area. Columns set the width; rows set 
+        the height.
+    <input type="checkbox" name="NAME">
+        Creates a checkbox. Text follows tag.
+    <input type="radio" name="NAME" value="x">
+        Creates a radio button. Text follows tag
+    <input type=text name="foo" size=20>
+        Creates a one-line text area. Size sets length, in 
+        characters.
+    <input type="submit" value="NAME">
+        Creates a Submit button
+    <input type="image" border=0 name="NAME" src="name.gif">
+        Creates a Submit button using an image
+    <input type="reset">
+        Creates a Reset button
+
+----------------------------------------------------------------------
+CSS                                           *CSS*
+---
+From http://hotwired.lycos.com/webmonkey/reference/html_cheatsheet/
+and  http://www.w3schools.com/css/css_howto.asp
+
+    <head>
+        <link rel="stylesheet" type="text/css" href="mystyle.css" />
+    </head>
+
+
+    Internal style sheet:
+
+        <head>
+            <style type="text/css">
+                hr {color: sienna}
+                p {margin-left: 20px}
+                body {background-image: url("images/back40.gif")}
+            </style>
+        </head>
+
+    h3 {
+        color: red;
+        text-align: left;
+        font-size: 8pt;
+    }
+
+    body {background-color: yellow}
+    h1 {font-size: 36pt}
+    h2 {color: blue}
+    p {margin-left: 50px}
+
+    body {background-color: tan}
+    h1 {color:maroon; font-size:20pt}
+    hr {color:navy}
+    p {font-size:11pt; margin-left: 15px}
+    a:link     {color:green}
+    a:visited  {color:yellow}
+    a:hover    {color:black}
+    a:active   {color:blue}
+
+
+Stylesheets Guide   
+
+Font
+----
+font-family         <family-name> or <generic-family>: 
+                    [serif, sans-serif, cursive, fantasy, monospace]
+font-style          normal, italic
+font-weight         normal, bold, 100, 200, 300, 400, 500, 600, 700, 800, 900
+font-size           <absolute-size>, <relative-size>, <length>, <%>
+font                <font-style>, <font-weight>, <font-size>, <font-family>
+                    
+Color and Background                    
+--------------------
+color               color
+background-color    color
+background-image    URL (relative or absolute path)
+background          color
+                    
+Text properties     
+---------------
+Text-decoration     underline, line-through
+text-transform      capitalize, uppercase, lowercase, none
+text-align          left, right, center, justify
+text-indent         <length>, <%>
+
+Box properties      
+--------------
+margin              <length>, <%>, auto(sequence: t r b l)
+margin-top          <length>, <%>, auto
+Margin-right        <length>, <%>, auto
+margin-bottom       <length>, <%>, auto
+margin-left         <length>, <%>, auto
+padding             <length>, <%>, (sequence: t r b l)
+padding-top         <length>, <%>
+padding-right       <length>, <%>
+padding-bottom      <length>, <%>
+padding-left        <length>, <%>
+border-color        <color>
+border-style        solid, double, groove, ridge, inset, outset
+border              <border-width>, <border-style>, <color>
+
+Block-level and Replaced Elements       
+---------------------------------
+width               <length>, <%>, auto
+height              <length>, auto
+float               left, right
+clear               none, left, right
+                    
+Position 
+--------
+position            absolute, relative
+top                 <length>, <%>, auto
+left                <length>, <%>, auto
+visibility          hidden, visible, inherit
+z-index             <number>, auto
+overflow            visible, hidden, auto
+                    
+
+
+----------------------------------------------------------------------
+Redirection                                           *Redirection*
+-----------
+
+    Immediate:
+
+        <html>
+        <SCRIPT LANGUAGE="JavaScript">
+        window.location="some_url.html";
+        </script>
+        </html>
+
+    With time delay:
+
+        <META HTTP-EQUIV="Refresh" CONTENT="5; URL=html-redirect.html">
+
+        Note:  This needs to go in the <head> section of the page.
+
+----------------------------------------------------------------------
+Special Characters                       *Special_Characters*
+
+Commonly used
+-------------
+
+&#176;   Degree sign
+&#169;   Copyright
+&#174;   Registered trademark
+&#160;   Non-breaking Space
+&#162;   Cent sign
+&#163;   Pound sterling
+&#177;   Plus or minus
+&#181;   Micro sign
+&#182;   Paragraph sign
+&#215;   Multiply sign
+&#247;   Division sign
+
+
+
+REFERENCE       DESCRIPTION
+--------------  -----------
+&#00;           - - &#08;   Unused
+&#09;     Horizontal tab
+&#10;     Line feed
+&#11;           - - &#12;   Unused
+&#13;     Carriage Return
+&#14;           - - &#31;   Unused
+&#32;     Space
+&#33;     Exclamation mark
+&#34;     Quotation mark
+&#35;     Number sign
+&#36;     Dollar sign
+&#37;     Percent sign
+&#38;     Ampersand
+&#39;     Apostrophe
+&#40;     Left parenthesis
+&#41;     Right parenthesis
+&#42;     Asterisk
+&#43;     Plus sign
+&#44;     Comma
+&#45;     Hyphen
+&#46;     Period (fullstop)
+&#47;     Solidus (slash)
+&#48;           - - &#57;   Digits 0-9
+&#58;     Colon
+&#59;     Semi-colon
+&#60;     Less than
+&#61;     Equals sign
+&#62;     Greater than
+&#63;     Question mark
+&#64;     Commercial at
+&#65;           - - &#90;   Letters A-Z
+&#91;     Left square bracket
+&#92;     Reverse solidus (backslash)
+&#93;     Right square bracket
+&#94;     Caret
+&#95;     Horizontal bar (underscore)
+&#96;     Acute accent
+&#97;           - - &#122;  Letters a-z
+&#123;    Left curly brace
+&#124;    Vertical bar
+&#125;    Right curly brace
+&#126;    Tilde
+&#127;            - - &#159; Unused
+&#160;           Non-breaking Space
+&#161;    Inverted exclamation
+&#162;    Cent sign
+&#163;    Pound sterling
+&#164;    General currency sign
+&#165;    Yen sign
+&#166;    Broken vertical bar
+&#167;    Section sign
+&#168;    Umlaut (dieresis)
+&#169;    Copyright
+&#170;    Feminine ordinal
+&#171;    Left angle quote, guillemotleft
+&#172;    Not sign
+&#173;    Soft hyphen
+&#174;    Registered trademark
+&#175;    Macron accent
+&#176;    Degree sign
+&#177;    Plus or minus
+&#178;    Superscript two
+&#179;    Superscript three
+&#180;    Acute accent
+&#181;    Micro sign
+&#182;    Paragraph sign
+&#183;    Middle dot
+&#184;    Cedilla
+&#185;    Superscript one
+&#186;    Masculine ordinal
+&#187;    Right angle quote, guillemotright
+&#188;    Fraction one-fourth
+&#189;    Fraction one-half
+&#190;    Fraction three-fourths
+&#191;    Inverted question mark
+&#192;    Capital A, grave accent
+&#193;    Capital A, acute accent
+&#194;    Capital A, circumflex accent
+&#195;    Capital A, tilde
+&#196;    Capital A, dieresis or umlaut mark
+&#197;    Capital A, ring
+&#198;    Capital AE dipthong (ligature)
+&#199;    Capital C, cedilla
+&#200;    Capital E, grave accent
+&#201;    Capital E, acute accent
+&#202;    Capital E, circumflex accent
+&#203;    Capital E, dieresis or umlaut mark
+&#204;    Capital I, grave accent
+&#205;    Capital I, acute accent
+&#206;    Capital I, circumflex accent
+&#207;    Capital I, dieresis or umlaut mark
+&#208;    Capital Eth, Icelandic
+&#209;    Capital N, tilde
+&#210;    Capital O, grave accent
+&#211;    Capital O, acute accent
+&#212;    Capital O, circumflex accent
+&#213;    Capital O, tilde
+&#214;    Capital O, dieresis or umlaut mark
+&#215;    Multiply sign
+&#216;    Capital O, slash
+&#217;    Capital U, grave accent
+&#218;    Capital U, acute accent
+&#219;    Capital U, circumflex accent
+&#220;    Capital U, dieresis or umlaut mark
+&#221;    Capital Y, acute accent
+&#222;    Capital THORN, Icelandic
+&#223;    Small sharp s, German (sz ligature)
+&#224;    Small a, grave accent
+&#225;    Small a, acute accent
+&#226;    Small a, circumflex accent
+&#227;    Small a, tilde
+&#228;    Small a, dieresis or umlaut mark
+&#229;    Small a, ring
+&#230;    Small ae dipthong (ligature)
+&#231;    Small c, cedilla
+&#232;    Small e, grave accent
+&#233;    Small e, acute accent
+&#234;    Small e, circumflex accent
+&#235;    Small e, dieresis or umlaut mark
+&#236;    Small i, grave accent
+&#237;    Small i, acute accent
+&#238;    Small i, circumflex accent
+&#239;    Small i, dieresis or umlaut mark
+&#240;    Small eth, Icelandic
+&#241;    Small n, tilde
+&#242;    Small o, grave accent
+&#243;    Small o, acute accent
+&#244;    Small o, circumflex accent
+&#245;    Small o, tilde
+&#246;    Small o, dieresis or umlaut mark
+&#247;    Division sign
+&#248;    Small o, slash
+&#249;    Small u, grave accent
+&#250;    Small u, acute accent
+&#251;    Small u, circumflex accent
+&#252;    Small u, dieresis or umlaut mark
+&#253;    Small y, acute accent
+&#254;    Small thorn, Icelandic
+&#255;    Small y, dieresis or umlaut mark

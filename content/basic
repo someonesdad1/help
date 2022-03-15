@@ -1,0 +1,273 @@
+*basic*
+
+|Keywords|
+|FileSystemObjects|
+
+---------------------------------------------------------------------------
+Keyword listing by type                     *Keywords*
+
+IO
+    InputBox()
+    MsgBox()
+
+Files and folders
+    ChDir
+    ChDrive
+    CurDir()
+    Dir()
+    FileCopy
+    FileDateTime()
+    GetAttr()
+    Kill
+    MkDir
+    Name
+    RmDir
+    SetAttr
+
+Variable and array declaration
+    Const
+    Declare
+    DefType
+    Dim
+    Enum ... End Enum
+    Erase
+    Private keyword
+    Public keyword
+    ReDim
+    Static keyword
+
+Variable and array types
+    Array()
+    IsArray()
+    IsDate()
+    IsEmpty()
+    IsError()
+    IsNull()
+    IsNumeric()
+    IsObject()
+    LBound()
+    Type ... End Type
+    TypeName()
+    UBound()
+    VarType()
+
+Variable type conversion
+    CBool()
+    CByte()
+    CCur()
+    CDate()
+    CDec()
+    CDbl()
+    CInt()
+    CLng()
+    CSng()
+    CStr()
+    CVar()
+    CVErr()
+
+String manipulation functions
+    Asc(), AscB(), AscW()
+    Chr(), ChrB(), ChrW()
+    Filter()
+    InStr(), InStrB()
+    InStrRev()
+    Join()
+    LCase()
+    Left(), LeftB()
+    Len(), LenB()
+    LTrim()
+    Mid(), MidB()
+    Mid statement
+    Replace()
+    Right(), RightB()
+    RTrim()
+    Space()
+    Split()
+    Str()
+    String()
+    StrComp()
+    StrConv()
+    StrReversed()
+    Trim()
+    UCase()
+
+Data formatting functions
+    Format()
+    FormatCurrency()
+    FormatDateTime()
+    FormatNumber()
+    FormatPercent()
+    LSet statement
+    RSet statement
+
+Math functions
+    Abs()
+    Atn()
+    Cos()
+    Exp()
+    Int()
+    Fix()
+    Round()
+    Log()
+    Oct()
+    Hex()
+    Randomize statement
+    Rnd()
+    Sgn()
+    Sin()
+    Sqr()
+    Tan()
+    Val()
+
+Date and time
+    Date()
+    Date statement
+    DateAdd()
+    DateDiff()
+    DatePart()
+    DateSerial()
+    DateValue()
+    Day()
+    Hour()
+    Minute()
+    Month()
+    MonthName()
+    Now()
+    Time()
+    Time statement
+    Second()
+    Timer()
+    TimeSerial()
+    TimeValue()
+    Weekday()
+    WeekdayName()
+    Year()
+
+Financial
+    IPmt()
+    PPmt()
+    Pmt()
+    FV()
+    PV()
+    NPV()
+    NPer()
+    Rate()
+    IRR()
+    MIRR()
+    DDB()
+    SYD()
+    SLN()
+
+File I/O
+    Close
+    EOF()
+    FileAttr()
+    FileLen()
+    FreeFile()
+    Get #
+    Input #
+    Line Input #
+    LOF()
+    Loc()
+    Lock
+    Open
+    Print #
+    Put #
+    Reset
+    Seek
+    Unlock
+    Write #
+    Width #
+
+Graphics
+    LoadPicture()
+    QBColor()
+    RGB()
+    SavePicture
+
+Registry
+    DeleteSetting
+    GetAllSettings()
+    GetSetting
+    SaveSetting
+
+Resource files
+    LoadResData()
+    LoadResPicture()
+    sLoadResString()
+
+Control flow statements
+    Do ... Lop
+    For ... Next
+    If ... Then 
+    If ... Then ... Else
+    Select Case
+    While ... Wend
+
+Application collaboration
+    AppActivate
+    SendKeys
+    Shell()
+
+Objects
+    CreateObject()
+    Event
+    For Each ... Next
+    GetObject()
+    Load
+    Property Get
+    Property Let
+    Property Set
+    Raise Event
+    Set
+    Unload
+    With ... End With
+
+Option statements
+    Option Base
+    Option Compare
+    Option Explicit
+
+Error trapping and handling
+    Error
+    On Error
+    Resume
+
+Miscellaneous
+    Beep
+    CallByName()
+    Choose()
+    DoEvents
+    Environ()
+    Iif()
+    Rem
+    Switch()
+
+Obsolete
+    On ... GoSub
+    On ... GoTo
+    GoTo
+    GoSub, Return
+
+---------------------------------------------------------------------------
+File System Objects                     *FileSystemObjects*
+
+See pg 733 in VB6 Programmer's Guide
+See pg 454 in VB6 Complete
+
+Contained in the scripting type library Scrrun.dll (147k).  Add this
+to VB by Project>References and adding the Microsoft Scripting
+Runtime.
+
+Making a new object:
+    Dim fso as New FileSystemObject
+  or
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+Creating
+    fso.CreateFolder
+    fso.CreateTextFile (FSO doesn't support binary files)
+
+    Dim fil as File
+    Set fil = fso.GetFile("c:\tmp\mytmpfile")
+    

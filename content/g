@@ -1,0 +1,1194 @@
+*g*
+
+|g_Colors|
+|g_Constants|
+|g_FunctionsMarkPaper|
+|g_LineCharacteristics|
+|g_FillCharacteristics|
+|g_FontCharacteristics|
+|g_Transformations|
+|g_Paths|
+|g_Clipping|
+|g_UtilityFunctions|
+|g_Initialization|
+
+
+Utility startup:
+
+
+def SetUp(file, orientation=portrait, units=inches):
+    ofp = open(file, "w")
+    ginitialize(ofp, wrap_in_PJL)
+    setOrientation(orientation, units)
+    return ofp
+
+
+def Main(file):
+    s = SetUp(file, portrait)
+    Do what needs to be done
+    gclose()
+    s.close()
+
+Main("file.ps")
+
+-----------------------------------------------------------------------------
+Components of the graphics state
+
+    When you are using the g.py module, you'll want to keep a mental
+    picture of the things that make up the current graphics state.
+    The attributes of the graphics state are:
+
+      1.   Paper size selected
+      2.   Orientation
+      3.   Units mapped onto the paper
+      4.   Line width
+      5.   Line color
+      6.   Line type (solid or dashed)
+      7.   Line cap type
+      8.   Line join type
+      9.   Line drawing on or off
+      10.  Fill type (solid, line fill, or gradient fill)
+      11.  Fill color
+      12.  Gradient fill second color
+      13.  Fill line type (solid or dashed)
+      14.  Filling on or off
+      15.  Line fill angle
+      16.  Line fill separation
+      17.  Line fill phase
+      18.  Text typeface
+      19.  Text size
+      20.  Text color
+      21.  Coordinate transformation matrix
+      22.  Current path
+      23.  Current clipping path
+      24.  Current point
+
+    There may be other attributes in the graphics state dictionary,
+    but these are for the internal use of the module.
+
+-----------------------------------------------------------------------------
+                                                        *g_Initialization*
+Initialization & changing the graphics state
+
+  ginitialize(stream=sys.stdout, wrap_in_PJL=0)
+      Used to initialize the g.py module.  If wrap_in_PJL is true, the
+      output will be wrapped so as to be a well-defined PJL job for
+      submission to an HP LaserJet printer.  stream is the stream where
+      the PostScript will be sent.  The user is responsible for opening
+      and closing the stream.
+
+  gclose()
+      Call to close down the g.py module.  This will result in the
+      PJL job closing properly if the job was being wrapped in PJL.
+
+  setOrientation(orientation, units=inches)
+      Sets one of four orientations of paper:  landscape, portrait,
+      seascape, or inversePortrait.  If you look at a piece of letter
+      or A4 paper in the conventional way (long edge vertical), that's
+      called portrait mode.  If you rotate that page 90 degrees
+      counterclockwise about an axis normal to the page, you'll be
+      looking at the page in landscape orientation.  This assumes that
+      the origin of the Cartesian coordinate system mapped onto the
+      paper is always in the lower left corner of the page with the X
+      axis increasing to the right and the Y axis increasing upwards.
+      Another 90 degree counterclockwise rotation results in
+      inversePortrait mode.  One more 90 degree counterclockwise
+      rotation puts the page into seascape mode.  In all four cases,
+      the coordinate system is the conventional right-handed Cartesian
+      coordinate system and the origin is always at the bottom left-
+      hand corner of the page.
+
+      The units parameter defines the drawing units that will be mapped
+      to the page.  Typical choices are inches, mm, points, and cm.
+
+      If you wish the coordinate system to be correctly placed on the
+      paper, you must call the setPageSize() function before calling
+      setOrientation() if you are using a page size that is not the
+      default.
+
+      Defaults:  portrait, inches
+
+  setPageSize(size)
+      size is an integer defined as a constant.  It determines the
+      paper size as defined in the paper_size dictionary.  It contains
+      common values such as page_letter, page_legal, etc.  You can edit
+      the g.py file to add custom sizes to the paper_size dictionary.
+      This command has no effect on the graphics state except for how
+      it influences the setOrientation() function to locate the origin
+      of the coordinate system.
+
+      Default:  page_letter
+
+  newPage()
+      Causes a page ejection command to be sent to the printer.  The
+      page following will be set to the current defaults.  Example:  if
+      you set the first page to landscape orientation in inches and
+      never change the orientation or units, all subsequent pages will
+      be set to landscape orientation in inches with the origin at the
+      lower left corner of the page after a newPage command.
+
+  setGS(new_gs)
+      Return to a saved graphics state by passing in a graphics state
+      dictionary that was previously gotten from a call to getGS().
+      You can change the values in the dictionary if you wish, but
+      realize there is no parameter checking on the values, since that
+      is normally done by the accessor functions provided by the g.py
+      module.
+
+  getGS()
+      Returns a dictionary representing the current graphics state.
+      You can store it away and return to the saved state at any time
+      by calling setGS() with the saved state.  You can accomplish a
+      similar thing by using the push() and pop() functions.
+
+  reset()
+      Emits the necessary PostScript to set the PostScript interpreter
+      to the graphics state defined by the g.py module's graphics
+      state.  You might use this function, for example, after you had
+      made a call to inline() to send some custom PostScript to the
+      drawing device.  Executing the reset() function would ensure the
+      PostScript graphics state was consistent with the g.py module's
+      graphics state..
+
+  move(x, y)
+      Moves the current point to the point (x, y).  Any floating point
+      numbers are allowed.
+
+  rmove(x, y)
+      Moves a relative horizontal distance X and a relative vertical
+      distance Y from the current point.  Any floating point numbers
+      are allowed.
+
+  push()
+      Saves the current graphics state by pushing it on an internal
+      stack.  You can return to the pushed state by executing the pop()
+      command.  After executing the push() command, no commands can
+      affect the saved graphics state.  This allows you to embed whole
+      drawings inside of another drawing.  For example, a page drawing
+      routine could push() its state, then call a subroutine to draw a
+      logo on the page; the logo could be scaled to half its normal
+      size, then drawn.  When the code drawing the logo was finished,
+      the calling context would execute pop() and it would be in the
+      state immediately before the call to push().
+
+      The g.py module will issue a warning to stderr when gclose() is
+      called if the number of calls to pop()doesn't match the number of
+      calls to push().  This is intended to alert you that your code
+      might be missing a pop() call.
+
+  pop()
+      Restores a previously saved graphics state from the internal
+      stack (saved by the push() command).
+
+-----------------------------------------------------------------------------
+Line characteristics                         *g_LineCharacteristics*
+
+  lineCap(cap)
+      Determines the type of ending on a line.  The allowed values are
+
+        cap_butt                          The line is squared off at the
+                                          end of the line.
+        cap_round                         The end of the line is a
+                                          semicircular arc with the
+                                          diameter equal to the line width.
+        cap_projecting                    The line is squared off at the
+                                          end of the line, but it extends a
+                                          half linewidth past the line's
+                                          endpoint.
+
+  lineColor(color)
+      Sets the color that lines and borders will be drawn with.
+      Remains in effect until another lineColor() call is made or
+      setColor() is called.  The color parameter is a tuple of three
+      numbers between 0 and 1 (the RGB values).  Numerous constants are
+      given to allow setting the colors by name rather than by having
+      to use the RGB values.
+
+      Default: black
+
+  lineJoin(join)
+      Determines how lines join when they meet at a common point (only
+      applicable to paths).  The allowed values are:
+
+        join_miter                        The lines are mitered together,
+                                          resulting in a sharp point.
+        join_round                        The lines meet with a rounded
+                                          corner.
+        join_bevel                        The lines are joined as with a
+                                          miter, then the miter is bevelled
+                                          off.
+
+  lineOff()
+      Turns off border drawing of figures and paths and makes lines
+      drawn with line() or rline() to be invisible.
+
+      Default:  line/border drawing is turned on.
+
+  lineOn()
+      Turns on the border drawing of figures and paths and allows lines
+      drawn with line() or rline() to be visible.
+
+      Default:  line/border drawing is turned on.
+
+  lineType(linetype)
+      Selects the type of line to draw.  To change the proportions of
+      the dashed lines (but not their width), use the scaleDash()
+      function.  The selections are:
+
+      solid_line
+      dashed
+      dash_little_gap
+      dash_big_gap
+      little_dash
+      dash_dot
+      dash_dot_dot
+
+      Default: solid_line
+
+  lineWidth(Width)
+      Sets the line width in the current units of measure.  If you want
+      the physical width of the line to stay the same size on the paper
+      after the scale() function is called, use the call
+      scaleLineWidth(yes).
+
+      Default:  0.01
+
+  scaleDash(scale_factor=1)
+      The default dashed lines look reasonable on a regular page.
+      However, you may want to scale them up or down by using this
+      function.  The scale_factor must be a floating point number
+      greater than 0.  It scales the dash pattern, but has no effect on
+      the line width.  Calling scaleDash() with no parameter will
+      result in there being no scaling of the dash patterns.  Note this
+      also will scale the dashed lines that are used in the line
+      filling routines.  Setting scale_factor to less than 1 will cause
+      the dashes and spaces in the lines to get smaller.
+
+  scaleDashAutomatically(yes_or_no)
+      Scales the dashed lines (both regular and fill lines) so that
+      they appear on the output device the same before and after an
+      isotropic change of scale.
+
+      Default:  yes
+
+  scaleLineWidth(yes_or_no)
+      If you execute a scale() call, the width of drawn lines will
+      scale too (example:  if you set the line width to 1 while the
+      units on the page were points, then scaled the page to inches,
+      your lines would be 1 inch wide).  This may be unexpected
+      behavior.  The scaleLineWidth() function called with a value of
+      yes will make the width scale whenever an isotropic scaling
+      transformation is applied (it will be left unchanged if the
+      transformation is anisotropic).  This means that the physical
+      line width on the paper will be the same before and after the
+      scale transformation. Since this behavior is anticipated to be
+      the most commonly desired, it is the default.
+
+      Default:  yes
+
+-----------------------------------------------------------------------------
+Fill characteristics                              *g_FillCharacteristics*
+
+  fillColor(color)
+      Sets the color that fills will be drawn with.  Remains in effect
+      until another fillColor() call is made or setColor() is called.
+      The color parameter is a tuple of three numbers between 0 and 1
+      (the RGB values).  Numerous constants are given to allow setting
+      the colors by name rather than by having to use the RGB values.
+
+      Default: black
+
+  fillOff()
+      Turns the filling of closed figures off.  The figures will appear
+      as if they are transparent, allowing the underlying drawing
+      elements to show through.
+
+      Default:  filling is turned off.
+
+  fillOn()
+      Turns on the filling of closed figures, both closed paths and the
+      built-in objects such as rectangles, circles, etc.  The fill will
+      be drawn with the current fill color and type.
+
+      Default:  filling is turned off.
+
+  fillType(fill_type)
+      Determines the type of filling to perform on figures and closed
+      paths.  The allowed values are:  solid_fill, line_fill, and
+      gradient_fill.
+
+      Default:  solid_fill (however, filling is turned off by default)
+
+  gradientFill(bottom_color, angle=0.0, factor=1.0)
+      Sets the second color to be used with gradient fills and the
+      angle of the fill.  When a gradient fill is specified, it will go
+      from the currently set fill color at the top to bottom_color at
+      the bottom.  The method of producing the fill is to draw a number
+      of boxes whose color is linearly interpolated in RGB space
+      between the two colors.  The program calculates how many boxes to
+      draw.  If you want to adjust this number of boxes, you can make
+      factor a number different than 1.  For example, if you see
+      objectionable banding in the output, you could double the number
+      of boxes drawn by setting factor=2.
+
+      If you examine the PostScript output with a tool such as Gsview,
+      you may see numerous lines or dashed lines on the screen in the
+      filled regions.  These are artifacts of rendering to the screen;
+      you shouldn't see these artifacts in a printed output.  If you
+      do, try making factor greater than 1.0.
+
+      Default:  white
+
+  lineFill(angle, separation=0, phase=0)
+      When a line fill is used, this function controls how the lines
+      fill figures or closed paths.  angle is the angle the fill lines
+      make with the current X axis.  separation is the normal (90
+      degrees to the line) distance between the lines.  phase is a
+      decimal fraction between 0 and 1 that specifies what fraction of
+      the separation should be used to shift the lines in a direction
+      normal to the lines; this is useful when you want to fill a
+      figure with lines of alternating type.  The fill lines are drawn
+      with the current fill line type and are drawn in the current fill
+      color.
+
+      Default values:  angle must be specified.  separation defaults to
+        10 times the current line width.  phase defaults to zero.
+
+  lineFillType(line_type)
+      line_type is the same parameter as in the lineType() function,
+      but sets the line type for fill lines.
+
+      Defaults:  solid_line
+
+  lineFillWidth(width)
+      Sets the width of fill lines.
+
+      Default: same as lineWidth()
+
+-----------------------------------------------------------------------------
+Font characteristics                           *g_FontCharacteristics*
+
+  textColor(color)
+      Sets the color that text will be drawn with.  Remains in effect
+      until another fontColor() call is made or setColor() is called.
+      The color parameter is a tuple of three numbers between 0 and 1
+      (the RGB values).  Numerous constants are given in gco.py to
+      allow setting the colors by name rather than by having to use the
+      RGB values.
+
+      Default: black
+
+  textName(font_name)
+      Defines the typeface that subsequent text will be drawn with.
+      The four font_name values that are intended to be in every
+      implementation are:
+
+          Sans                     A sans-serif font such as
+                                   Helvetica or Arial.
+          Serif                    A serif font such as Times-Roman.
+          Courier                  The fixed-spacing Courier font.
+          Symbol                   For Greek letters and
+                                   mathematical symbols.
+
+      There may be more fonts available to you, but they are
+      implementation-dependent.  The g.py module comes with constants
+      and definitions for the PostScript fonts in the HP 4050 LaserJet
+      printer.  You may want to change the constants and definitions to
+      be able to work with the fonts in your printer.
+
+      Default:  Sans
+
+      Choices in all implementations:
+
+        Sans
+        SansBold
+        SansItalic
+        SansBoldItalic
+        Serif
+        SerifBold
+        SerifItalic
+        SerifBoldItalic
+        Courier
+        CourierBold
+        CourierBoldItalic
+        CourierItalic
+        Symbol
+
+  textSize(font_size)
+      Sets the size of the fonts to be drawn in the current units.  If
+      you perform a subsequent scaling, the font size will be the same
+      number, but in the new units.  If you wish the size of the font
+      to remain invariant under a scale transformation (i.e, remain the
+      same physical size on the paper), see the function
+      scaleFontSize().
+
+      Default:  0.15 inches (about 11 points)
+
+  scaleTextSize(yes_or_no)
+      Sets the state so that any change in scale will result in the
+      font size being changed too.  This means that the physical height
+      of the line on the page is the same before and after scaling
+      commands.  For isotropic transformations, it means you'll see the
+      same size font printed on the page before and after the
+      transformation.
+
+      Default:  yes
+
+-----------------------------------------------------------------------------
+Transformations                                 *g_Transformations*
+
+    Note:  if you are in the process of defining a path with the path
+    commands and you issue a call to one of the following
+    transformation functions, you will get an exception.  This is
+    because the path object you are constructing is stored in a
+    python data structure (for rendering into PostScript later), but
+    the transformation functions result in PostScript getting
+    generated immediately.  Thus, to execute a transformation, you'll
+    need to execute newPath() to delete the current path.
+
+  rotate(angle_in_degrees)
+      Transform the coordinate system by a rotation about the current
+      origin.  If angle_in_degrees is positive, the angle is
+      counterclockwise (i.e., the conventional mathematical direction).
+      angle_in_degrees may be any floating point number.
+
+  scale(xfactor, yfactor)
+      Transform the coordinate system by a scale transformation.  A
+      call of scale(2, 2) means a line drawn from (0, 1) to (1, 1) in
+      the scaled coordinate system will have a length of 2 in the
+      coordinate system before the transformation.  Neither xfactor nor
+      yfactor are allowed to be zero.  However, they can be negative,
+      which results in reflections about the coordinate axes.  If you
+      use reflections, you will get mirror-image text (which you may or
+      may not have intended).
+
+  translate(x, y)
+      Transform the coordinate system by a translation of the current
+      origin.  The new origin will be at the point (x, y) in the
+      current coordinates.  x and y can be any floating point values.
+
+-----------------------------------------------------------------------------
+Paths                                                   *g_Paths*
+
+  Note:  if you are having problems getting your paths to work
+  correctly, you can see what's in a path by printing it:  print p
+  (where p is a path gotten via getPath()) will display the items
+  that make up the path.
+
+  getPath()
+      Return a copy of the internal data structure that holds the
+      current path.  You can later set the current path with this saved
+      path by executing the setPath() function.
+
+  newPath()
+      Discards the current path.  Any objects you add with pathAdd()
+      will be added to the new path.
+
+  pathAdd(tuple_or_list, type=path_point)
+      Adds items to the current path.  The details are:
+
+            type                         tuple_or_list
+        path_point           A tuple of the form (x, y).  Adds the
+                             indicated point to the path.
+        path_point           A list of points of the form [(x1, y1), ...,
+                             (xn, yn)].  Has the same effect as multiple
+                             calls with a single point.
+        path_arc_ccw         A tuple of the form (x, y, r, start_angle,
+                             end_angle).  The point (x, y) is the center
+                             of the circle, r is the radius, and the arc
+                             goes from start_angle to end_angle in a
+                             counterclockwise direction.  A line will be
+                             drawn from the current end point of the path
+                             to the first point of the arc if these two
+                             points do not coincide.
+        path_arc_cw          The same as path_arc_ccw, except the arc is
+                             drawn from the starting angle to the ending
+                             angle in a clockwise direction.
+        path_bezier          A tuple of the form (x1, y1, x2, y2, x3, y3).
+                             Draws a Bezier from the current point (x0,
+                             y0) to the point (x3, y3).  The middle two
+                             points are the control points.  A Bezier
+                             curve is a parameterized curve where the
+                             parametric equations are cubic polynomials in
+                             the parameter.  The curve traces a path from
+                             (x0, y0) to (x3, y3) as the parameter ranges
+                             between 0 and 1.
+
+      Note:  the first item you add to each subpath cannot be a Bezier
+      curve.  The reason is because the first point of a Bezier in
+      PostScript is the current point.  If you had ended a subpath and
+      started a new one, the current point would effectively be
+      undefined.
+
+      Since the g.py module is a thin layer over PostScript, it
+      inherits PostScript's behavior.  Because of this, if you
+      construct a path and issue a coordinate transformation, you will
+      get an exception.  This is because the sending of the path
+      elements to PostScript is deferred, but coordinate
+      transformations are sent immediately.  You can disable this
+      behavior if you wish by changing the error_xfm_path variable to
+      be no in the g.py module (however, this isn't recommended).
+
+  pathAddPoint(x, y)
+      A convenience function; same as pathAdd((x, y), path_point).
+
+  pathClose()
+      In the construction of the current subpath, you can use the
+      pathClose() function to close the current path.  This means a
+      line is drawn from the last point entered to the first point
+      entered into the subpath.  If you call pathAdd() again, you will
+      be adding points, arcs, or curves to a new subpath in the current
+      path.
+
+  pathMove(x, y)
+      Starts a new subpath in the current path (and leaves the previous
+      subpath open).
+
+  setPath(p)
+      Restores the current path to a saved path p.  The parameter p
+      must have been previously gotten from a call to getPath().
+
+-----------------------------------------------------------------------------
+Clipping                                            *g_Clipping*
+
+  clip(path=None)
+      Sets the clipping path.  If the path parameter is None, the
+      current path is used to set the clipping path; the current path
+      is erased after this operation.  Otherwise, if path is a path
+      that was gotten via the getPath() function, the clipping path is
+      set with this path.  The method for determining whether a point
+      is inside the path is the non-zero winding rule (see the Glossary
+      for a description).
+
+  clipRectangle(x0, y0, x1, y1)
+      A convenience function that has the same effect as calling clip()
+      with a rectangular path.
+
+  eoclip(path=None)
+      Same as clip() except the determination of points inside the path
+      is made according to the even-odd rule, rather than the default
+      non-zero winding rule (see Glossary for a description of these
+      rules).
+
+  unclip()
+      Removes the current clipping region gotten from a previous call
+      to clip().  The clipping limits will be at the limits of the page
+      (which is effectively no clipping).
+
+-----------------------------------------------------------------------------
+Utility functions                                  *g_UtilityFunctions*
+
+  comment(comment, newline=no)
+      Inserts a PostScript comment into the output stream.  This is
+      useful to let you mark a spot in the output stream, then later
+      inspect the resulting PostScript file.  You can search for the
+      text of your command and see the PostScript that was generated
+      near the comment.  If newline is yes, then a newline is written
+      to the stream before writing the comment; this can put an empty
+      line in the output PostScript that can make it easier to get to
+      the line with your editor.
+
+  Debug(str)
+      Allows you to print debugging strings to the debug stream.
+      Causes no output if debugging is off.  The debugging stream is
+      stderr by default, but you can change it to anything you wish.
+
+  debugOff()
+      Turns debugging off.  Any further calls to Debug() will not
+      produce any output to the debugging stream, nor will the g.py
+      module print a debug message for each of its functions that are
+      called.
+
+  debugOn(debug_stream=sys.stderr)
+      Turns on debugging so that debugging information will be sent to
+      the debug_stream stream via the Debug() call.  The g.py module
+      does not make any calls to Debug(), so any messages you see are
+      from your calls to Debug().
+
+  DumpGS()
+      Dumps the graphics state dictionary to the debugging stream.
+
+  gray(value=0.0)
+      Synonym for the grey()function.
+
+  grey(value=0.0)
+      Returns a color tuple that represents a grey value.  0.0
+      represents black and 1.0 represents white.
+
+  hsv2rgb(h, s, b)
+      Converts hue h, saturation s, and value (brightness) v to a tuple
+      of RGB (red, green, blue) numbers to set a color. The parameters
+      range from 0 to 1.  Hue selects the color and saturation
+      determines how much of the color is there (1 is the intense
+      color, 0 is grey).  A value of 1 is fully bright; 0 is fully
+      dark.
+
+  inline(str)
+      Allows you to insert raw PostScript in the string str into the
+      output stream.  This could be used, for example, to define
+      PostScript functions to perform special drawing tasks.  However,
+      if you use the inline() function, you could make the PostScript
+      graphics state get unsynchronized from the g.py module's graphics
+      state.
+
+  rgb2hsv(color)
+      Converts an RGB color tuple to a tuple (h, s, v) where h is hue,
+      s is saturation, and v is value (brightness).  The returned
+      numbers are between 0 and 1.
+
+  setColor(color)
+      Sets the color that all subsequent drawing objects will be drawn
+      with.  This command is equivalent to the successive calls
+      lineColor(color), fillColor(color), fontColor(color).
+
+  Trace(str, indented=yes)
+      Prints a string to the tracing stream; the string is indented by
+      the current indent.  If indented is set to no, the string is not
+      indented.
+
+  traceOff()
+      Turns off tracing.
+
+  traceOn(trace_stream=sys.stderr)
+      Turns on tracing.  This will show you the calls made in the g.py
+      module.  This functionality is probably not all that useful for
+      an end user, but it is helpful for someone who is debugging the
+      g.py module's functionality.
+
+-----------------------------------------------------------------------------
+Functions that put marks on paper               *g_FunctionsMarkPaper*
+
+  For the functions in this section, lines or borders will be drawn
+  in the current line color and line style if lineOn() has been
+  called for the current graphics state.  Closed figures will be
+  filled if fillOn() has been called for the current graphics state.
+
+  arc(diameter, start, stop)
+      Draws a circular arc with the current point as center and
+      diameter diameter.  The arc starts at angle start and goes in a
+      counterclockwise direction to stop.
+
+  circle(diameter)
+      Draws a circle with diameter diameter whose center is the current
+      point.
+
+  ctext(string)
+      Draws text that is center-justified at the current point.  The
+      current point is undefined after the command.
+
+  drawPath(p=None)
+      Draws the passed in path or the current path if p is None.  The
+      current path is erased after the call.  If you wish to draw and
+      fill the current path, call fillPath(p), drawPath(p).
+
+  ellipse(major_diameter, minor_diameter)
+      Draws an ellipse with major diameter major_diameter and minor
+      diameter minor_diameter.  The current point is the center of the
+      ellipse.
+
+  ellipticalArc(major_diameter, minor_diameter, start, stop)
+      Draws an elliptical arc with the current point as center, major
+      diameter major_diameter and minor diameter minor_diameter.  The
+      arc starts at angle start and goes in a counterclockwise
+      direction to stop.
+
+  eofillPath(p=None)
+      Fills the passed in path or the current path if p is None.  The
+      current path is erased after the call.  The filling method is
+      even-odd.  Refer to the PostScript reference manual [1] for a
+      discussion of the fill method.  If you wish to draw and fill the
+      current path, call push(), eofillPath(), pop(), drawPath().
+
+  fillPath(p=None)
+      Fills the passed in path or the current path if p is None.  The
+      current path is erased after the call.  The filling method is non-
+      zero winding.  Refer to the PostScript reference manual [1] for a
+      discussion of the fill method.  If you wish to draw and fill the
+      current path, call push(), fillPath(), pop(), drawPath().
+
+  line(x0, x0, x, y)
+      Draws a line from the point (x0, y0) to (x, y). The current point
+      will be (x, y) after the line is drawn.
+
+  picture(image_object, width, height, stretch=no)
+      Puts a picture on the page in a rectangular area starting at the
+      current point and extending for width and height.  This is
+      accomplished through the Python Imaging Library (PIL), which you
+      must have installed in order to use this function.  If
+      image_object is a string, it is the name of the file containing
+      the image to use.  Otherwise, it is expected to be an image
+      object constructed by the PIL's Image() constructor. If stretch
+      is set to yes, then the image is stretched to fit into the
+      indicated rectangular area.  Otherwise, the PIL will center the
+      image in the rectangular area without distortion.  The image file
+      formats supported are those supported by the PIL, which include
+      formats such as JPEG, PNG, and TIFF.  You can get the PIL from
+      http://www.pythonware.com/products/pil.
+
+  rectangle(width, height)
+      Draws a rectangle from the current point (x, y) to the point
+      (x+width, y+height).  The current point will be unchanged after
+      the rectangle is drawn.
+
+  regularPolygon(diameter, num_sides, start_angle=0, draw=yes)
+      Draws a regular polygon centered at the current point.  diameter
+      is the diameter of the circumscribed circle.  num_sides must be
+      greater than 2.  start_angle is the angle that the first point is
+      rotated counterclockwise from the X axis.  If draw is yes, the
+      polygon will be drawn.  The path constructed is returned.
+
+  rline(x, y)
+      Draws a line from the current point to the point (x, y).  The
+      current point will be (x, y) after the line is drawn.
+
+  roundedRectangle(width, height, corner_diam)
+      Same as rectangle()except the corners are rounded.  The current
+      point will be unchanged after the rectangle is drawn.
+
+  rtext(string)
+      Draws text that is right-justified at the current point.  The
+      current point is undefined after the command.
+
+  text(string)
+      Draws text starting at the current point.  The current point is
+      undefined after drawing the text (this is because the g.py module
+      has no way to query a PostScript interpreter for the width of the
+      drawn text).  However, if you immediately make another call to
+      text(), the new text will be properly positioned at the end of
+      the previously-drawn text.  This allows you to, for example,
+      change the color or font style of a word in the middle of a
+      sentence.
+
+  textCircle(string, diameter, center_angle=90, inside=no)
+      Draws the text along a circular path centered at the current
+      point.  The text will be justified around the center_angle value.
+      The text is plotted on the outside of the circle unless inside is
+      yes.
+
+  textFraction(numerator, denominator)
+      Convenience function that places two numbers at the current text
+      point as a nicely formatted fraction.  The two parameters may be
+      either strings or integers.  This function will only work with
+      left justified strings (i.e., do not use it in conjunction with
+      ctext() and rtext()).
+
+  textLines(lines, spacing=0)
+      Places lines of text starting at the current point and going down
+      in steps of spacing.  If spacing is 0, then the text height is
+      used as the spacing.  If spacing is < 0, the lines go up the
+      page.  lines is expected to be a sequence (list or tuple) of
+      strings.
+
+  textPath(string, path, offset=0)
+      Draws text along a path.  You can get the path from the getPath()
+      function.  The offset parameter is the distance to move along the
+      path before starting the text.  You may get irregular text
+      spacing if the path has sharp bends.
+
+-----------------------------------------------------------------------------
+Constants                                    *g_Constants*
+
+Orientations
+    landscape
+    portrait
+    seascape
+    inversePortrait
+
+Fill types
+    no_fill
+    solid_fill
+    line_fill
+    gradient_fill
+
+Line types
+    solid_line
+    dashed
+    dash_little_gap
+    dash_big_gap
+    little_dash
+    dash_dot
+    dash_dot_dot
+    scale_factor
+
+Units
+    points
+    inches
+    mm
+    cm
+    ft
+
+Line caps
+    cap_butt
+    cap_round
+    cap_projecting
+
+    join_miter
+    join_round
+    join_bevel
+
+Base font names
+    Sans
+    SansBold
+    SansItalic
+    SansBoldItalic
+    Serif
+    SerifBold
+    SerifItalic
+    SerifBoldItalic
+    Courier
+    CourierBold
+    CourierBoldItalic
+    CourierItalic
+    Symbol
+
+LJ 4050 fonts
+    AlbertusExtraBold
+    AlbertusMedium
+    AntiqueOlive
+    AntiqueOliveBold
+    AntiqueOliveItalic
+    Arial
+    ArialBold
+    ArialItalic
+    ArialBoldItalic
+    AvantGarde
+    AvantGardeBold
+    AvantGardeItalic
+    AvantGardeBoldItalic
+    Bookman
+    BookmanBold
+    BookmanItalic
+    BookmanBoldItalic
+    Omega
+    OmegaBold
+    OmegaItalic
+    OmegaBoldItalic
+    CGTimes
+    CGTimesBold
+    CGTimesItalic
+    CGTimesBoldItalic
+    ClarendonCondensedBold
+    Coronet
+    GaramondAntiqua
+    GaramondHalbfett
+    GaramondKursiv
+    GaramondKursivHalbfett
+    Helvetica
+    HelveticaBold
+    HelveticaBoldOblique
+    HelveticaOblique
+    HelveticaNarrow
+    HelveticaNarrowBold
+    HelveticaNarrowBoldOblique
+    HelveticaNarrowOblique
+    Marigold
+    Times
+    TimesBold
+    TimesBoldItalic
+    TimesItalic
+    UniversMedium
+    UniversMediumItalic
+    UniversBold
+    UniversBoldItalic
+    UniversCondensedMedium
+    UniversCondensedMediumItali
+    UniversCondensedBold
+    UniversCondensedBoldItalic
+    Dingbats
+
+----------------------------------------------------------------------
+                                                    *g_Colors*
+Colors
+    aliceblue
+    antiquewhite
+    aquamarine
+    aquamarine1
+    aquamarine2
+    aquamarine3
+    aquamarine4
+    azure
+    azure1
+    azure2
+    azure3
+    azure4
+    beige
+    bisque
+    bisque1
+    bisque2
+    bisque3
+    bisque4
+    black
+    blanchedalmond
+    blue
+    blue1
+    blue2
+    blue3
+    blue4
+    blueviolet
+    brown
+    brown1
+    brown2
+    brown3
+    brown4
+    burlywood
+    burlywood1
+    burlywood2
+    burlywood3
+    burlywood4
+    cadetblue
+    chartreuse
+    chartreuse1
+    chartreuse2
+    chartreuse3
+    chartreuse4
+    chocolate
+    chocolate1
+    chocolate2
+    chocolate3
+    chocolate4
+    coral
+    coral1
+    coral2
+    coral3
+    coral4
+    cornflowerblue
+    cornsilk
+    cornsilk1
+    cornsilk2
+    cornsilk3
+    cornsilk4
+    cyan
+    cyan1
+    cyan2
+    cyan3
+    cyan4
+    darkgoldenrod
+    darkgreen
+    darkkhaki
+    darkolivegreen
+    darkorange
+    darkorchid
+    darksalmon
+    darkseagreen
+    darkslateblue
+    darkslategray
+    darkslategrey
+    darkturquoise
+    darkviolet
+    deeppink
+    deepskyblue
+    dimgray
+    dimgrey
+    dodgerblue
+    firebrick
+    firebrick1
+    firebrick2
+    firebrick3
+    firebrick4
+    floralwhite
+    forestgreen
+    gainsboro
+    ghostwhite
+    gold
+    gold1
+    gold2
+    gold3
+    gold4
+    goldenrod
+    goldenrod1
+    goldenrod2
+    goldenrod3
+    goldenrod4
+    green
+    green1
+    green2
+    green3
+    green4
+    greenyellow
+    honeydew
+    honeydew1
+    honeydew2
+    honeydew3
+    honeydew4
+    hotpink
+    indianred
+    ivory
+    ivory1
+    ivory2
+    ivory3
+    ivory4
+    khaki
+    khaki1
+    khaki2
+    khaki3
+    khaki4
+    lavender
+    lavenderblush
+    lawngreen
+    lemonchiffon
+    lightblue
+    lightcoral
+    lightcyan
+    lightgoldenrod
+    lightgoldenrodyellow
+    lightgray
+    lightgrey
+    lightpink
+    lightsalmon
+    lightseagreen
+    lightskyblue
+    lightslateblue
+    lightslategray
+    lightslategrey
+    lightsteelblue
+    lightyellow
+    limegreen
+    linen
+    magenta
+    magenta1
+    magenta2
+    magenta3
+    magenta4
+    maroon
+    maroon1
+    maroon2
+    maroon3
+    maroon4
+    mediumaquamarine
+    mediumblue
+    mediumforestgreen
+    mediumgoldenrod
+    mediumorchid
+    mediumpurple
+    mediumseagreen
+    mediumslateblue
+    mediumspringgreen
+    mediumturquoise
+    mediumvioletred
+    midnightblue
+    mintcream
+    mistyrose
+    moccasin
+    navajowhite
+    navy
+    navyblue
+    oldlace
+    olivedrab
+    orange
+    orange1
+    orange2
+    orange3
+    orange4
+    orangered
+    orchid
+    orchid1
+    orchid2
+    orchid3
+    orchid4
+    palegoldenrod
+    palegreen
+    paleturquoise
+    palevioletred
+    papayawhip
+    peachpuff
+    peru
+    pink
+    pink1
+    pink2
+    pink3
+    pink4
+    plum
+    plum1
+    plum2
+    plum3
+    plum4
+    powderblue
+    purple
+    purple1
+    purple2
+    purple3
+    purple4
+    red
+    red1
+    red2
+    red3
+    red4
+    rosybrown
+    royalblue
+    saddlebrown
+    salmon
+    salmon1
+    salmon2
+    salmon3
+    salmon4
+    sandybrown
+    seagreen
+    seashell
+    seashell1
+    seashell2
+    seashell3
+    seashell4
+    sienna
+    sienna1
+    sienna2
+    sienna3
+    sienna4
+    skyblue
+    slateblue
+    slategray
+    slategrey
+    snow
+    snow1
+    snow2
+    snow3
+    snow4
+    springgreen
+    steelblue
+    tan
+    tan1
+    tan2
+    tan3
+    tan4
+    thistle
+    thistle1
+    thistle2
+    thistle3
+    thistle4
+    tomato
+    tomato1
+    tomato2
+    tomato3
+    tomato4
+    transparent
+    turquoise
+    turquoise1
+    turquoise2
+    turquoise3
+    turquoise4
+    violet
+    violetred
+    wheat
+    wheat1
+    wheat2
+    wheat3
+    wheat4
+    white
+    whitesmoke
+    yellow
+    yellow1
+    yellow2
+    yellow3
+    yellow4
+    yellowgreen
+
+PaperSizes
+    paper_letter
+    paper_legal
+    paper_A4
+
+Subpath element
+    path_point
+    path_arc_ccw
+    path_arc_cw
+    path_bezier
+

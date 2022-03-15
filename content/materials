@@ -1,0 +1,69 @@
+*materials*
+
+|Plastics|
+
+-----------------------------------------------------------------------------
+Plastics                                          *Plastics*
+
+
+1   Polystyrene
+2   PET (Dacron) polyethylene terephthalate
+3   PVC (polyvinyl chloride)
+4   Polycarbonate
+5   Teflon (PTFE, polytetrafluoroethylene)
+6   Acrylic (polymethyl methacrylate)
+
+                             1         2        3        4          5
+                           ------   -------  --------  -------    --------
+Density, kg/m3             1050     1370     1380      1210       2200
+Elec. cond., ohm*m         1e16                                   >1e16
+Therm. cond., W/(m*K)      0.08     0.24     0.16      0.20       0.24
+Young's modulus, GPa       3-3.6    2.8-3.1  2.9-3.4   2-2.4      0.5
+Tensile str., MPa          46-60    55-75    50-80     55-75      21-34
+Break elongation, %        3-4      50-150   20-40     80-150     300-500
+Notch test, kJ/m2          2-5      3.6      2-5       20-35
+Glass temp., °C            95       75       87        150
+Melting point, °C          240      260      212       267        327
+Linear expansion, 1/K      8e-5     7e-5     8e-5      6.7e-6     4.2e-5
+Specific heat, kJ/(kg*K)   1.3      1.0      0.9       1.25
+Water absorption, % (ASTM) 0.03-0.1 0.16     0.04-0.4  0.16-0.35  <0.01
+       
+                             6     
+                           ------   
+Density, kg/m3             1190
+Elec. cond., ohm*m         
+Therm. cond., W/(m*K)      
+Young's modulus, GPa       3.1
+Tensile str., MPa          
+Break elongation, %        
+Notch test, kJ/m2          
+Glass temp., °C            105
+Melting point, °C          135
+Linear expansion, 1/K      2.3e-5
+Specific heat, kJ/(kg*K)   
+Water absorption, % (ASTM) 
+
+https://www.professionalplastics.com/professionalplastics/ThermalPropertiesofPlasticMaterials.pdf
+Downloaded 11 Nov 2020
+
+A = coefficient of thermal expansion 1e-6/K
+B = specific heat J/(K*kg)
+C = thermal conductivity W/(m*K) @ 23 °C
+D = upper working temperature °C
+
+                        A           B           C           D
+                    ---------   ---------   ---------   ---------
+ABS                    80          --          0.17       70-100
+Nylon6                 95         1700         0.26       80-160
+Polycarb              66-70       1200         0.2       115-130
+PEEK                 47-108       1340         0.25        250
+HDPE                 100-200      1900         0.48       55-120
+UHMWPE               130-200      1900         0.47       55-95
+PET                   20-80     1200-1350    0.15-0.4    115-170
+Acrylic               70-77     1400-1500      0.18       50-90
+Polyprop             100-180    1700-1900    0.1-0.22     90-120
+Polystyrene          30-210       1200         0.12       50-95
+PTFE                 100-160      1000         0.25      180-260
+PVC, unplasticized   75-100     1000-1500   0.12-0.25     50-75
+Silicone               -        1300-1500       -        200-260
+

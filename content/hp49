@@ -1,0 +1,256 @@
+HP49+ Calculator
+
+Basics
+    * APPS gets into some key menus.
+    * Press NXT to see additional menu keys.
+    * Press EVAL to simplify algebraic expressions.  Can be done in 
+      Equation Writer, even for subexpressions.
+    * Press red, up arrow to enter the line editor.
+    * x exchange y is the right arrow.
+    * Press the down arrow to edit the X register.
+    * Press ALPHA ALPHA to put the calculator into text entry mode.
+    * Press ALPHA blue to shift to lowercase letters.
+
+HP49 Calculator Usage notes
+
+Set CAS mode to not numeric and not approx to see exact calculations.
+    Use red NUM to see numerical value.
+
+Use red UNDO to get back to where you were.
+
+When you have soft keys whose symbols are hard to read, press red
+down arrow and they'll be put on the screen.
+
+Select directory to work in by blue FILES, select desired, then CHDIR.
+
+Store variables in this directory by 'A' STO, which stores in a variable
+named A.
+
+red EQW to enter and edit equations.  Use CURS to get a graphical cursor
+    to grab things, then press ENTER to have them highlighted.
+    Press right shift right arrow to select things to the right of the
+    cursor.
+
+    To differentiate, in EQW, press NXT to see CMDS, then select DERIV 
+    and enter the variable to differentiate with respect to.
+
+    You can enter symbolic sums and integrals in EQW using the symbols
+    on the keyboard (on sin and tan keys).
+
+blue MTH to get typical math functions.  For example, gamma function is
+    11. Special Functions, 1.  If flag 117 (choose boxes) is off, you
+    can get to the soft key by pressing NXT.  Note there are a number
+    of useful functions under REAL:  mantissa, exponent, IP, FP, etc.
+
+Use red UNITS to add units to a quantity.  Then calculations can be
+performed with dimensionally consistent numbers.
+
+To get to physical constants, use red CAT, then ALPHA C and scroll to
+CONLIB.  Press the needed softkeys and copy the value to the stack.
+
+blue S.SLV
+    To solve an equation for a variable, enter the equation onto the
+    stack, enter the variable to isolate, then execute ISOL.  Example
+        a*t^3 - b*t
+        t
+        ISOL
+
+    yields
+        t=0, t=sqrt(a*b)/a, t=sqrt(a*b)/a
+
+        You also can use SOLVE and ZEROES.
+
+red NUM.SLV
+    Numerical roots
+
+Programs
+    Go to the directory where you want the program to reside (use FILES).
+    Then use NEW (press NXT) to create a new program.  Use the red
+    << >> key (the + key) to create a program object.  Save it, then
+    press VAR to get the variable names in the softkeys.  Enter your
+    data and press the softkey for the program.
+
+Roots of polynomials
+    Enter the coefficients in decreasing power order into an array
+    (use the [] brackets).  Then under the ARITH (blue 1) menu, pick
+    POLY, NXT, NXT and press PROOT.  The roots will be returned in an
+    array.  You can also do this problem using the NUM.SLV - Poly 
+    entry (red 7).
+
+    Given an array of the roots of a polynomial, use PCOEF to calculate
+    the polynomial (it's next to PROOT).
+
+Roots
+    Hold down the red key and press 7.  You'll get the SOLVE soft menu.
+    ROOT
+        Enter an equation, the variable name, and an initial guess and
+        press ROOT to get a root.
+    SOLVR
+        Allows you to enter values for variables in EQ, then solve for
+        the unknown variable.  To solve for a variable, press blue and
+        the variable soft key.  Enter numbers for each variable by
+        entering the number and pressing the variable soft key.  Press
+        red and the softkey to see the value of that variable.
+
+    Plot a function and use the plotting routines to find the roots.
+
+Plotting
+    Hold down blue and press 2D/3D.  Enter equation and plotting 
+    parameters.  Press ERASE, then DRAW.
+
+    Note you can enter more than one equation to be plotted.  Under FCN,
+    use
+        ROOT      Position cursor near a root and it will find it
+        ISECT     Find an intersection of two plots
+        SLOPE     Show the slope at the x value of the cursor (this is 
+                  for Y1 only)
+        EXTR      Find the extremum
+        TANL      Show the tangent line equation
+
+    Press EDIT NXT LABEL MENU to see a labelled graph.
+
+    Use blue TABLE to see a tabulated list of function values.  You 
+    control the table characteristics in blue TBLSET.  
+
+    Enter a function and execute TABVAR on it.  You'll get a statement
+    about the domain and range of the function.  The function needs to
+    be reducible to a rational expression.  Example:
+
+        For (X-3)/(X^2+2*X-7), we get
+            -inf - -(1+2*sqrt(2)) - 3-2*sqrt(2) + ...
+            0 down inf down (2+sqrt(2))/8 ...
+        The first line shows the first interval of (-inf, -(1+2*sqrt(2)));
+        the second line shows that the function is zero at -inf, decreasing 
+        in this interval, and going to infinity at the right endpoint.
+
+Taylor Series
+    CALC/LIMITS&SERIES
+        TAYLOR0
+            Maclaurin expansion of function, 4th order relative power
+        TAYLR
+            Taylor series expansion:
+                TAYLR(sin(s-pi/2), s, 6)
+                Params are function, variable, and order of the series.
+
+Differentiation and Integration
+    Symbolic
+        Go to blue CALC menu (blue 4).  Enter equation using EQW and 
+        the default independent variable (usually X).  Then press 
+        DERVX or INTVX to calculate the derivative or integral wrt X.
+
+Multivariate functions
+    Use blue DEF (2) to define a function:
+        DEF('F(X,Y)=X*COS(Y)')
+    This creates a variable named F.  Enter 'F(1, 2)' and it will be
+    evaluated.
+
+    Use DERVX, DERIV, and the partial operator to get partial derivatives.
+
+Vector Calculus
+    Note:  to enter a vector, use square brackets and single quotes for
+    each component, separated by a comma or space: ['x' 'x^2*y' 'z*x']
+
+    Gradient:  use DERIV:
+        DERIV(X^2+Z*Y^2, [X,Y,Z]), which returns
+        [2*X,Z*(2*Y),Y^2]
+
+        You can use the following function to calculate the gradient of 
+        a function in the X register:
+            << X Y Z 3 -> ARRY DERIV >>
+
+    Potential:  use POTENTIAL to calculate the potential of a vector
+        field.  Example:
+            POTENTIAL([x y z],[x y z]) gives
+            SQ(x)/2 + SQ(y)/2 + SQ(z)/2
+        You'll get an error if no potential function exists.
+
+    Divergence:  use DIV.  Example:
+        DIV([X Y Z],[X Y Z]) gives 3.
+
+    Laplacian:  use LAPL.
+
+    Curl:  use CURL.
+
+    Vector potential:  use VPOTENTIAL.  For a vector field F, gives the
+        field Phi such at the curl of Phi is F.  The vector potential 
+        will exist only if the divergence of F is zero.
+
+Probability
+    Normal CDF:  UTPN (upper tail for normal distribution) for P(X > x)
+        UTPN(mean, variance, value)
+
+    Student's T:  UTPT(df, t)
+
+    Chi square:  UTPC(df, x)
+
+
+    F:  UTPF(vN, vD, F)
+
+
+Custom Menus
+    Use MENU for a permanent menu (creates a CST variable) and TMENU for
+    a temporary menu.  Example:
+        {EXP LN GAMMA} TMENU
+
+Sums
+    Use EQW to enter sums by red sin.  Example:
+        sum(1, inf, i, 1/i^2) = pi^2/6
+
+Units
+    A number followed by an underscore and a unit can be typed in.  It's
+    easier to use the red UNITS (6) to get to the softkeys.
+
+    You can prepend SI prefixes if desired.  To do this, type in the number,
+    underscore (red -), the prefix, and the unit.
+
+    CONVE   Put unit in level 2, unit to be converted to in level 1 & convert
+            Magnitude of level 1 not important.
+    UBASE   Show the existing units in SI.
+    UVAL    Strip off units.
+    UFACT   Express level 2 in the units in level 1.
+    ->UNIT  Put unit in level 1 onto number in level 2.
+
+Special Physical Functions
+    117 MENU gives:
+        ZFACTOR     Gas compressibility factor for hydrocarbons
+                    ZFACTOR(reduced temperature, reduced pressure)
+        FANNING     Fanning friction factor for aerodynamics (1/4 times the
+                    Darcy function)
+        DARCY       Darcy-Weisbach friction factor
+                    Darcy(eps/D, Re) where eps is the roughness and D
+                    is the pipe diameter.  See below for Re.
+        F0lambda    Black body emissive power between 0 and lambda
+                    F0lambda(T, lambda)
+        SIDENS      Silicon intrinsic density in 1/cm^3 for temp in K.
+        TDELTA      Temperature delta function.  For T1 in level 1 and
+                    T2 in level 2, returns T1 - T2 in units of T1.  Conversion
+                    is done if necessary.
+        TINC        Same as TDELTA, but adds the temperatures.
+
+    Reynolds number:  ratio of inertial forces to viscous forces.
+
+        Re = rho*v*L/mu
+
+        rho = fluid density (kg/m^3)
+        v   = mean fluid velocity (m/s)
+        L   = characteristic length (m).  For flow in circular pipes, is 
+              the diameter.  Is hydraulic diameter = 4*A/P for noncircular
+              cross sections; A = cross-sectional area, P = wetted perimeter
+        mu  = absolute dynamic viscosity (Pa*s)
+
+        For pipes, below about Re = 2300, flow is generally accepted
+        as laminar.  Above about Re = 3000, flow is turbulent.  In
+        between it's called transition flow, with characteristics of
+        both laminar and turbulent flow.
+
+Functions
+    Enter an equation such as
+        Name(X, Y) = exp(X) - ln(Y)
+    and press blue DEF (2).  This will define a function with a softkey 
+    of F (press VAR to see) that takes two arguments:  X in level 2 and 
+    Y in level 1.  Press the softkey to evaluate the function.
+
+Straight Line
+    Enter 2 complex numbers and execute DROITE.  You'll get the equation
+    of the straight line between those two points in slope-intercept form.
+

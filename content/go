@@ -1,0 +1,517 @@
+*go*
+
+|go_basic_types|
+|go_declarations|
+|go_functions|
+|go_looping|
+|go_conditionals|
+|go_structs|
+|go_new|
+|go_arrays|
+|go_switch|
+
+Good learning tour:  http://tour.golang.org
+Left off at http://tour.golang.org/#51
+    Methods and interfaces
+
+-----------------------------------------------------------------------------
+Basic types                                         *go_basic_types*
+
+    bool
+    string
+    int  int8  int16  int32  int64
+    uint uint8 uint16 uint32 uint64
+    byte  // alias for uint8
+    rune  // alias for int32 (Unicode code point)
+    float32 
+    float64
+    complex64
+    complex128
+
+Constants
+---------
+    Can be character, string, boolean, or numeric types:
+
+        const Pi = 3.14
+        const is_valid = true
+
+        const (
+            Big   = 1 << 100
+            Small = Big >> 99
+        )
+
+    Cannot use := syntax.
+
+Type conversions
+----------------
+    T(v) converts the value v to the type T.
+
+        var i int = 42
+        var f float64 = float64(i)
+        var u uint = uint(f)
+
+    or, more simply, 
+
+        i := 42
+        f := float64(i)
+        u := uint(f)
+
+    Assignment between different types requires an explicit
+    conversion.
+
+-----------------------------------------------------------------------------
+Declarations and initialization                     *go_declarations*
+
+Type always follows symbol name.
+Multiples of the same type can be done with one type at end:
+
+    var i int
+    var a, b, c int     // Explicit type, uninitialized
+    var d, e = 1, 3.3   // Type inferred from initializer
+    j := 4              // Implicit type inferred from initializer
+
+Note:  at global scope, 'var' must always be used.  ':=' can only be
+used inside functions because outside functions, every line must
+begin with a keyword.
+
+-----------------------------------------------------------------------------
+Functions                                           *go_functions*
+
+'func' notates a function.
+Return type is after the parameter list.
+
+    func split(sum int) (x, y int) {
+        x = sum * 4 / 9
+        y = sum - x
+        return
+    }
+
+shows split() returns two values, both integers.  
+
+Functions are values too:
+    import {
+        "math"
+    }
+    hypot := func(x, y float64) float64 {
+            return math.Sqrt(x*x + y*y)
+    }
+
+Functions can be closures, a function value that references variables
+from outside its body (the function is "bound" to the variables).  In
+the example, the adder function returns a closure bound to its own sum
+variable:
+    package main
+    import "fmt"
+    func adder() func(int) int {
+        sum := 0
+        return func(x int) int {
+            sum += x
+            return sum
+        }
+    }
+    func main() {
+        pos, neg := adder(), adder()
+        for i := 0; i < 10; i++ {
+            fmt.Println(
+                pos(i),
+                neg(-2*i),
+            )
+        }
+    }
+prints
+    0 0
+    1 -2
+    3 -6
+    6 -12
+    10 -20
+    15 -30
+    21 -42
+    28 -56
+    36 -72
+    45 -90
+
+-----------------------------------------------------------------------------
+Looping                                           *go_looping*
+
+The for loop is the only tool:
+
+    sum := 0
+    for i := 0; i < 10; i++ {
+        sum += i
+    }
+
+Braces are required.  Pre and post statements can be empty:
+
+    sum := 1
+    for ; i < 1000; {
+        sum += i
+    }
+
+You can drop the semicolons:
+    
+    sum := 1
+    for i < 1000 {
+        sum += i
+    }
+
+This is syntactically the same as a while loop.
+
+Infinite loop
+
+    for {
+        ...
+    }
+
+-----------------------------------------------------------------------------
+Conditionals                                    *go_conditionals*
+
+Like C without parentheses; braces required:
+    func sqrt(x float64) string {
+        if x < 0 {
+            return sqrt(-x) + "i"
+        } else {
+            return fmt.Sprint(math.Sqrt(x))
+        }
+    }
+
+Can use short statement (only one though):
+    func pow(x, n, lim float64) float64 {
+        if v := math.Pow(x, n); v < lim {
+            return v
+        } else {
+            fmt.Printf("%g >= %g\n", v, lim)
+        }
+        // v not in scope here
+        return lim
+    }
+
+-----------------------------------------------------------------------------
+Structs                                         *go_structs*
+
+A struct is a collection of fields:
+
+    package main
+    import "fmt"
+
+    type Vertex struct {
+        X int
+        Y int
+    }
+
+    func main() {
+        fmt.Println(Vertex{1, 2})
+    }
+
+prints
+    {1 2}
+
+Access elements with dot operator
+    fmt.Println(v.X)
+
+Pointers
+--------
+
+  go has pointers, but no pointer arithmetic.  Struct fields can be
+  accessed through a struct pointer.  The indirection through a
+  pointer is transparent.
+
+    package main
+    import "fmt"
+
+    type Vertex struct {
+        X int
+        Y int
+    }
+
+    func main() {
+        p := Vertex{1, 2}
+        q := &p
+        q.X = 1e9
+        fmt.Println(p)
+    }
+  prints
+    {1000000000 2}
+
+Struct literals
+---------------
+
+  A struct literal denotes a newly allocated struct value by listing
+  the values of its fields.
+
+  You can list just a subset of fields by using the Name: syntax. (And
+  the order of named fields is irrelevant.)
+
+  The special prefix & constructs a pointer to a newly allocated
+  struct. 
+
+    package main
+    import "fmt"
+
+    type Vertex struct {
+        X, Y int
+    }
+
+    var (
+        p = Vertex{1, 2}  // has type Vertex
+        q = &Vertex{1, 2} // has type *Vertex
+        r = Vertex{X: 1}  // Y:0 is implicit
+        s = Vertex{}      // X:0 and Y:0
+    )
+
+    func main() {
+        fmt.Println(p, q, r, s)
+    }
+
+  prints
+    {1 2} &{1 2} {1 0} {0 0}
+
+-----------------------------------------------------------------------------
+New                                                 *go_new*
+
+The expression new(T) allocates a zeroed T value and returns a pointer
+to it.
+
+    var t *T = new(T)
+
+or
+
+    t := new(T)
+
+Example:
+    package main
+    import "fmt"
+
+    type Vertex struct {
+        X, Y int
+    }
+
+    func main() {
+        v := new(Vertex)
+        fmt.Println(v)
+        v.X, v.Y = 11, 9
+        fmt.Println(v)
+    }
+
+  prints
+
+    &{0 0}
+    &{11 9}
+
+-----------------------------------------------------------------------------
+Arrays                                              *go_arrays*
+
+[n]T is an array of n values of type T.  Example: an array of 10
+integers:
+
+    var a [10]int
+
+Arrays cannot be resized because the size is part of the type.
+
+Slices
+------
+
+  A slice points to an array and includes a length.
+
+  []T is a slice with elements of type T.
+
+    package main
+    import "fmt"
+
+    func main() {
+        p := []int{2, 3, 5, 7, 11, 13}
+        fmt.Println("p ==", p)
+
+        for i := 0; i < len(p); i++ {
+            fmt.Printf("p[%d] == %d\n", i, p[i])
+        }
+    }
+
+  prints
+
+    p == [2 3 5 7 11 13]
+    p[0] == 2
+    p[1] == 3
+    p[2] == 5
+    p[3] == 7
+    p[4] == 11
+    p[5] == 13
+
+Slicing slices:  s[lo:hi] evaluates to a slice of the elements from lo
+through hi - 1 inclusive, just like python slices.
+
+make
+----
+
+  Creates slices by allocating a zeroed array and returning a slice
+  that refers to that array:
+
+    a := make([]int, 5)  // len(a)=5
+
+ To specify a capacity, pass a third argument to make:
+
+    b := make([]int, 0, 5) // len(b)=0, cap(b)=5
+    b = b[:cap(b)] // len(b)=5, cap(b)=5
+    b = b[1:]      // len(b)=4, cap(b)=4
+
+nil slices
+----------
+  z is a nil slice
+    var z []int
+
+  Demo:
+    package main
+    import "fmt"
+    func main() {
+        var z []int
+        fmt.Println(z, len(z), cap(z))
+        if z == nil {
+            fmt.Println("nil!")
+        }
+    }
+  prints
+    [] 0 0
+    nil!
+
+range
+-----
+  range can iterate over a slice or map:
+    package main
+    import "fmt"
+    var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+    func main() {
+        for i, v := range pow {
+            fmt.Printf("2**%d = %d\n", i, v)
+        }
+    }
+  prints
+    2**0 = 1
+    2**1 = 2
+    2**2 = 4
+    2**3 = 8
+    2**4 = 16
+    2**5 = 32
+    2**6 = 64
+    2**7 = 128
+
+  You can skip the index or value by assigning to _.
+  If you only want the index, drop the ", value" entirely. 
+    package main
+    import "fmt"
+    func main() {
+        pow := make([]int, 10)
+        for i := range pow {
+            pow[i] = 1 << uint(i)
+        }
+        for _, value := range pow {
+            fmt.Printf("%d\n", value)
+        }
+    }
+  prints
+    1
+    2
+    4
+    8
+    16
+    32
+    64
+    128
+    256
+    512
+
+-----------------------------------------------------------------------------
+Maps                                                *go_maps*
+
+A map maps keys to values.  Maps must be created with make before use.
+
+Example:
+    package main
+    import "fmt"
+    type Vertex struct {
+        Lat, Long float64
+    }
+    var m map[string]Vertex
+    func main() {
+        m = make(map[string]Vertex)
+        m["Bell Labs"] = Vertex{
+            40.68433, -74.39967,
+        }
+        fmt.Println(m["Bell Labs"])
+    }
+prints
+    {40.68433 -74.39967}
+
+Map literals are like struct literals:
+    type Vertex struct {
+        Lat, Long float64
+    }
+
+    var m = map[string]Vertex{
+        "Bell Labs": Vertex{
+            40.68433, -74.39967,
+        },
+        "Google": Vertex{
+            37.42202, -122.08408,
+        },
+    }
+
+If the top-level type is a type name, you can omit it:
+    type Vertex struct {
+        Lat, Long float64
+    }
+    var m = map[string]Vertex{
+        "Bell Labs": {40.68433, -74.39967},
+        "Google":    {37.42202, -122.08408},
+    }
+
+Insert or update:
+    m[key] = elem
+Retrieve:
+    elem = m[key]
+Delete:
+    delete(m, key)
+Test key is present:
+    elem, ok = m[key]
+  If key is in m, ok is true. If not, ok is false and elem is the zero
+  value for the map's element type.
+
+-----------------------------------------------------------------------------
+Switch                                                *go_switch*
+
+A case body breaks automatically unless it ends with a fallthrough
+statement.
+
+    package main
+    import (
+        "fmt"
+        "runtime"
+    )
+    func main() {
+        fmt.Print("Go runs on ")
+        switch os := runtime.GOOS; os {
+        case "darwin":
+            fmt.Println("OS X.")
+        case "linux":
+            fmt.Println("Linux.")
+        default:
+            // freebsd, openbsd,
+            // plan9, windows...
+            fmt.Printf("%s.", os)
+        }
+    }
+  prints
+    Go runs on nacl.
+
+Switch cases evaluate cases from top to bottom, stopping when a case
+succeeds. 
+
+Switch with no condition can be used for long if-else chains
+    t := time.Now()
+    switch {
+    case t.Hour() < 12:
+        fmt.Println("Good morning!")
+    case t.Hour() < 17:
+        fmt.Println("Good afternoon.")
+    default:
+        fmt.Println("Good evening.")
+    }
+

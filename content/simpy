@@ -1,0 +1,65 @@
+*simpy*
+
+|simpy_intro|
+|simpy_events|
+
+-----------------------------------------------------------------------------
+Introduction                                    *simpy_intro*
+
+SimPy is a discrete event simulation (DES) library for python.  It is
+intended to handle systems where events are created at certain points in
+time; the system's state is only modified at the event points, rather
+than simulating time in small steps.  This allows DES scripts to run
+very fast.
+
+In a nutshell, SimPy is an asynchronous event dispatcher.  It 
+has been used since 2002 and is on version 3.
+
+You write your model with process functions; they are generator
+functions that yield instances of simpy.Event.  They also interact with
+the simpy.Environment object, which captures the simulation's
+context.
+
+Once these are defined, the environment stores these events in its event
+list and keeps track of the current simulation time.  If a process
+function yields an event, SimPy adds the process to the event’s
+callbacks and suspends the process until the event is triggered and
+processed. When a process waiting for an event is resumed, it will also
+receive the event’s value.
+
+-----------------------------------------------------------------------------
+Events                                    *simpy_events*
+
+The following derive from events.Event:
+    events.Timeout
+    events.Initialize
+    events.Process
+    events.Condition
+        events.AllOf
+        events.AnyOf
+
+Events are similar to promises.  Events can be in the following states:
+    * Might happen (not triggered)
+    * Is going to happen (triggered)
+    * Has happened (processed)
+Events traverse these states once in the order shown.  Time causes
+events to advance their state.
+
+When an event is triggered, it is scheduled at a given time and put into
+SimPy's event queue and Event.triggered is True.
+
+You can add callbacks to the event as long as it is not processed;
+processing happens when SimPy pops it off the event queue and calls all
+the callbacks.  Then Event.processed is True.  You can append a callback
+(it must take an event instance as its single parameter by
+event.callbacks.append(my_callback) where e.g. 
+
+    def my_callback(event):
+        print('Called back from', event)
+
+When all callbacks have been executed, event.callbacks is set to None.
+
+Events optionally have a value, which can be set before or when the
+event is triggered.  Get it with Event.value or as the return of the
+yield statement in the process function. 
+

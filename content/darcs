@@ -1,0 +1,129 @@
+*darcs*
+
+initialize 
+    Sets the repository up. Can be executed in an empty directory or within
+    your existing project directory.
+
+add
+    Adds one or more files to the repository. You can use 'darcs add -r *'
+    to add all files within this directory and its subdirectories to the 
+    repository.
+
+whatsnew
+    Shows all changes. You can use the command line switch -l to see a
+    summary and files which are not in the repository.
+
+record
+    Persists the changes to the repository. Each change is a patch of
+    its own, so usually you'll use record very frequently. 
+    'darcs record -am "comment"' applies the same description to all 
+    open changes.
+
+changes
+    Lists all changes (patches) recorded in this repository.
+
+push
+    Sends patches to another repository (local or remote), usually via SSH.
+
+pull
+    Gets patches from other repositories (local or remote).
+
+remove
+    Removes the file from the repository. Be aware that this will delete
+    the file from remote repositories, but not your working repository.
+
+mv
+    Renames or moves a file. Using this command Darcs is able to handle it
+    without losing consistency in other repos.
+
+replace
+    Changes tokens within your files. It's like search and replace, but
+    has some backup built-in.
+
+send
+    Packs a set of patches in a file and sends it via mail.
+
+apply
+    Applies a set of patches to the current repository.
+
+get
+    Fetches a complete repository (creates a new directory for the
+    repository).
+
+put
+    Copies the current repository to another location. Creates a new
+    directory if not already existent, and checks whether it's
+    'free' (not already a Darcs repository).
+
+tag
+    Applies a symbolic name to the current state of the repository. It's
+    used to create versions. You can give --tag parameters to get for
+    example to fetch a specific version.
+
+optimize
+    Speeds the operations on the repository up. Most useful for remote
+    repositories.
+
+amend-record
+    Replaces a previous record with a new one. Has consistency problems and
+    shouldn't be used very often.
+
+rollback
+    Logically removes the previous patch. Logically: the original patch
+    remains, only a inverse patch is added. Doesn't affect the working
+    directory.
+
+unrecord
+    Physically removes a patch.
+
+revert
+    Removes changes made to the working directory. It'll reflect the
+    state of the repository.
+
+unrevert
+    Undoes the last revert.
+
+unpull
+
+    Removes a patch from the repository and from the working directory.
+    Nothing left if you're the only repository with that patch! (Is like
+    unrecord and revert, just without the unrevert possibility.)
+
+annotate
+    Show the complete history of a file or directory.
+
+trackdown
+    Iteratively removes the last patch and runs the given command until it
+    returns no more errors.  For example 
+        darcs trackdown 'grep TODO file.test' 
+    returns the last patch that had 'TODO' in 'file.test'.
+
+---------------------------------------------------------------------------
+Comparison to Subversion commands
+
+svn checkout            darcs get
+svn update              darcs pull
+svn status -u           darcs pull --dry-run (summarize remote changes)
+svn status              darcs whatsnew --summary (summarize local changes)
+svn status              darcs whatsnew -ls
+svn revert foo.txt      darcs revert foo.txt (revert to foo.txt from repo)
+svn diff                darcs whatsnew (if checking local changes)
+svn diff                darcs diff (if checking recorded changes)
+svn commit              darcs record (if committing locally)
+svn commit              darcs tag (if marking a version for later use)
+svn commit              darcs push or darcs send (if committing remotely)
+svn diff                darcs send
+svn add                 darcs add
+svn log                 darcs changes
+?                       darcs tag
+---------------------------------------------------------------------------
+Good overview:
+    http://en.wikibooks.org/wiki/Understanding_darcs/Print_Version
+http://darcs.net/
+http://wiki.darcs.net/HintsAndTips
+
+
+Tutorial:
+    http://blog.interlinked.org/tutorials/darcs.html
+    Following is a slightly-edited version of his command summary.
+

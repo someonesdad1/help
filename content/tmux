@@ -1,0 +1,124 @@
+*tmux*
+
+|tmux_basics|
+
+All commands take the prefix, which is <C-b> by default.
+
+---------------------------------------------------------------------------
+Basics                                           *tmux_basics*
+
+Web pages
+  Very good
+    https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/
+    https://www.hamvocke.com/blog/a-guide-to-customizing-your-tmux-conf/
+  Tao
+    https://tmuxp.git-pull.com/en/latest/about_tmux.html
+  Quick summary
+    https://danielmiessler.com/study/tmux/
+  Simple start
+    https://www.sitepoint.com/tmux-a-simple-start/
+  Simple stuff, but good
+    https://thoughtbot.com/blog/love-hate-tmux
+  Good 
+    https://wiki.archlinux.org/index.php/tmux
+  Fairly slow intro
+    http://blog.hawkhost.com/2010/06/28/tmux-the-terminal-multiplexer/
+    https://blog.hawkhost.com/2010/07/02/tmux-%e2%80%93-the-terminal-multiplexer-part-2/
+  How to create useful keybindings to speed your work
+    https://spin.atomicobject.com/2013/04/11/tmux-key-binding-scripting/
+  Simulate vim's visual mode
+    https://superuser.com/questions/196060/selecting-text-in-tmux-copy-mode/197272#197272
+    Answer by p1100i shows how to use v to go into visual mode in tmux, then
+    use https://superuser.com/questions/196060/selecting-text-in-tmux-copy-mode/197272#197272the y key to yank the current selection.
+  Slightly useful
+    https://yalneb.blogspot.com/2017/05/tmux-useful-key-bindings.html
+.tmux.conf to change settings
+    # Change the prefix key
+    set-option -g prefix C-j
+    unbind-key C-b
+    bind-key C-j send-prefix
+ 
+    # Status line color
+    set -g status-style fg=white,bold
+    #set -ag status-style bg=magenta
+    # Highlight active window
+    set-window-option -g window-status-current-bg red
+ 
+    # Automatically set window title
+    setw -g automatic-rename on
+ 
+    # Use v to trigger selection
+    bind-key -T copy-mode-vi v send-keys -X begin-selection
+ 
+    # Useful stuff from Solomon White in comments about 45% down the page
+    # https://blog.hawkhost.com/2010/07/02/tmux-%e2%80%93-the-terminal-multiplexer-part-2/#modifying-tab-color
+    # use "v" and "s" to do vertical/horizontal splits, like vim
+    bind s split-window -v
+    bind v split-window -h
+    # use the vim motion keys to move between panes
+    bind h select-pane -L
+    bind j select-pane -D
+    bind k select-pane -U
+    bind l select-pane -R
+    # use vim motion keys while in copy mode
+    setw -g mode-keys vi
+Reload config
+    Put following into your config so you can reload while working in tmux:
+        unbind r
+        bind-key r source-file ~/.tmux.conf \; \
+            display-message "Reload source-file: done"
+Help:  ?
+Sessions
+    s       List sessions
+    $       Rename current session
+    New session
+        tmux new -s session-name        
+        Using a name lets you reattach more easily
+    Attach
+        tmux attach -t 0
+        tmux attach -t session-name
+    Detach
+        d
+        tmux detach
+    List sessions
+        tmux ls
+    Kill session
+        tmux kill-session -t session-name
+Command mode
+    :       Switch to command mode
+    <ret>   Exit command mode with no text
+    : new-window -n name
+Windows
+    c       Create new
+    ,       Rename current
+    w       List
+    %       Split horizontally
+    "       Split vertically
+    l       Last used window
+    n       Next window
+    p       Previous window
+    0 to 9  Windows 0 through 9
+Panes
+    <spc>   Cycle between layouts
+    %       Horizontal pane
+    "       Vertical pane
+    h       Move to left pane
+    j       Move to pane below
+    l       Move to right pane
+    k       Move to pane above
+    q       Show pane numbers
+    o       Toggle between panes
+    }       Swap with next pane
+    {       Swap with previous pane
+    !       Break the pane out of the window
+    x       Kill the current pane
+    z       Toggle current pane to full screen
+
+Copy mode
+    <prefix>[
+    Use vi keys to move around on screen
+    Press spacebar to start selecting text
+    Hit enter key to copy to tmux's buffer
+    Hit <prefix>] to copy the buffer into your shell or app
+
+vim:  wm=3

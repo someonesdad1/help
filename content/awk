@@ -1,0 +1,277 @@
+*awk*
+
+|awk_variables|
+|awk_io|
+|awk_string_functions|
+
+Command line
+------------
+  awk [-Fs] 'program' [file1 [file2 ...]]
+  awk [-Fs] -f program_file [file1 [file2 ...]]
+  -F sets the field separator character to s.  A filename can be of the
+    form var=text; it is a variable set to text performed at the time
+    the variable would be accessed as a file.
+
+Programs
+--------
+  Sequence of pattern-action statements and functions:
+    pattern { action }
+    function name(parameter-list) { statement }
+
+Patterns
+--------
+  BEGIN
+  END
+  expression
+  /regular expression/
+  pattern && pattern
+  pattern || pattern
+  !pattern
+  (pattern)
+  pattern, pattern
+
+Actions
+-------
+  break
+  continue
+  delete array-element
+  do statement while (expression)
+  exit [expression]
+  expression
+  if (expression) statement [else statement]
+  input-output statement
+  for (expression; expression; expression) statement
+  for (variable in array) statement
+  next 
+  return [expression]
+  while (expression) statement
+  { statements }
+
+Input/Output       *awk_io*
+------------
+  close(expr)                   Close file or pipe denoted by expr 
+  getline                       Set $0 from next input record; set NF, NR, FNR
+  getline <file                 Set $0 from next record of file; set NF
+  getline var                   Set var from next input record; set NR, FNR
+  getline var <file             Set var from next record of file 
+  print                         Print current record 
+  print expr-list               Print expressions in expr-list 
+  print expr-list >file         Print expressions to file
+  printf fmt, expr-list         Format and print 
+  printf fmt, expr-list >file   Format and print to file
+  system(cmd-line)              Execute command cmd-line; return status
+
+  >> in printf and print append to file and '| cmd' writes to a pipe.
+  'cmd | getline' pipes into getline.  getline returns 0 on EOF and 
+  -1 on error.
+
+Print formats
+-------------
+  %c    ASCII character
+  %d    Decimal number
+  %e    [-]d.ddddddE[+-]dd
+  %f    [-]ddd.dddddd
+  %g    e or f conversion, whichever is shorter, with nonsignificant 
+          zeroes suppressed
+  %o    Unsigned octal number
+  %s    String
+  %x    Unsigned hexadecimal number
+  %%    Print a %
+
+Built-in Variables      *awk_variables*
+------------------
+  ARGC        Number of command line arguments
+  ARGV        Array of command line arguments (ARGV[0..ARGC-1])
+  FILENAME    Name of current input file
+  FNR         Input record number in current file
+  FS          Input field separator (default blank)
+  NF          Number of fields in current input record
+  NR          Input record number since beginning
+  OFMT        Output format for numbers (default "%.6g")
+  OFS         Output field separator (default blank)
+  ORS         Output record separator (default newline)
+  RLENGTH     Length of string matched by regexp in match
+  RS          Input record separator (default newline)
+  RSTART      Beginning position of string matched by match
+  SUBSEP      Separator for array subscripts of form [i,j,...] (default "\034")
+
+Built-in String Functions                     *awk_string_functions*
+-------------------------
+  s and t are strings, r a regexp, i and n integers.
+  An & in s in sub and gsub is replaced by the matched string.
+  String counting begins at 1.
+
+  gsub(r, s, t)             Globally substitute s for each substring of t 
+                             matched by r.  Return number of substitutions.  
+                             If t omitted, use $0.
+  index(s, t)               Return the index of t in s or 0 if not contained.
+  length(s)                 Return the length of s.
+  match(s, r)               Return index of where s matches r or 0 if there
+                             is no match.  Set RSTART and RLENGTH.
+  split(s, a, fs)           Split s into array a on fs, return number of 
+                             fields.  If fs is omitted, FS is used.
+  sprintf(fmt, expr-list)   Return expr-list formatted according to fmt.
+  sub(r, s, t)              Like gsub except only first matched string is
+                             replaced.
+  substr(s, i, n)           Return the n character substring of s starting
+                             at i; if n is omitted, return the suffix of s
+                             starting at i.
+
+Built-in arithmetic functions
+-----------------------------
+  (Trig angles are in radians)
+  atan2(y,x)  Arctangent of y/x from -pi to pi
+  cos(x)      Cosine
+  exp(x)      Exponential
+  int(x)      Truncate to integer
+  log(x)      Natural logarithm
+  rand()      Pseudo-random number >= 0 and < 1.
+  sin(x)      Sine
+  sqrt(x)     Square root
+  srand(x)    New seed for rand().  Uses time of day if no x given.
+
+Expression operators (Highest precedence first)
+--------------------
+  $
+  ++ --
+  ^
+  + - !
+  * / %
+  + -
+  < <= > >= != ==
+  ~ !~
+  in
+  &&
+  ||
+  ?:
+  = += -= *= /= %= ^=
+  All are left associative except assignment, ?:, and ^.
+
+Regular Expressions
+-------------------
+  Metacharacters are  \  ^  $  .  [  ]  |  (  )  *  +  ?
+  The operators are listed with highest precedence first.
+
+  (r)          Matches the same strings as r
+  (r)?         Matches the null string or one string matched by r
+  (r)+         Matches 1 or more consecutive strings matched by r
+  (r)*         Matches 0 or more consecutive strings matched by r
+  (r1)(r2)     Matches xy where r1 matches x and r2 matches y
+  r1|r2        Matches any string matched by r1 or r2
+  [^abc...]    Negated character class:  matches any single char except abc...
+  [abc...]     Character class:  matches any of abc...
+  .            Matches any single character
+  $            Matches end of string
+  ^            Matches beginning of string
+  \c           Matches the escape sequence or literal character c
+  c            Matches the character c
+
+Escape sequences
+----------------
+  Have special meanings in strings and regular expressions
+
+  \b    Backspace
+  \f    Formfeed
+  \n    Newline
+  \r    Carriage return
+  \t    Tab
+  \ddd  Octal value ddd
+  \c    Any other character c literally
+
+Initialization, comparison, type coercion
+-----------------------------------------
+
+Each variable and field can potentially be a string or a number or both
+at any time.  When a variable is set by an assignment
+
+      var = expr
+
+its type is set to that of the expression.  An arithmetic expression is 
+of type number, a concatenation is of type string, and so on.  If the 
+assignment is a simple copy, as in v1 = v2, then the type of v1 is set
+to that of v2.
+
+In comparisons, if both operands are numeric, the comparison is made
+numerically.  Otherwise, operands are coerced to string if necessary, 
+and the comparison is made on strings.  The type of any expression can
+be coerced to numeric by subterfuges such as 
+
+    expr + 0
+
+and to string by
+
+    expr ""
+
+(i.e., concatenation with a null string).  The numeric value of an 
+arbitrary string is the numeric value of its numeric prefix.
+
+Unitialized variables have the numeric value 0 and string value "".
+Accordingly, if x is unitialized,
+
+    if (x) ...
+
+is false, and 
+
+    if (!x) ...
+    if (x == 0) ...
+    if (x == "") ...
+
+are all true.  But not that 
+
+    if (x == "0") ...
+
+is false.
+
+The type of a field is determined by context when possible; for example,
+
+    $1++
+
+implies that $1 must be coerced to numeric if necessary, and
+
+    $1 = $1 "," $2
+
+implies that $1 and $2 will be coerced to strings if necessary.
+
+In contexts where types cannot be reliably determined, e.g., 
+
+    if ($1 == $2) ...
+
+the type of each field is determined on input.  All fields are strings;
+in addition, each field that contains only a number is also considered
+numeric.
+
+Fields that are explicitly null have the string value ""; they are not
+numeric.  Nonexistant fields (i.e., fields past NF) and $0 for blank 
+lines are treated this way too.
+
+As it is for fields, so it is for array elements created by split.
+
+Mentioning a variable in an expression causes it to exist, with the 
+values 0 and "" as described above.  Thus, if arr[i] does not currently
+exist, 
+
+   if (arr[i] == "") ...
+
+causes it to exist with the value "" and thus the if is satisfied.  The
+test 
+
+   if (i in arr) ...
+
+determines if arr[i] exists without the side effect of creating it.
+
+Examples
+--------
+
+    Sum a column of numbers from stdin:
+        awk '
+            BEGIN {
+                total = 0
+            }
+            { 
+                total += $1 
+            }
+            END { 
+                printf("Total = %g\n", total) 
+            }'
+    Note the syntax requires the opening brace for the BEGIN and END
+    blocks on the same line.

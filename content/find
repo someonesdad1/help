@@ -1,0 +1,88 @@
+*find*
+
+Use find -help for more details (GNU).  Lots of this section came from the
+"Unix Power Tools" book.
+
+find's primary purpose is to evaluate expressions.  Printing
+filenames is just a side effect.
+
+find uses shell-styled regular expressions.
+
+Numbers:  n ==> =n, +n ==> >n, -n ==> <n
+
+Examples:  
+   3 means the 24 hour period that ended exactly 3 days ago (96 to 72 hrs ago)
+  -3 means the period since that time (0 to 72 hrs ago)
+  +3 means the 24 hour period before that time (more than 72 hours ago)
+
+Find a file that is 7 days old:
+    find . -mtime 7 
+Find a file between two ages:
+    find . -mtime +6 -mtime -8
+List files that have not been read in 30 days or more:
+    find . -type f -atime +30
+Find files that are larger than 1 MB:
+    find . -type f -size +1000k
+Use the GNU -maxdepth n to limit the search to n levels
+Use the -mount (or -xdev) to ignore mount points
+
+The command line defines a logical expression for determining whether or
+not a file's name is printed by find.  Use parentheses to force precedence:
+    -atime +5 \( -name "*.o" -o -name "*.tmp" \)
+which means "print the name if the access time is more than 5 days and
+the name ends in .o or .tmp".  With no parentheses, the expression would
+be "if either (the access time is > 5 days AND the name ends in .o) OR
+the name ends with .tmp, then print".
+
+If the opposite was wanted, use ! or -not:
+    ! \( -atime +5 \( -name "*.o" -o -name "*.tmp" \) \)
+
+Operators in decreasing precedence
+----------------------------------
+    ( expr )
+    ! expr            -not expr
+    expr1 expr2       expr1 -a expr2       expr1 -and expr2
+    expr1 -o expr2    expr1 -o expr2
+
+Other options
+-------------
+    -anewer file File was last accessed more recently than file was modified
+    -atime n     File was last accessed n*24 hours ago
+    -cnewer file File status was changed more recently than file was modified
+    -ctime n     Files status was last changed n*24 hours ago
+    -empty       File is empty and is either a file or directory
+    -gid n       Group ID matches n (can also use -group gname)
+    -inum n      File has inode number n
+    -links n     File has n links
+    -ls          Cause an ls -dils output
+    -mtime n     File's data was last modified n*24 hours ago
+    -newer file  Modified more recently than file (Use 
+                   touch -t MMDDhhmm[[CC]YY][.ss] to change file's time)
+    -nogroup     Not owned by valid group
+    -nouser      Not owned by valid user
+    -perm +mode  Any of the permission bits mode are set
+    -perm -mode  All of the permission bits mode are set
+    -perm mode   Permission bits are exactly as specified
+*   -regex patt  File name matches pattern patt
+    -type        b=block, c=char, d=dir, p=fifo, f=file, l=symlink, s=socket
+    -uid n       User ID matches n (can also use -user uname)
+
+    * There's a matching -ixxxx option for case insensitivity
+
+Custom Tests
+------------
+    Suppose you have a filter program or script called beauty that returns
+    zero if a file is beautiful and nonzero otherwise.  Then you can use
+    this filter with the -exec option to print the beautiful files:
+        find . -exec beauty {} \; -print
+    and find will print only those filenames where beauty returns 0.
+
+Doing a lot with one command
+----------------------------
+    Change all permissions on directories to 771, 600 for all *.bak files,
+    755 for all *.sh files, and 644 for all *.txt files:
+
+       find . \( type d        -a -exec chmod 771 {} \; \) -o \
+              \( -name "*.bak" -a -exec chmod 600 {} \; \) -o \
+              \( -name "*.sh"  -a -exec chmod 755 {} \; \) -o \
+              \( -name "*.txt" -a -exec chmod 644 {} \; \) 

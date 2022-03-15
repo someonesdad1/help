@@ -1,0 +1,472 @@
+*perl5*
+    
+Overview
+--------
+  Variables are global by default.
+  my variables will be lexically scoped, meaning it will only be visible
+    in the block they're defined (equivalent to automatic local variable in C).
+  local variables will be dynamically scoped, meaning they are visible in
+    the block that uses them and any functions that block calls (same as
+    typeset locals in ksh).  Use to temporarily change the value of a global.
+  Arrays start numbering at 0.
+
+Programming Constructs
+----------------------
+  if (expr) { statements } else { statements }
+  if (expr) { statements } elsif { statements } else { statements }
+  while (expr) { statements }
+  until (expr) { statements }
+  statement keyword conditional_expression:
+    print ("This is zero.\n") if ($var == 0);
+    print ("This is zero.\n") unless ($var != 0);
+    print ("Not zero yet.\n") while ($var-- > 0);
+    print ("Not zero yet.\n") until ($var-- == 0);
+  for (expr; expr; expr) { statements }
+  foreach $var (@list) { statements }            [$var is local to the loop]
+  do { statements } while (expr)
+  do { statements } until (expr)
+  last  How to break out of loops (except from do loop)
+  next  Start next iteration of loop (except for do loop)
+  redo  Restart iteration of loop (except for do loop)
+  The last three constructs can be used with labels to specify the loop.
+  Labels are a name at the beginning of a line followed by a colon.
+  goto LABEL
+    
+Pattern Matching
+----------------
+  /regexp/o               o specifies option:  g = match all possible 
+                          patterns, i = ignore case, o = evaluate once
+                          @m = "balata" =~ /.a/g; sets m to ("ba", "la", "ta")
+                          $m = "balata" =~ /.a/g; sets m to "ba" first time,
+                          next time it gets "la", etc.  Use in loops.
+  m;regexp;               Change pattern delimiter
+  $a = $var =~ /regexp/   $a is <> 0 if regexp found in $var
+  $a = $var !~ /regexp/   $a is == 0 if regexp found in $var
+  /$pattern/              Can use variable substitution in regexps
+  s/patt/replacement/o    Replace part of a string.  Ex: s/(\d+)/[$1]/ 
+                          encloses the digits in brackets.  Options:
+                          g = change all occurrences, i = ignore case,
+                          e = evaluate replacement string as expression before
+                          making replacement, o = compile pattern only once
+  tr/str1/str2/o          Transliteration.  c = translate all characters 
+                          not specified, d = delete specified characters,
+                          s = multiples replaced by one.
+  y/str1/str2/            Same as tr
+
+  .        Matches any character except newline
+  +        One or more
+  []       Define a character group
+  [^]      Exclude a character group
+  *        Zero or more
+  ?        Zero or one
+  ^        Anchor to beginning
+  $        Anchor to end
+  \b       Match on word boundary  /\bdef/ matches if def is start of word,
+             /\bdef\b/ only matches on word 'def'.  Word is letters, 
+             numbers, and underscore.
+  \B       Match inside word
+  {n}      Match exactly n occurrences
+  {n,}     Match at least n occurrences
+  {0,n}    Match no more than n occurrences
+  {n,m}    Match n to m occurrences
+  |        Alternation (or)
+  \(patt\) Store pattern in memory; refer to by \num
+  (regexp) Group regexps together
+  $1, $2...   Refer to stored patterns in previous match statement:
+              $str = "The number is 25.11";
+              $str =~ /-?(\d+)\.?(\d+)/;
+              $integerpart = $1;
+              $decimalpart = $2;
+              These values disappear when another pattern match is performed.
+  $&      Contains the entire matched pattern.  Previous example $& = "25.11".
+          
+
+  Character range escape sequences:
+    \d     Any digit [0-9]
+    \D     Not a digit [^0-9]
+    \w     Any word character [_a-zA-Z0-9]
+    \W     Not a word character [^_a-zA-Z0-9]
+    \s     Whitespace [ \r\t\n\f]
+    \S     Not whitespace [^ \r\t\n\f]
+
+Subroutines
+-----------
+  sub routine_name { statements }
+  Call via:  &routine_name;
+  Have access to all global variables.
+  Last statement executed generates return value.
+  return [expr]  is another way to return a value (e.g., scalar or list).
+  Local variables:
+    local($var1, $var2) [ = (init1, init2)] ;
+  Parameters are passed in '@_'.  Access elements as $_[0], ...  You can 
+    e.g. put them into a list:  local(@list) = @_;
+  Local variables are really local, so you can use recursion.
+  Passing by reference:  call routine as 'routine_name(*params)'.  Then 
+    access them as 'local(*myparams) = @_;'.  This avoids copying large arrays.
+
+Sorting
+-------
+  Common use:  @list1 = sort(@list2);
+  You can specify a sorting criteria routine.  These need to reference $a
+    and $b as arguments.  Return -1 if $a < $b, 0 if equal, 1 if $a > $b.
+    Then use it in the call:
+    @list1 = sort sort_routine (@list2);
+
+Escape Sequences
+----------------
+  \a    Bell (beep)
+  \b    Backspace
+  \cn   Ctrl+n character
+  \e    Escape
+  \E    Turn off \L and \U
+  \f    Form feed
+  \l    Force next letter to lower case
+  \L    All following characters are lower case
+  \n    Newline
+  \r    Carriage return
+  \t    Tab
+  \u    Force next letter to upper case
+  \U    All following characters are upper case
+  \v    Vertical tab
+
+  "T\LHIS IS A \ESTRING";  evaluates to "This is a STRING"
+  $string1 = "rubber duck"
+  $string2 = "This is a $string1"
+      So string2 is "This is a rubber duck".  But
+  $string2 = 'This is a $string1'  is taken literally.
+  'This is 
+      a 2 line string'   is OK, but you can't do it with "
+
+Variables
+---------
+  $var      Scalar variable (number or string)
+  @var      Array variable e.g.  @var = ("1", 1, $othervar, $b + 17);
+            Access elements by $var[3].
+            @var = (1, 2, 3); $var[5] = "six"; 
+            Now var is (1, 2, 3, "", "", "six").
+  ${var}    Reference same way as in sh
+  (1..5) is same as (1, 2, 3, 4, 5)
+  @a = @b   Array copying 
+
+  Let @array = (1, 2, 3).  Then print (@array, "\n") "gives 123\n".  Use
+  print ("@array\n") to get "1 2 3\n".
+  ($a, $b) = @array  gives $a=1, $a=2.  The 3 is ignored.
+  $a = @array   means $a gets the length of the array.
+  @subarray = @array[1,3];  An array slice.
+  @array[0..3] = @otherarray[4..7]  Can assign to an array slice.
+  @array[2,1] = @array[1,2]  How to swap elements
+  @array = <STDIN>  Slurp all input into an array
+  shift(@array)     Remove and return the first element
+    
+  Associative arrays:  %assoc_array
+    Use {} to access:  $fruit{"apple"} = 1;
+                       $fruit{$next} = 3;
+    Initialize:        %fruit = ("apples", 7, "bananas", 9, "oranges", "none");
+                       (Alternate subscripts and values)
+    %a = %b;
+    %a = @b;           Similar to above initialize
+    @a = %b;           Realize the order in a is arbitrary
+    Accessing keys:  keys(%array)
+    Looping:  foreach $fruit_type (keys(%fruit)) { statements }
+    Linked list:  %a = ("one", "two", "two", "three", "three", ...)
+    Simulating structures:
+      In C: struct {
+              int v1;
+              int v2;
+            } str;
+      In perl, just define %str = ("v1", "", "v2", "");
+
+Array Library Functions
+-----------------------
+  @sorted_array = sort(@array)      Sort in alphabetical order
+  @reversed = reverse(@array)       Reverse an array
+  chop(@list)                       Remove last character of every element
+  $string = join(@array)            Make a single string
+  @array = split(/regexp/, $string) Split a string into an array
+
+
+File I/O
+--------
+  open(filehandle, filename)  filename must contain the mode as the first
+                              characters "<, >, or >>".  Returns nonzero
+                              if open was successful.  Defaults to "<".
+  open(IFP, "<$name") || die("Couldn't open $name");
+                              Handy short form.
+  open(IFP, "| cat >hello")   Open a pipe.  Example:  how to send mail:
+         open(MESSAGE, "| mail xyz@abc");
+         print MESSAGE ("Hi.  I got your message.\n");
+         close(MESSAGE);
+  open(CAT, "cat file* |")    Put all contents into a temp file and then 
+                              access it via CAT handle.
+  How to concatenate streams:
+    open(STDOUT, ">file");
+    open(STDERR, ">&STDOUT");
+  Buffering:  Set $| to nonzero value to turn off buffering for current file
+    (last call to select() or stdout if no select call).
+  binmode(MYFILE)  Set a file access to binary (only needed for DOS)
+  Read/write access:
+    open(READWRITE, "+>file");  (Use with seek() and tell())
+  $line = <filehandle>         Read a line from the file.  Null string on EOF.
+  print  filehandle (string)  Print to open file.
+  printf filehandle (params)  Formatted print to open file.
+  print STDERR ( string)      Print to stderr.
+  close(filehandle)           Close the file.
+  eof   Returns nonzero value on file EOF
+  eof() Returns nonzero value when all files have been exhausted
+  eof(MYFILE) Returns nonzero value when specific file has been exhausted
+  seek(filevar, distance, relative_to)
+    distance in bytes
+    relative_to:  0:beginning of file, 1:current position, 2:end of file
+    Returns nonzero (true) if successful, 0 if failed.
+  tell(filevar):  offset in bytes of current position in file
+  read(filevar, destination_var, num_bytes_to_read, num_bytes_to_skip_first)
+    Returns actual number of bytes read
+  sysread(filevar, destination_var, num_bytes_to_read, num_bytes_to_skip_first)
+  syswrite(filevar, data_var, num_bytes_to_read, num_bytes_to_skip_first)
+  Use sysread and syswrite for fast access, but know what you're doing.
+    Read the man pages on read() and write().
+  char = getc(FILE);
+  mkdir(dirname, permissions) returns nonzero if successful
+    Perms:  4000 setuid, 2000 setgid, 1000 sticky bit, others normal UNIX
+  chdir(dirname) returns nonzero if successful
+  opendir(DIRVAR, dirname)  Used to start a get of list of files.  Returns
+    true if successful.
+  closedir(DIRVAR)  Closes an opened directory.
+  $var = readdir(DIRVAR)   Returns next filename in list
+  @var = readdir(DIRVAR)   Read whole set of filenames
+  $var = telldir(DIRVAR)   Examine where you are
+  seekdir(DIRVAR, $var)    Set current directory to $var (must be returned by
+                           telldir)
+  rewinddir(DIRVAR)        Rewind to start
+  rmdir(dirname)           Returns true if successfully deleted
+  rename(oldname, newname) Returns true if successful
+  unlink(@filelist)        Returns number of files deleted
+  link(newlink, file)      Create a hard link (returns true if successful)
+  symlink(newlink, file)   Create a soft link (returns true if successful)
+  filename = readlink(symlinkname)   Returns actual file that symlinkname
+                           points to; returns null if not symlink
+  chmod(perm, @filelist)   Returns number successfully set
+  chown(uid, gid, @filelist)  Returns number of files changed
+  oldmask = umask(maskval) Get current by umask()
+  truncate(filename, length)  Reduces size
+  stat(file)               Returns a list:
+    Device file resides on
+    Inode number
+    Permissions
+    Number of hard links
+    UID of owner
+    GID of owner
+    Device type (if file is a device)
+    Size of file in bytes
+    Last access time
+    Last modified time
+    File status last modified
+    Optimal block size for I/O ops on the file system containing the file
+    Number of blocks allocated for file
+  lstat(symlink)           Same as stat, but assumes arg is a symlink
+  currtime = time();       Elapsed seconds since Jan 1, 1970
+  timelist = gmtime(timeval)
+  timelist = localtime(timeval)
+    Both return a list with:
+      Seconds 
+      Minutes
+      Hour of day (0..23)
+      Day of month
+      Month (0..11)
+      Year
+      Day of week (0=Sunday)
+      Day of year (0..364)
+      Flag indicating if DST in effect
+  utime(acctime, modtime, @filelist)  Set times; returns num files changed
+  fileno(filevar)   Returns fie descriptor number
+  fcntl(filevar, fcntlrtn, value)  File control (see fcntl manpage)
+  flock(filevar, flockop);  File locking (see flock manpage)
+
+  dbmopen(%array, dbmfilename, permissions);  Reads a dbm file into an
+    associative array.  The subscripts for the array represent the 
+    dbm file keys, the array values represent the values associated 
+    with the keys.
+  dbmclose(%array);
+
+
+  File test operators:
+
+  -b $name                    Is $name a block device?
+  -c $name                    Is $name a character device?
+  -d $name                    Is $name a directory?
+  -e $name                    Does file $name exist?
+  -f $name                    Is $name an ordinary file?
+  -g $name                    Does $name have setgid bit set?
+  -k $name                    Does $name have its sticky bit set?
+  -l $name                    Is $name a symbolic link?
+  -o $name                    Is $name owned by the user?
+  -p $name                    Is $name a named pipe?
+  -r $name                    Is $name a readable file?
+  -s $name                    Is $name a nonempty file?
+  -t $name                    Does $name represent a terminal?
+  -u $name                    Does $name have its setuid bit set?
+  -w $name                    Is $name a writable file?
+  -x $name                    Is $name an executable file?
+  -z $name                    Is $name an empty file?
+  -A $name                    How long since $name accessed?
+  -B $name                    Is $name a binary file?
+  -C $name                    How long since $name's inode accessed?
+  -M $name                    How long since $name modified?
+  -O $name                    Is $name owned by the "real user" only?
+  -R $name                    Is $name readable by the "real user" only?
+  -S $name                    Is $name a socket?
+  -T $name                    Is $name a text file?
+  -W $name                    Is $name writable by the "real user" only?
+  -X $name                    Is $name executable by the "real user" only?
+
+  Here, real user means the userid specified at login, as opposed to 
+  the effective user ID.
+
+  if ( -z MYFILE ) { print ("File is empty\n"); }
+  if ( -z "$file" ) { print ("File $file is empty\n"); }
+
+  <>   Get input from command line or stdin if no parameters.  Here's a
+       cat equivalent:  while ($line = <>) { print ($line); }
+       Returns empty string at EOF; if you use it after EOF, it's going
+       to get input from stdin.
+  @array = <>   Put all lines from all files on command line into array.
+  @ARGV         Command line arguments.  @ARGV[0] is _not_ pgm name.
+
+
+
+Operator Precedence
+-------------------
+  Highest to lowest; associativity L-R unless noted
+
+  ++ --    Increment, decrement
+  - ~ !    Unary minus, binary complement, not          R-L
+  **       Exponentiation                               R-L
+  =~ !~    Pattern matching
+  * / % x  Multiplication, division, modulo, repetition
+  + - .    Addition, subtraction, concatenation
+  << >>    Shifting
+  -e -r    File-status operators
+  < <= > >= lt le gt ge
+           Inequality comparison operators
+  == != <=> eq ne cmp
+           Equality comparison operators
+  &        Bitwise AND
+  | ^      Bitwise OR, XOR
+  &&       Logical AND
+  ||       Logical OR
+  ..       List range operator
+  ?:       Conditional operator                         R-L
+  = += -= *=
+           Assignment operators                         R-L
+  ,        Comma operator
+
+Print Formats
+-------------
+  format formatname =
+    format data
+  .
+
+  To use the print format:
+    Set $~ to the format you want to use
+    Call the write function
+      write;           Send output to stdout
+      write(MYFILE);   Send to an opened file
+
+  Formats
+    @<<<<     4 left justified characters
+    @>>>>     4 right justified characters
+    @||||     4 centered characters
+    @##.##    Fixed precision numeric
+    @*        Multiline text
+
+  A character string is only printed up to a newline unless @* is used.
+
+  select(MYFILE) changes the output where subsequent writes go to.  Use
+  select(STDOUT) to put it back to the default.  A call to select also
+  affects the print function.  Save the old destination with
+  $oldfile = select(MYFILE).
+
+  Define header format with 
+    format filename_TOP = 
+    Header text      Page $%
+    .
+  $% gives the current page number
+  $= sets the current page length in lines
+  $^ contains the name of the current page header print format
+  Adjust current line count before ^L issued by setting $-.  If you make
+    a call to print, use $- -= 1 to adjust.
+  A ~ at the beginning of a format line makes it only print if there is output.
+  Use ~~ to allow the formatted line to contain as many lines as needed.
+  printf() works just like in C:
+    %c   Single character
+    %d   Base 10 integer
+    %e   Floating point in scientific notation
+    %f   Fixed point
+    %g   Compact floating point
+    %o   Base 8 integer
+    %s   Character string
+    %u   Unsigned integer
+    %x   Base 16 integer
+    l    Long integers
+
+
+Functions
+---------
+  chop        Remove the last character
+  random(x)   Returns x*rand([0,1))
+  int(x)      Truncates x to an integer
+  die(msg)    Halt execution.  No trailing newline in msg means prog and
+              line number are printed too.
+
+Debugger Commands
+-----------------
+  h [command]          Help
+  p expr               Print
+  x expr               Pretty print (incl. nested data structures)
+  V [pkg [vars]]       Display variables in package
+  X [vars]             Same as V currentpackage [vars]
+  T                    Stack back-trace
+  s [expr]             Single step into subroutines
+  n [expr]             Single step over subroutines
+  <CR>                 Repeat last n or s command.
+  c [line|sub]         Continue [with one time breakpoint]
+  l                    List next window of lines
+  l min+incr           List incr+1 lines starting at min
+  l min-max            List lines min through max. l - is synonymous to -
+  l line               List a single line
+  l subname            List first window of lines from subroutine
+  -                    List previous window of lines
+  w [line]             List window (a few lines) around the current line
+  .                    Return debugger pointer to the last-executed line 
+                         and print it out.
+  f filename           Switch to viewing a different file or eval statement
+  /pattern[/]          Search forwards for pattern
+  ?pattern[?]          Search backwards for pattern
+  L                    List all breakpoints and actions.
+  S [[!]pattern]       List subroutine names [not] matching pattern.
+  t                    Toggle trace mode
+  t expr               Trace through execution of expr
+  b [line] [condition] Set a breakpoint
+  b subname [condition]  Set a breakpoint at the first line of the named 
+                           subroutine.
+  b postpone subname [condition]    Set breakpoint at first line of subroutine 
+                         after it is compiled.
+  b load filename      Set breakpoint at the first executed line of the file
+  b compile subname    Sets breakpoint at the first statement executed 
+                         after the subroutine is compiled.
+  d [line]             Delete a breakpoint at the specified line
+  D                    Delete all installed breakpoints.
+  a [line] command     Set an action to be done before the line is executed.
+  A                    Delete all installed actions.
+  ! number             Redo a previous command (default previous command).
+  ! -number            Redo number'th-to-last command.
+  ! pattern            Redo last command that started with pattern
+  H -number            Display last n commands
+  q or ^D              Quit
+  = [alias value]      Define a command alias, like = quit q
+  command              Execute command as a Perl statement
+  m expr               The expression is evaluated, and the methods which 
+                         may be applied to the result are listed.
+  m package            The methods which may be applied to objects in the 
+                         package are listed.
+

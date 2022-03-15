@@ -1,0 +1,94 @@
+'''
+Generate matplotlib help text from the functions' docstrings.
+'''
+from pylab import *
+names = '''
+axes
+axhline
+axhspan
+axis
+axvline
+axvspan
+bar
+barh
+box
+boxplot
+cla
+clabel
+clf
+clim
+close
+cohere
+colorbar
+contour
+contourf
+csd
+delaxes
+draw
+errorbar
+figimage
+figlegend
+figtext
+figure
+fill
+gca
+gcf
+gci
+getp
+grid
+hist
+hold
+imread
+imshow
+ioff
+ion
+ishold
+isinteractive
+legend
+loglog
+matshow
+pcolor
+pcolormesh
+pie
+plot
+plot_date
+polar
+psd
+quiver
+rc
+rgrids
+savefig
+scatter
+semilogx
+semilogy
+setp
+show
+specgram
+spy
+spy2
+stem
+subplot
+subplot_tool
+subplots_adjust
+table
+text
+thetagrids
+title
+xlabel
+xlim
+xticks
+ylabel
+ylim
+yticks
+'''[1:-1]
+words = names.split("\n")
+for i in words:
+    try:
+        exec("s = %s.__doc__" % i)
+        print("-"*75)
+        print(i)
+        print()
+        print(s)
+    except NameError:
+        pass
+

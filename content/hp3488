@@ -1,0 +1,208 @@
+*hp3488*
+
+|Scanner_Commands|
+|Details_44470|
+
+To use the SYNTAX key on the front panel:  press SYNTAX followed by
+the operation of interest.  The display will show a syntax summary.
+It may also give a reference number n; press SYNTAX n and you'll get
+more details.  Example
+
+    SYNTAX CLOSE gives
+        CLOSE <ADDRESS>[,<ADDRESS>]...; SEE REFERENCE 5 FOR ADDRESS
+    Scroll the message with the arrow keys
+    SYNTAX 5 gives
+        ADDRESS:  A THREE DIGIT NUMBER WITH THE FIRST NUMBER BEING
+        SLOT AND THE NEXT TWO DIGITS BEING EITHER A RELAY NUMBER OR
+        BIT NUMBER
+
+Connecting:
+
+    import visa
+    nl = "\n"
+    addr = 15
+    io = visa.Instrument("GPIB0::%d" % addr, term_chars="")
+    # Then communications can done by appending newline
+    io.write("close 101" + nl)
+    # View channel state
+    io.write("view 101" + nl)
+    s = io.read()
+    print s
+
+    will yield "CLOSED 0".  0 means closed, 1 means open (think of a
+    pullup resistor on the line and you're measuring for a voltage).
+
+The unit I have has the following setup:
+    Slot   Model   Description
+    ----   -----   -----------
+     1     44470   RELAY MUX
+     2     44470   RELAY MUX
+     3     44470   RELAY MUX
+     4     44474   DIGITAL IO
+     5     44474   DIGITAL IO
+
+  The 44470 has 10 relays and switches one pair of lines to a common
+  high and low.  The intent is use with a voltmeter to mux sources.
+
+  The 44474 is a 16 channel digital I/O card.
+
+Setups:  there are 40 channels (1 to 40) to store and recall setups.
+    STORE n
+    RECALL n
+
+-----------------------------------------------------------------------------
+*Scanner_Commands*
+
+c = a slot + channel number; e.g. 105
+s = a slot number, 1 to 5
+p = a digital output port (8-bit:  00 and 01, 16-bit: 02)
+D = a number (8-bit or 16-bit)
+n = a decimal number
+
+CHAN [c]
+    Open any chanel previously closed with CHAN or STEP, then close
+    the indicated channel number.  If no argument, returns the last
+    channel closed by CHAN or STEP.
+CLEAR
+    Same as RESET.
+CLOSE c[,c, ...]
+    Close indicated channels
+CMON s
+    Display slot monitor for the indicated slot.
+CPAIR
+    CPAIR n,m sets up cards n and m to operate as a pair.  Can use
+    CLOSE, OPEN, CRESET, CHAN, and STEP.  Useful for e.g. 4 wire
+    resistance measurements.  With no arguments, returns the current
+    card pair.
+CRESET s[s, ...]
+    Open all channels on card.
+CTYPE s
+    Returns card type (description & model number)
+DBR <s><p>,[number of times to read]
+    Digital binary read.  See manual pg. 77.
+DBW <s><p>,#I<block of data>
+    Digital binary write.  "DBW502,#IAS" sends the "AS" as a block of
+    data.  See manual pg. 77.
+DELAY
+    Used when using the External Increment and Channel Closed
+    features of 44474 digital I/O card.  See pg 65 of manual.
+DISP <string>
+    Write a string up to 127 characters to the display.  Any character
+    32 and above can be displayed except for '#' and ':' (which are
+    string termination characters).  Any characters > 127 will be
+    discarded.  Quotes are ignored.
+DMODE s[,<mode>][,<polarity>][,<EI>]
+    Establish handshake and polarity of 44474 digital I/O card.
+    Mode
+        1: static (default), 2: static2 (read what was written),
+        3: R/W & strobe, 4: read & write strobe, 5:  handshake (no
+        Ext. Inc.)
+    Polarity
+        Lower byte polarity         1 = low true
+        Upper byte polarity         2 = low true
+        PCTL Polarity (low ready)   4 = low busy
+        PFLG Polarity (low ready)   8 = low busy
+        I/O direction line polarity 16 = low input mode
+        (High = input mode normally)
+ 
+    External Increment and Channel Closed is enabled by a 1 in the EI
+    specifier.  They are disabled with 0.
+ 
+    'DMODE s' reads the register.
+    At power on, in static mode, high true logic, EI/CC disabled
+DOFF
+    Display off.
+DON
+    Display on.  Can also be used to erase a message sent with DISP.
+DREAD <s><p>,[, <number of times to read>]
+    Read the digital port number.  8-bit port values will be
+    between 0 and 255.  16-bit will be 2's complement between -32768
+    and 32767.
+DWRITE <s><p>, D [, D...]
+    Write data D to port p of slot s.  8-bit port values must be
+    between 0 and 255.  16-bit must be 2's complement between -32768
+    and 32767.
+EHALT <0 or 1>
+    Stop on an error if enabled (1).  If enabled, an error locks up
+    the HPIB; you can clear it using the HPIB clear command or
+    pressing the LOCAL key on the front panel.
+ERROR
+    Read error register decimal number:
+
+        1   Syntax error
+        2   Execution error; possible meanings:
+                a.  Parameter out of range
+                b.  Card type mismatch
+                c.  Attempt to access nonexistent stored state or scan list
+        4   Hardware trigger too fast
+        8   Logic failure
+        16  Power supply failure
+ID?
+    Causes the device to output the string "HP3488A".
+LOCK <0 or 1>
+    If 1, locks out the keyboard.  0 deactivates the lock.  Prevents
+    the keyboard from being scanned, permitting faster operation.
+MASK n
+    Set the SRQ mask (i.e., conditions that will cause an SRQ):
+        Bit     Value       Description
+        0       1           End of scan sequence
+        1       2           Output available
+        2       4           Power-on SRQ true
+        3       8           Front panel SRQ key pressed
+        4       16          Ready for instructions
+        5       32          Error
+        6                   RQS (This bit is not maskable)
+        7                   Not used
+    If no n is given, read the MASK decimal number.
+OPEN  c[, c, c...]      
+    Open indicated channels
+RECALL n
+    Recall the stored state in register n.  n must be 1 to 40.
+    If no state was stored in n, then an error results and the 3488
+    remains in its previous state.
+RESET
+    Resets the 3488 to power-on state.  This opens all relays and
+    reads GPIB address switch.  Stored states are not destroyed.
+SLIST
+    Scan list to scan through.  Example:  SLIST 104,300-309,403  
+    Operation is break before make.  Wraps around to first channel.
+    Press or execute STEP to go to next channel.  Use 0 as a stop
+    channel; the last channel scanned is opened and the scan stops.
+    Scanning works for relays or digital I/O.
+STATUS
+    Read status byte; returns decimal value.
+    Bits are
+        Bit     Value       Definition
+        0   *   1           End of scan sequence
+        1       2           Output available
+        2   *   4           Power-on SRQ asserted
+        3   *   8           Front panel SRQ key pressed
+        4       16          Ready for instructions
+        5       32          Error
+        6       64          RQS
+        7       128         Not used
+    * means cleared after STATUS command executed.
+STEP
+    Steps to the next channel.  See SLIST.
+STORE n
+    Store the current channel setup in register 1 to 40.  Maintained
+    across power cycles & resets.  44474 cards not in static mode are
+    ignored.
+TEST
+    Perform internal self-test.  Read back from the command; "0" means
+    all tests passed.
+VIEW c
+    Show channel state on display
+
+----------------------------------------------------------------------
+*Details_44470*
+
+10 channel relay multiplexer.  10 channels of 2 wires connect to a
+common 2-wire bus.  The relays have low thermal offsets.  Relays are
+rated 250 V @ 2 A and can be operated in break before make or where
+multiple channels may be closed together.
+
+The primary use of this card is for multiplexing signals to a
+voltmeter.  Note you can use two of these cards with the CPAIR (card
+pair) command to effect 4-wire resistance measurements.
+

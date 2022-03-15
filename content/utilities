@@ -1,0 +1,161 @@
+*Utilities*
+
+|utils_Sysinternals|
+|utils_File_utilities|
+|utils_Programming|
+|utils_Miscellaneous|
+|utils_Math|
+|utils_Archiving|
+|utils_Cryptography|
+
+
+Sysinternal utilities                *utils_Sysinternals*
+---------------------
+procexp        Process explorer
+procmon        Process monitor
+portmon        Monitors serial and parallel ports
+zoomit         Zoom screen, write on screen, timer
+autoruns       Show all things that autorun
+
+
+File utilities                       *utils_File_utilities*
+--------------
+2word          Convert file to Word processing format
+7bit.exe       Show location of ctrl & hi-bit-set characters
+agrep.exe      Fast, free grep with nice features (Univ. of Arizona)
+bd.exe         Print binary differences between two files
+bincmp.exe     Enhanced cmp -l functionality
+byte.com       Extract specified bytes from a file to stdout
+checksum.ksh   Print MD5 CRC of all files on command line
+cutline.com    Extracts lines from a text file
+ddiff.ksh      Script to identify file differences in directory trees
+ddiffcp.ksh    Takes output of ddiff.ksh and can update a tree
+fcut           Selects specified lines of a file
+fld.exe        Extracts fields from a text file
+fog.exe        Calculates reading level for a text file.  Does not work on large files
+fset           Perform set operations on text files
+lensort        Sort by line length
+lc             Convert stdin or files to lower case
+linesize.exe   Calculates min, max, mean of num of chars on each line 
+mac2dos.exe    Convert Mac cr files to DOS cr-lf
+ps2txt.exe     Extracts text from a Postscript file
+rename.ksh     Script for renaming a bunch of files using sed
+renumjpg.ksh   Renumber a set of jpg files
+samplelines    Randomly select lines from a text file
+showlen        Sort by line length and append length and line number
+shuffle_lines.ksh  Randomly order lines of a text file
+space          Show the space used in a directory
+st.exe         Show atime, mtime, and ctime for files
+tac.ksh        Script that prints line 1 as line n, line 2 as line n-1, etc
+tlc            Changes filenames to all lower case
+tree           Print an ASCII representation of a directory tree
+uc             Convert stdin or files to upper case
+
+Programming                           *utils_Programming*
+-----------
+as31.exe       Assembler program
+asc.exe        Print ASCII table
+asc_dos.exe    Print ASCII table (DOS executable)
+b2h.exe        Convert binary data to a stream of hex characters
+brack.exe      Check bracket matches in a file.  Not very good, because it won't work if there are matching characters in comments.  But can be used to find nasty missing characters in shell scripts or programs if you remove all comments
+btags.ksh      Script to generate tags for BASIC programs
+cb.exe         C beautifier
+char.exe       Print all ASCII characters to stdout
+cib.ksh        RCS check in a binary file
+cmnt.ksh       Filter to reformat shell comments
+color.exe      Dumps colors for QuickPak routines
+colorb.exe     Same as color.exe, but is for Win32 DOS windows
+ctags.exe      Tags program to use with vim
+dbase3.dbf     dBASE III file format
+decodnsf.py    Pretty print NSF output from form program.  See dumpnsf.ksh
+dumpnsf.ksh    Print NSF data from form program.  See decodnsf.py
+fd.ksh         Shows which RCS files have changed
+fl.exe         Shows locked RCS files
+formdiff.exe   Calculates differences in NSF files
+h2b.exe        Converts ASCIIHEX string to binary
+hd.exe         Hex dump utility
+ktags.ksh      Generates tags for a shell script
+lib.exe        Dumps common C functions to stdout
+mp.exe         Simple macro processor
+nostrict.ksh   Make all RCS files have nonstrict locking
+notci          Show files in current directory that aren't checked in
+ptags          Generate tags file for python files
+pyhelp         /bin/bat directory with python help files 
+tokens.ksh     Prints tokens from input files (see xref for better tool)
+txt2printf.exe Change text into a C printf form
+uncmnt.ksh     Removes comment characters in scripts
+xref.exe       Indexes tokens in text files
+xxd.exe        Hex dump utility (can also invert a hex dump)
+
+Misc.                                 *utils_Miscellaneous*
+-----
+2up            Print 2up on a printer
+3fmt.ksh       Make formatting a 3.5" floppy noninteractive
+bac.com        Back up files to another directory (don't copy over already existing stuff)
+beep.exe       Sound a system beep
+brun45.exe     QuickBASIC 4.5 run time
+disks.ksh      Index of floppy disks
+fv.com         Allows list.com to read contents of zipfile
+gzip.exe       GNU zip
+icd.exe        ICD-9-CM number search utility
+intpcl         Dan Mahoney's PCL dumper
+lock           Keep ISP online for specified period of time
+makeman.ksh    For MKS tools -- makes vanilla man pages
+mkfile.exe     Construct a file of specified size and fill it
+moon.exe       Calculates the moon's phases
+moon1.exe      Another moon phase program
+mpack.exe      MIME encoding program
+munpack.exe    MIME decoding program
+notes.ksh      Keeps notes in a file and extracts them using agrep
+num.exe        Generates a string of integers from 1 to n or n to m
+one.exe        Returns a status of 1
+qe.exe         QEdit program
+seq.exe        Similar to num.  Prints sequences of numbers
+sw             Provide stop watch like behavior
+thermis.tor    Calibration tables for a thermistor
+timeit.com     Calculates the time it takes to run a program
+tm             Print time data for Boise, ID
+two.exe        Returns a status of 2
+txt2html.pl    Format ASCII text into HTML
+whereis.ksh    Searches your PATH for a regexp
+xe.exe         Edits binary files in hex mode
+zero.exe       Returns a status of 0
+
+Math                                 *utils_Math*
+----
+fact           Factors integers
+factor.ksh     Factors integers
+hc.exe         Hex calculator
+julianday.exe  Print the astronomical Julian day number
+linreg         Linear regression of a set of number pairs
+primes         Print prime numbers in a specified range
+sample.exe     Generate random samples.  Can also shuffle
+shuffle.exe    Shuffle set of integers
+stats.ksh      Compute elementary stats for columns of numbers
+
+
+Archiving                            *utils_Archiving*
+---------
+arc.com        PKARC archiving program
+arch.ksh       Perl script to archive filesets
+lharc.exe      Compression/decompression program
+pkcfg.exe      Generates pkzip's configuration file
+putav.exe      Put authenticity verification into a zip file
+pkunzip.exe    Version 2.04g
+pkunzip102.exe Version 1.02
+pkzip.cfg      Configuration file for pkunzip
+pkzip.exe      Version 2.04g
+zip2exe.exe    PKZIP program to make self extracting zipfile
+zipfix.exe     PKZIP program to fix zip files
+
+Cryptography                         *utils_Cryptography*
+------------
+aschist.exe    Show count of ASCII characters in file or stream
+cnt.exe        Count letter & digraph frequencies
+dlock.exe      Tool to encrypt/decrypt files
+md5sum.exe     Tool to make and compare MD5 sums for a fileset
+mdd.exe        Produce MD5 sum of indicated files
+otp            Generate a one time pad of 128 bit numbers
+pgp_.exe       pgp version 2.6.2
+rot13.exe      Transforms input text by rot13 cipher
+

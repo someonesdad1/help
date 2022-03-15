@@ -1,0 +1,299 @@
+*scons*
+|scons_intro|
+
+Website:  https://scons.org/
+[x] means page x of the scons user manual
+{x.y} means chapter x section y of the scons user manual
+
+To learn scons:  read first 10 chapters of manual, run examples, then dive into
+later stuff as needed.
+
+scons is 57 klines of code including comments
+
+------------------------------------------------------------------------------
+Introductory                                                     *scons_intro*
+
+Installation
+    - pip install scons
+    - Installs in python's library area and gives you /usr/bin/scons, your
+      command to access scons features.
+Invocation of scons
+    - The -Q option removes the verbosity and makes the output look like make's
+
+Hello world
+    - Put
+        #include <stdio.h>
+        int main() {
+            printf("Hello, world!\n");
+        }
+    - into hello.c.  Put
+        Program("hello.c")
+        'Program(["hello.c"])' also works
+    - into sconstruct.
+    - Run 'scons -Q', get
+        gcc -o hello.o -c hello.c
+        gcc -o hello.exe -Wl,-no-undefined hello.o
+    - Change executable name with 
+        Program("another_hello", "hello.c")
+    - Multiple C files:
+        Program(["hello.c", "a.c", "b.c"])
+        Program("another_hello", ["hello.c", "a.c", "b.c"])
+    - First form gives hello.exe, second gives another_hello.exe
+    - Can use Split() for multiple files
+        src_files = Split('''   a.c
+                                b.c
+                                c.c''')
+    - Using keywords
+        src_files = Split("a.c b.c c.c")
+        target = "program"
+        Program(target=target, source=src_files)
+
+Globbing
+    - Program('name', Glob("*.c"))
+        - Uses all C files in current directory
+    - Object(Glob("*.c"))
+        - Builds all the .o files
+
+Libraries
+    - Library("foo", Split("a.c b.c c.c"))
+    - StaticLibrary("foo", Split("a.c b.c c.c")) (same as above)
+    - SharedLibrary("foo", Split("a.c b.c c.c")) builds a DLL
+
+Linking with libraries
+    - Library("foo", Split("a.c b.c c.c"))
+    - Program("prog.c", LIBS=["foo", "bar"], LIBPATH=".")
+    - Library paths
+        - LIBPATH = ["/usr/lib", "/usr/local/lib"]
+        - or use a command-line style:
+            - LIBPATH = "/usr/lib:/usr/local/lib"
+
+Nodes {5} [20]
+    - Builder methods return a list of Node objects (files & directories)
+    - Bad
+        - Object('hello.c', CCFLAGS='-DHELLO')
+        - Object('goodbye.c', CCFLAGS='-DGOODBYE')
+        - Program(['hello.o', 'goodbye.o'])
+    - This is bad because now object file name is no longer portable (e.g., it
+      will be *.obj on Windows)
+    - Better
+        - hello_list = Object('hello.c', CCFLAGS='-DHELLO')
+        - goodbye_list = Object('goodbye.c', CCFLAGS='-DGOODBYE')
+        - Program(hello_list + goodbye_list)
+
+Decider function [24]
+    - Decider("MD5") == Decider("content")
+    - Decider("timestamp-newer") == Decider("make")  # Same way make does it
+        - Disadvantage:  older backup file restored, has old timestamp, recipe
+          is NOT run
+    - Decider("timestamp-match') is the fix for the previous problem
+    - Decider("MD5-timestamp")
+        - Only use MD5 when timestamp has changed; better performance
+    - Write your own (see pg 28 of user manual)
+    - Mixing decider methods (see pg 29 of user manual)
+
+Dependencies {6}
+    - Implicit dependencies [30]
+    - Explicit dependencies [32]
+        - hello = Program("hello.c")
+        - Depends(hello, "other_file")      sig is Depends(*p)
+    - Ignoring a dependency [34]
+        - hello_obj = Object("hello.c")
+        - hello = Program(hello_obj)
+        - Ignore(hello_obj, "hello.h")
+        - Means to ignore building hello_obj if hello.h changes.
+    - Order-only dependency [35]
+        - Used when something needs to be built before some other target is
+          built, but changes to that file do not need to trigger a rebuild of
+          the target.  It's not a strict dependency.  See manual for example of
+          a version.c file that contains a build time.
+    - AlwaysBuild()
+        - Specified target is always built when another target is built that
+          depends on the AlwaysBuild target.
+
+Environment {7}
+    - 3 types
+        - External:  available to scons if needed
+        - Construction:  built in sconstruct
+        - Execution:  values set when scons executes an external command
+    - Design is around making the build environment repeatable
+    - Access their values like a dict
+    - External:  os.environ dict
+    - Construction
+        - env = Environment(CC="gcc", CCFLAGS="-O2")
+            - Explicit initialization of $CC and $CCFLAGS override scons
+              defaults
+        - env.Program("foo.c")
+        - cvars = env.Dictionary()  # Get the dict if you need it
+        - An environment is an object that has other methods/attributes
+    - Dump construction variables
+        - env = Environment()
+        - for item in sorted(env.Dictionary().items()):
+            - print(f"Construction variable = {item[0]}, value = {item[1]}")
+        - But easier to use a method:  print(env.Dump())
+    - Expanding $ values
+        - Getting a string from a dict may show unexpanded values
+        - env.subst("MYVAL") expands $MYVAL and every other value inside it
+        - Empty/undefined values return ""
+            - AllowSubstExceptions() instead causes an exception
+            - AllowSubstExceptions(ZeroDivisionError) e.g. allows a zero
+              division error 
+            - Each call of AllowSubstExceptions() overwrites the dictums of the
+              last call
+    - Controlling the default construction environment
+        - DefaultEnvironment(CC="/usr/local/bin/gcc")
+        - It's a singleton; first call is decisive, later calls the existing
+          object is returned
+        - Use can speed things up by stopping search for tools
+            - Set yourself if you know what you want to use:
+            - def_env = DefaultEnvironment(tools=['gcc', 'gnulink'],
+              CC='/usr/local/bin/gcc')
+    - Multiple environments
+        - Make what you need
+            - opt = Environment(CCFLAGS="-O2")
+            - dbg = Environment(CCFLAGS="-g")
+            - opt.Program("foo", "foo.c")
+            - dbg.Program("bar", "bar.c")
+        - Make both
+            - Targets need different names
+                - opt = Environment(CCFLAGS='-O2')
+                - dbg = Environment(CCFLAGS='-g')
+                - o = opt.Object('foo-opt', 'foo.c')
+                - opt.Program(o)
+                - d = dbg.Object('foo-dbg', 'foo.c')
+                - dbg.Program(d)
+        - Clone 
+            - env = Environment(CC='gcc')
+            - opt = env.Clone(CCFLAGS='-O2')
+            - dbg = env.Clone(CCFLAGS='-g')
+        - Replace values
+            - env = Environment(CCFLAGS='-DDEFINE1')
+            - env.Replace(CCFLAGS='-DDEFINE2')
+        - Note variable definitions aren't expanded until the environment is
+          used to build a target, so the last Replace() "wins"
+            - Build without -Q to see the expansion order
+    - SetDefault
+        - Just like dict get()
+        - env.SetDefault(SPECIAL_FLAG='-extra-option') sets the SPECIAL_FLAG
+          value only if it hasn't already been set
+    - Appending
+        - env = Environment(CPPDEFINES=['MY_VALUE'])
+        - env.Append(CPPDEFINES=['LAST'])
+            - If it doesn't exist, Append() creates it
+        - env.Program('foo.c')
+        - A build gives
+            - cc -o foo.o -c -DMY_VALUE -DLAST foo.c
+        - CPPDEFINES is the preferred portable way to set preprocessor defines
+          because scons will provide the correct prefix/suffix.  If you use
+          $CCFLAGS, you'll need to provide its final form, which is less
+          portable.
+        - env.AppendUnique(CCFLAGS=['-g']) only happens if CCFLAGS doesn't
+          already include -g.
+    - Prepending
+        - env = Environment(CPPDEFINES=['MY_VALUE'])
+        - env.Prepend(CPPDEFINES=['FIRST'])
+        - Gives 'cc -o foo.o -c -DFIRST -DMY_VALUE foo.c'
+        - PrependUnique() is analogous to AppendUnique()
+    - Overriding
+        - Pass in as kw arguments to a builder method; won't affect other parts
+          of the build
+            - env.Program('hello', 'hello.c', LIBS=['gl', 'glut'])
+        - Example
+            - env = Environment(CPPDEFINES="FOO")
+            - env.Object(target="foo1.o", source="foo.c")
+            - env.Object(target="foo2.o", source="foo.c", CPPDEFINES="BAR")
+            - env.Object(target="foo3.o", source="foo.c", CPPDEFINES=["BAR", "$CPPDEFINES"])
+            - gives
+                - cc -o foo1.o -c -DFOO foo.c
+                - cc -o foo2.o -c -DBAR foo.c
+                - cc -o foo3.o -c -DBAR -DFOO foo.c
+    - Execution environment
+        - scons builds execution environment from $ENV construction variable
+            - This is used for executing commands
+        - Build PATH likely won't be the same as external env PATH
+        - How to set (complete resets execution environment)
+            - path = ['/usr/local/bin', '/bin', '/usr/bin']
+            - env = Environment(ENV={'PATH': path})
+            - To set only PATH
+                - env['ENV']['PATH'] = ['/usr/local/bin', '/bin', '/usr/bin']
+                    - Non-portable
+                - Use env['ENV']['PATH'] = os.pathsep.join(['/usr/local/bin', '/bin', '/usr/bin'])
+        - Use external PATH
+            - env = Environment(ENV={'PATH': os.environ['PATH']})
+            - or copy whole environment
+                - env = Environment(ENV=os.environ.copy())
+            - Means scons will find your tools, but will reduce portability to
+              other systems
+        - Adding to PATH
+            - env = Environment(ENV=os.environ.copy())
+            - env.PrependENVPath('PATH', '/usr/local/bin')
+            - env.AppendENVPath('LIB', '/usr/local/lib')
+        - Toolpath for external tools [53]
+            - env = Environment(
+                - tools=['SomeTool'],
+                - toolpath=['/opt/SomeToolPath', '/opt/SomeToolPath2']
+                - )
+            - env.SomeTool(targets, sources)
+        - There are more arcane possibilities (see {7.4} for details)
+    - Merging options {8}
+        - env = Environment()
+        - env.Append(CCFLAGS='-option -O3 -O1')
+        - flags = {'CCFLAGS': '-whatever -O3'}
+        - env.MergeFlags(flags)
+        - print(env['CCFLAGS'])
+        - % scons -Q
+        - ['-option', '-O1', '-whatever', '-O3']
+        - scons: `.' is up to date.
+        - See {8} for more details
+    - ARGUMENTS = dict that stores all 'variable=value' stuff from command line
+
+Build output {9}
+    - Help('''...''')
+        - Will see with 'scons -h' (use -H then for command line options)
+        - Multiple calls get concatenated (use \n to separate)
+
+Other chapters
+    - 11 Installing files in other directories
+    - 12 Platform-independent file system manipulation
+    - 13 Controlling removal of targets
+    - 14 Hierarchical builds
+    - 15 Separating source and build trees:  variant directories
+    - 16 Building from code repositories
+    - 17 Extending scons:  writing your own builders
+    - 18 Not writing a builder:  the Command builder
+    - 19 Extending scons:  pseudo-builders and the AddMethod function
+    - 20 Extending scons:  writing your own scanners
+    - 21 Multi-platform configuration (autoconf functionality)
+    - 22 Caching built files
+    - 23 Alias targets
+    - 24 Java builds
+    - 25 Internationalization and localization with gettext
+    - 26 Miscellaneous functionality
+    - 27 Using scons with other build tools
+    - 28 Troubleshooting
+
+See the following appendixes for summary stuff
+    - A  Construction variables
+    - B  Builders
+    - C  Tools
+    - D  Functions and environment methods
+    - E  Handling common tasks
+
+------------------------------------------------------------------------------
+Questions
+    - Is there a high level dump command to see how everything is configured?
+    - Does scons support colored output text?  This would be handy for
+      debugging build scripts.
+
+------------------------------------------------------------------------------
+High level concepts                                 *scons_high_level*
+
+    - The sconstruct file should be portable
+        - If you build on POSIX, the build should use typical POSIX tools (e.g.
+          gcc) and *.o files.
+        - On Windows, it will use the MS compiler and *.obj files
+    - File change needs are found using MD5 hashes (you can change to mod time
+      or use your own decision function)
+    - The build environment is carefully constructed for repeatability.  It can
+      use the external environment and the internal values it infers or you
+      program in.
+    - Function and method calls are order-independent (avoids race conditions)

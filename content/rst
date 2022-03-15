@@ -1,0 +1,322 @@
+*rst*
+Restructured text
+
+|Structure|
+|Links|
+|Lists|
+|Text_styles|
+|Substitutions|
+|Footnotes|
+|Tables|
+|Citations|
+
+
+Web page:
+    http://docutils.sourceforge.net/rst.html
+odt writer (converting rst to an OO writer file)
+    http://docutils.sourceforge.net/docs/user/odt.html
+Ref doc
+    http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html
+
+-----------------------------------------------------------------------------
+Structure                                           *Structure*
+
+A paragraph is the most elementary unit.  It's a chunk of text separated from
+other stuff by blank lines.
+
+Transitions:  use 4 or more hyphens to produce a horizontal rule
+
+Table of contents (built from the heading structure):  
+
+    .. contents:: Table of Contents
+
+    Note (18Sep2019) This doesn't appear to be supported anymore.
+    pandoc has an option '--toc' to insert a table, along with
+    --toc-depth=n to control how deep to go.
+
+Titles  
+        (characters can be =  -  `  "  ~  ^  _  *  +  #  <  >)
+        The underline (or overline & underline) must be at least as long as the
+        text.
+
+        A title
+        =======
+
+    Subtitle
+        A subtitle
+        ----------
+
+    Subsubtitle
+        A subsubtitle
+        ^^^^^^^^^^^^^
+
+    The actual character isn't important; it's the sequence they
+    appear in the document.
+
+    The first title above will be centered; the following ones will be
+    left-justified.  The subsubtitle will be in a smaller font than
+    the subtitle.
+
+Comments
+
+    ..  This text won't be shown because it 
+        doesn't use any of the markup tags associated
+        with '..'.
+
+Line blocks:  a way of preserving line breaks
+
+    | These lines are
+    | broken exactly like in
+    | the source file.
+
+Literal code blocks
+
+    This is a normal paragraph; here's some following code::
+
+        It isn't processed except the indentation is removed.
+
+        It can span multiple lines.
+
+    This is normal text again.
+
+  Note there will be a single colon after 'code'.  This is called a
+  'smart' marker:
+
+        - If it occurs as a paragraph of its own, that paragraph is
+          completely left out of the document.  
+        - If it is preceded by whitespace, the marker is removed.
+        - If it is preceded by non-whitespace, the marker is replaced
+          by a single colon.
+
+-----------------------------------------------------------------------------
+Text styles                                         *Text_styles*
+
+*emphasis*              Italics
+**strong emphasis**     Bold
+`interpreted`           Domain-specific meaning
+``literal``             Inline literal:  monospaced, line breaks not preserved
+reference_              Hyperlink
+`link w/ spaces`_       Hyperlink with space characters
+anonymous__             Anonymous link
+_`internal target`      Cross-reference target (inline internal target)
+|substitution|          Substitute from substitution definition
+[1]_                    Footnote reference
+[cit27]_                Citation
+http://docutils.sf.net/ Stand-alone hyperlink
+
+Escape a character to use it literally:  \*
+To get a backslash:  \\
+
+Example:
+    Stand-along hyperlink: http://www.python.org/
+    Escaped hyperlink: \http://www.python.org/
+
+    The first is rendered as a hyperlink in e.g. HTML output; the second is
+    left alone as plain text.
+
+-----------------------------------------------------------------------------
+Lists                                               *Lists*
+
+Bulleted lists (bullet chars are - * +)
+
+    - Item 1
+    - Item 2
+    - ...
+
+    Need a blank line before and after.
+
+--------------
+Enumerated
+
+    3.  First item
+    4.  Second item
+    #.  Auto-enumerated
+
+--------------
+Definitions
+
+item1
+    This item's definition.
+
+item1
+    This item's definition.
+
+etc.
+
+--------------
+Field lists
+    :Authors:
+        Author1
+        Author2
+        (and other people's names)
+    :Version: 1.0 of 2001/08/08
+    :Dedication: To my father. 
+
+Note that the field names are put in bold and can be any text, not
+just those shown.
+
+--------------
+Option lists
+
+-a            command-line option "a"
+-b file       options can have arguments
+              and long descriptions
+--long        options can be long also
+--input=file  long options can also have
+              arguments
+/V            DOS/VMS-style options too 
+
+
+-----------------------------------------------------------------------------
+Tables                                               *Tables*
+
+Grid tables:
+
++------------+------------+-----------+
+| Header 1   | Header 2   | Header 3  |
++============+============+===========+
+| body row 1 | column 2   | column 3  |
++------------+------------+-----------+
+| body row 2 | Cells may span columns.|
++------------+------------+-----------+
+| body row 3 | Cells may  | - Cells   |
++------------+ span rows. | - contain |
+| body row 4 |            | - blocks. |
++------------+------------+-----------+
+
+Simple tables:
+
+Simple table:
+
+=====  =====  ======
+   Inputs     Output
+------------  ------
+  A      B    A or B
+=====  =====  ======
+False  False  False
+True   False  True
+False  True   True
+True   True   True
+=====  =====  ======
+
+-----------------------------------------------------------------------------
+Links                                                   *Links*
+
+External fold-in form used in e.g. HTML docs:
+    
+    External hyperlinks, like Python_.
+
+    .. _Python: http://www.python.org/ 
+
+The 'call-out' type may be used where the link needs to be explicitly show,
+such as in a manpage.
+
+Embedded URIs
+
+    External hyperlinks, like `Python <http://www.python.org/>`_.
+
+Internal Hyperlink Targets
+
+    Internal crossreferences, like example_.
+
+    .. _example:
+
+    This allows you to refer to other portions of the same document.
+
+Indirect Hyperlink Targets
+
+    Python_ is `my favorite programming language`__.
+
+    .. _Python: http://www.python.org/
+
+    __ Python_ 
+
+    The __ is an indirect hyperlink and an anonymous hyperlink target.
+
+Implicit Hyperlink Targets
+
+    Titles are targets, too
+    =======================
+    Implict references, like `Titles are targets, too`_.
+
+-----------------------------------------------------------------------------
+Citations                                               *Citations*
+
+Citation references, like [CIT2002]_.  Note that citations may get rearranged,
+e.g., to the bottom of the "page".
+
+.. [CIT2002] A citation (as often used in journals).
+
+Citation labels contain alphanumerics, underlines, hyphens and fullstops.  Case
+is not significant.
+
+Given a citation like [this]_, one can also refer to it like this_.
+
+.. [this] here. 
+
+-----------------------------------------------------------------------------
+Footnotes                                               *Footnotes*
+
+Manual:
+
+    Footnote reference [5]_
+
+    .. [5] Here's a numerical footnote.
+
+Autonumbered
+
+    Autonumbered footnote [#]_.
+    Another autonumbered footnote [#]_.
+
+    .. [#]  Here's the first one's text.
+    .. [#]  Here's the second one's text.
+
+    Note that the numbering is determined by the order of the footnotes, not of
+    their references.
+
+Autosymbol
+    
+    [*]_ creates an autosymbol
+
+    .. [*] First
+    .. [*] Second
+
+-----------------------------------------------------------------------------
+Substitutions                                           *Substitutions*
+
+Example:  The |biohazard| symbol must be used on containers used
+          to dispose of medical waste.
+
+Definition:
+
+.. |biohazard|  image:: biohazard.png
+   ::height: 11
+   ::width: 11
+
+Matches are case-sensitive but forgiving; if no match is found, a
+case-insensitive comparison is tried.
+
+This can be used for simple macro substitution:
+
+    |RST|_ is a little annoying to type over and over, especially
+    when writing about |RST| itself, and spelling out the
+    bicapitalized word |RST| every time isn't really necessary for
+    |RST| source readability.
+
+    .. |RST| replace:: reStructuredText
+    .. _RST: http://docutils.sourceforge.net/rst.html
+
+Note the first use of |RST| has a trailing underscore to also make it a
+hyperlink.
+
+Example:  Make a table of titles and subtitles for easier maintanance:
+
+    |Title1|
+    ========
+
+    |Subtitle1|
+    -----------
+
+    .. |Title1|  replace:: This is the first title
+    .. |Subtitle1|  replace:: This is the first subtitle
+

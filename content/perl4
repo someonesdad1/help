@@ -1,0 +1,248 @@
+*perl4* 
+
+Contents:
+  Operator Precedence
+  Pattern matching
+    Pattern matching characters precedence
+    Changing the pattern delimiter
+    Pattern matching options
+  Substitution
+  Translation Operator
+  File I/O
+    Ways to open files
+    File status tests
+  Control Structures
+  Debugger
+  Formatted Printing
+
+Operator Precedence              Associativity
+-------------------              -------------
+  ++  --                                NA
+  -  ~  !                               R-L
+  **                                    R-L
+  =~  !~                                L-R
+  *  /  %  x                            L-R
+  +  -  .                               L-R
+  <<  >>                                L-R
+  -e, -r etc.                           NA
+  <  <=  >  >= lt le gt ge ==  !=  <=>  L-R
+  eq ne cmp                             L-R
+  &                                     L-R
+  |  ^                                  L-R
+  &&                                    L-R
+  ||                                    L-R
+  ..                                    L-R
+  ?:                                    R-L
+  =  +=  -=  *= etc.                    R-L          
+  ,                                     L-R                   
+
+Pattern matching
+----------------
+  =~             Test whether a pattern is matched
+  !~             Test whether a pattern is not matched
+  +              One or more
+  *              Zero or more
+  ?              Zero or one
+  [ ]            Group of alternatives
+  .              Match any character
+  ^              Match at beginning of string
+  $              Match at end of string
+  \b             Match on word boundary
+  \B             Match inside word
+  [^x]           Everything except x
+  \d             Any digit [0-9]
+  \D             Anything other than a digit [^0-9]
+  \w             Any word character [_0-9a-zA-Z]
+  \W             Any non-word character [^_0-9a-zA-Z]
+  \s             Whitespace [ \r\t\n\f]
+  \s             Anything not whitespace [^ \r\t\n\f]
+  {n,}           Match at least n occurrences
+  {0,n}          Match up to n occurrences
+  {n,m}          Match between n and m occurrences
+  ( )            Store in pattern memory (refer to as \1, \2, etc.)
+  $1, $2         Remembered matches stored in pattern memory
+  |              Alternatives
+
+Pattern matching characters precedence
+
+  ( )
+  +  *  ?  {}
+  ^  $  \b  \B
+  |
+
+Changing the pattern delimiter:  m!/users/donp/prog!
+
+Pattern matching options:  
+  g    Match all possible patterns
+  i    Ignore case
+  0    Only evaluate once
+
+Substitution
+------------
+
+  s/pattern/replacement/
+  
+  Options are same as pattern matching options with the addition of
+  e, which means to evaluate replacement string as an expression.  For
+  example:  $string =~ s/[a-zA-Z]+/$& x 2/e.
+  
+  Evaluate once:  s/abc/$var/o means to replace the value of $var once,
+  then leave the substitution alone, even if $var changes value.
+  
+  Using different delimiter:  s#/users/donp#/users/local/bin#
+
+Translation Operator
+--------------------
+
+  tr/string1/string2/
+  
+  Options:
+    c   (Complement) Translate all characters that are not specified.
+        Example:  $string =~ tr/\d/ /c replaces everything that is not
+        a digit with a space.
+    d   Delete all specified characters
+    s   Replace multiple occurrences with one character
+
+File I/O
+--------
+  open(HANDLE, "xname") where
+  x = null   Read mode
+  x = >      Write mode
+  x = >>     Append mode
+  Returns != 0 if OK, == 0 if failed
+  Read line into string:        $line = <HANDLE>
+  Slurp whole file into array:  @line = <HANDLE>
+  Writing:  print HANDLE ("This is an output line.\n")  (parens optional)
+  close(HANDLE)
+  @array = <>   Slurp from the sequence of files on the command line into the 
+                array
+  Pipes:  e.g., open(MESSAGE, "| mail donp");
+                print MESSAGE ("This message comes from a Perl program.\n");
+                close(MESSAGE);
+
+Ways to open files:
+  if (open(FILE, "file")) {
+    die("Couldn't open the file.\n");
+  }
+  open(FILE, "file")) || die("Couldn't open the file.\n");
+  die("Couldn't open the file.\n") unless open(FILE, "file"));
+
+
+File status tests
+  -b "file"    True if file is a block device
+  -c "file"    True if file is a character device
+  -d "file"    True if file is a directory
+  -e "file"    True if file exists
+  -f "file"    True if file is an ordinary file
+  -g "file"    True if file has its setgid bit set
+  -k "file"    True if file has its sticky bit set
+  -l "file"    True if file is a symbolic link
+  -o "file"    True if file is owned by the user
+  -p "file"    True if file is a named pipe
+  -r "file"    True if file is a readable file
+  -s "file"    True if file is a non-empty file
+  -t "file"    True if file represents a terminal
+  -u "file"    True if file has its setuid bit set
+  -w "file"    True if file is a writable file
+  -x "file"    True if file is an executable file
+  -z "file"    True if file is an empty file
+  -A "file"    How long since file accessed?
+  -B "file"    True if file is a binary file
+  -C "file"    How long since file's inode accessed?
+  -M "file"    How long since file modified?
+  -O "file"    True if file is owned by the real user only (1)
+  -R "file"    True if file is readable by the real user only (1)
+  -S "file"    True if file is a socket
+  -T "file"    True if file is a text file
+  -W "file"    Is file writable by the real user only? (1)
+  -X "file"    Is file executable by the real user only? (1)
+
+               (1) Real user is user ID at login
+
+Control Structures
+------------------
+expr = expression that evaluates to a number
+
+if (expr) { block; } [elsif (expr) { block; }...] else { block; }
+while (expr) { block; }
+do { block; } while (expr);
+do { block; } until (expr);
+for (initialization; expr; action) { block; }
+foreach $var ({@|%}array) { block; }
+
+last [label]; will terminate execution of a loop
+next [label]; will cause the loop to go to the next iteration
+redo [label]; restarts an iteration (can't use inside of do loops)
+
+Use labelled blocks for multilevel jumps:
+
+DONE:  while (expr1) {
+         while (expr2) {
+           if (expr3) { last DONE; }
+         }
+       }
+
+Use goto statement to make pasta.
+
+Debugger
+--------
+Use `perl -d' or `#!/usr/bin/perl -d'
+  T                Stack trace.
+  s                Single step.
+  n                Next, steps over subroutine calls.
+  r                Return from current subroutine.
+  c [line]         Continue; optionally inserts a one-time-only breakpoint 
+                   at the specified line.
+  <CR>             Repeat last n or s.
+  l min+incr       List incr+1 lines starting at min.
+  l min-max        List lines.
+  l line           List line;
+  l                List next window.
+  -                List previous window.
+  w line           List window around line.
+  l subname        List subroutine.
+  f filename       Switch to filename.
+  /pattern/        Search forwards for pattern; final / is optional.
+  ?pattern?        Search backwards for pattern.
+  L                List breakpoints and actions.
+  S                List subroutine names.
+  t                Toggle trace mode.
+  b [line] [condition]
+                   Set breakpoint; line defaults to the current execution line; 
+                   condition breaks if it evaluates to true, defaults to '1'.
+  b subname [condition]
+                   Set breakpoint at first line of subroutine.
+  d [line]         Delete breakpoint.
+  D                Delete all breakpoints.
+  a [line] command
+                   Set an action to be done before the line is executed.
+                   Sequence is: check for breakpoint, print line if necessary,
+                   do action, prompt user if breakpoint or step, evaluate line.
+  A                Delete all actions.
+  V [pkg [vars]]   List some (default all) variables in package (default current).
+  X [vars]         Same as "V currentpackage [vars]".
+  < command        Define command before prompt.
+  > command        Define command after prompt.
+  ! number         Redo command (default previous command).
+  ! -number        Redo number'th to last command.
+  H -number        Display last number commands (default all).
+  q or ^D          Quit.
+  p expr           Same as "print DB'OUT expr" in current package.
+  = [alias value]  Define a command alias, or list current aliases.
+  command          Execute as a perl statement in current package.
+
+
+Formatted Printing
+------------------
+  \$~      Name of current print format
+  \$^      Name of current page header print format
+  \$=      Number of lines per page
+  \$-      Number of lines left on current page
+  
+  @<<<     Left justified output
+  @>>>     Right justified output
+  @|||     Centered
+  @##.##   Fixed precision
+  @*       Multiline text
+  ~ @<<    Suppress blank lines
+  ~~ @<<   Writes as many lines as necessary

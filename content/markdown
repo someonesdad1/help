@@ -1,0 +1,47 @@
+*markdown*
+ 
+|github_markdown|
+
+----------------------------------------------------------------------
+Github markdown                                 *github_markdown*
+
+Headers
+    # Header level 1
+    ## Header level 2
+
+Formatting
+    *italic*   _italic_
+    **bold**   __bold__
+    Inline code:  Use `backticks`
+    ~~strikethrough~~
+
+Lists
+    Unordered
+        * Item 1
+        * Item 2
+            * Item 2a
+    Ordered
+        1. Item 1
+        1. Item 2
+            1. Item 2a
+
+Links
+    Automatic:  http://github.com
+    [GitHub](http://github.com)
+
+Tables
+    First header | Second header
+    -------------|--------------
+    Cell 1 content | Cell 2 content
+    Cell 1 content | Cell 2 content
+
+Block quotes
+    Here's a quote
+
+    > Here's some text
+    > in a quote.
+
+Images
+    ![description](/images/my.png)
+
+vim:  wm=3

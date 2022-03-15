@@ -1,0 +1,1163 @@
+*Snippets*
+
+Date
+  |currdate|  Returns current date in YYYYMMDD format.
+  |currtime|  Returns current time in HH:MM:SS formtat.
+Misc
+  |fatal|     Prints an error message and exits.
+  |getopt|    Processes command line options.
+  |hash|      Simple hash function.
+  |hexprint|  Print a hex dump.
+  |memmove|   ANSI C overlapping memory moves.
+  |message|   Like fatal, but doesn't exit.
+  |pround|    Round a double to a power of 10.
+  |round|     Round a number to a template.
+  |sgn|       Signum function.
+  |sigfig|    Rounds a double to a specified number of significant figures.
+String
+  |keep|      Keeps only specified characters.  Modifies string.
+  |lcase|     Convert a string to lower case.  Modifies string.
+  |left|      In-place extraction the leftmost n characters from a string.
+  |ltrim|     In-place removal a repeated character from the front of a string.
+  |midd|      Extract a substring.
+  |remove|    Remove specified characters from a string.
+  |right|     In-place extraction the rightmost n characters from a string.
+  |rmvcmt|    Remove a ksh-style comment from a string.  Modifies string.
+  |rtrim|     In-place removal a repeated character from the rear of a string.
+  |trimws|    Inspace trimming of whitespace (cr, nl, ff, ' ', and tab).
+  |ucase|     Convert a string to upper case.  Modifies string.
+Random numbers
+  |randint|   Random integer between two given integers.
+  |rnd|       Uniformly distributed random numbers between 0 and 1.0.
+  |simp_rand| Simple, fast random unsigned long number generator
+
+-----------------------------------------------------------------------------
+                             *keep*
+
+/***********************************************************************
+keep  Keeps only those characters in str that are also in chr.  Returns 
+the modified str.  The place that str points to in memory is not changed, 
+so free can be used later on str if necessary.
+***********************************************************************/
+
+#include <assert.h>
+
+char *keep(char *str, const char *chr)
+{
+    char *p,*q;
+    const char *c;
+    int match;  /* Will flag a keeper character */
+
+    assert(str != NULL);
+    assert(chr != NULL);
+
+    p=str;      /* Points to current place to save a keeper character */
+    q=str;      /* Points to current character to process */
+    c=chr;      /* Points into chr for characters to check */
+
+    if (*str == 0) return str;  /* Null string */
+
+    if (*chr == 0) {   /* No keeper characters given */
+        *str = 0;
+        return str;
+    }
+
+    while (*q) {
+        match = 0;
+        for(c=chr; *c; c++) { /* Search for an equal character */
+            if (*q == *c) {
+                match = 1;
+                break;
+            }
+        }
+        if (match == 1) {
+            *p = *q;
+            p++;
+        }
+        q++;
+    }
+
+    *p = 0;  /* Terminates the new string */
+    return str;
+}
+-----------------------------------------------------------------------------
+                             *ltrim*
+
+/***********************************************************************
+ltrim  Removes repeat occurrences of a character from the front of a 
+string.  The place that str points to in memory is not changed, so free 
+can be used later on str if necessary.  Note the string is modified.
+***********************************************************************/
+
+#include <assert.h>
+#include <stdio.h>
+
+char *ltrim(char *str, const char chr)
+{
+    char *p, *q;
+
+    assert(str != NULL);
+    assert(chr != 0);
+
+    p = str;
+
+    /* Check for a null string */
+    if (*p == 0) {
+        return p;
+    }
+
+    /* Position at first non-chr character */
+    while (*p == chr) {
+        p++;
+    }
+
+    /* Handle special case of only chr characters in string */
+    if (*p == 0) {
+        *str = 0;
+        return str;
+    }
+
+    /* Move the bytes down in memory */
+    q=str;
+    while (*p) {
+        *q = *p;
+        q++;
+        p++;
+    }
+    *q = 0;  /* End of string */
+    return str;
+}
+-----------------------------------------------------------------------------
+                              *rtrim*
+/***********************************************************************
+rtrim  Removes trailing characters from a string.  The place that str 
+points to in memory is not changed, so free can be used later on str 
+if necessary.  The string is modified.
+***********************************************************************/
+
+#include <assert.h>
+#include <string.h>
+#include <stdio.h>
+
+char *rtrim(char *str, const char chr)
+{
+    char *p;
+
+    assert(str != NULL);
+    assert(chr != 0);
+
+    /* Handle an empty string */
+    if (*str == 0) {
+        return str;
+    }
+
+    /* Position at null */
+    p = str + strlen(str);
+    assert(*p == 0);
+
+    /* Walk backwards from the null */
+    p--;  
+    while (*p == chr && p >= str) {
+        p--;
+    }
+
+    /* Terminate the string and exit */
+    *(p+1) = 0;
+    return str;
+}
+-----------------------------------------------------------------------------
+                            *remove*
+/***********************************************************************
+remove  In-place removal of those characters in str that are also in chr.
+Returns the modified str.  The place that str points to in memory is not 
+changed, so free can be used later on str if necessary.
+***********************************************************************/
+
+#include <assert.h>
+#include <stdio.h>
+
+char *remove(char *str, const char *chr)
+{
+    char *p,*q;
+    const char *c;
+    int match;  /* Will flag a character to reject */
+
+    assert(str != NULL);
+    assert(chr != NULL);
+
+    p=str;      /* Points to current place to reject a character */
+    q=str;      /* Points to current character to process */
+    c=chr;      /* Points into chr for characters to check */
+
+    if (*str == 0 || *chr == 0) {
+        return str;
+    }
+
+    while (*q) {
+        match = 0;
+        /* Search for an equal character */
+        for(c=chr; *c != 0; c++) {
+            if (*q == *c) {
+                match = 1;
+                break;
+            }
+        }
+        if (match == 0) {
+            *p = *q;
+            p++;
+        }
+        q++;
+    }
+
+    *p = 0;  /* Terminates the new string */
+    return str;
+}
+-----------------------------------------------------------------------------
+                             *getopt*
+
+/************************************************************************
+getopt.c  This file was gotten from the GNU C/C++ compiler port to the
+PC by D.J. Laurie.  
+
+DP 12/31/93 I have modified the code slightly:  calls to the functions 
+index() and rindex() were replaced by strchr() and strrchr(), respectively.
+
+The following man page came from an HPUX 8.0 system:
+
+ NAME
+      getopt, optarg, optind, opterr - get option letter from argument
+      vector
+
+ SYNOPSIS
+      #include <unistd.h>
+      int getopt(int argc, char * const argv[], const char *optstring);
+      extern char *optarg;
+      extern int optind, opterr, optopt;
+
+ DESCRIPTION
+      getopt returns the next option letter in argv (starting from argv[1])
+      that matches a letter in optstring.  optstring is a string of
+      recognized option letters; if a letter is followed by a colon, the
+      option is expected to have an argument that may or may not be
+      separated from it by white space.  optarg is set to point to the start
+      of the option argument on return from getopt.
+
+      getopt places in optind the argv index of the next argument to be
+      processed.  The external variable optind is initialized to 1 before
+      the first call to the function getopt.
+
+      When all options have been processed (i.e., up to the first non-option
+      argument), getopt returns EOF.  The special option -- can be used to
+      delimit the end of the options; EOF is returned, and -- is skipped.
+
+ EXTERNAL INFLUENCES
+    Locale
+      The LC_CTYPE category determines the interpretation of option letters
+      as single and/or multi-byte characters.
+
+    International Code Set Support
+      Single- and multi-byte character code sets are supported with the
+      exception of multi-byte character file names.
+
+ DIAGNOSTICS
+      getopt prints an error message on stderr and returns a question mark
+      (?) when it encounters an option letter not included in optstring.
+      This error message can be disabled by setting opterr to zero.
+
+ EXAMPLES
+      The following code fragment shows how one might process the arguments
+      for a command that can take the mutually exclusive options a and b,
+      and the options f and o, both of which require arguments:
+
+    main (argc, argv)
+    int argc;
+    char **argv;
+    {
+        int c;
+        extern char *optarg;
+        extern int optind;
+
+        while ((c = getopt(argc, argv, "abf:o:")) != EOF) {
+            switch (c) {
+                case 'a':
+                    if (bflg)
+                        errflg++;
+                    else
+                        aflg++;
+                    break;
+                case 'b':
+                    if(aflg)
+                        errflg++;
+                    else
+                        bproc();
+                    break;
+                case'f':
+                    ifile=optarg;
+                    break;
+                case'o':
+                    ofile=optarg;
+                    break;
+                case'?':
+                errflg++;
+        }
+        if(errflg){
+            fprintf(stderr,"usage:...");
+            exit(2);
+        }
+        for(;optind<argc;optind++){
+            if(access(argv[optind],4)){
+            .
+            .
+            .
+            }
+        }
+    }
+}
+
+ WARNINGS
+      Options can be any ASCII characters except colon (:), question mark
+      (?), or null (\0).  It is impossible to distinguish between a ? used
+      as a legal option, and the character that getopt returns when it
+      encounters an invalid option character in the input.
+
+************************************************************************/
+
+#include <stdio.h>
+#include <string.h>
+
+int   opterr = 1;           /* If error message should be printed */
+int   optind = 1;           /* Index into parent argv vector */
+int   optopt;               /* Character checked for validity */
+char *optarg;               /* Argument associated with option */
+
+#define BADCH   (int)'?'
+#define EMSG    ""
+
+int getopt(int nargc, char **nargv, char *ostr)
+{
+    static char *place = EMSG;      /* option letter processing */
+    register char *oli;             /* option letter list index */
+    char *p;
+
+    if (!*place) {                  /* update scanning pointer */
+        if (optind >= nargc || *(place = nargv[optind]) != '-') {
+            place = EMSG;
+            return(EOF);
+        }
+        if (place[1] && *++place == '-') {  /* found "--" */
+            ++optind;
+            place = EMSG;
+            return(EOF);
+        }
+    }                   /* option letter okay? */
+    if ((optopt = (int)*place++) == (int)':' ||
+        !(oli = strchr(ostr, optopt))) {
+        /*
+         * if the user didn't specify '-' as an option,
+         * assume it means EOF.
+         */
+        if (optopt == (int)'-')
+            return(EOF);
+        if (!*place)
+            ++optind;
+        if (opterr) {
+            if (!(p = strrchr(*nargv, '/')))
+                p = *nargv;
+            else
+                ++p;
+            (void)fprintf(stderr, "%s: illegal option -- %c\n",
+                p, optopt);
+        }
+        return(BADCH);
+    }
+    if (*++oli != ':') {            /* don't need argument */
+        optarg = NULL;
+        if (!*place)
+            ++optind;
+    }
+    else {                  /* need an argument */
+        if (*place)         /* no white space */
+            optarg = place;
+        else if (nargc <= ++optind) {   /* no arg */
+            place = EMSG;
+            if (!(p = strrchr(*nargv, '/')))
+                p = *nargv;
+            else
+                ++p;
+            if (opterr)
+                (void)fprintf(stderr, "Option requires an argument -- %c\n", optopt);
+            return(BADCH);
+        }
+        else                /* white space */
+            optarg = nargv[optind];
+        place = EMSG;
+        ++optind;
+    }
+    return(optopt);             /* dump back option letter */
+}
+-----------------------------------------------------------------------------
+                            *currdate*
+/***********************************************************************
+CurrDate()  Returns the current date in YYYYMMDD format.  Note that
+DOS must be defined on a DOS machine to get correct results.
+***********************************************************************/
+
+#include <time.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+
+char *CurrDate(char *date)
+{
+    struct tm *tp;
+    char temp_string[10];
+    char *tmp;
+    time_t now;
+
+    assert(date != NULL);
+
+    tmp = temp_string;
+    now = time(NULL);
+    tp = localtime(&now);
+
+    /* Have the time structure; now write to the temporary string */
+#ifdef DOS
+    strftime(tmp, (size_t) 5, "%Y", tp);
+    strcpy(date, tmp);
+    strftime(tmp, (size_t) 3, "%m", tp);
+    strcat(date, tmp);
+    strftime(tmp, (size_t) 3, "%d", tp);
+    strcat(date, tmp);
+#else
+    strftime(tmp, (size_t) 5, "%04Y", tp);
+    strcpy(date, tmp);
+    strftime(tmp, (size_t) 3, "%02m", tp);
+    strcat(date, tmp);
+    strftime(tmp, (size_t) 3, "%02d", tp);
+    strcat(date, tmp);
+#endif
+
+    return date;
+}
+-----------------------------------------------------------------------------
+                           *currtime*
+/***********************************************************************
+CurrTime()  Returns the current time in HH:MM:SS format.  The time 
+is in 24 hour format.  It is up to the caller to pass enough room in
+the ptime string.
+***********************************************************************/
+
+#include <string.h>
+#include <time.h>
+#include <assert.h>
+
+char *CurrTime(char *ptime)
+{
+    struct tm *tp;
+    char *tmp = "     ";
+    time_t now;
+
+    assert(ptime != NULL);
+
+    now = time(NULL);
+    tp = localtime(&now);
+
+    /* Have the time structure; now write to the temporary string */
+    strftime(tmp, (size_t) 3, "%H", tp);
+    strcpy(ptime, tmp);
+    strcat(ptime, ":");
+    strftime(tmp, (size_t) 3, "%M", tp);
+    strcat(ptime, tmp);
+    strcat(ptime, ":");
+    strftime(tmp, (size_t) 3, "%S", tp);
+    strcat(ptime, tmp);
+
+    return ptime;
+}
+-----------------------------------------------------------------------------
+                            *hash*
+
+/***********************************************************************
+Simple hash function that works on all null terminated strings.  Can
+be slow for long strings since each character is processed.  If the 
+value of table_size is nonzero, it is used to initialize the static
+variable tblsz, which is used in calculating the hash function.  If
+table_size is zero, then the old value of tblsz is used.  Note it is
+a fatal error if tblsz is zero.
+
+The algorithm is adapted from the one on page 233 of "Algorithms in C"
+by Sedgewick.
+***********************************************************************/
+
+#include <assert.h>
+
+long hash(const char *string, const long table_size)
+{
+    static long tblsz;
+    long h;
+
+    if (0 != table_size) {
+        assert(table_size > 0);
+        tblsz = table_size;
+    }
+    assert(tblsz > 0);
+    for(h=0; *string != 0; string++)
+        h = (64*h + *string) % tblsz;
+
+    return h;
+}
+-----------------------------------------------------------------------------
+                             *hexprint*
+
+/******************************************************************************
+HexPrint  Prints nchar characters in a hex/ascii display.  offset is the 
+number you'd like to start numbering bytes from and is the first number 
+that appears on the first line.  The first number on each line is a 32 bit
+number indicating the offset into memory.  These numbers increment by 0x10
+on each line.
+
+The next 16 bytes of the file are printed as hex numbers, then there's a
+'|' character as a separator.  Finally, the ascii representation of the byte
+is printed if it's between 0x20 and 0x7f; otherwise SEPCHAR is printed.
+
+Format of a line:
+FFFF 00 01 02 03 04 05 06 07-08 09 0A 0B 0C 0D 0E 0F | ................
+******************************************************************************/
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <assert.h>
+
+
+/* This is the character that represents nonascii printable characters.  
+   0xfa works fine on OS/2 and DOS, but should be changed to 0xf2 on the 
+   HP Unix machines. */
+
+/* #define SEPCHAR 0xfa */
+
+#define SEPCHAR '.'   /* For universal use, we'll use the period character */
+
+void HexPrint(FILE *stream, void *ptr, long nchar, long offset)
+{
+    char temp[17];
+    char *tmp;
+    long count = 0;
+    unsigned char *str;
+    int bytetoprint = 0;
+    int i;
+
+    assert(stream != NULL);
+    assert(ptr != NULL);
+    assert(nchar > 0);
+    assert(offset > 0);
+
+    if ( nchar < 1 || offset < 0 ) return;
+
+    str = (unsigned char *) ptr;
+
+    
+    while (count < nchar) {   /* print one byte per pass */
+        bytetoprint = (int) (count % 16);
+
+        /* At the beginning of the line, print the offset */
+        if (bytetoprint == 0) {
+            fprintf(stream, "%08lX  ", offset + 16*(count/16));
+            /* Make the ascii string all space characters */
+            for(i=0; i < 16; i++) temp[i] = ' ';  
+            temp[16] = 0;
+            tmp = temp;
+        }
+
+        /* Print the byte */
+        fprintf(stream, "%02X", (unsigned char) str[(int)count]);
+
+        /* If we're at the middle of the line, print '-' as a separator */
+        if (bytetoprint == 7) {
+            fprintf(stream, "-");
+        } else {
+            fprintf(stream, " ");
+        }
+
+        /* If we can, print its ascii form */
+        if (isprint((int) str[(int)count])) {
+            *tmp = str[(int)count];
+        } else {
+            *tmp = 0xfa;
+        }
+
+        if (bytetoprint == 0x0F) {
+            fprintf(stream, "| %s\n", temp);
+        }
+        count++;
+        tmp++;
+    }
+
+    /* Now we have to finish the final line */
+    if ((bytetoprint = (int)(count % 16)) != 0) {
+        /* Print needed remaining spaces */
+        for(i=0; i < (15-bytetoprint); i++) {
+            fprintf(stream, "   ");
+        }
+
+        /* Print the ascii stuff */
+        fprintf(stream, "   | %s\n", temp);
+    }
+}
+-----------------------------------------------------------------------------
+                             *lcase*
+
+/***************************************************************************
+lcase  Converts a string to all lower case.  The string pointer is returned.
+***************************************************************************/
+
+#include <ctype.h>
+#include <assert.h>
+
+char *lcase(char *str)
+{
+    char *p;
+
+    assert(str != NULL);
+
+    p = str;
+    while (*p) {
+        *p = tolower((int)*p);
+        p++;
+    }
+    return str;
+}
+-----------------------------------------------------------------------------
+                              *left*
+
+/***********************************************************************
+left  Keeps the leftmost characters of a string.  The place str points 
+to in memory is not changed, so free can be used later on str if 
+necessary.  If nchars is larger than the length of the whole string,
+then the whole string is returned.  The string str is modified in place.
+***********************************************************************/
+
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+
+
+char *left(char *str, const int nchars)
+{
+    char *p;
+    int ix, len;
+
+    assert(nchars >= 0);
+    assert(str != NULL);
+
+    if (nchars == 0) {
+        *str = 0;
+        return str;
+    }
+    if (! str || ! *str || ! nchars ) {
+        return str;
+    }
+    len = strlen(str);
+    if (nchars >= len) {
+        return str;
+    }
+    str[nchars] = 0;
+    return str;
+}
+-----------------------------------------------------------------------------
+                              *memmove*
+
+/************************************************************************
+memmove.c  ANSI C overlapping memory moves.
+************************************************************************/
+
+#include <stdio.h>
+#include <stddef.h>
+#include <assert.h>
+
+
+void *memmove(void *destptr, const void * srcptr, size_t count)
+{
+    register unsigned char *dest = destptr;
+    register unsigned const char *src = srcptr;
+
+    assert(destptr != NULL);
+    assert(srcptr != NULL);
+
+    if (dest > src) {
+        /* decrementing is faster */
+        for (src += count, dest += count; count--;) {
+            *--dest = *--src;      /* transfer bytes backwards */
+        }
+    } else {
+        while ( count-- ) {      /* transfer bytes forward */
+            *dest++ = *src++;
+        }
+    }
+
+    return destptr;
+}
+-----------------------------------------------------------------------------
+                               *message*
+
+/******************************************************************************
+message  Print a message to stderr.  Identical to fatal without the exit.
+******************************************************************************/
+
+#include <stdio.h>
+#include <stdarg.h>
+
+void message(char *text, ...)
+{
+    va_list ap;
+    va_start(ap, text);
+    vfprintf(stderr, text, ap);
+    va_end(ap);
+}
+-----------------------------------------------------------------------------
+                                *fatal*
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+/******************************************************************************
+fatal  Print an error message and exit.  text is expected to hold the 
+formatting string and the variables are to come afterwords.
+******************************************************************************/
+
+void fatal(char *text, ...)
+{
+    va_list ap;
+    va_start(ap, text);
+    vfprintf(stderr, text, ap);
+    va_end(ap);
+    exit(1);
+}
+-----------------------------------------------------------------------------
+                                 *midd*
+
+/***********************************************************************
+Midd  Extract a substring from a string.  The dest string is made up
+of the characters from start to end inclusive in the from string.  If
+end < start, a null string is returned.  Note that the interpretation
+of start and end is how we normally count, not the 0-based counting
+of string's characters in C.  If start is beyond the length of the 
+string, a null string is returned.  If end is beyond the end of the
+string, that's OK as long as start is a legitimate character in the
+string.
+***********************************************************************/
+
+#include <string.h>
+#include <assert.h>
+
+char *midd(char *dest, char *from, int start, int end)
+{
+    int len, nchars;
+    char *head;
+
+    assert(start > 0 && end > 0);
+    assert(dest != NULL);
+    assert(from != NULL);
+
+    *dest = 0;  /* Set it to the null string to start with */
+    len = strlen(from);
+    if (len == 0 || end < start || start > len) {
+        return dest;
+    }
+    if (end > len) {
+        end = len;
+    }
+    head = from + (start-1);
+    memcpy(dest, head, (size_t) (end-start+1));
+    dest[end-start+1] = 0;  /* End string with null */
+    return dest;
+}
+-----------------------------------------------------------------------------
+                            *pround*
+
+/************************************************************************
+Pround  Rounds to the nearest power of 10 given by 10^power.
+************************************************************************/
+
+#include <math.h>
+
+
+double Pround(double x, double power)
+{
+  return round(x, pow(10, power));
+}
+-----------------------------------------------------------------------------
+                             *round*
+
+/************************************************************************
+round  This algorithm comes from PC Magazine, 10/31/88 issue, pg. 435.
+It rounds to the nearest fraction.  For example, x will be rounded to the 
+nearest .01 if Template=.01, the nearest nickel if Template=.05, or the 
+nearest quarter if Template=.25.  Note:  to round to N decimal places, 
+set Template=10^(-N).
+************************************************************************/
+
+#include <math.h>
+#include <assert.h>
+
+double round(double x, double Template)
+{
+    int sgn = 1;
+
+    assert(Template > 0.0L);
+
+    if (x < 0   ) sgn = -1;
+    if (x == 0.0) sgn =  0;
+
+    return (double) (sgn*floor(0.5+fabs(x)/Template)*Template);
+}
+-----------------------------------------------------------------------------
+                             *rnd*
+
+/*****************************************************************************
+rnd  Returns a random number between 0 and 1 (1.0 excluded).  
+*****************************************************************************/
+
+#include <stdio.h>
+
+#define IA   16807
+#define IM   2147483647L
+#define AM   (1.0/IM)
+#define IQ   127773L
+#define IR   2836
+#define MASK 123459876L
+#define NTAB 32
+#define NDIV (1+(IM-1)/NTAB)
+#define EPS  1.2e-14
+#define RNMX (1.0-EPS)
+
+/*****************************************************************************
+rnd  This is the ran1 algorithm from "Numerical Recipes in C", 2nd ed.
+Returns a uniform random deviate between 0.0 and 1.0 (excluding 1.0).
+RNMX should approximate the largest floating value that is less than
+1.  If seed is nonzero, it initializes the sequence.
+*****************************************************************************/
+
+double rnd(unsigned long seed)
+{
+    int j;
+    long k;
+    static long iy=0;
+    static long iv[NTAB];
+    double temp;
+    static long idum=-1;
+
+    if (seed) idum = (long) seed;
+    if ( idum <= 0 || !iy ) { /* Initialize */
+        if ( -(idum) < 1 ) idum = 1; /* Be sure to prevent idum = 0 */
+        else idum = -(idum);
+        
+        /* Load shuffle table after 8 warm-ups */
+        for(j=NTAB+7; j>=0; j--) { 
+            k = (idum)/IQ;
+            idum = IA*(idum-k*IQ)-IR*k;
+            if (idum < 0) idum += IM;
+            if (j < NTAB) iv[j] = idum;
+        }
+        iy=iv[0];
+    }
+    k=(idum)/IQ;  /* Start here when not initializing */
+    /* Compute idum=(IAidum)%IM w/o overflow by Schrage's method */
+    idum=IA*(idum-k*IQ)-IR*k; 
+    if (idum < 0) idum += IM; 
+    j=(int)(iy/NDIV);     /* Will be in the range 0..NTAB-1 */
+    iy=iv[j];  /* Output previously stored value & refill shuffle table */
+    iv[j] = idum;
+    /* The following is because users don't expect endpoint values */
+    if ((temp=AM*iy) > RNMX) return RNMX; 
+    else return temp;
+}
+-----------------------------------------------------------------------------
+                            *randint*
+
+/************************************************************************
+RandomInteger Returns a random integer between lower and upper inclusive.
+The expectation is that 0.0 <= rnd() < 1.0.
+************************************************************************/
+
+int RandomInteger(int lower, int upper)
+{
+    int num;
+
+    if (lower > upper) {
+        num = lower;
+        lower = upper;
+        upper = num;
+    }
+    num = lower + (int)((upper - lower + 1)*rnd(0));
+    return (int) num;
+}
+-----------------------------------------------------------------------------
+                             *rmvcmt*
+
+/***********************************************************************
+RemoveComment  Finds the first character in 'comment' in the string
+and removes everything at and to the right of the 'comment' character.
+This is done by using strpbrk to find the first occurrence of any of
+the characters in the comment string.  If found, the location is set
+to zero, which terminates the string.  The routine returns the pointer
+to the new string.
+
+Note this will not work correctly if the comment delimiter character
+is inside of a double quoted string.
+***********************************************************************/
+
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+
+char *RemoveComment(char *string, char *comment)
+{
+    char *str;
+
+    assert(string != NULL);
+    assert(comment != NULL);
+
+    if (*comment == 0) {
+        return string;
+    }
+    if ((str=strpbrk(string, comment)) != (char *) NULL) {
+        *str = 0;
+    }
+
+    return str;
+}
+-----------------------------------------------------------------------------
+                            *right*
+
+/***********************************************************************
+right Returns the rightmost characters of a string.  Note str is
+modified in place.  The place str points to in memory is not changed,
+so free can be used later on str if necessary.  If nchars is 0, then a
+null string is returned.  If nchars is >= the length of str, then the
+whole string str is returned.  If nchars = 0, then an empty string is
+returned.
+***********************************************************************/
+
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+
+char *right(char *str, const int nchars)
+{
+    char *start, *end;
+    int len;
+
+    assert(nchars >= 0);
+    assert(str != NULL);
+
+    len = strlen(str);
+    if (nchars <= 0) {
+        *str = 0;
+        return str;
+    }
+    if ( nchars >= len || len == 0 ) {
+        return str;
+    }
+    end   = str+len;
+    start = end-nchars;
+    memmove(str, start, (size_t) (nchars+1)); /* +1 to include the null */
+
+    return str;
+}
+-----------------------------------------------------------------------------
+                             *sgn*
+
+/**********************************************************************
+sgn Signum function.
+**********************************************************************/
+
+int sgn(double x)
+{
+    if (x == 0.0) {
+        return 0;
+    }
+    if (x < 0.0) {
+        return -1;
+    }
+    return 1;
+}
+-----------------------------------------------------------------------------
+                            *sigfig*
+
+/****************************************************************************
+sigfig  Returns a double that is equal to arg, but rounded to numdigits of
+significant figures.  If numdigits is less than 1, the result is equivalent
+to 1.  If numdigits is > 15, numdigits is set to 15.
+
+The method used is as follows.  Print arg to a string in exponential format.
+Get the mantissa by parsing the string for the stuff before 'e'.  The
+exponent is the stuff after the 'e'.  Truncate the mantissa string at the
+appropriate location (note 1 significant figure has to be handled differently
+than 2, 3, ... because of the decimal point.  Round the last digit if
+appropriate.  Then recombine the mantissa and exponent into the final number.
+****************************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <assert.h>
+
+double sigfig(double arg, int numdigits)
+{
+    char tmp[30];  /* Will hold the printed string */
+    char *mant, *expon, *str;
+    int exponent, roundup = 0, i, sgn=0;
+    double mantissa, roundinc;
+
+    assert(numdigits > 0);
+    assert(numdigits <= 15);
+
+    if (arg == 0.0L) {
+        return arg;
+    }
+
+    if (numdigits < 1) {
+        numdigits = 1;
+    else if (numdigits > 15) {
+        numdigits = 15;
+    }
+
+    /* Signum */
+    sgn = 0;
+    if (arg) {
+        sgn = (arg < 0.0L) ? -1 : 1;
+    }
+
+    /* Print the number to a string */
+    sprintf(tmp, "%-+.16e", arg);
+
+    /* Parse the string for the mantissa and exponent */
+    str = &tmp[0];
+    if ((mant = strtok(str, "e")) == (char *) NULL) {
+        fprintf(stderr, "sigfig error:  mant couldn't be parsed using 'e'.\n");
+        exit(1);
+    }
+    if ((expon = strtok(NULL, "e")) == (char *) NULL) {
+        fprintf(stderr, "sigfig error:  expon couldn't be parsed using 'e'.\n");
+        exit(1);
+    }
+    exponent = atoi(expon);
+
+    /* We need to truncate the string properly.  Draw the picture
+    +d.ddddddddde+ddd to see how the following works. */
+
+    if (numdigits == 1) {
+        mant[2] = 0;
+        if (mant[3] >= '5')
+            roundup = 1;
+    }
+    else {
+        i = numdigits+2;
+        if (mant[i] >= '5') {
+            roundup=1;
+        }
+        mant[i]=0;
+    }
+
+    mantissa=atof(mant);
+    if (roundup) {
+        mantissa += sgn*pow(10,-(numdigits-1));
+    }
+    mantissa *= pow(10, exponent);
+
+    return mantissa;
+}
+-----------------------------------------------------------------------------
+                            *ucase*
+
+/***************************************************************************
+ucase  Converts a string to all upper case.  The string pointer is returned.
+***************************************************************************/
+
+#include <ctype.h>
+#include <assert.h>
+
+char *ucase(char *str)
+{
+    char *p;
+
+    assert(str != NULL);
+
+    p = str;
+
+    while (*p) {
+        *p = toupper((int)*p);
+        p++;
+    }
+    return str;
+}
+-----------------------------------------------------------------------------
+                             *trimws*
+
+/* Trim whitespace from either end of a string */
+
+#include <assert.h>
+#include <ctype.h>
+
+char *trimws(char *str)
+{
+    char *new,
+         *old;
+    int   len;
+
+    assert(str != NULL);
+
+    if (*str == 0) {
+        return str;
+    }
+
+    old = str;
+
+    while (isspace(*old)) {
+        old++;
+    }
+
+    if (old != str) {
+        /* Found beginning whitespace, so move string down */
+        new = str;
+        while (*old) {
+            *new++ = *old++;
+        }
+        *new = 0;  /* Terminate the new string */
+    }
+
+    /* Now remove whitespace from the end */
+    len = strlen(str);
+    if (len == 0) {
+        return str;
+    }
+    new = str + len - 1;
+    while (isspace(*new)) {
+        new--;
+    }
+    *(new + 1) = 0;
+    assert(new >= str);
+
+    return str;
+}
+-----------------------------------------------------------------------------
+                       *simp_rand*
+
+/* Simple, fast random number generator.  No function call necessary.
+Make sure randnumG is global. Numerical Recipes in C, ch 7, pg 284. 
+Include <limits.h> and divide randnumG by MAX_ULONG*1.0 to get a 
+double >= 0 and < 1.0. 
+
+To use:  define X as an appropriate unsigned long.  Then you can 
+pretend simp_rand is a kind of function call by assigning it to
+_another_ variable Y such as
+    
+    Y = simp_rand;
+*/
+
+unsigned long X;
+
+#define simp_rand     (X = 1664525L*X + 1013904223L)

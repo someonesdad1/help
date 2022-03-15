@@ -1,0 +1,368 @@
+*Electrical*
+
+|Cu_wire|
+|PhysProperties|
+|Ampacities|
+|Nichrome_Wire|
+|Resistor_Color_Code|
+|Batteries|
+|Thermoelectric_voltages|
+|Delta-Wye_Transformation|
+
+120 V NEMA #5 15 A outlets:
+    Brass screw is hot
+    Silver screw is neutral
+
+Note:  a circularmil is a unit of area; it is gotten by expressing the
+diameter in mils and squaring.  Thus, 
+    circularmil = pi*mil^2/4 = 5.06707e-10 m^2
+
+-----------------------------------------------------------------------------
+Annealed copper wire table (20 deg C)                          *Cu_wire*
+
+       Diameter     Res/length    Mass/length    Area          Amps
+ AWG  mils    mm   ohm/ft  ohm/m  ft/lb  m/kg    mm^2    60 C   75 C   90 C
+----  ----- ------ ------  -----  -----  -----  -----   -----  -----  -----
+   4  204.3  5.189   248u   815u   7.91   5.31   21.2      70     87    100
+   6  162.0  4.115   395u  1.30m   12.6   8.45   13.3      53     67     77
+   8  128.5  3.264   628u  2.06m   20.0   13.4   8.37      40     51     58
+  10  101.9  2.588   999u  3.28m   31.8   21.4   5.26      31     38     44
+  12  80.81  2.053  1.59m  5.21m   50.5   34.0   3.31      20     20     20
+  14  64.08  1.628  2.53m  8.29m   80.4   54.0   2.08      15     15     15
+  16  50.82  1.291  4.02m  13.2m    128   85.9   1.31     9.3    9.3    9.3
+  18  40.30  1.024  6.38m  20.9m    203    137   823m     5.8    5.8    5.8
+  20  31.96  .8118  10.2m  33.3m    323    217   518m     3.7    3.7    3.7
+  22  25.35  .6438  16.1m  53.0m    514    345   326m     2.3    2.3    2.3
+  24  20.10  .5106  25.7m  84.2m    817    549   205m     1.4    1.4    1.4
+  26  15.94  .4049  40.8m   134m  1.30k    873   129m    910m   910m   910m
+  28  12.64  .3211  64.9m   213m  2.06k  1.39k  81.0m    570m   570m   570m
+  30  10.03  .2546   103m   339m  3.28k  2.21k  50.9m    360m   360m   360m
+
+       Diameter     Res/length    Mass/length    Area          Amps
+ AWG  mils    mm   ohm/ft  ohm/m  ft/lb  m/kg    mm^2    60 C   75 C   90 C
+----  ----- ------ ------  -----  -----  -----  -----   -----  -----  -----
+0000  460.0  11.68  49.0u   161u   1.56   1.05    107     180    230    260
+ 000  409.6  10.40  61.8u   203u   1.97   1.32   85.0     160    200    230
+  00  364.8  9.266  77.9u   256u   2.48   1.67   67.4     140    170    200
+   0  324.9  8.251  98.3u   322u   3.13   2.10   53.5     120    150    170
+   1  289.3  7.348   124u   407u   3.94   2.65   42.4     110    130    150
+   2  257.6  6.544   156u   513u   4.97   3.34   33.6      92    120    130
+   3  229.4  5.827   197u   646u   6.27   4.21   26.7      80    100    120
+   4  204.3  5.189   248u   815u   7.91   5.31   21.2      70     87    100
+   5  181.9  4.621   313u  1.03m   9.97   6.70   16.8      61     76     88
+   6  162.0  4.115   395u  1.30m   12.6   8.45   13.3      53     67     77
+   7  144.3  3.665   498u  1.63m   15.9   10.7   10.5      46     58     67
+   8  128.5  3.264   628u  2.06m   20.0   13.4   8.37      40     51     58
+   9  114.4  2.906   792u  2.60m   25.2   16.9   6.63      35     44     51
+  10  101.9  2.588   999u  3.28m   31.8   21.4   5.26      31     38     44
+  11  90.74  2.305  1.26m  4.13m   40.1   26.9   4.17      24     26     28
+  12  80.81  2.053  1.59m  5.21m   50.5   34.0   3.31      20     20     20
+  13  71.96  1.828  2.00m  6.57m   63.7   42.8   2.62      17     17     17
+  14  64.08  1.628  2.53m  8.29m   80.4   54.0   2.08      15     15     15
+  15  57.07  1.450  3.18m  10.4m    101   68.1   1.65      12     12     12
+  16  50.82  1.291  4.02m  13.2m    128   85.9   1.31     9.3    9.3    9.3
+  17  45.26  1.150  5.06m  16.6m    161    108   1.04     7.3    7.3    7.3
+  18  40.30  1.024  6.38m  20.9m    203    137   823m     5.8    5.8    5.8
+  19  35.89  .9116  8.05m  26.4m    256    172   653m     4.6    4.6    4.6
+  20  31.96  .8118  10.2m  33.3m    323    217   518m     3.7    3.7    3.7
+  21  28.46  .7229  12.8m  42.0m    407    274   410m     2.9    2.9    2.9
+  22  25.35  .6438  16.1m  53.0m    514    345   326m     2.3    2.3    2.3
+  23  22.57  .5733  20.4m  66.8m    648    435   258m     1.8    1.8    1.8
+  24  20.10  .5106  25.7m  84.2m    817    549   205m     1.4    1.4    1.4
+  25  17.90  .4547  32.4m   106m  1.03k    692   162m     1.1    1.1    1.1
+  26  15.94  .4049  40.8m   134m  1.30k    873   129m    910m   910m   910m
+  27  14.20  .3606  51.5m   169m  1.64k  1.10k   102m    720m   720m   720m
+  28  12.64  .3211  64.9m   213m  2.06k  1.39k  81.0m    570m   570m   570m
+  29  11.26  .2859  81.8m   268m  2.60k  1.75k  64.2m    450m   450m   450m
+  30  10.03  .2546   103m   339m  3.28k  2.21k  50.9m    360m   360m   360m
+  31  8.928  .2268   130m   427m  4.14k  2.78k  40.4m    290m   290m   290m
+  32  7.950  .2019   164m   538m  5.22k  3.51k  32.0m    230m   230m   230m
+  33  7.080  .1798   207m   679m  6.58k  4.42k  25.4m    180m   180m   180m
+  34  6.305  .1601   261m   856m  8.30k  5.58k  20.1m    140m   140m   140m
+  35  5.615  .1426   329m   1.08  10.5k  7.03k  16.0m    110m   110m   110m
+  36  5.000  .1270   415m   1.36  13.2k  8.87k  12.7m     90m    90m    90m
+  37  4.453  .1131   523m   1.72  16.6k  11.2k  10.0m     71m    71m    71m
+  38  3.965  .1007   660m   2.16  21.0k  14.1k  7.97m     56m    56m    56m
+  39  3.531 .08969   832m   2.73  26.5k  17.8k  6.32m     45m    45m    45m
+  40  3.145 .07987   1.05   3.44  33.4k  22.4k  5.01m     35m    35m    35m
+  41  2.800 .07113   1.32   4.34  42.1k  28.3k  3.97m     28m    28m    28m
+  42  2.494 .06334   1.67   5.47  53.1k  35.7k  3.15m     22m    22m    22m
+  43  2.221 .05641   2.10   6.90  66.9k  45.0k  2.50m     18m    18m    18m
+  44  1.978 .05023   2.65   8.70  84.4k  56.7k  1.98m     14m    14m    14m
+  45  1.761 .04473   3.34   11.0   106k  71.5k  1.57m     11m    11m    11m
+  46  1.568 .03984   4.22   13.8   134k  90.2k  1.25m    8.8m   8.8m   8.8m
+  47  1.397 .03547   5.32   17.4   169k   114k   988u    7.0m   7.0m   7.0m
+  48  1.244 .03159   6.70   22.0   213k   143k   784u    5.5m   5.5m   5.5m
+  49  1.108 .02813   8.45   27.7   269k   181k   622u    4.4m   4.4m   4.4m
+  50  .9863 .02505   10.7   35.0   339k   228k   493u    3.5m   3.5m   3.5m
+  51  .8783 .02231   13.4   44.1   428k   287k   391u    2.8m   2.8m   2.8m
+  52  .7822 .01987   17.0   55.6   539k   362k   310u    2.2m   2.2m   2.2m
+  53  .6966 .01769   21.4   70.1   680k   457k   246u    1.7m   1.7m   1.7m
+  54  .6203 .01576   27.0   88.4   858k   576k   195u    1.4m   1.4m   1.4m
+
+    Amps = maximum current for <= 3 wires with insul temp rating in deg C.  
+    Ambient T <= 30 C.  (From regression of NEC-allowed current densities.)
+
+Source:
+    Calculated from python script.
+    diameter in inches = 92.**((36 - n)/39)/200
+        Formula from units.dat file of GNU units program version 1.80.
+        This, in turn, states it comes from ASTM B-258 and that the gauge
+        is based on geometric interpolation between gauge 0000, which is
+        0.46 inches exactly, and gauge 36, which is 0.005 inches exactly.
+        Then it makes the statement that the above formula is the proper
+        one for this relationship.  Gauges < 44 are to be rounded to the
+        nearest 1e-4 inches; gauges from 44 to 56 are to be rounded to the
+        nearest 1e-5 inches.  Note that typical published tables don't
+        necessarily agree with the formula.
+    Density = 8.9 g/cc = 8900 kg/m3 = 0.3215 lb/in^3
+    Conductivity = 58 MS/m at 68 deg F.
+    (same as a resistivity of 1.724 uohm*cm = 17.24 nohm*m)
+
+-----------------------------------------------------------------------------
+Physical properties of electrical conductors            *PhysProperties*
+
+Multiply sp.gr. by 0.0361 to get Density in lb/in^3
+Resistivity in uohm*cm
+Temp coeff at 20 deg C, 1/(deg C)
+Tensile strength in psi
+m.p. in deg C
+
+Material     sp.gr.    Resistivity    Temp Coeff   Tensile Str.  m.p.
+----------   ------    -----------    ----------   ------------  -----
+Aluminum      2.70         2.824        .0039        30000        659
+Copper        8.89         1.7241       .00393       30000       1083
+Brass         8.6          7            .002                      900
+Gold         19.3          2.44         .0034        20000       1063
+Iron          7.8         10            .005                     1530
+Lead         11.4         22            .0039         3000        327
+Magnesium     1.74         4.6          .004         33000        651
+Monel         8.9         42            .0020       160000       1300
+Nichrome      8.2        100            .0004       150000       1500
+Nickel        8.9          7.8          .0033       120000       1452
+Platinum     21.4         10            .003         50000       1755
+Silver       10.5          1.59         .0038        42000        960
+Steel         7.7         11            .004         58000       1510
+Tin           7.3         11.5          .0042         4000        232
+Zinc          7.1          5.8          .0037        10000        419
+
+Source:  CRC Handbook of Chemistry & Physics, 59th ed., pg E-84.
+
+-----------------------------------------------------------------------------
+Allowable current carrying capacities of conductors (NEC)   *Ampacities*
+
+                    Currents in A
+        
+            Rubber           Varnished          Bare
+AWG       Insulation        Insulation        Conductor
+---       ----------        ----------        ---------
+18              3 *            ...                 6 **
+16              6 *            ...                10 ** 
+14             15               18                20   
+12             20               25                30   
+10             25               30                35   
+ 8             35               40                50   
+ 6             50               60                70   
+ 5             55               65                80   
+ 4             70               85                90   
+ 3             80               95               100   
+ 2             90              110               125   
+ 1            100              120               150      
+ 0            125              150               200      
+00            150              180               225       
+
+*  The allowable carrying capacities of No. 18 and 16 are 5 and
+   7 A respectively when in flexible cords.
+
+** The allowable carrying capacities of No. 18 and 16 are 10 and
+   15 A respectively when in cords for portable heaters.  Types
+   AFS, AFSJ, HC, HPD, and HSJ.
+
+Source:  CRC Handbook of Chemistry & Physics, 59th ed., pg F-163.
+
+Also see https://www.powerstream.com/Wire_Size.htm.  Richard Nelson uses
+this for his references; note 18 gauge is rated at 16 A for chassis
+wiring.  Here are ratings from my python script which are made from
+regressions of NEC ampacities.
+
+       Diameter      Res/length   Length/mass    Area          Amps
+ AWG  mils    mm   ohm/ft  ohm/m  ft/lb  m/kg    mm^2    60 C   75 C   90 C
+----  ----- ------ ------  -----  -----  -----  -----   -----  -----  -----
+   0  324.9  8.252  98.2μ   322μ   3.13   2.10   53.5     120    150    170
+   2  257.6  6.543   156μ   513μ   4.97   3.34   33.6      92    120    130
+   4  204.3  5.189   248μ   815μ   7.91   5.31   21.1      70     87    100
+   6  162.0  4.115   395μ  1.30m   12.6   8.45   13.3      53     67     77
+   8  128.5  3.264   628μ  2.06m   20.0   13.4   8.37      40     51     58
+  10  101.9  2.588   999μ  3.28m   31.8   21.4   5.26      31     38     44
+  12  80.80  2.052  1.59m  5.21m   50.5   34.0   3.31      20     20     20
+  14  64.10  1.628  2.52m  8.28m   80.3   54.0   2.08      15     15     15
+  16  50.80  1.290  4.02m  13.2m    128   85.9   1.31     9.3    9.3    9.3
+  18  40.30  1.024  6.39m  21.0m    203    137   823m     5.8    5.8    5.8
+  20  32.00  .8128  10.1m  33.2m    322    217   519m     3.7    3.7    3.7
+  22  25.30  .6426  16.2m  53.2m    516    346   324m     2.3    2.3    2.3
+  24  20.10  .5105  25.7m  84.2m    817    549   205m     1.4    1.4    1.4
+  26  15.90  .4039  41.0m   135m  1.31k    877   128m    910m   910m   910m
+  28  12.60  .3200  65.3m   214m  2.08k  1.40k  80.4m    570m   570m   570m
+  30  10.00  .2540   104m   340m  3.30k  2.22k  50.7m    360m   360m   360m
+  32  7.950  .2019   164m   538m  5.22k  3.51k  32.0m    230m   230m   230m
+  34  6.300  .1600   261m   857m  8.31k  5.59k  20.1m    140m   140m   140m
+  36  5.000  .1270   415m   1.36  13.2k  8.87k  12.7m     90m    90m    90m
+  38  3.960  .1006   661m   2.17  21.0k  14.1k  7.95m     56m    56m    56m
+  40  3.140 .07976   1.05   3.45  33.5k  22.5k  5.00m     35m    35m    35m
+
+Amps = maximum current for <= 3 wires with insulation temp rating in deg C.
+Ambient T <= 30 C.  (From regression of NEC-allowed current densities.)
+Range of j in A/mm2:  2.5 for wire isolated from free air to 6 for a
+wire in free air.  Substantially higher with forced air flow.
+Silicone test wire A/mm2:  23 ga: 9.1, 21 ga: 15, >= 20 ga: 20.
+
+Resistance per unit length is for solid copper.  Stranded wire of the
+same size can have a resistance up to 8% higher.  Twisting wires together
+can add 0.5% to 3% more resistance because of increased length.
+
+Resistivity of Cu is 17.2 nohm*m.  Factors for other materials (at 20 C):
+Al: 1.6, Graphite: 2-36, Constantan (55Cu-45Ni): 29.1, Fe: 5.8, Pb: 12.3,
+Manganin (86Cu-12Mn-2Ni): 25-27.9, Pt: 6.28, Ag: 0.950, W: 3.38, Zn: 3.54,
+Nichrome(~ 80Ni-20Cr, sometimes Fe): 58-87, Stainless steel: 40
+
+The 0.041" diameter stainless steel wire from Harbor Freight has a resistance
+of 0.1 ohm per 119 mm = 8.4 mohm/cm = 21 mohm/inch = 0.26 ohm/ft.
+
+RG-58/U coax has a 0.9 mm diameter inner conductor (19 gauge) and an outside
+diameter of 5 mm.  Capacitance is 90 ± 5 pF/m.
+
+1000*TCR in 1/K @ 20 degC:  annealed copper: 3.93, aluminum: 3.8, carbon:
+-0.25, iron: 5.0, lead: 4.3, Pt: 3.8, Ag: 4.0, W: 4.5, Zn: 3.7
+
+-----------------------------------------------------------------------------
+Nichrome wire                                            *Nichrome_Wire*
+
+    Resistivity:  112.0 uOhm*cm        
+
+              Diam.,         Diam,
+  Gauge       inches         mm           Ohms/ft
+  -----       ------         ----         -------
+    22        0.0253         0.6           1133
+    20        0.0320         0.8           708
+    18        0.0403         1.0           447
+    16        0.0508         1.3           281
+    14        0.0641         1.6           177
+    12        0.0808         2.1           111
+
+-----------------------------------------------------------------------------
+Resistor color code                                *Resistor_Color_Code*
+
+               1st digit     2nd digit      Multiplier
+Black             0             0             10^0      
+Brown             1             1             10^1      
+Red               2             2             10^2    
+Orange            3             3             10^3       
+Yellow            4             4             10^4       
+Green             5             5             10^5      
+Blue              6             6             10^6     
+Violet            7             7             10^7       
+Gray              8             8             10^8     
+White             9             9             10^9      
+Gold              -             -             10^-1     
+Silver            -             -             10^-2       
+
+-----------------------------------------------------------------------------
+Batteries                                                    *Batteries*
+
+                                                        Capacity
+Type             Size    Eveready #  NEDA #  VDC   ma @ hr     A-hr
+--------------  ------   ----------  ------  ----  --------    ----
+Carbon-Zinc      AAA        912       24F    1.5   20 @ 21     0.42
+                 AA         915       15F    1.5   54 @ 20     1.08
+                 C          935       14F    1.5   20 @ 140    2.80
+                 C          1235      14D    1.5   37.5 @ 97   3.64
+                 D          950       13F    1.5   20 @ 360    7.2
+                 D          1150      13C    1.5   375 @ 15.8  5.9
+                 D          1250      13D    1.5   60 @ 139    8.3
+                 N          904       910F   1.5   20 @ 22     0.44
+
+Alkaline-Mn      AAA        E92       24A    1.5   37.5 @ 25   0.94
+                 AA         E91       15A    1.5   20 @ 107    2.14
+                 C          E93       14A    1.5   37.5 @ 160  6.0 
+                 D          E95       13A    1.5   50 @ 270   13.5 
+                 N          E90       910A   1.5   9 @ 90     0.81
+
+Battery capacity in mA*hr 
+        Alk.
+       Mass,g   Alkaline    C-Zn    NiCd        NiMH        Lithium  Dia Length
+       ------   --------    ----    --------    ---------   -------  ----------
+AA       20      2890       1100    600-1000    1700-2900     3000   14.5  50.5
+AAA      11.5    1250        540                800-1000             10.5  44.5
+AAAA      6.5     625                                                 8.3  42.5
+C        66      8350       3800                4500-6000            26.2  50
+D       140     20500       8000                900-11500            34.2  61.5
+9 volt   46       565        400    120         175           1200    18x27x49
+CR123    dia=0.67,  length=1.36  3 volts                      1500   17    34.5
+  3 volt (nomimal) coin cells (open circuit about 3.6 V):
+CR2025   dia=0.787, height=0.098                               160
+CR2032   dia=0.787, height=0.126                               225
+CR2450   dia=0.965, height=0.197                               610
+
+Alkaline data from wikipedia; in turn from Energizer.  Masses were measured.
+
+Silver Oxide   Volts mA*hr     Alkaline   Volts  mA*hr   Dia, in   Height, in
+------------   ----- -----     --------   -----  -----   -------   ----------
+    SR41        1.55   42        LR41       1.5    32     0.311      0.142
+    SR44        1.55  200        LR44[2.0g] 1.5   150     0.457      0.213
+
+Type        Operating voltage   End-of-life voltage
+----------  -----------------   -------------------
+Alkaline        1.2 V               0.9         (All are for an AA
+Lithium         2.7                 2.0          battery or equivalent)
+Lead-acid       2.0                 1.75
+Ni-Cd           1.2                 0.9
+NiMH            1.2                 1.0
+
+-----------------------------------------------------------------------------
+Thermoelectric voltages                         *Thermoelectric_voltages*
+
+(From Agilent app note 1389-1, pg. 2)
+
+Copper-to-          uV/degC
+----------------    -------
+Copper                < 0.3
+Gold                    0.5
+Silver                  0.5
+Brass                   3
+Beryllium copper        5
+Aluminum                5
+Kovar                  40  Ni-Co alloy with about 54% Fe.  Thermal
+                           expansion the same as glass.
+Silicon               500
+Copper oxide         1000
+Cd-Sn solder            0.2
+Sn-Pb solder            5
+
+The best connections are Cu to Cu and crimped.
+
+-----------------------------------------------------------------------------
+Delta-Wye Transformation                    *Delta-Wye_Transformation*
+
+From http://mathforum.org/library/drmath/view/65234.html
+
+    X--Rxy--Y                 X       Y
+     \     /                   \     /
+    Rxz   Ryz      <---->      Rx   Ry
+       \ /                       \ /
+        Z                         |
+                                 Rz
+     "delta"                      |    "wye"
+                                  Z
+
+The formulas that relate these resistances are
+
+  Rxy = (RxRy + RyRz + RzRx)/Rz        "wye to delta"
+  Ryz = (RxRy + RyRz + RzRx)/Rx
+  Rxz = (RxRy + RyRz + RzRx)/Ry
+
+  Rx = RxyRxz/(Rxy + Ryz + Rxz)        "delta to wye"
+  Ry = RxyRyz/(Rxy + Ryz + Rxz)
+  Rz = RxzRyz/(Rxy + Ryz + Rxz)
+
+Sometimes using these equations are useful for simplifying a circuit
+without going through all of the equations from Kirchhoff's Laws.

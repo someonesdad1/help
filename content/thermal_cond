@@ -1,0 +1,44 @@
+Thermal conductivities of common materials at 75 degF
+k in Btu*in/ft^2*hr*degF.  Multiply by 0.1442 to get in
+W/m*K.
+
+Material                              k
+Sawdust                               0.36
+Wood Shavings                         0.41
+INSULATION 
+Std. Fiberglass Batt                  0.313
+High Performance Fiberglass Batt      0.263
+Loose-Fill Fiberglass                 0.400
+Loose-Fill Rock Wool                  0.357
+Loose-Fill Cellulose                  0.270
+Expanded Polystyrene                  0.263
+Extruded Polystyrene                  0.208
+
+GASES 
+Air                                   0.181
+Carbon Dioxide                        0.115
+Helium                                1.04 
+Methane                               0.237
+
+LIQUIDS 
+Ethylene Glycol                       1.80 
+Gasoline                              0.94 
+Water                                 4.19 
+
+METALS
+Aluminum                           1890 
+Copper                             2760 
+Iron                                555  
+Lead                                240  
+
+MISCELLANEOUS BUILDING MATERIALS 
+Acoustical Tile                       0.40 
+Asphalt                               5.2  
+Concrete (140 lb/ft^3)               12.0 
+Cotton (6 lb/ft^3)                    0.30 
+Window glass                          6.10 
+Soil                                4 to 20 
+Fir                                   0.76 
+Oak                                   1.18 
+Yellow Pine                           1.04 
+Plywood                               0.83 

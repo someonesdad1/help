@@ -1,0 +1,249 @@
+*git*
+
+|git_Commands|
+|git_Architecture|
+|git_Branching|
+|git_Tags|
+|git_Find_a_bug|
+
+git revision control system
+
+[pg] Reference book:  "Pro Git" 2nd ed., 2014
+
+An older summation:
+    http://www-cs-students.stanford.edu/~blynn/gitmagic/book.pdf
+
+git commit_checksum is 7 digits or more of the hex hash string of the
+revision.
+
+Helpful tips
+    Note git times are Zulu.
+
+    Listing files
+        git status
+            --porcelain     Use for scripts, as output syntax constant
+            -u untracked
+            --ignored
+            -s    Short, gives XY status
+                  Letters are:
+                        ' ' = unmodified
+                        M = modified
+                        A = added
+                        D = deleted
+                        R = renamed
+                        C = copied
+                        U = updated but unmerged
+                        ? = untracked
+                        ! = ignored
+
+    Saving state
+        If you're about to do something drastic that might cause nasty
+        changes in a directory, use
+ 
+            git init    # Turn the direction into a git repository
+            git add .   # Add everything in the directory to the repository
+            git commit -m "First backup"    # Commit the stuff
+ 
+        Now you can do what you want (except things like 'rm -rf *') and
+        you can recover the previous state by
+ 
+            git reset --hard    # Restore original version
+ 
+        If the experiment worked, then you can save state for a new nasty
+        experiment by
+ 
+            git commit -a -m "Another backup"
+
+    Add, delete, rename
+        Add new files with
+            git add readme.txt doc ...
+        Remove stuff
+            git rm other.stuff junk
+        Rename
+            git mv bug.c feature.c
+
+    Undo/redo
+        Show recent commits
+            git log
+        You can go to a rev using the first few characters of the hash
+            git reset --hard 766f
+            **********************************************
+            * IMPORTANT:  This erases all later commits! *
+            **********************************************
+        To go to an older version:
+            git checkout 82f5
+                ** NOTE:  if you make edits, you'll be doing it on a branch **
+            git checkout master~5   # 5th-last saved state
+        To go to main 
+            git checkout master
+        To prevent git complaining, always do a commit before using
+        checkout using
+            git commit -a       # The -a commits all changed files
+
+    Reverting
+        Undo a specific commit:
+            git commit -a
+            git revert 1b6d
+        The revert is recorded as a new commit.
+
+    Seeing what's been done
+        git diff    # Changes since last commit
+        git diff "@{yesterday}"       # Since yesterday
+        git diff 1b6d "master~2"      # Between a particular version and 2 back
+
+    Aliases
+        Command line:
+            git config --global alias.co checkout
+        ~/.gitconfig:
+            [alias]
+                co = checkout
+
+---------------------------------------------------------------------------
+git Architecture                                        *git_Architecture*
+
+---------------------------------------------------------------------------
+git Commands                                            *git_Commands*
+
+---------------------------------------------------------------------------
+git Tags                                                *git_Tags*
+
+Two types:
+    * Lightweight:  git tag <tagname> [commit_checksum]
+        This simply points to a specific commit
+    * Annotated:  git tag -a <tagname> -m "Commit message" [commit_checksum]
+        Stored as full objects in the git database.
+
+Use 'git show name' to show the details of a tag.
+
+If tags are private to your repo and you just want to change it with the -f
+option.  But if the database has been pushed to others, see the "On
+Re-tagging" section in the tag manpage.
+
+git push doesn't transfer tags to remote servers.  Use
+    git push origin <tagname>
+    git push origin --tags
+        Pushes all tags that are not already there
+
+Deleting tags
+    git tag -d <tagname>
+    git push origin --delete <tagname>
+
+To view ths source the tag is pointing to, use
+    git checkout <tagname>
+    You'll get a message about being in a detached HEAD state.  If you want
+    to create a new branch from where you are, use
+        git switch -c <new_branch_name>
+    Undo this with git switch -
+
+    If you plan to make changes, create and switch to a new branch
+        git checkout -b <branch_name> <tag_name>
+
+---------------------------------------------------------------------------
+git Branching                                           *git_Branching*
+
+Listing branches
+    git branch
+        -d option lets you delete branches
+        -m option lets you rename branches
+    See git help branch
+
+Use case
+    Suppose you're working on something and you need to go back 3
+    versions and put in a few print statements:
+
+        git commit -a
+        git checkout HEAD~3
+
+    Now add changes as needed; you can even commit.  Use
+
+        git checkout master 
+
+    to return to your original work.
+
+    To save the changes, use
+
+        git checkout -b dirty
+        git commit -a
+
+    This creates a new named branch 'dirty'.  Go back to it at any time
+    with
+
+        git checkout dirty
+
+    In other words, after checking out an old state, git puts you in a
+    new unnamed branch, which can be named and saved with 'git checkout
+    -b name'.
+
+Quick fix
+    You're in the middle of something when you find out there's a bug in
+    commit 1b6d:
+        git commit -a
+        git checkout -b fixes 1b6d
+
+    Once fixed:
+
+        git commit -a -m "Bug fixed"
+        git checkout master
+
+    You can merge the fixes to main:
+
+    git merge fixes
+
+Interrupted workflow
+    Suppose part1 and part2 of a project are sequential (you need part1
+    for part2 to work).  Because of painless branching and merging, we
+    can work on part2 before part1 is ready.  
+
+    Let part1 be on the master branch and it has been committed for
+    review.  Create a new branch to work on part2:
+
+    git checkout -b part2
+
+    You can go back and fix things in part1 as needed and as found:
+
+    git checkout master     # Go back to part1
+    fix_problem
+    git commit -a
+    git checkout part2      # Go back to part2
+    git merge master        # Merge in the fixes
+
+    When part1 is approved
+
+    git checkout master     # Go back to part1
+    submit files            # Release to the world
+    git merge part2         # Merge in part2
+    git branch -d part2     # Delete the part2 branch
+
+    Now you're in the master branch again with part2 in the working directory.
+
+---------------------------------------------------------------------------
+Find a bug                                              *git_Find_a_bug*
+
+The code on the master is broken, but you know it was working a few
+months ago.  If you've been committing frequently, you can find it
+pretty easily:
+    git bisect start
+    git bisect bad HEAD
+    git bisect good 1b6d
+
+git checks out a state halfway between.  Test to see if the bug is
+present; if it's still broken
+    git bisect bad
+
+If not, replace 'bad' with 'good'.  This results in a binary search that
+leads to the commit that caused the problem.  Return to the original
+state with
+    git bisect reset
+
+You can also automate the search with a script:
+    git bisect run my_script
+
+The return value decides the behavior:
+    0 means the version is good
+    125 means the change should be skipped
+    1-127 means the version is bad
+    A negative value aborts the bisect.
+
+Blame
+    git blame bug.c
+    annotates every line in a file showing who last changed it and when.

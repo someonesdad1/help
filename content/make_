@@ -1,0 +1,2165 @@
+*make_*
+
+|GNU_make|
+|MKS_make|
+|make_problems|
+
+While make is commonly used in UNIX environments, it's a flawed tool.  A
+good white paper on some of the problems with GNU make is
+https://www.conifersystems.com/whitepapers/gnu-make/ (see the end of
+this document for its text).
+
+-----------------------------------------------------------------------------
+*GNU_make*
+
+Useful options:
+    -n          Dry run
+    -B          Everything is out of date
+    -f mf       Use mf as the makefile
+    -k          Keep going to do as much as possible
+
+    --> Use 'gcc -MM *.c' to generate dependencies for a makefile
+
+Exit status
+    0           make was successful
+    1           Used -q flag and some target is not up to date
+    2           Encountered an error
+
+Macros
+    a = b       Recursively expanded macro definition
+    a := b      Simply expanded definition (expanded when defined)
+    $(var:a=b)  Replace a at end of every word with b
+    $@          File name of target rule or archive file.
+    $%          foo.a(bar.o):  $% = bar.o, $@ = foo.a
+    $<          Name of first dependency
+    $?          Name of all dependencies newer than target
+    $^          All dependencies with spaces between them
+
+Recipes
+    %.html: %.rst
+        Thus, a.html will get made from a.rst.
+Targets
+    a : b       Common target/dependency form
+    a :: b      How to have multiple rules for the same target
+    .PHONY: x   x's recipe should always be run
+
+Variables
+    a = b       Define a to be b.  b can contain other variable references;
+                they are expanded recursively.
+    a := b      Define a to be b, but expand all variable references when
+                the definition is encountered.
+    a += x      Append x to the definition of a.
+
+Conditionals
+    ifeq (cond_a,cond_b)
+        ...
+    else
+        ...
+    endif
+
+    Other forms of ifeq:
+        ifeq 'arg1' 'arg2'
+        ifeq "arg1" 'arg2'
+        ifeq 'arg1' "arg2"
+
+    ifeq can also be ifneq
+
+    Test for empty variable:
+        ifeq ($(strip $(foo)),)
+            text-if-empty
+        endif
+
+    ifdef var ... else ... endif
+
+    ifndef var ... else ... endif
+
+Options
+  Used a lot:
+    -B          Make all targets
+    -n          Show what will be done
+    -f fl       Use fl as the makefile
+    -k          Keep going and do as much as possible
+
+
+    -C dir      Change to directory dir before reading the makefile
+    -d          Print debugging information
+    -e          Give variables taken from the environment precedence
+                over variables from makefiles.
+    -f file     Use file as a makefile.
+    -h          Show help
+    -i          Ignore all errors in commands executed to remake files.
+    -I dir      Directory to search for included makefiles
+    -j jobs     Number of jobs to run simultaneously
+    -k          Continue as much as possible after an error.  While
+                the target that failed, and those that depend on it,
+                cannot be remade, the other dependencies of these
+                targets can be processed all the same.
+    -l
+    -l load     No new jobs should be started if there are others
+                jobs running and the load average is at least load
+                (a floating-point number).  With no argument, removes
+                a previous load limit.
+    -n          Print the commands that would be executed, but do not
+                execute them.
+    -o file     Do not remake file (assume it's very old)
+    -p          Print the data base (rules and variable values) that
+                results from reading the makefiles; then execute as
+                usual.
+    -q          Don't run commands; just return 0 if up to date,
+                nonzero otherwise.
+    -r          Don't use built-in implicit rules
+    -s          Do not print the commands as they are executed
+    -S          Cancel the effect of the -k option
+    -t          Touch files instead of running their commands.
+    -v          Print the version of make
+    -w          Print a message containing the working directory
+                before and after other processing.  This may be use-
+                ful for tracking down errors from complicated nests
+                of recursive make commands.
+    -W file     Pretend that the target file has just been modified.
+                When used with the -n flag, this shows you what would
+                happen if you were to modify that file.  Without -n,
+                it is almost the same as running a touch command on
+                the given file before running make, except that the
+                modification time is changed only in the imagination
+                of make.
+
+Functions
+
+    $(patsubst pattern, replacement, text)
+        Finds whitespace-separated words in text that match pattern and
+        replaces them with replacement.  Pattern may contain % which 
+        matches any character.  If replacement contains %, it is replaced
+        with the text that matched % in pattern.
+
+    $(strip string)
+        Remove leading and trailing whitespace.
+
+    $(dir names...)
+        Extract the directory part of names...
+
+    $(notdir names ...)
+        Extracts all but the directory part of names...
+
+    $(suffix names ...)
+        Extracts the suffixes of each file name.
+        
+    $(basename names ...)
+        Extracts all but the suffix.
+
+    $(addsuffix suffix, names...)
+        e.g.:  $(addsuffix .exe, $(files))
+
+    $(addprefix prefix, names...)
+
+    $(join list1, list2)
+        $(join a b, .c .o) results in a.c b.o
+
+    $(word n, text)
+        Returns nth word of text.  $(word 2, foo bar baz) returns bar.
+
+    $(words text)
+        Returns number of words in text.  Thus, the last word of text
+        is $(word $(words, text), text).
+
+    $(firstword names...)
+        Same as $(word 1, names).
+    
+    $(wildcard pattern)
+        Space separated list of file names globbed from pattern.
+
+    $(foreach var,list,text)
+        Let var take on each value in list, then substitute into 
+        text.  Example: $(foreach dir, c:/tmp, $(wildcard $(dir)/*)) 
+        will expand to each file in c:/tmp.
+
+    $(origin variable)
+        Shows where a variable originated.  Values are:
+            undefined     Never defined
+            default       Has a default definition
+            environment   Defined in environment and -e wasn't used
+            environment override  Defined in environment, but -e was used
+            file          Defined in a makefile.
+            command line  Defined on the command line
+            override      Defined with an override directive
+            automatic     Automatic variable
+
+    $(shell cmd)
+        Same as backquotes in sh.
+
+-----------------------------------------------------------------------------
+*MKS_make*
+
+     make, makeq -- maintain program-generated and interdependent files
+
+SYNOPSIS
+     make [-EeiMnpqrstuVvx] [-k|-S] [-c dir] [-f file] ...
+     [macro definition ...]  [-D macro definition ...]  [target ...]
+
+DESCRIPTION
+     make is a  command that helps  you manage projects  that contain a
+     set of interdependent files.   Typical  examples would  be  a
+     program  with  many source and object  files, or a  document that
+     is  built from source files, macro files,  and  so on.  make
+     keeps all the  files up-to-date with  one another: if one file
+     changes, make updates all the other files that depend on the
+     changed file.
+
+     Note: This implementation  of make features  the .POSIX special
+     target to provide maximum portability.  When you specify this
+     target, make processes the makefile as  specified in the  POSIX.2
+     standard.  For details, see the description of .POSIX in the
+     Special Target Directives section of this man page.
+
+     Note: makeq is  available on DOS;  it is small  and more limited,
+     but much faster than make.
+
+Options
+     make accepts the following options:
+
+     -c dir
+          attempt to change into the specified directory upon startup.
+          If make can't change directory, it displays an error message.
+          This is useful for recursive makefiles when building in a
+          different directory.
+
+     -D macro definition
+          define macro on  the command line  before reading any
+          makefile.  Use the same form  as a normal  macro definition
+          (macro=string).   If you use this option,  make assigns the
+          value to the macro before reading the makefile;  any
+          definition of  the  same macro  contained in  the makefile
+          will  supercede  this definition.  Note  that make uses  any
+          macros defined in  this way before  it reads any  makefile,
+          including the startup file.   This allows you  to define a
+          startup file by pro- viding a value for MAKESTARTUP on the
+          command line:
+
+             make -D MAKESTARTUP=$HOME/project/startup.mk
+
+     -E   suppress reading of the environment completely.
+
+     -e   read the environment  after reading the makefile.  If you don't spec-
+          ify -E or -e, make reads the environment before reading the makefile,
+          except for the  SHELL environment variable, which you must explicitly
+          import.  This option does not affect the value of MAKEFLAGS.
+
+     -f file
+          use file as the makefile, ignoring the makefiles specified as prereq-
+          uisites to  the .MAKEFILES  special target.  If  you specify file  as
+          dash (-), make reads from standard input.
+
+     -i   ignore all errors and continue making other targets.  This is equiva-
+          lent to the .IGNORE attribute or macro.
+
+     -k   make all independent targets, even if an error occurs. If you specify
+          -k, make ignores  the error and continue to make as much as possible.
+          make does not  attempt to update  anything that depends on the target
+          that was being made when the error occurred.
+
+     -M   do not copy macro definitions from the command line and the MAKEFLAGS
+          environment variable to the MAKEFLAGS macro.
+
+     -n   display the  commands that  make would execute  to update the  chosen
+          targets, but  do not  actually execute any  recipe lines unless  they
+          have a plus sign (+) command prefix.  make displays recipe lines with
+          an at sign (@) command prefix on the standard output.
+
+          With group recipes,  make displays the  commands it uses  to update a
+          give target, but it also executes the commands.
+
+          If make finds  the string $(MAKE)  in a recipe  line, it expands  it,
+          adds -n to  the MAKEFLAGS, and  then executes the  recipe line.  This
+          allows you to  see what recursive  calls to make do.  The output cor-
+          rectly shows  line breaks  in recipes that  are divided into  several
+          lines of text using the \<newline> sequence.
+
+     -p   display the  digested  makefile, including  macro and target  defini-
+          tions, in a  human readable form  useful for debugging.   make itself
+          cannot read this output as an input file.
+
+     -q   check whether the  target is up-to-date.  If it is, make exits with a
+          status of 0; otherwise, it exits with a status of 1 (typically inter-
+          preted as  an error  by other software).   make doesn't run  commands
+          associated with  the target unless  they start with  a plus sign  (+)
+          command prefix.
+
+     -r   do not read the default rules from the startup file.
+
+     -S   terminate if an error occurs when bringing a target up-to-date (oppo-
+          site of -k). This is the default.
+
+     -s   do not display  recipe commands, warning  messages, or touch messages
+          (see the -t  option).  This is equivalent to the .SILENT attribute or
+          macro.
+
+     -t   touch the targets  to mark them  as up-to-date, but only execute com-
+          mands to change  a target if  the target has  a plus sign (+) command
+          prefix.  make does  not touch up-to-date targets or targets that have
+          prerequisites but do  not have recipes.   make displays a message for
+
+          each touched target file indicating the file name.
+
+     -u   force an unconditional  update: make behaves  as if all the prerequi-
+          sites of the given target are out-of-date.
+
+     -V   display the version number of make and a list of built-in rules.
+
+     -v   display a detailed  account of make's progress, including files read,
+          definition and redefinition  of each macro, meta-rule and suffix rule
+          searches, and other information.
+
+     -x   export all macro definitions to the environment.  This happens before
+          make begins making targets (but after it reads the entire makefile).
+
+Targets
+     A target is normally a file that you want to ensure is up-to-date with
+     the files on which it is dependent.  For example, you may want to check
+     to see if a is  based on the most recent version of the corresponding
+     source code and if not,  recompile the source  code to get  an
+     up-to-date version.  In this case, the  compiled program file  is the
+     target and the corresponding source code files  are prerequisites (that
+     is, the files on which a target is dependent).
+
+     make updates all  targets that are  specified on the command line.  If
+     you do not specify  any target, make  updates the targets in the first
+     rule of the makefile.  A target is out-of-date if it is older than any
+     of its pre- requisites (based  on  modification times)  or if it  does
+     not exist.   To update a target, make first recursively ensures that
+     all the target's pre- requisites are  up-to-date,  processing them  in
+     the  order in which  they appear in the  rule.  If the  target itself
+     is out-of-date, make then exe- cutes the recipe associated with the
+     target.  If the target has no associ- ated recipe, make considers it
+     up-to-date.
+
+     make also  supports  another form  of targets,  known as special
+     targets, described in the following Special Targets section.
+
+Makefiles
+     A makefile is a text file which describes the dependencies between
+     various files.  A makefile  normally contains a list of targets and
+     identifies the prerequisites  on  which  each  depends.  It  also
+     contains a  series  of instructions, called recipes  which describe the
+     actions to be taken if a given target is out-of-date with its
+     prerequisites.
+
+     By default, if  you do not specify the -f option, make looks for a file
+     in your current directory  named makefile.  If  make does not find this
+     file, and if your  file system supports  mixed-case file names, it
+     searches your current directory for  a file named  Makefile.  If make
+     finds either file, it uses this file as your makefile.
+
+     You can change  the default makefiles  with the .MAKEFILES special
+     target.  This target is  already specified in the startup.mk file.  See
+     the follow- ing Special Targets section for more information.
+
+Macro Definitions
+     Macro definitions may take several forms.
+
+        macro = string
+
+     is the  usual form.  If  string contains macro  references, make does
+     not expand them  when  the macro  is  defined, but  when  the macro is
+     itself expanded.
+
+        macro := string
+
+     expands macros inside string before assigning the value to macro.
+
+        macro += string
+
+     appends string to the previous value of macro.
+
+     You can use  any amount of  white space on  both sides of macro operators.
+     make defines the  name macro to have the value string and replaces it with
+     that  value  whenever  it  is  used as  $(macro)  or ${macro}  within  the
+     makefile.  It  is  possible to  specify  a $(macro_name) or  ${macro_name}
+     macro expansion  where  macro_name contains  more  $(...) or ${...}  macro
+     expansions itself.
+
+     Normally, make does  not include white  space at the  beginning and end of
+     string in the  definition of macro;  however, it never  strips white space
+     from macros imported from the environment.
+
+     If you want  to include white space in a macro definition specified on the
+     make command line, you must enclose the definition in quotes (" "").
+
+     make defines macro in the following order:
+
+       1. Macro definitions in the built-in rules.
+
+       2. Macro definitions on the command line associated with the -D option.
+
+       3. Macro definitions in startup files.
+
+       4. Contents of the environment.
+
+       5. Macro definitions in the makefiles (in the order they appear).
+
+       6. Macro definitions on the command line without the -D option.
+
+     Note: If you  specify the -e option, make reads the makefiles before read-
+     ing the contents  of the environment.   If you specify the -E option, make
+     does not read the contents of the environment.
+
+     If a macro  is already defined  when make encounters  a new definition for
+     it, the new definition replaces the old one.  For example, a macro defini-
+     tion for name  on the command  line overrides a definition for name in the
+     makefile.  You can use the -v option to display macro assignments, as make
+
+     performs them.
+
+Macro Modifiers
+     MKS Make supports macro expansions of the form:
+
+        $(macro_name:modifier_list:modifier_list:...)
+
+     Possible modifiers are:
+
+     ^"string"      prefix tokens
+     +"string"      suffix tokens
+     b              file portion of all path names, without suffix
+     d              directory portion of all path names
+     f              file portion of all path names, including suffix
+     l              all characters mapped to lowercase
+     s/pat/string/  simple pattern substitution;  any character can  be used to
+                    separate the pattern from the substitution text
+     suffix=string  suffix replacement
+     t"separator"   tokenization with given separator.
+     u              all characters mapped to uppercase
+
+     You may specify macro modifiers in either upper or lowercase.
+
+     For example, the following macro assignment
+
+        test = D1/D2/d3/a.out f.out d1/k.out
+
+     produces the following expansions:
+
+     $(test:d)      -> D1/D2/d3 . d1
+     $(test:b)      -> a f k
+     $(test:f)      -> a.out f.out k.out
+     ${test:DB}          -> D1/D2/d3/a f d1/k
+     ${test:s/out/in/}   -> D1/D2/d3/a.in f.in d1/k.in
+     $(test:f:t"+") -> a.out+f.out+k.out
+     $(test:t"+")        -> D1/D2/d3/a.out+f.out+d1/k.out
+     $(test:u)      -> D1/D2/D3/A.OUT F.OUT D1/K.OUT
+     $(test:l)      -> d1/d2/d3/a.out f.out d1/k.out
+     $(test:^"/rd/")     -> /rd/D1/D2/d3/a.out /rd/f.out /rd/d1/k.out
+     $(test:+".Z")  -> D1/D2/d3/a.out.Z f.out.Z d1/k.out.Z
+
+Run-time Macros
+     Run-time macros can take on different values for each target.
+
+     $@   When building a  normal target, this macro evaluates to the full name
+          of the target. When building a library, it expands to the name of the
+          archive library. For example, if the target is
+
+             mylib(member)
+
+          $@ expands to
+
+             mylib.
+
+     $%   When building a  normal target, this macro evaluates to the full name
+          of the target. When building a library, it expands to the name of the
+          archive member. For example, if the target is
+
+             mylib(member)
+
+          $% expands to
+
+             member
+
+     $>   The name of the library if the current target is a library member.
+
+     $*   The target name  with no suffix ($(%:db)) or the value of the stem in
+          a meta-rule.
+
+     $&   The list of all prerequisites, in all rules that apply to the target.
+          In :: rules, this macro produces a value identical to the $^ macro.
+
+     $?   The list of  all prerequisites which  are newer than  the target.  In
+          rules using  the  :: rule  operator, this macro  expands to the  same
+          value as $^.
+
+     $^   The list of  all prerequisites taken  from the list  specified on the
+          rule line of the recipe where the $^ symbol appears.
+
+     $<   In normal  rules, this  contains the list  of all prerequisites.   In
+          inference rules,  this contains the  single prerequisite that  caused
+          the inference to  succeed.  In rules using the :! rule operator, this
+          macro expands to the current out-of-date prerequisite.
+
+     You can modify the run-time macros with the letters B, D and F to indicate
+     only the directory  portion of the  target name (the  current directory is
+     represented by a  dot (.)), or  only the file  portion of the target name.
+     For example,  define.h  is the only  out-of-date prerequisite, the  macros
+     $(?B), $(?D) and  $(?F) expand to define, dot (.) and to define.h, respec-
+     tively.
+
+     The constructs $$@, $$%, $$>, and $$* yield meaningful results when placed
+     in a prerequisite list as a dynamic prerequisite.
+
+     $$@ stands for the target currently being made. The following two examples
+     are equivalent:
+
+        fred : $$@.c
+        fred : fred.c
+
+     The construct may be modified:
+
+        fred.obj : $$(@:b).c
+
+     If you are building a library, $$% stands for the name of the archive mem-
+     ber being made.   If you are  building a normal target, $$% stands for the
+     name of the target currently being made.
+
+     $$* stands for the name of the current target being made, but with no suf-
+     fix.
+
+     If you  are building  a library, $$>  stands for the  name of the  archive
+     library being made.   If you are  not building a library, its use is inva-
+     lid.
+
+Comments
+     Comments begin  with  the number  sign  (#) character  and  extend to  the
+     end-of-line.  make discards all comment text.
+
+Makefile Contents
+     Inside makefiles, you can split long lines over several lines of text.  To
+     do this, put  a backslash (\)  at the very  end of the  line.  You can use
+     this technique to  extend comments as well as recipe lines and macro defi-
+     nitions for example.
+
+     If a rule  or macro definition  must contain a # character, use \#; other-
+     wise, make  mistakes the  # for the  beginning of a  comment.  Also, if  a
+     macro definition must contain a single $ character, use $$.
+
+     File names that  contain a colon  (:) must always be enclosed in quotes ("
+     "):
+
+        "a:target" : "a:prereq"
+
+Rules
+     The general format of a rule is
+
+        targets [attributes] ruleop [prerequisites] [;recipe]
+        {<tab> recipe}
+
+     The parts of the rule are described as follows.
+
+     targets
+          one or more target names.
+
+     attributes
+          a list, possibly  empty, of attributes  to apply to  the list of tar-
+          gets.
+
+     ruleop
+          an operator token,  usually :, that  separates the target  names from
+          the prerequisite  names  and may  also affect  the processing of  the
+          specified targets.
+
+     prerequisites
+          a list of zero or more names on which the specified targets depend.
+
+     recipe
+          command to execute  to update targets. It may follow on the same line
+          as the  prerequisites, separated  from them by  a semicolon (;).   If
+          such a recipe  is present, make  takes it as the first in the list of
+          recipe lines defining how to make the named targets.  Additional rec-
+          ipe lines  may follow the  first line of  the rule.  Each  subsequent
+          recipe line must begin with a tab character.
+
+     The possible rule operators are described here:
+
+     targets : prereqs
+          simple rule definition. For explicit targets, at most one simple rule
+          may have  a  recipe, in  contrast  with the  :: rule operator,  whose
+          description follows.
+
+     targets :! prereqs
+          executes  the  recipe  for  the  associated  targets  once  for  each
+          out-of-date prerequisite.  In  simple rules,  the recipe is  executed
+          only once, for  all out-of-date prerequisites  at the same time.  The
+          $< macro expands  to the current  prerequisite if it appears in rules
+          with this rule operator.
+
+     targets :^ prereqs
+          inserts the  specified prerequisites  before any other  prerequisites
+          already associated with the specified targets.
+
+     targets :- prereqs
+          clears the previous  list of prerequisites before adding the new pre-
+          requisites.
+
+     targets :: prereqs
+          is used for  multiple rules applying  to the same  target.  Each rule
+          can specify a  different set of prerequisites with a different recipe
+          for updating  the  target.  Each rule  is treated independently;  the
+          target is remade  for each rule with out-of-date prerequisites, using
+          the corresponding recipe.
+
+     targets :| prereqs
+          can only be  used in meta-rules.  It tells make  to treat each  meta-
+          dependency as an independent meta-rule. For example:
+
+             %$O :| archive/%.c rcs/%.c /srcarc/RCS/%.c
+                  recipe...
+
+          is equivalent to
+
+             %$O : archive/%.c
+                  recipe...
+             %$O : rcs/%.c
+                  recipe...
+             %$O : /srcarc/rcs/%.c
+                  recipe...
+
+          This operator  is  particularly useful for  searching for MKS  Source
+          Integrity archives.   If  the RCSPATH  variable  used by  MKS  Source
+          Integrity is defined as
+
+             archive/%f;rcs/%f;/srcarc/rcs/%f
+
+          then the meta-rule
+
+             % :| $(RCSPATH:s/%f/%/:s/;/ /)
+                  co -l $<
+
+          searches the path looking for an RCS file and checks it out.
+
+Circular Dependencies
+
+     There are  two  types of circular  dependencies: within-rule and  between-
+     rule.  A within-rule  circular dependency occurs when the target's name is
+     in included in the list of prerequisites for that target.  For example,
+
+        c.o : a.o b.o c.o
+
+     is a within-rule circular dependency.  make detects a within-rule circular
+     dependency when it is parsing the makefile to build the dependency tree.
+
+     A between-rule circular  dependency occurs when you have two targets, each
+     of which includes the other's name in its prerequisite list.  For example,
+
+        a.o : b:o
+        b:o : a.o
+
+     is a between-rules  circular dependency.  make detects a between-rule cir-
+     cular dependency when  it is processing  the dependency tree  built during
+     the parse phase.
+
+     Normally make only  detects circular dependencies  for those targets actu-
+     ally being built.   When a circular dependency is encountered, make issues
+
+     a warning message,  removes the offending  prerequisite from the list, and
+     continues parsing  the  makefile.  The .CYCLECHECK  special target can  be
+     used to alter make's treatment of circular dependencies.  For details, see
+     the Special Targets section of this man page.
+
+Recipes
+     You can  use a  target that has  prerequisites but no  recipes to add  the
+     given prerequisites to that target's list of prerequisites.
+
+     You may preface  any recipe line with a command prefix immediately follow-
+     ing the TAB character (-, @, + or all three).  - indicates that make is to
+     ignore non-zero exit  values when it  executes this recipe  line.  @ indi-
+     cates that make  is not to  display the recipe line before executing it. +
+     tells make to  always execute this line, even when -n, -q, or -t is speci-
+     fied.
+
+     Group recipes  begin  with [ in  the first non-white  space position of  a
+     line, and  end with  ] in the  first non-white space  position of a  line.
+     Recipe lines in a group recipe need not have a leading tab.  make executes
+     a group recipe  by feeding it as a single unit to a shell.  If you immedi-
+     ately follow the  [ at the beginning of a group recipe with one of -, @ or
+     +, they  apply  to the  entire group in  the same way  that they apply  to
+     single recipe lines.
+
+Inference Rules
+     With inference  rules, you  can specify general  rules for building  files
+     rather than creating a specific rule for each target.
+
+     MKS Make  provides two forms  of inference rules:  suffix rules and  meta-
+     rules.  MKS Make  includes suffix rules to ensure compatibility with older
+     makefiles.  Meta-rules,  however,  provide a  more  general mechanism  for
+     specifying make's default  behavior.  They provide a superset of the func-
+     tionality of suffix rules.  make searches all meta-rules before using suf-
+     fix rules.
+
+     make uses the  inference rules to  infer how it  can bring a  target up to
+     date.  A list of inference rules defines the commands to be executed.  The
+     default startup.mk contains  a set of  inference rules for the most common
+     targets.  You can specify additional rules in the makefile.
+
+     When make finds  no explicit target rule to update a target, it checks the
+     inference rules.   If  make finds  an  applicable inference  rule with  an
+     out-of-date prerequisite, it  executes that rule's  recipe.  (See also the
+     section describing the .DEFAULT special target).
+
+Meta-rules
+     Meta-rules have one target with a single percent symbol % which matches an
+     arbitrary string called  the stem. The  % in a  dependency stands for  the
+     stem.
+
+     The inference rule to update a target matching pattern p1%s1, where p1 and
+     s1 are  prefix  and suffix  strings of the  target, having a  prerequisite
+     p2%s2, where % is the stem from the target, is specified as follows:
+
+        p1%s1 : p2%s2 ; recipe...
+
+     Either the prefix or suffix string may be empty.
+
+Transitive Closure
+     Meta-rules provide a  mechanism which allows  several meta-rules to  chain
+     together to eventually  infer all the  needed prerequisites to  create the
+     target.
+
+     This is called  transitive closure. For example, suppose you have the fol-
+     lowing two meta-rules
+
+        %$O : %.c
+             ... rule body...
+        %.c : %.y
+             ... rule body ...
+
+     When you specify
+
+        make file.obj
+
+     make uses the  first meta-rule to  look for file.c.   If it can't  find an
+     explicit rule to build file.c, it again looks through the meta-rules for a
+     rule to build %.c, which it finds in
+
+        %.c : %.y
+
+     Thus, make can rebuild file.obj from file.y.
+
+     make considers each meta-rule only once when performing transitive closure
+     to avoid a situation where it loops forever.  For example, if you have the
+     rule
+
+        % : %.c
+             ... rule body ...
+
+     the command
+
+        make file
+
+     causes make to look for file.c.  If the meta-rules were not restricted and
+     file.c  did  not  exist,  then  make would  look  for file.c.c,  and  then
+     file.c.c.c, and so  on.  Because make  uses each meta-rule only once, this
+     can't happen.
+
+     make computes transitive  closure once for  each meta-rule head  the first
+     time the pattern  matches a target.   When transitive closure is computed,
+     make adds all  the computed rules to the rule set for that meta-rule head.
+     For example, if you have the rules
+
+        %$E : %$O
+             recipe 1...
+        %$O : %c
+             recipe 2...
+
+     and you are  making file.exe, this target matches successfully against %$E
+     causing make to  compute transitive closure  for %$E.  As a result of this
+     computation, a new rule is created:
+
+          %$E : %.c
+               recipe 2...
+               recipe 1...
+               .REMOVE target recipe for %$O, if not .PRECIOUS
+
+     make executes this  rule if file$O.obj  doesn't exist.  When make finishes
+     the computation for  the rule head,  it marks the  rule head as transitive
+     closure computed.  Since  make adds all possible new rules to the rule set
+     the first time the computation is done, it is not necessary to do it again
+     -- nothing new is added.
+
+     The best way  to understand how  this works is  to experiment with  little
+     make files with  the -v option  specified. This shows  you in detail  what
+     rules are being  searched, when transitive  closure is calculated and what
+     rules are added.
+
+Order of Rule Generation
+     Since transitive closure  allows make to  generate new rules, it is impor-
+     tant to understand the order in which this is done:
+
+      1. make searches for explicit rules in the order in which they appear, so
+         explicit rules always take precedence.
+
+      2. make  reads  meta-rules in  the  order in  which  they appear  in  the
+         makefile.  The  first rule that  appears in the  makefile will be  the
+         first one checked.
+
+      3. New explicit  meta-rules  (as distinct  from  meta-rules generated  by
+         transitive  closure)  replace  old  ones.   In  other words,  if  your
+         makefile contains an  explicit rule like this one, it will replace the
+         default rule in startup.mk:
+
+            %$O : %.c
+                    rule1
+
+         If you use  the -v option,  make prints a  warning when it  replaces a
+         meta-rule.
+
+      4. When transitive  closure is calculated,  the new meta-rules  generated
+         are added to  the end of  the list of possible meta-rules.  Thus, make
+         always finds the  explicit rules first,  so they take  precedence over
+         generated rules.  You  can use the  -v option to  see what rules  make
+         generates and the order in which they appear.
+
+      5. make performs  two  passes through  the rules.  On  the first pass  it
+         attempts to find  a match with  an explicit rule  in the makefile;  if
+         this does not  succeed, make performs  a second pass  to find a  match
+         with an existing file.
+
+Suffix Rules
+     make treats targets  that begin with  a period and  contain no slashes  or
+     percent signs as suffix rules.  If there is only one period in the target,
+     it  is a  single-suffix  inference rule.   Targets  with two  periods  are
+     double-suffix inference rules.  Suffix rules do not have prerequisites but
+     do have commands associated with them.
+
+     When make finds  no explicit rule to update a target, it checks the suffix
+     of that target  (.s1) against the suffix rules.  make examines a prerequi-
+     site based on  the base name  of the target  with the second  suffix (.s2)
+     appended, and if  the target is out-of-date with respect to this prerequi-
+     site, make executes the recipe for that inference rule.
+
+     If the target  to be built  does not contain a suffix and there is no rule
+     for the target, make checks the single suffix inference rules.  The single
+     suffix inference rules  define how to  build a target if make finds a rule
+     with one  of  the single suffixes  appended.  A rule  with one suffix  .s2
+     defines how to build target from target.s2.
+
+     Any suffixes used  in a suffix  rule must appear  as a prerequisite of the
+     special target  .SUFFIXES.   The order  that  the suffixes  appear in  the
+     .SUFFIXES rule determines the order in which make checks the suffix rules.
+     New suffixes and suffix rules are added to the existing list.  To turn off
+     the suffix rules, place
+
+        .SUFFIXES:
+
+     in your makefile.  This clears the  prerequisites of the  .SUFFIXES target
+     which prevents the enaction of any suffix rules.
+
+     The search algorithm  used for suffix  rules depends on whether or not the
+     .POSIX special target is specified.  When .POSIX is specified, the follow-
+     ing steps describe the search algorithm for suffix rules:
+
+      1. Extract the suffix  from the target.  If that target has no suffix, go
+         to step 6.
+
+      2. Is it in the .SUFFIXES list?  If not, then quit the search.
+
+      3. If it is  in the .SUFFIXES  list, look for  a double suffix  rule that
+         matches the target suffix.
+
+      4. If you find  one, then extract  the base name  of the file, add on the
+         second suffix and  see if the  resulting file exists.   If it doesn't,
+         then keep searching  the double suffix  rules.  If it does exist, then
+         use the recipe for this rule.
+
+      5. If no successful match is made, then the inference has failed.
+
+      6. If the  target  did not have  a suffix, then  check the single  suffix
+         rules in the  order that the  suffixes are specified  in the .SUFFIXES
+         target.
+
+      7. For each single suffix rule, add the suffix to the target name and see
+         if the resulting file name exists.
+
+      8. If the file  exists, then execute the recipe associated with that suf-
+         fix rule.  If  the file doesn't exist, continue trying the rest of the
+         single suffix rules.
+
+      9. If no successful match is made, then the inference has failed.
+
+     When the .POSIX special target is not specified, make handles suffix rules
+     in the same  manner as traditional implementations of make.  The following
+     steps describe the search algorithm for suffix rules in this situation.
+
+      1. Extract the suffix  from the target.  If that target has no suffix, go
+         to step 8.
+
+      2. Is it in the .SUFFIXES list?  If not, then quit the search.
+
+      3. If it is  in the .SUFFIXES  list, look for  a double suffix  rule that
+         matches the target suffix.
+
+      4. If you find  one, then extract  the base name  of the file, add on the
+         second suffix and see if the resulting file exists.  If it does, go to
+         step 7.  If not, continue with step 5.
+
+      5. Is there an  inference rule for  the resulting file?   If yes, execute
+         the recipe  associated with  that rule (which  should describe how  to
+         make the file exist) and go to step 7.
+
+      6. Search for the  next double suffix rule that matches the target suffix
+         and return to  step 4.  If  the double suffix rules are exhausted then
+         the inference has failed.
+
+      7. Use the recipe for the target rule.
+
+      8. If the  target  did not have  a suffix, then  check the single  suffix
+         rules in the  order that the  suffixes are specified  in the .SUFFIXES
+         target.
+
+      9. For each single suffix rule, add the suffix to the target name and see
+         if the resulting file name exists.
+
+     10. If the file  exists, then execute the recipe associated with that suf-
+         fix rule.  If  the file doesn't exist, continue trying the rest of the
+         single suffix rules.
+
+     11. If no successful match is made, then the inference has failed.
+
+     MKS Make also  provides a special feature in the suffix rule mechanism for
+     archive library handling,  useful mainly for  compatibility with System  V
+     Make.  If you specify a suffix rule of the form
+
+        .suf.a:
+                  recipe
+
+     the rule matches  any target specified  as a library member, regardless of
+     what the  actual library  suffix is.  For  example, suppose your  makefile
+     contains the following rules:
+
+        .SUFFIXES: .a .c
+             echo adding $< to library $@
+
+     If mem$O exists, then the following command
+
+        make "mylib(mem.obj)"
+
+     causes make to print this message:
+
+        adding mem.obj to library mylib
+
+     Refer to Making  Libraries in the  User's Guide for more information about
+     libraries.
+
+Attributes
+     make defines several  target attributes.  Attributes  may be assigned to a
+     single target,  a  group of targets,  or to all  targets in the  makefile.
+     Attributes affect what  make does when  it needs to  update a target.  You
+     can associate attributes  with targets by specifying a rule of the follow-
+     ing form:
+
+        attribute_list : target ...
+
+     This assigns the  attributes in attribute_list  to the given  targets.  If
+     you do not  specify any targets,  the attributes apply  to every target in
+     the makefile.  You can also put attributes inside a normal rule, as in:
+
+        targets attribute_list : prerequisite ...
+
+     These are the recognized attributes:
+
+     .EPILOG
+          Insert shell  epilog  code when executing  a group recipe  associated
+          with any target having this attribute set.
+
+     .IGNORE
+          Ignore an error  when trying to  make any target  with this attribute
+          set.
+
+     .LIBRARY
+          Target is a library.
+
+     .PRECIOUS
+          Do not remove this target under any circumstances.  Any automatically
+          inferred prerequisite inherits this attribute.
+
+     .PROLOG
+          Insert shell  prolog  code when executing  a group recipe  associated
+          with any target having this attribute set.
+
+     .SETDIR
+          Change current working  directory to specified  directory when making
+          associated targets.   The syntax of  this attribute is  .SETDIR=path,
+          where path is  the path name  of desired working  directory.  If path
+          contains any colon  (:) characters, the  entire attribute string must
+          be quoted, not just the path name.
+
+     .SILENT
+          Do not echo  the recipe lines when making any target with this attri-
+          bute set, and do not issue any warnings.
+
+     You can use any attribute with any target, including special targets.
+
+Special Target Directives
+     Special Target Directives  are called targets  because they appear  in the
+     target position of  rules; however, they are really keywords, not targets.
+     The rules in  which they appear  are directives which control the behavior
+     of make.
+
+     The special target  must be the only target in a special rule--you cannot
+     list other normal or special targets.
+
+     Some special targets  are affected by some attributes.  Any special target
+     can be given  any attribute, but  often the combination is meaningless and
+     the attribute has no effect.
+
+     .BRACEEXPAND
+          This target may  have no prerequisites  and no recipe associated with
+          it.  If set,  the target enables the outdated brace expansion feature
+          used in older  versions of MKS  Make.  (This target is ignored if the
+          .POSIX special  target  is set.)   Older versions  of make use  brace
+          expansion to expand a token list of this form:
+
+             string1{token_list}string2
+
+          make adds string1 to the front, and string2 to the end, of each token
+          in the token_list.   To include brace  brackets while this  target is
+          set, use {{  and }}; you cannot include literal brace brackets in the
+          token list.  You can achieve the same kind of brace expansion in mod-
+          ern versions of  make by using macro expansion with prefix and suffix
+          modifiers:
+
+             $(TOKEN_BASE:^"prefix":+"suffix")
+
+          Note that  the double  quotes are required.   Future versions of  MKS
+          Make will dispense with brace expansion completely.
+
+     .CYCLECHECK
+          This special target  may have no  prerequisites and no recipe associ-
+          ated with it.   If set, it determines how make treats circular depen-
+          dencies (for more  information, see the Circular Dependencies section
+          of this man  page).  You can specify one of five attributes with this
+          target.  If  you specify  more than one  attribute, an error  message
+          results.  The five attributes are:
+
+          .SILENT
+               make remains silent  about any within-rule and between-rule cir-
+               cular dependencies,  removes the  offending dependency from  the
+               list of prerequisites, and continues.
+
+          .WARNTARG
+               make issues warnings  for named targets  with circular dependen-
+               cies.  If the  name of the  dependency is the  same as the named
+               target, it is  removed from the  list of prerequisites  and make
+               continues.  This is  the default behavior  if .CYCLECHECK is not
+               specified or is specified with no attributes.
+
+          .WARNALL
+               make issues warnings  for all within-rule  circular dependencies
+               regardless of whether  the target is  being built or not and for
+               all between-rule  circular dependencies  for the named  targets.
+               The offending dependency  is removed from  the list of prerequi-
+               sites and make continues.
+
+          .FATALTARG
+               make treats all circular dependencies for named targets as fatal
+               errors.  It issues an error message and exits.
+
+          .FATALALL
+               make  treats  all  within-rule  circular dependencies  as  fatal
+               errors whether the target is being built or not.  It also treats
+               all  between-rule circular  dependencies  for named  targets  as
+               fatal errors.  make issues an error message and exits.
+
+     For example, to  set the circular  dependency check to make's default, use
+     the rule:
+
+        .CYCLECHECK .WARNTARG:
+
+     .DEFAULT
+          This target has no prerequisites, but it does have a recipe.  If make
+          can apply no  other rule to produce a target, it uses this rule if it
+          has been defined.
+
+     .ERROR
+          make executes  the  recipe associated  with  this target whenever  it
+          detects an error condition.
+
+     .EXPORT
+          All prerequisites  associated  with this  target which correspond  to
+          macro names  are  exported to  the  environment at  the point in  the
+          makefile at which this target appears.  If you don't specify any pre-
+          requisites for this target, all macros will be exported.
+
+     .GROUPEPILOG
+          make adds the recipe associated with this target after any group rec-
+          ipe for a target that has the .EPILOG attribute.
+
+     .GROUPPROLOG
+          make adds  the recipe  associated with this  target before any  group
+          recipe for a target that has the .PROLOG attribute.
+
+     .IMPORT
+          make searches in the environment for prerequisite names specified for
+          this target and  defines them as  macros with their  value taken from
+          the environment.   If  the prerequisite  .EVERYTHING  is given,  make
+          reads in the entire environment (also, see the -e and -E options).
+
+     .INCLUDE
+          make reads one or more additional makefiles (specified in the prereq-
+          uisite list), as  if their contents  had been inserted at this point.
+          If the prerequisite list contains more than one file, make reads them
+          in order from left to right.
+
+          make uses the following rules to search for extra makefiles:
+
+            * If a relative file name is enclosed in quotes, or is not enclosed
+              with angle brackets  (< and >),  make looks in the current direc-
+              tory.  If the  file isn't present, make then looks for it in each
+              directory specified by the .INCLUDEDIRS special target.
+
+            * If a  relative name is  enclosed with angle  brackets (< and  >),
+              make only searches  in the directories  specified by the  .INCLU-
+              DEDIRS special target.
+
+            * If an absolute  path name is given, make looks for that file, and
+              ignores the list associated with the .INCLUDEDIRS special target.
+
+     .INCLUDEDIRS
+          The list of  prerequisites specified for  this target defines the set
+          of directories to search when including a makefile.
+
+     .MAKEFILES
+          The list of  prerequisites is the  set of files to try to read as the
+          user makefile.  These  files are made in the order they are specified
+          (from left to  right) until one  is found to  be up to date.  This is
+          the file that is used.
+
+     .NOAUTODEPEND
+          Disable the  autodependency  feature when  building libraries.   When
+          this special  target is  used, only library  members which have  been
+          explicitly given as dependents are considered prerequisites.
+
+     .POSIX
+          Process the  makefile  as specified  in  the POSIX.2 draft  standard.
+          This special target  must appear before the first non-comment line in
+          the makefile, and  may have no  prerequisite list, or recipe, associ-
+          ated with it.  The target does the following:
+
+          * causes make to  use the shell when executing all recipe lines; make
+           invokes one shell per line, regardless of the setting of SHELLMETAS.
+          * disables  brace  expansion  (the  .BRACEEXPAND  special  target  is
+           ignored).
+          * disables meta-rule inferencing.
+          * disables conditionals.
+          * disables dynamic prerequisites generation for libraries.
+          * disables group recipes.
+          * disables library autodependency.
+          * make does not  check for the  string $(MAKE) when  run with the  -n
+           options specified.
+          * make always prints a message if no work is done.
+          * When attempting to do suffix rule inference, the inference succeeds
+           only if the the inference prerequisite file exists.
+
+     .REMOVE
+          make uses the  recipe of this target to remove any intermediate files
+          that it creates  if an error is encountered before creating the final
+          target.  This .REMOVE  target will only  delete a file that satisfies
+          all of the following criteria:
+
+          * the file didn't exist when make began running
+          * the file is named as an intermediate target, produced by invoking a
+           meta-rule which was produced by transitive closure
+          * the file is not explicitly named in the makefile
+          * the generated target doesn't have the .PRECIOUS attribute
+          * the file is a prerequisite of a rule that is actually used
+
+     .SOURCE
+          The prerequisite list  of this target defines a set of directories to
+          check when trying to locate a target file name.
+
+     .SOURCE.x
+          Same as .SOURCE,  except that make  searches the .SOURCE.x list first
+          when trying to  locate a file matching a target with a name that ends
+          in the suffix .x.
+
+     .SUFFIXES
+          make appends the  prerequisite list of this target to the set of suf-
+          fixes used when  trying to infer  a prerequisite for  making a target
+          using suffix rules.  If you specify no prerequisites, make clears the
+
+          list of suffixes,  effectively disabling suffix rules from that point
+          on.
+
+Control Macros
+     make defines a  number of control  macros that, like special target direc-
+     tives and attributes,  alter its behavior.   A control macro  that has the
+     same function as a special target or attribute also has the same name.
+
+     Macros which are  said to be  defined internally are automatically created
+     by make  and  you can  use  them with  the  usual $(name) construct.   For
+     example, you can use $(PWD) to obtain the current directory name.
+
+     Recognized control macros are:
+
+     DIRSEPSTR
+          Contains the characters used to separate parts in a path name and can
+          be set by  the user.  make uses the first character in this string to
+          build path names when necessary.
+
+     .EPILOG
+          If assigned  a  non-empty value,  the .EPILOG  attribute is given  to
+          every target.
+
+     GROUPFLAGS
+          Specifies options to  pass to GROUPSHELL when make invokes it to exe-
+          cute a group recipe.
+
+     GROUPSHELL
+          Gives the  path  name of  the command  interpreter (shell) that  make
+          calls to process group recipes.
+
+     GROUPSUFFIX
+          Specifies a string  for make to  use as a  suffix when creating group
+          recipe files to  be handed to  the command interpreter.  This must be
+          .bat if you  are using the DOS command.com, and .cmd if you are using
+          the OS/2 or NT cmd.exe.
+
+     .IGNORE
+          If this is assigned a non-null value, make assigns the .IGNORE attri-
+          bute to every target.
+
+     INCDEPTH
+          The current depth of makefile inclusion.  This is set internally.
+
+     MAKE This is set  by the startup file and may be changed by the user.  The
+          standard startup file defines it as
+
+             $(MAKECMD) $(MFLAGS)
+
+          The MAKE macro  is not used by make itself, but the string $(MAKE) is
+          recognized when using the -n option for single line recipes.
+
+     MAKECMD
+          The name with which make was invoked.
+
+     MAKEDIR
+          Full path name  of the initial  directory in which  make began execu-
+          tion.
+
+     MAKEFLAGS
+          The MAKEFLAGS macro  contains all the options and macros specified in
+          the MAKEFLAGS environment  variable plus all  the options and  macros
+          specified on the command line, with the following exceptions:
+
+            * The options -c,  -D, -f, and  -p are silently ignored if they are
+              found in the MAKEFLAGS environment variable.
+
+            * Any of options  -c, -D, -f,  -p, -v, or -V, when specified on the
+              command line, are not added to the MAKEFLAGS macro.
+
+            * When the -M  option is specified, macro definitions from the com-
+              mand line  and  from the MAKEFLAGS  environment variable are  not
+              added to the MAKEFLAGS macro.
+
+          Options in the  MAKEFLAGS environment variable may have leading minus
+          signs and can  be separated by  spaces.  These are  stripped out when
+          the MAKEFLAGS macro is constructed.
+
+          Note: make  always  reads the  MAKEFLAGS environment variable  before
+          reading the makefile.  The -E and -e options do not affect this.
+
+     MAKESTARTUP
+          Has the default  value $ROOTDIR/etc/startup.mk on  DOS, OS/2 and  NT.
+          (On UNIX and POSIX systems, the $ROOTDIR is omitted.)  To change this
+          value, you can  set the MAKESTARTUP  environment variable before run-
+          ning make.  You  can also specify  a value for  this control macro on
+          the command line, if you use the -D option:
+
+             make -DMAKESTARTUP=$HOME/project/startup.mk
+
+     MFLAGS
+          Same as MAKEFLAGS, except that it includes the leading switch charac-
+          ter.
+
+     NULL Permanently defined to be the empty string.
+
+     OS   Name of the  operating system for  which this version of make is com-
+          piled.
+
+             DOS     on DOS
+             OS2     on OS/2
+             NT      on NT
+             unix    on UNIX systems
+             POSIX   on POSIX systems
+
+     .PRECIOUS
+          If this  is assigned  a non-empty value,  make assigns the  .PRECIOUS
+          attribute to every target.
+
+     .PROLOG
+          If this  is  assigned a  non-empty  value, make  assigns the  .PROLOG
+          attribute to every target.
+
+     PWD  Full path name of the current directory in which make is executing.
+
+     SHELL
+          Specifies the  full path  name of the  command interpreter that  make
+          calls to process  single line recipes  if they contain one or more of
+          the characters  given in SHELLMETAS.  Otherwise, make executes  these
+          commands directly.  By  default, the value  of the SHELL  environment
+          variable does not  affect the value  of this macro;  however, you can
+          use the .IMPORT  special target to  assign the environment variable's
+          value to this  macro.  You can  also use the EXPORT special target to
+          assign this macro's value to the SHELL environment variable.
+
+     SHELLFLAGS
+          Specifies options to  pass to the shell when invoking it to execute a
+          single line recipe.
+
+     SHELLMETAS
+          Specifies a list  of metacharacters that  can appear in single recipe
+          lines.  If make  finds any metacharacter, it invokes the recipe using
+          the shell specified by SHELL; otherwise, it executes the recipe with-
+          out the shell.
+
+     .SILENT
+          If this  is  assigned a  non-empty  value, make  assigns the  .SILENT
+          attribute to every target.
+
+     SWITCHAR
+          The character currently being used to mark options in command lines.
+
+Making Libraries
+     A library is  a file containing  a collection of  object files.  To make a
+     library, you specify  it as a  target with the .LIBRARY attribute and list
+     its prerequisites.  The  prerequisites should be  the object members  that
+     are to go  into the library.  When make makes the library target, it looks
+     for the  prerequisites  in the  library if it  cannot find an  appropriate
+     object file.
+
+     When make finds  lib(member), it declares the lib portion as a target with
+     the .LIBRARY attribute  and automatically declares the member portion as a
+     prerequisite of the lib target.  When make finds lib((entry)), it declares
+     the lib portion  as a target with the .LIBRARY attribute and automatically
+     declares the module defining entry as lib's associated prerequisite.
+
+     This autodependency can be turned off by the .NOAUTODEPEND special target.
+     Since autodependency is  not POSIX compatible,  it is also disabled by the
+     .POSIX special target.
+
+Conditionals
+     Conditional expressions use the following form:
+
+        .IF expression
+        ... if text ...
+        {.ELSIF expression2
+        ... elsif text ...}
+        [.ELSE
+        ... else text ...]
+        .END
+
+     You can nest  the conditionals (that is, the text may contain another con-
+     ditional).  The .IF,  .ELSE, .ELSIF, and .END must start in the first col-
+     umn of the line.  expression or expression 2 can have one of three forms:
+
+        string
+
+     is true if the given string is non-empty,
+
+        string == string
+
+     is true if the two strings are equal, and
+
+        string != string
+
+     is true if the two strings are not equal.
+
+     Typically, one or  both strings contain  macros, which make expands before
+     making comparisons.  make  also discards white  space at the start and end
+     of the text  portion before the comparison.  This means that a macro which
+     expands to nothing  but white space  is considered an empty  value for the
+     purpose of the  comparison.  If a macro expression needs to be compared to
+     an empty string,  compare it to  the value of the macro NULL for readabil-
+     ity.
+
+     The text enclosed  in the conditional  construct must have the same format
+     that it would  have outside the  conditional.  In particular, make assumes
+     that anything that  starts with a  tab inside the  conditional is a recipe
+     line.  This means  that you cannot use tabs to indent text inside the con-
+     ditional (except,  of  course, for  recipe lines  which always begin  with
+     tabs).
+
+ENVIRONMENT VARIABLES
+     make uses the following environment variables:
+
+     MAKEFLAGS
+          contains a  series  of make  options  which are  used as the  default
+          options for any  make command.  You  may specify the  options with or
+          without leading minus signs (-) and blanks between them.  It may also
+
+          include macro definitions  of the form  usually found on  the command
+          line.
+
+     MAKESTARTUP
+          contains the path  name of the  make startup file.   By default, make
+          uses the file  $ROOTDIR/etc/startup.mk as its startup file.  To use a
+          different file, set this environment variable before running make.
+
+     SHELL
+          contains the name  of a command interpreter.  To assign this value to
+          the control  macro SHELL,  use the .IMPORT  special target.  You  can
+          also use the  .EXPORT special target to assign the value of the SHELL
+          macro to this environment variable for commands run from recipes.
+
+     make automatically  imports  all other  environment variables, unless  you
+     specify the -E option.
+
+FILES
+     make uses the following file:
+
+     $ROOTDIR/etc/startup.mk
+          default startup file containing default rules.
+
+DIAGNOSTICS
+     If a command  in a recipe  line fails (exits with a non-zero status), Make
+     returns the exit  status of the  failed command.  Since  most commands use
+     exit statuses between 0 and 10, Make uses exit status values below 10 only
+     for failures which do not run recipe lines.
+
+     Possible exit status values for Make are:
+
+     0  Successful completion.
+
+     1  Returned if you specified -q and file is not up to date.
+
+     2  Failure due to any of the following:
+          -- unknown command line option
+          -- missing argument to option, such as no file name for -f
+
+     126
+        Recipe command not executable.
+
+     127
+        Recipe command not found.
+
+     129-254
+        Make was interrupted  by a signal;  the error code is the signal number
+        OR'ed with 128.  For example, SIGINT  (CTRL-C) is frequently  signal 1:
+        the return code from Make is 128|1, or 129.
+
+     255
+        Failure because of any of the following:
+          -- Macro cannot be redefined
+
+          -- Macro variables must be assigned with :=
+          -- Special target cannot be a prerequisite
+          -- Too many makefiles specified
+          -- Configuration file not found
+          -- No makefile present
+          -- Missing .END for .IF
+          -- No target
+          -- Unable to return to directory
+          -- Too many open files
+          -- Open failed
+          -- File not found
+          -- Unable to change directory
+          -- No more memory
+          -- Line too long
+          -- Detected circular macro definition
+          -- Unterminated pattern string
+          -- Unterminated replacement string
+          -- Token separator string must be quoted
+          -- Unterminated separator string
+          -- Expansion too long
+          -- Suffix too long
+          -- Unmatched quote
+          -- .IF .ELSE nesting too deep
+          -- .ELSE without .IF
+          -- Unmatched .END
+          -- Inference rules result in circular dependency
+          -- No macro name specified
+          -- Write error on temp file
+          -- Target not found, and can't be made
+          -- Don't know how to make <target>
+          -- <+ diversion unterminated
+          -- <+ diversion cannot be nested
+          -- <+ missing before +>
+          -- Incomplete recipe group
+          -- Mixed single and group recipe lines
+          -- Unmatched ]
+          -- Expecting macro or rule definition, found neither
+          -- Name too long
+          -- Unable to determine current directory
+          -- Only one NAME attribute allowed in rule line
+          -- Multiple targets are not allowed in % rules
+          -- Special target must appear alone
+          -- Duplicate entry in target list
+          -- Syntax error in % rule, missing % target
+          -- Duplicate entry in prerequisite list
+          -- Missing targets or attributes in rule
+          -- Multiply defined recipe for target
+          -- Empty recipe for special target
+          -- Imported macro NAME not found in environment
+          -- No .INCLUDE file(s) specified
+          -- Include file NAME, not found
+          -- NAME ignored on special target
+          -- Attributes possibly ignored
+
+          -- Cannot find member defining symbol ((NAME))
+          -- Invalid library format
+          -- Can't touch library member
+          -- SHELL macro not defined
+          -- Too many arguments
+          -- Could not export NAME
+          -- Cannot open file
+          -- Detected circular dependency
+          -- Unable to stat /
+          -- Unable to stat .
+          -- Cannot open ..
+          -- Read error in ..
+          -- Metarule too long: "rule"
+
+PORTABILITY
+     POSIX.2.  x/OPEN Portability  Guide 4.0.  All  UNIX systems.  DOS  3.1 and
+     up.  OS/2 2.0 and up.  Windows 95. NT 3.51 - 4.0.
+
+     The following features of MKS Make are enhancements to POSIX.2:
+
+      * The following options; -c dir, -D macro_def'n, -E, -M, -u, -V, -v, -x.
+      * The -n option  has enhanced functionality  not covered by the standard;
+       for more  information  see the  explanations  of the  -n option and  the
+       .POSIX special target in this man page.
+      * The run-time macros: $&, $^, $>.
+      * The dynamic prerequisites: $$%, $$>, $$*, $$@.
+      * All macro expansion modifiers except for suffix replacement.
+      * Macro assignments of the following forms:
+
+               macroname := stringassigned
+               macroname += stringassigned
+
+      * Brace expansion.
+      * Backslash continuation.
+      * The quoting mechanism, as in the following example:
+
+               "a:target" : "a:prerequisite"
+
+      * All rule operators except the colon (:).
+      * Conditionals.
+      * Meta-Rules.
+      * All MKS Make attributes except .IGNORE, .PRECIOUS, .SILENT.
+      * All MKS Make special targets except .DEFAULT, .POSIX, .SUFFIXES.
+      * All MKS  Make control macros  except SHELL (referred  to in POSIX.2  as
+       control macros).
+      * The search algorithm for suffix rule follows the POSIX.2 rules when the
+       .POSIX special target  is specified, but behaves like traditional imple-
+       mentations when it is not specified.
+
+LIMITS
+     On DOS, no single makefile script line can be longer than 8192 characters;
+     on OS/2, NT, Windows 95, and UNIX and POSIX systems, no script line can be
+     longer than 16834 characters.
+
+     In some environments, the length of an argument string is restricted.  For
+     example, DOS command line arguments cannot be longer than 128 bytes if you
+     are using the standard command.com command interpreter.
+
+     Also, on DOS  the script line  is further limited  to 2048 characters when
+     using makeq.exe.
+
+NOTES
+     When the .SETDIR  special target is  used, MKS Make checks the file attri-
+     butes of targets and prerequisites on every pass through a rule.  This can
+     significantly increase the number of file system accesses.
+
+     MKS provides two  versions of MKS Make on DOS: a conventional version, and
+     a quick version.   Use the conventional  version of MKS  Make when you are
+     processing large makefiles.  Use the quick version when you are processing
+     small makefiles, and are concerned with speed.
+
+     make.exe  Conventional version of make
+     makeq.exe Quick version of make
+
+SEE ALSO
+     makefile(5)
+
+     Oram, A. &  Talbott, S. Managing  Projects with Make, 2ed.  Sebastopol CA:
+     O'Reilly & Associates, Inc.: 1991
+
+----------------------------------------------------------------------
+Problems with make                                  *make_problems*
+
+https://www.conifersystems.com/whitepapers/gnu-make/
+
+What’s Wrong With GNU make?
+
+    GNU make is a widely used tool for automating software builds. It is
+    the de facto standard build tool on Unix. It is less popular among
+    Windows developers, but even there it has spawned imitators such as
+    Microsoft’s nmake.
+
+    Despite its popularity, make is a deeply flawed tool. Its
+    reliability is suspect; its performance is poor, especially for
+    large projects; and its makefile language is arcane and lacks basic
+    language features that we take for granted in other programming
+    languages.
+
+    Admittedly, make is not the only automated build tool. Many other
+    tools have been built to address make‘s limitations. Some of these
+    tools are clearly better than make, but make‘s popularity endures.
+    The goal of this document is, very simply, to educate you about some
+    of the issues with make—to increase awareness of these problems.
+
+    Most of the points in this article apply to the original Unix make
+    as well as GNU make.  Most people using make today are probably
+    using GNU make, though, so, where differences exist, when we refer
+    to make and “makefiles” here we are speaking of GNU make.
+
+    This document assumes that the reader is already familiar at a basic
+    level with make and understands concepts such as rules, targets, and
+    dependencies.
+
+Language Design
+
+    Anyone who has written a makefile has probably learned the hard way
+    about one “feature” of its syntax: its use of tabs. Any line
+    specifying a shell command for a rule must begin with a tab. Spaces
+    will not do—it must be a tab.
+
+    Unfortunately, this is just one of the many strange aspects of the
+    make language.
+
+Recursive Make
+
+    “Recursive make” is a common makefile coding pattern where a rule
+    invokes another session of make. Since each session of make only
+    reads in one top-level makefile, this is a natural way to build a
+    makefile for a project consisting of several submodules.
+
+    Recursive make causes so many problems that a classic article
+    Recursive Make Considered Harmful was written describing what’s
+    wrong with it. The article makes many valid points, some of which
+    are discussed later in this document, but it’s genuinely difficult
+    to write makefiles that do not use recursive make.
+
+The Parser
+
+    Most programming language parsers follow a similar pattern. First,
+    the input is “tokenized” or “scanned,” discarding comments and
+    whitespace and converting freeform text into a stream of “tokens,”
+    such as symbols, identifiers, and reserved words. The resulting
+    token stream is “parsed” using a grammar that specifies what
+    combinations and orderings of tokens are legal. Finally, the
+    resulting “parse tree” is interpreted, compiled, etc.
+
+    make‘s parser does not follow this standard model. You can’t parse a
+    makefile without also executing it. Variable substitution can happen
+    almost anywhere, and if you don’t know the value of a variable, you
+    can’t continue parsing. It is challenging to write other tools that
+    can parse makefiles, because you must reimplement the whole
+    language.
+
+    There’s no clear separation of tokens in make. Take the handling of
+    commas. Sometimes a comma is part of a string and has no special
+    meaning:
+
+    X = y,z
+
+    Sometimes a comma separates the strings being compared in an if
+    statement:
+
+    ifeq ($(X),$(Y))
+
+    Sometimes a comma separates arguments to a function:
+
+    $(filter %.c,$(SRC_FILES))
+
+    But sometimes, even within arguments to a function, a comma is just
+    part of a string:
+
+    $(filter %.c,a.c b.c c.cpp d,e.c)
+
+    (since filter only takes two arguments, that last comma doesn’t
+    introduce a new argument; it’s just another character in the second
+    argument)
+
+    Whitespace follows a similarly obscure set of rules. Sometimes
+    whitespace matters; sometimes it doesn’t. Strings are not quoted, so
+    it’s not visually clear which whitespaces matter. Since there is no
+    “list” data type, only strings, whitespace must be used to separate
+    elements in lists. This leads to a lot of complexity if a filename
+    ever includes a space.
+
+    The following example illustrates the confusing treatment of
+    whitespace. An obscure trick is required to create a variable whose
+    value ends with a space. (Normally trailing whitespace is swallowed
+    by the parser, but this happens before, not after variable
+    substitution.)
+
+    NOTHING :=
+    SPACE := $(NOTHING) $(NOTHING)
+    CC_TARGET_PREFIX := -o$(SPACE)
+    # now I can write rules like $(CC_TARGET_PREFIX)$@
+
+    We’ve only scratched the surface with commas and whitespace. Few people
+    understand all the intricacies of the make parser.
+
+Uninitialized Variables and Environment Variables
+
+    If a makefile accesses an undefined variable, make does not generate
+    an error. Instead, it obtains the variable’s initial value from the
+    identically named environment variable in the calling shell. If the
+    environment variable doesn’t exist, the variable starts as an empty
+    string.
+
+    This leads to two types of problems. First, typos are not caught and
+    flagged as errors. (You can pass make an argument to flag these as
+    warnings, but this isn’t the default, and sometimes an uninitialized
+    variable is used intentionally.) Second, environment variables may
+    unexpectedly interfere with your makefile code. You can’t predict
+    what environment variables the user might set, so to be safe you
+    must carefully initialize every variable before you reference it or
+    append to it using +=.
+
+    There is also a confusing distinction between the results of make
+    FOO=1 vs. the results of export FOO=1 followed by make. In the
+    former, a line in the makefile FOO = 0 will have no effect! Instead,
+    you must write override FOO = 0.
+
+Conditional Syntax
+
+    One major weakness of the make language is its limited support for
+    “if” conditionals. (Conditional statements are especially important
+    in cross-platform makefiles.) Recent versions of make have helped
+    matters by introducing an “else if” syntax. However, there are still
+    only four basic variants of “if”: ifeq, ifneq, ifdef, and ifndef. If
+    your conditional is more complex, requiring “and”, “or”, and “not”
+    clauses, very cumbersome code is required.
+
+    Suppose we want to detect the Linux/x86 target platform. The
+    following hack is a common way of faking out the existence of an
+    “and” conditional:
+
+    ifeq ($(TARGET_OS)-$(TARGET_CPU),linux-x86)
+    foo = bar
+    endif
+
+    “or” is not as easy. Suppose we want to detect x86 or x86_64, and
+    suppose foo = bar is really a placeholder for 10 or more lines of
+    code that we don’t want to replicate. We are left with unpleasant
+    options such as:
+
+    # Terse but somewhat confusing
+    ifneq (,$(filter x86 x86_64,$(TARGET_CPU))
+    foo = bar
+    endif
+
+    # Verbose but easier to understand
+    ifeq ($(TARGET_CPU),x86)
+    TARGET_CPU_IS_X86 := 1
+    else ifeq ($(TARGET_CPU),x86_64)
+    TARGET_CPU_IS_X86 := 1
+    else
+    TARGET_CPU_IS_X86 := 0
+    endif
+    ifeq ($(TARGET_CPU_IS_X86),1)
+    foo = bar
+    endif
+
+    A lot of makefile code could be simplified if the language supported
+    a full-fledged expression syntax.
+
+Two Types of Variables
+
+    There are two types of variable assignments in make. := evaluates
+    its right-hand side immediately; = evaluates it later when the
+    variable is referenced. The former is how most other programming
+    languages work and tends to be more efficient, particularly if the
+    expression is expensive to evaluate. The latter, however, is more
+    common in most makefiles.
+
+    There are some valid reasons for using = (deferred evaluation), but
+    often it can be eliminated with careful makefile design. Aside from
+    the performance problem, deferred evaluation makes it more difficult
+    to read and understand makefile code.
+
+    Normally, you can read a program from top to bottom—the same order
+    that the statements are executed—and know exactly what the state of
+    the program is at each point in time. With deferred evaluation, you
+    cannot know the value of a variable without knowing what happens
+    later in the program, too. A variable’s value can change without
+    your directly modifying it. If you try to debug a makefile using
+    “debug prints” such as:
+
+    $(warning VAR=$(VAR))
+
+    ...you may not get the information you want.
+
+Pattern Rules and Search Paths
+
+    Some rules use % characters to represent an arbitrary filename—the
+    rule transformation one class of file to another. For example, a
+    %.o: %.c rule compiles a .c source file into an .o object file.
+
+    Suppose we need to build an object file foo.o, but foo.c lives
+    somewhere other than the current directory. make‘s vpath feature
+    tells it where to look for these files. Unfortunately, if there are
+    two files named foo.c in the vpath directories for %.c, it may
+    select the wrong one.
+
+    The following standard makefile coding pattern falls apart if two
+    source files have the same name—even if one of them is unused and
+    just happens to live in the same directory as another one that you
+    do use. The problem is that the mapping from source path to object
+    path loses information, but make‘s design requires it to attempt to
+    reverse this mapping.
+
+    O_FILES := $(patsubst %.c,%.o,$(notdir $(C_FILES)))
+    vpath %.c $(sort $(dir $(C_FILES)))
+    $(LIB): $(O_FILES)
+
+Other Missing Language Features
+
+    make has no data types other than strings. There is no Boolean type,
+    list type, or hash/dictionary type.
+
+    There is no scoping. All variables are global.
+
+    Support for looping is limited. $(foreach) will evaluate an
+    expression several times and concatenate the results, but the
+    resulting string is still just a variable expansion. For example,
+    you can’t use $(foreach) to create a family of related rules.
+
+    User-defined functions exist but have the same limitations as
+    $(foreach). They are just variable expansions and cannot use the
+    full language syntax or create rules.
+
+Reliability
+
+    make‘s reliability is poor, especially for larger or incremental
+    builds.  Sometimes a build fails with a strange error and you need
+    to resort to “voodoo magic” like typing make clean, hoping this will
+    fix things.  Sometimes (more dangerous) it appears to succeed, but
+    something wasn’t rebuilt and you’ll get mysterious crashes, etc. at
+    runtime.
+
+Missing Dependencies
+
+    You must tell make all of the dependencies of each target. If you
+    don’t tell it about a dependency, it won’t rebuild the target when
+    that dependency changes.
+
+    For C/C++, many compilers can output dependency information in a format
+    that make understands. For other tools, though, dependencies are
+    invariably incomplete. Consider a Python script that imports other
+    Python modules. A change to the script may change the script’s output;
+    this is easy to remember and code into the makefile. But a change to one
+    of those modules may also change the script’s output. It’s challenging
+    to list all these dependencies and keep them up to date.
+
+Last-Modified Timestamps
+
+    make determines whether a target is out of date by comparing its
+    last-modified timestamp against those of its dependencies. It does
+    not examine the contents of the files, only their timestamps.
+
+    File system timestamps are not especially reliable, particularly in
+    a networked environment. Systems’ clocks drift out of sync.
+    Sometimes clocks go backwards in time. Sometimes programs explicitly
+    set a file’s timestamp, wiping out the real last-modified time.
+
+    When these things happen, make doesn’t rebuild things that needed to
+    be rebuilt, resulting in an incomplete build.
+
+Command Line Dependencies
+
+    When a program’s command line arguments change, its output might
+    also change. (An example: changing the -D options passed to the C
+    preprocessor.) make doesn’t rebuild in this case, resulting in
+    incorrect incremental builds.
+
+    You can work around this by having each rule depend on Makefile.
+    This is error-prone, because you might forget to do this on a
+    particular rule.  Also, Makefile might include other makefiles,
+    which in turn might include other makefiles; you must list all of
+    them and keep the list up to date. Further, many makefile changes
+    are innocuous. You probably don’t want to rebuild every target in a
+    makefile just because you changed a comment.
+
+Environment Variable Inheritance and Dependencies
+
+    Not only does every environment variable turn into a make variable,
+    but also these environment variables are passed on to the programs
+    make runs. Since every user has different environment variables set,
+    two users running the same build may unexpectedly get different
+    behavior.
+
+    Changing an environment variable exported to a child process might
+    affect its output, so this ought to trigger a rebuild if you want to
+    be completely safe. make does not rebuild when this happens.
+
+Multiple Concurrent Sessions
+
+    If you run two instances of make in the same directory tree at the
+    same time, they will collide with one another when they try to build
+    the same files. Most likely, one or both will die with an error.
+
+Editing Files During a Build
+
+    If you edit and save a file in the middle of a make session, the
+    results are unpredictable. It may correctly pick up the changes; it
+    may not, and you’ll have to type make again; or, if you are unlucky,
+    depending on timing, you may end up with a tree where some targets
+    are stale but cannot be fixed with another make.
+
+Cleaning Up Old Files
+
+    Suppose your project used to have a source file foo.c, but that file
+    was deleted and removed from the makefile. The object file foo.o
+    built from foo.c will stay around. This is usually acceptable, but
+    these old files may accumulate over time, and sometimes this can
+    cause problems. For example, they may be erroneously picked up as
+    part of a vpath search.
+
+    Another example: suppose that a file that was previously generated
+    by the build is checked into revision control, and the rule that
+    generated it is removed from the makefile. Revision control systems
+    will usually not overwrite the old autogenerated file, out of fear
+    that they might destroy something important. If you don’t notice
+    this error message, delete the file manually, and re-update your
+    tree, you will be using a stale version of the file.
+
+Path Canonicalization
+
+    Files have more than one path. Even ignoring both hard and symbolic
+    links, foo.c, ./foo.c, ../bar/foo.c, and /home/user/bar/foo.c might
+    all be the same file. make should treat them the same for purposes
+    of walking the dependency tree, but it doesn’t.
+
+    This problem is worse under Windows, where the file system is not
+    case sensitive.
+
+After a Failed or Cancelled Build
+
+    Once one build has failed, further incremental builds may be unsafe.
+    In particular, after a command fails, make does not delete the
+    partially built output file! If you type make again, it might
+    conclude that the file is already up to date and try to use it. make
+    has an option to delete these files, but it isn’t the default.
+
+    Hitting Ctrl-C during a build can also leave your tree in a suspect
+    state.
+
+    Any time you run into a problem with an incremental build, your tree
+    is suspect—if one file wasn’t rebuilt properly, who knows how many
+    others weren’t? If this happens, you should probably start again
+    from a clean tree.
+
+    A misbehaving process can also do a lot of harm to your tree. If a
+    build step malfunctions and starts overwriting or deleting random
+    files in your tree, make clean won’t be good enough. You will
+    probably have to set up a brand new tree from scratch. (Hopefully
+    the runaway process didn’t destroy your changes.)
+
+Performance
+
+    make‘s performance scales poorly (nonlinearly) with project size.
+
+Incremental Build Performance
+
+    One would hope that rebuilding a project would take time
+    proportional to the number of targets that need to be rebuilt.
+    Unfortunately, this is not the case.
+
+    Since make‘s incremental build reliability is suspect, users must do
+    clean builds on a regular basis, either as necessary (whenever you
+    hit a build error, try a clean build) or even all the time (out of
+    paranoia).  Better to be safe and wait for a clean build than to
+    take the risk that a build appears to pass but is out of sync with
+    the source code.
+
+    A file’s last-modified timestamp can change without its contents
+    changing. This leads to unnecessary rebuilds.
+
+    A buggy makefile may list too many dependencies, so a target may be
+    rebuilt even though none of its (real) dependencies have changed.
+    Careless use of “phony” rules is another common problem (phony rules
+    must always be rerun).
+
+    Even if your makefiles are bug-free and your incremental builds are
+    perfectly reliable, performance is less than ideal. Suppose you edit
+    a single .c file (not a header file) in a large project. If you type
+    make from the top of the project, make must reparse all the
+    makefiles, recursively invoking itself many times, and walk the
+    dependency tree of all targets to see whether any of them need to be
+    rebuilt. The time spent running the compiler may only be a small
+    fraction of the total time.
+
+Recursive Make and Performance
+
+    Sloppy use of recursive make is particularly dangerous. Suppose that
+    your project consists of two executables A and B, which both depend
+    on a library C. The top makefile needs to recurse into directories A
+    and B, obviously. We’d also like to be able to type make from A or B
+    if we only want to build A or only B, so we might have those
+    makefiles recurse into sibling directory ../C. Now suppose we type
+    make from the top of the tree; we’ll recurse into C twice!
+
+    This is mostly innocuous in this example, but in large projects, a
+    single directory might be visited dozens of times. Each time, it has
+    to be reparsed and its targets’ dependency trees must be walked.
+    make has no built-in safeguards against this.
+
+Parallel Make
+
+    make‘s “parallel make” promises large speedups, especially with the
+    increasing popularity of multi-core CPUs. Unfortunately, the
+    delivery falls short of the promise.
+
+    Parallel make‘s output is difficult to read. It’s hard to see which
+    warnings, etc. are associated with which commands when several
+    processes are running concurrently in the same shell.
+
+    Parallel make is exceptionally sensitive to correct dependency
+    specification. If two rules are not connected through dependencies,
+    make assumes that those rules can run in any order, or for that
+    matter in parallel. When running a makefile serially, make tends to
+    behave predictably: if A depends on B and C, then first B will be
+    built, then C, then A. Of course make is free to build C before B,
+    but with serial make, the order is deterministic.
+
+    With parallel make, B and C may (but are not guaranteed to) build in
+    parallel. If C depends on B having run first, but this dependency
+    was not spelled out in the makefile, C’s build will probably fail
+    (but may not, depending on timing). Parallel make tends to flush out
+    these missing dependencies from makefiles. That’s not a bad thing,
+    since missing dependencies cause other problems and it’s good to
+    find and fix them, but the practical effect is that using parallel
+    make on a large project is frustrating.
+
+    Parallel make‘s interactions with recursive make are problematic.
+    Each session of make is independent, so each one attempts to
+    parallelize the build independently of the others and has an
+    incomplete view of the overall dependency graph. We face a tradeoff
+    between reliability and performance. On one hand we would like to
+    parallelize builds not just within a single makefile, but across all
+    of the makefiles. But since make doesn’t know about inter-makefile
+    dependencies, fully parallelizing submakes does not work.
+
+    Certain submakes can be run in parallel, while others must be run
+    serially. Specifying these dependencies is clumsy, and it’s easy to
+    forget some of them. It’s tempting to fall back to the safe option
+    of walking the makefile tree serially and parallelizing only within
+    a single makefile at a time, but this greatly reduces parallelism,
+    particularly in incremental builds.
+
+Automatic Dependency Generation with Microsoft Visual C++
+
+    Many compilers, like gcc, can output dependency information in a
+    format that make understands. Unfortunately, Microsoft Visual C++
+    cannot. It has a command line option /showIncludes, however, that
+    can print this information, and another script can postprocess it
+    into a form that make understands. This requires running an extra
+    script for every C file.  Launching (for example) the Python
+    interpreter for each C file is not cheap.
+
+Builtin Rules
+
+    make has numerous builtin rules. These slightly simplify coding
+    small makefiles, but medium to large projects usually override them.
+    They hurt performance because make walks these extra pattern rules
+    trying to find ways to build files. Many of these rules are
+    obsolete—for example, two of them are intended for use with the RCS
+    and SCCS revision control systems, which very few people still
+    use—and yet they slow down everyone’s builds.
+
+    You can disable them on the command line with make -r, but this is
+    not the default. There is a line you can add to your makefile to
+    remove them, but this is also not the default and many people forget
+    to add it.
+
+Miscellaneous
+
+    There are a few other issues with make that don’t fit cleanly into
+    the categories above.
+
+Silence is Golden
+
+    According to Eric Raymond, “One of Unix’s oldest and most persistent
+    design rules is that when a program has nothing interesting or
+    surprising to say, it should shut up. Well-behaved Unix programs do
+    their jobs unobtrusively, with a minimum of fuss and bother. Silence
+    is golden.” make does not follow this rule.
+
+    When you type make, by default, the log includes every program’s
+    full command line and everything it prints to stdout and stderr.
+    This is too much information. Important warning/error messages are
+    buried in the output, and the text can scroll by so quickly as to
+    make it unreadable.
+
+    You can suppress a lot of this output with make -s, but this is not
+    the default. Also, there is no intermediate mode where make tells
+    you what file it is currently building, without printing out the
+    command lines.
+
+Multi-Target Rules
+
+    Some tools produce more than one output file, but make rules can
+    only have one target. If you try to write a dependency on an
+    additional output file that wasn’t listed as the target of the rule,
+    make will not recognize the connection between the two rules.
+
+Warnings That Should Be Errors
+
+    make prints a warning but does not abort with an error if it detects
+    a circular dependency. This likely indicates a serious makefile bug,
+    but make treats it as a minor problem.
+
+    Likewise, make prints a warning but does not abort with an error if
+    there are two rules describing how to build one target. It simply
+    ignores one of them. Again, this is a serious makefile bug, but make
+    does not treat it as such.
+
+Creating Output Directories
+
+    It is useful to put output files for separate build configurations
+    in separate output directories, so that you don’t have to rebuild
+    from scratch when you switch build configurations. For example, you
+    might put debug binaries in a debug directory and release binaries
+    in a release directory. Before you can create files in these
+    directories, you must first create the directories.
+
+    It would be nice if make did this automatically—clearly you can’t
+    build a file when the directory it’s supposed to live in doesn’t
+    exist yet—but it doesn’t.
+
+    It’s not very practical to put a mkdir -p $(dir $@)) command at the
+    start of every rule. It would be inefficient, too, because you’d be
+    running mkdir many times on the same directory. You’d also have to
+    ignore the errors if the directory already exists.
+
+    You might try to solve this problem as follows:
+
+    debug/%.o: %.c debug
+            $(CC) -c $< -o $@
+
+    debug:
+            mkdir $@
+
+    This looks like it ought to work—if debug doesn’t exist, create it
+    before trying to build debug/foo.o—but it doesn’t. Creating a new
+    directory entry increases the directory’s last modified time.
+    Suppose we are building both debug/foo.o and debug/bar.o. Creating
+    debug/bar.o will increase debug‘s last-modified time. Now debug‘s
+    last-modified time will be newer than debug/foo.o‘s, so the next
+    time we type make, debug/foo.o will unnecessarily be rebuilt. If
+    “rebuilding” it actually deletes it and then creates a new file,
+    rather than truncating the existing file, you get a never-ending
+    cycle of rebuilds.
+
+    The solution is to depend on a file rather than a directory
+    (debug/dummy.txt rather than debug). This requires an extra
+    unnecessary build step (touch debug/dummy.txt), and it can interact
+    poorly with make‘s automatic deletion of “intermediate” files
+    generated during a build. If you’re not careful to make every target
+    depend on its dummy.txt file, you may also have problems with
+    parallel make.
+
+Conclusion
+
+    make is a popular but flawed tool. You could do worse than to use
+    make, but you could also do better. If you are working on a large
+    software project, you should consider using an alternative tool. If
+    you must use make, you should be aware of its defects.
+

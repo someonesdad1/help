@@ -1,0 +1,1169 @@
+*sympy*
+
+|sympy_algebra|
+|sympy_sets|
+|sympy_calculus|
+|sympy_trig|
+|sympy_matrices|
+|sympy_quaternions|
+|sympy_defining_functions|
+|sympy_functions|
+|sympy_solvers|
+|sympy_create_function|
+
+Home page:  https://www.sympy.org/en/index.html
+Docs:  https://docs.sympy.org/latest/index.html
+
+See source code
+    Use source(func) to see the source code of a function.
+
+sympy expressions are immutable (the only exception is matrices).
+
+By default, sympy symbols are assumed to be complex.  Thus, a
+simplification will not be applied unless it holds for all complex
+numbers.
+
+Assumptions queries with ask()
+    from sympy import ask, Q, pi
+    ask(Q.rational(pi))
+        --> False
+    The attributes of Q are:
+
+    algebraic          hermitian          negative           real
+    antihermitian      imaginary          nonnegative        real_elements
+    bounded            infinite           nonpositive        singular
+    commutative        infinitesimal      nonzero            square
+    complex            infinity           normal             symmetric
+    complex_elements   integer            odd                transcendental
+    composite          integer_elements   orthogonal         triangular
+    diagonal           invertible         positive           unit_triangular
+    even               irrational         positive_definite  unitary
+    extended_real      is_true            prime              upper_triangular
+    finite             lower_triangular   rational           zero
+    fullrank
+
+    You can also us a context for ask() queries:
+        x, y = symbols("x y")
+        facts = Q.positive(x), Q.positive(y)
+        with assuming(*facts):
+            print(ask(Q.positive(2*x + y)))
+
+Making new symbols
+    x = Symbol("x")  # Defaults to complex type
+    i = Symbol("x", integer=True)
+        Type can be complex, real, integer, rational
+    x = Symbol("x", positive=True)
+    var("x y z t")  # Interactive use
+
+    from sympy import symbols
+    x, y = symbols("x y")  # Separate with spaces or commas
+    symbols("a0:5")
+        --> Defines a0, a1, ..., a4
+
+    Can use Unicode
+    Pi = Symbol("π")
+    print(Pi) gives
+        π
+
+Numbers
+    Integer(5)
+    Real(34.3)
+    Float(100)       Uses default 15 digits
+    Float(100, '')   Use the number of digits in the number
+    Float('100', 5)  --> 100.00
+    Be careful with using Floats, as their number of digits is
+    immutable.  Float('0.1', 10) + Float('0.1', 3) gives 0.2000061035.
+    For better results, use Rationals.
+
+    Beware of using python built-in numbers.  Use S(6.2) to use sympy's 
+    built in floating point type (i.e., S == sympify()).
+
+    If you use a/b, python will convert them to a float before sympy
+    sees them.  Workaround:  use S(a)/b or Rational(a, b).
+
+    If you get a result, e.g. [-2**(1/2), 2**(1/2)], don't copy and paste,
+    as python will evaluate the fractions.  Either assign it to a variable
+    or sympify it:
+        S("[-2**(1/2), 2**(1/2)]")
+
+    e = sqrt(8)
+    e.evalf()  # First arg is number of digits of precision
+        --> 2.82842712474619
+
+    nsimplify() can be used to guess a formula that's numerically equal
+    to the argument.
+        nsimplify(pi, tolerance=0.001)
+            --> 355/113
+        nsimplify(2.0**(1/3.), tolerance=0.001, full=True)
+            3 ___
+            \/ 2
+
+Complex numbers are supported
+    exp(I*x).expand(complex=True)
+        --> I*exp(-im(x))*sin(re(x)) + cos(re(x))*exp(-im(x))
+
+     x = Symbol("x", real=True)
+     exp(I*x).expand(complex=True)
+         --> I*sin(x) + cos(x)
+
+Expression trees https://docs.sympy.org/latest/tutorial/manipulation.html
+    from sympy import *
+    x, y = symbols("x y")
+    expr = x**2 + x*y
+    srepr(expr)
+        --> "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))"
+ 
+Singularities of rational functions
+    from sympy.calculus.singularities import singularities
+    x = Symbol('x', real=True)
+    singularities(1/(x + 1), x)
+        --> {-1}
+    y = Symbol('y', real=False)
+    singularities(1/(y**3 + 1), y)
+        --> {-1, 1/2 - sqrt(3)*I/2, 1/2 + sqrt(3)*I/2}
+    Doesn't work on non-rational functions
+
+Equality
+    Use Eq(x, y) for x = y, as '=' is used for assignment
+
+Pretty printing
+    init_printing(use_unicode=True, wrap_line=False)
+
+    pprint(x)   # Will use Unicode if your terminal supports it
+
+    Output in LaTeX:
+        latex(cos(x).series(x, 0, 10))
+
+Arguments
+    x, y = symbols("x y")
+    e = x + 2*y**2
+    e.args
+        --> (2*y**2, x)
+
+Sympify
+    x = Sympify(2) = S(2) 
+    x.is_integer --> True
+
+    To sympify an arbitrary object, add a _sympy_ method that returns a
+    suitable sympy object.
+        from sympy import Matrix
+        class MyList1(object):
+            def __iter__(self):
+                yield 1
+                yield 2
+                raise StopIteration
+            def __getitem__(self, i): 
+                return list(self)[i]
+            def _sympy_(self):
+                return Matrix(self)
+        sympify(MyList1())
+        Matrix([
+        [1],
+        [2]])
+
+-----------------------------------------------------------------------------
+Algebra                                         *sympy_algebra*
+
+simplify(expr)
+expand(expr)
+factor(polynomial)
+collect(expr)
+cancel(rational_function)
+apart(rational_function)
+
+Expressions
+    f = Rational(3, 2)*pi + exp(I*x)/(x**2 + y)
+    print f
+    -->  (3/2)*pi + 1/(y + x**2)*exp(I*x)
+
+Convert strings to expressions
+    sympify(”x**2 + 3*x - 1/2”)
+        --> x**2 + 3*x - 1/2
+
+Substitution
+    ((x+y)**2).subs(x, 1)
+        --> (1 + y)**2
+    Multiple substitutions:
+    1.  Three variable values
+        e = x**3 + 4*x*y - z
+        e.subs([(x, 2), (y, 4), (z, 0)])
+            --> 40
+    2.  List comprehension to do a large set of subs on even powers
+        e = x**4 - 4*x**3 + 4*x**2 - 2*x + 3
+        repl = [(x**i, y**i) for i in range(5) if i % 2 == 0]
+        expr.subs(replacements)
+            --> -4*x**3 - 2*x + y**4 + 4*y**2 + 3
+
+Evaluating expressions:  evalf() gives numerical results
+    exp(I*x).subs(x, pi).evalf()
+        --> -1
+    exp(pi * sqrt(163)).evalf(50)
+        --> 262537412640768743.99999999999925007259719818568888
+    Use chop=True to get rid of small numbers.
+    Use lambdify to convert sympy expressions to functions to be
+    evaluated numerically at numerous points:
+
+        import numpy
+        a = numpy.arange(10)
+        expr = sin(x)
+        f = lambdify(x, expr, ”numpy”)
+        f(a)
+        [ 0.        0.84147098 0.90929743 0.14112001 -0.7568025 -0.95892427
+         -0.2794155 0.6569866  0.98935825 0.41211849]
+
+    Use math library instead:
+        f = lambdify(x, expr, ”math”)
+        f(0.1)
+            --> 0.0998334166468
+
+Expansion
+    ((x+y)**2*(x+1)).expand()
+
+Simplification
+    simplify(f)
+
+Partial fractions
+    apart(1/( (x+2)*(x+1) ), x)
+
+Putting things back together
+    together(1/x + 1/y + 1/z)
+
+Powers
+    powsimp(f, force=False)     # Use force=True to force the
+                                  simplification, even if a base might
+                                  be negative.
+    powsimp(f, combine="exp")   # Combines exponents
+    powsimp(f, combine="base")  # Combines bases
+
+    powsimp(x**a*x**b)
+         a + b
+        x
+    expand_power_exp(x**(a + b))
+         a  b
+        x ⋅x
+    powdenest((x**a)**b)
+         a⋅b
+        x
+
+    Note on powers
+        x**a*y**a = (x*y)**a is not always true (x = y = -1, a = 1/2)
+            To always be true:  x, y >= 0 and a ∈ ℝ
+        (x**a)**b = x**(a*b) is not always true (x = -1, a=2, b=1/2)
+            To always be true:  b ∈ ℤ
+
+        Because of this, it can be important to restrict number definitions,
+        such as
+            x = symbols("x", positive=True)
+            a = symbols("a", real=True)
+        Remember sympy symbols are complex unless otherwise stated.
+
+Roots
+    solve(x**3 + 2*x**2 + 4*x + 8, x)
+        --> [-2*I, 2*I, -2]
+    solve([Eq(x + 5*y, 2), Eq(-3*x + 6*y, 15)], [x, y])
+        --> {y: 1, x: -3}
+    or
+    solve([x + 5*y - 2, -3*x + 6*y - 15], [x, y])
+    {y: 1, x: -3}
+
+Sums, products
+    sum(6*n**2 + 2**n, (n, a, b))
+    product(n*(n+1), (n, 1, b))
+
+Logs
+    ln(x) = log(x)
+    expand_log(log(x*y))
+        log(x) + log(y)
+    logcombine(log(x) + log(y))
+        log(x⋅y)
+
+    The identities
+        log(x*y) = log(x) + log(y)
+        log(x**n) = n*log(x)
+    are not true for arbitrary x and y in the complex plane because of
+    the branch cut.  They hold if x, y > 0 and n is real.
+
+Sums & Products
+    from sympy.abc import k, m
+    from sympy import factorial, Sum, oo
+    a = Sum(k, (k, 1, m))
+    a.doit()
+        --> m**2/2 + m/2
+    Limits can be finite or oo (infinity)
+    Sum(x**k/factorial(k),(k,0,oo)).doit()
+        --> exp(x)
+    Products are analogous
+
+Logic
+    x, y = symbols("x y")
+    y | (x & y)
+        --> Or(And(x, y), y)
+    x >> y
+        --> Implies(x, y)
+    (y & x).subs({x: True, y: True})
+        --> True
+
+-----------------------------------------------------------------------------
+Calculus                                            *sympy_calculus*
+
+Limits
+    limit((sin(x)-x)/x**3, x, 0)
+    limit(1/x, x, oo)       # oo is infinity (but can't use ∞)
+    limit(1/x, x, 0, "+")   # Approach from + side
+        --> ∞
+    limit(1/x, x, 0, "-")   # Approach from + side
+        --> -∞
+
+Series
+    expr = exp(sin(x))
+    expr.series(x, 0, 4)  # (variable, point, order)
+        --> 
+                     2
+                    x     ⎛ 4⎞
+            1 + x + -- + O⎝x ⎠
+                    2
+    expr.series(x, 0, 4).removeO()  # Remove Landau order terms
+
+Differentiation
+    diff(cos(x**2)**2 / (1+x), x)
+    nth derivative
+        diff(f, x, n)
+    diff(x**4, x, x, x)
+        24⋅x
+    Same as diff(x**4, x, 3)
+    Partials:
+        f = exp(x*y)
+        diff(f, x, y, y) is f_{xyy}
+
+Integration
+    integrate(cos(x), x)  # Indefinite
+        sin(x)
+    integrate(x**2 * cos(x), (x, 0, pi/2))  #  Definite 
+    integrate(exp(-x), (x, 0, oo))  # Improper
+    Multiple integrals:
+        integrate(exp(-x**2 - y**2), (x, -oo, oo), (y, -oo, oo))
+            --> π
+    Matrices
+        M.integrate(*args)  # args = seq of integration variables
+
+-----------------------------------------------------------------------------
+Trig                                               *sympy_trig*
+
+trigsimp()
+
+expand_trig(sin(x + y))
+    --> sin(x)⋅cos(y) + sin(y)⋅cos(x)
+
+sin(x+y).expand(trig=True)
+    --> cos(x)*sin(y) + cos(y)*sin(x)
+
+cos(x+y).expand(trig=True)
+    --> cos(x)*cos(y) - sin(x)*sin(y)
+
+sin(I*x)
+    --> I*sinh(x)
+
+sinh(I*x)
+    --> I*sin(x)
+
+-----------------------------------------------------------------------------
+Matrices                                           *sympy_matrices*
+
+Matrices are mutable.  Use ImmutableMatrix if you don't want this.
+
+Constructors
+    eye(n)          Identity
+    zeros(n, m)     All zeros
+    ones(n, m)      All ones
+    M.fill(value)
+    Matrix(2, 3, [1, 2, 3, 4, 5, 6])
+        ⎡1  2  3⎤
+        ⎢       ⎥
+        ⎣4  5  6⎦
+    List of row vectors:
+        Matrix([[1, -1], [3, 4], [0, 2]])
+            ⎡1  -1⎤
+            ⎢     ⎥
+            ⎢3  4 ⎥
+            ⎢     ⎥
+            ⎣0  2 ⎦
+    A list of elements is a column vector:
+        Matrix([1, 2, 3])
+        ⎡1⎤
+        ⎢ ⎥
+        ⎢2⎥
+        ⎢ ⎥
+        ⎣3⎦
+    diag(-1, ones(2, 2), Matrix([5, 7, 5]))
+    Using a 2-variable function:
+        def f(i, j):
+            return 1 if i == j else 0
+        Matrix(4, 4, f)
+            [1  0  0  0]
+            [          ]
+            [0  1  0  0]
+            [          ]
+            [0  0  1  0]
+            [          ]
+            [0  0  0  1]
+
+Vectors (note these are column vectors)
+    v1 = Matrix([1, 2, 3])
+    v2 = Matrix([4, 5, 6])
+    v3 = v1.cross(v2)
+    v1.dot(v2)
+
+Joining matrices
+    M.row_join(M1)
+    M.col_join(M1)
+
+Algebra
+    Multiply by scalars
+    Multiply, add, subtract
+    Inverse by taking -1 power
+    M.applyfunc(f)  Element-wise application of a function
+
+Shape   M.shape() --> (rows, cols)
+Access row:  M.row(0)
+Access col:  M.col(0)
+Delete row/col (operate in-place)
+    M.col_del(0)
+    M.row_del(0)
+Insert row/col
+    M = Matrix([[2, 3], [0, 4]])
+    M.row_del(1)
+        [2  3]
+ +  M = M.row_insert(1, Matrix([[0, 4]]))
+ +  M = M.col_insert(0, Matrix([1, -2]))
+    + = do not operate in-place
+
+Put symbols in matrices
+    x, y = Symbol('x, y')
+    A = Matrix([[1,x], [y,1]])
+        [1, x]
+        [y, 1]
+    A**2
+        [1 + x*y,     2*x]
+        [    2*y, 1 + x*y]
+
+Methods/attributes
+    M.det()
+    M.inv(method="LU")  # Gaussian elimination is default
+    M.T = Transpose
+    M.C = by-element conjugation
+    M.D = Dirac conjugate if self.rows == 4
+    M.H = M.adjoint = Hermite conjugation
+    M.is_anti_symmetric()
+    M.is_diagonal
+    M.is_diagonalizable()
+    M.is_lower   (lower triangular)
+    M.is_lower_hessenberg()   (zeros above 1st superdiagonal)
+    M.is_nilpotent()
+    M.is_square
+    M.is_symbolic()  (True if any element contains a Symbol)
+    M.is_symmetric()
+    M.is_upper
+    M.is_upper_hessenberg()   (zeros above 1st superdiagonal)
+    M.is_zero   (zeros above 1st superdiagonal)
+    M.row(i, f) --> Apply function f to row i
+    M.col(i, f) --> Apply function f to column i
+    M.col_swap(i, j) --> Swap columns
+    M.row_swap(i, j) --> Swap rows
+    Q, R = M.QRdecomposition() Q is orthogonal and R is upper triangular
+    M.adjoint() --> Hermitian conjugate
+    M.adjugate() --> transpose of cofactor matrix
+    M.as_mutable() --> Get mutable version
+    L = M.cholesky() Cholesky decomp where L*L.T = M.  M must be square, 
+        symmetric, positive-definite, and non-singular.
+    M.condition_number()  Max singular value/min singular value
+    M.diff(*args)   Derivative of each element
+    M.dual() --> (1/2) ∗ levicivita(i, j, k, l) ∗ M (k, l) (sum over k, l)
+    M.expand()  --> Apply expand() to each element
+    M.extract(rows_list, cols_list)
+    M.has(*patterns)  Test for things (e.g., has variable x in it)
+    M.jacobian(X)  X = seq of x_i's
+    M.limit(*args)  e.g. M.limit(x, 2)
+    M.multiply(other)
+    M.multiply_elementwise(other)
+    M.n()  Apply evalf() to each element
+    M.norm(norm_type=None)  Frobenius norm is default
+    M.print_nonzero(symb="X")  Shows shape of matrix
+    M.project(v)   Projection of matrix along line containing v
+    M.rank()
+    M.rref()    Returns (row-echelon form, indices of pivot columns)
+    M.shape = (rows, columns) of matrix
+    M.simplify()  Apply simplify to each element
+    M.singular_values()  
+    M.solve(rhs)  Solution to M*soln = rhs
+    M.solve_least_squares(rhs)  Least-square fit to data
+    M.subs(*args, **kwargs)  Substitute in each element 
+        Matrix([x]).subs(x, y) --> [y]
+    M.table(printer)
+    M.upper_triangular_solve(rhs)  Solves Mx = B where M is upper triangular
+
+  Full list from dir(Matrix):
+    LU_decomposition       equals                 multiply
+    add                    evalf                  multiply_elementwise
+    adjoint                exp                    n
+    adjugate               expand                 norm
+    applyfunc              extract                normalized
+    as_immutable           eye                    nullspace
+    as_mutable             fill                   ones
+    as_real_imag           free_symbols           orthogonalize
+    atoms                  gauss_jordan_solve     permute
+    berkowitz              get_diag_blocks        permuteBkwd
+    berkowitz_charpoly     has                    permuteFwd
+    berkowitz_det          hstack                 permute_cols
+    berkowitz_eigenvals    integrate              permute_rows
+    berkowitz_minors       inv                    pinv
+    charpoly               inv_mod                pinv_solve
+    cholesky               inverse_ADJ            print_nonzero
+    cholesky_solve         inverse_GE             project
+    cofactor               inverse_LU             rank
+    cofactorMatrix         is_Identity            rank_decomposition
+    cofactor_matrix        is_Matrix              refine
+    col                    is_MatrixExpr          replace
+    col_del                is_anti_symmetric      reshape
+    col_insert             is_diagonal            row
+    col_join               is_diagonalizable      row_del
+    col_op                 is_echelon             row_insert
+    col_swap               is_hermitian           row_join
+    cols                   is_lower               row_op
+    columnspace            is_lower_hessenberg    row_swap
+    condition_number       is_nilpotent           rows
+    conjugate              is_square              rowspace
+    copy                   is_symbolic            rref
+    copyin_list            is_symmetric           shape
+    copyin_matrix          is_upper               simplify
+    cross                  is_upper_hessenberg    singular_values
+    det                    is_zero                solve
+    det_                   jacobian               solve_least_squares
+    det_bareis             jordan_block           subs
+    det_bareiss            jordan_cell            table
+    diag                   jordan_cells           tolist
+    diagonal_solve         jordan_form            trace
+    diagonalize            key2bounds             transpose
+    diff                   key2ij                 upper_triangular_solve
+    doit                   left_eigenvects        values
+    dot                    limit                  vec
+    dual                   lower_triangular_solve vech
+    echelon_form           minor                  vstack
+    eigenvals              minorEntry             xreplace
+    eigenvects             minorMatrix            zeros
+    elementary_col_op      minor_submatrix        zip_row_op
+    elementary_row_op
+
+(L, D) = M.LDLdecomposition()
+    M must be Hermitian (symmetric if real)
+    L*D*L.T == M
+
+M.LDLSolve(B)
+    Solves M*x = B using LDL decomposition for a general square
+    non-singular matrix.  For a non-square matrix with rows > cols, the
+    least squares solution is returned.
+
+L, U, p = M.LUdecomposition()
+    LU decomp and p = row swaps
+
+P, L, D, U = M.LUdecomposition()
+    Fraction-free decomp.  P*M = L*D**(-1)*U
+
+L, U, p = M.LUdecomposition_Simple()
+    M = L*U, p is row swaps.  L's diagonal entries are 1.
+
+x = M.LUsolve(b)
+    Solves M*x = b for symbolic matrices.  For real ones, use 
+    sympy.mpmath.lu_solve; for complex use sympy.mpmath.qr_solve.
+
+x = M.QRsolve(b)
+    Solves the linear system M*x = b.  Two times slower than LUsolve, but
+    more stable for floating point arithmetic.  However, LUsolve usually
+    uses exact arithmetic.
+
+x = M.cholesky_solve(b)
+    Solves M*x = b.  If M is non-square, a least squares solution is
+    returned.
+
+randMatrix(rows, cols, min=0, max=99, seed=None, symmetric=False,
+    percent=100)  If percent < 100, then only approximately that
+    percentage of elements will be nonzero.
+
+M.col_insert(pos, matrix_to_insert)
+    >>> M = Matrix(3,3,lambda i,j: i+j)
+    >>> M
+    [0, 1, 2]
+    [1, 2, 3]
+    [2, 3, 4]
+    >>> V = zeros((3, 1))
+    >>> V
+    [0]
+    [0]
+    [0]
+    >>> M.col_insert(1,V)
+    [0, 0, 1, 2]
+    [1, 0, 2, 3]
+    [2, 0, 3, 4]
+
+M.col_join(bottom)
+    Concatenates two matrices along self's last and bottom's first row.
+        >>> M = Matrix(3,3,lambda i,j: i+j)
+        >>> V = Matrix(1,3,lambda i,j: 3+i+j)
+        >>> M.col_join(V)
+        [0, 1, 2]
+        [1, 2, 3]
+        [2, 3, 4]
+        [3, 4, 5]
+
+M.condition_number()
+    Returns the maximum singular value divided by the minimum singular
+    value.
+
+M.conjugate()
+    By-element conjugation.
+
+x = M.diagonal_solve(b)
+    Solves M*x = b when M is a diagonal matrix with nonzero entries.
+
+Diagonalization
+    P, D = M.diagonalize(reals_only=False)
+        D is diagonal and M = P*D*P**-1, D = P**-1*D*P
+
+M.eigenvals()
+    Returns eigenvalues as keys; multiplicity is value.
+
+M.eigenvects()
+    Return list of triples (eigenval, multiplicity, [eigenvector]).
+
+M.exp()
+    e^M
+
+M.extract(rowsList, colsList)
+    Extract a submatrix.
+
+M.has(*patterns)
+    Test whether any expression in the matrix has the patterns.
+        >>> from sympy import Matrix, Float
+        >>> from sympy.abc import x, y
+        >>> M = Matrix(((1, x), (0.2, 3)))
+        >>> M.has(x)
+        True
+        >>> M.has(y)
+        False
+        >>> M.has(Float)
+        True
+
+M.inv(method="GE")
+    Matrix inversion via Gaussian elimination.  Other method is "LU".
+    There are also other keyword parameters; see docs.
+
+    Other inverse methods:
+        M.inverse_ADJ()     Uses adjugate
+        M.inverse_GE()
+        M.inverse_LU()
+
+M.is_diagonal()
+
+M.is_diagonalizable(reals_only=False)
+
+M.is_lower()    Returns true if M is lower triangular.
+
+M.is_lower_hessenberg()
+    If true, has zeros above first superdiagonal.
+
+M.is_nilpotent()  Is nilpotent if for integer k, B**k is zero matrix.
+
+M.is_symmetric(simplify=True)
+
+M.is_upper()    Returns true if M is upper triangular.
+
+M.is_upper_hessenberg()
+    If true, has zeros below first subdiagonal.
+
+M.jacobian(X)
+    M is a vector of expressions representing the functions 
+    f_i(x_1, ..., x_n).  X is the set of x_iÎéÎ÷s in order, it can be a
+    list or a Matrix.
+        >>> from sympy import sin, cos, Matrix
+        >>> from sympy.abc import rho, phi
+        >>> X = Matrix([rho*cos(phi), rho*sin(phi), rho**2])
+        >>> Y = Matrix([rho, phi])
+        >>> X.jacobian(Y)
+        [cos(phi), -rho*sin(phi)]
+        [sin(phi),  rho*cos(phi)]
+        [   2*rho,             0]
+        >>> X = Matrix([rho*cos(phi), rho*sin(phi)])
+        >>> X.jacobian(Y)
+        [cos(phi), -rho*sin(phi)]
+        [sin(phi),  rho*cos(phi)]
+
+
+M.jordan_form()
+
+x = M.lower_triangular_solve(b)
+    Solves M*x = b where M is lower triangular.
+
+M.multiply(b)   M*b
+
+M.multiply_elementwise(b)   Elementwise (Hadamard) product.
+
+M.norm(ord=None)
+    Frobenius norm of matrix or vector.  See docs for other norms.
+
+M.nullspace(simplified=False)
+    Returns list of vectors (Matrix objects) that span nullspace of M.
+
+M.print_nonzero(symb='X')
+    >>> from sympy import Matrix, matrices
+    >>> m = Matrix(2,3,lambda i,j: i*3+j)
+    >>> m           
+    [0, 1, 2]
+    [3, 4, 5]
+    >>> m.print_nonzero()   
+    [ XX]
+    [XXX]
+    >>> m = matrices.eye(4)
+    >>> m.print_nonzero("x")    
+    [x   ]
+    [ x  ]
+    [  x ]
+    [   x]
+
+M.project(v)  Project onto v.
+
+M.reshape(rows, cols)  Note that the arrays are stored as sequences, so
+    you must have rows*cols = original size or less (less means truncation).
+
+M.row(i, f) Apply function f to row i.
+
+M.row_insert(pos, matrix_to_insert) Analogous to col_insert.
+
+M.row_join(B) Analogous to col_join.
+
+M.rref(simplified=False)
+    Return row-echelon form and indices of pivot vars.
+
+M.simplify(simplify=<func>, ratio=1.7)
+    Simplify elements in place.  If (result length)/(input length) is
+    greater than ratio, then input is returned unmodified.
+
+x = M.singular_values()
+
+M.slice2bounds(key, defmax)
+    Takes slice or number and returns (min,max) for iteration Takes a
+    default maxval to deal with the slice Î÷Îõ:ÎéÎ÷ which is (none, none).
+
+M.submatrix(keys)
+    >>> from sympy import Matrix
+    >>> m = Matrix(4,4,lambda i,j: i+j)
+    >>> m   
+    [0, 1, 2, 3]
+    [1, 2, 3, 4]
+    [2, 3, 4, 5]
+    [3, 4, 5, 6]
+    >>> m[0:1, 1]   
+    [1]
+    >>> m[0:2, 0:1] 
+    [0]
+    [1]
+    >>> m[2:4, 2:4] 
+    [4, 5]
+    [5, 6]
+
+M.tolist()  Return matrix as list.
+    
+M.transpose()
+
+x = M.upper_triangular_solve(b)
+    Solves M*x = b where M is upper triangular.
+
+M.vec()
+    Return matrix as 1 column by stacking columns.
+
+M.vech(diagonal=True, check_symmetry=True)
+    Return the unique elements of a symmetric Matrix as a one column matrix
+    by stacking the elements in the lower triangle.
+
+    Arguments: diagonal ÎíÎñ include the diagonal cells of self or not
+    check_symmetry ÎíÎñ checks symmetry of self but not completely
+    reliably.
+
+-----------------------------------------------------------------------------
+Defining Functions                                 *sympy_defining_functions*
+
+
+One variable function:
+    class sign(Function):
+        nargs = 1
+
+        @classmethod
+        def eval(cls, arg):
+            if isinstance(arg, Basic.NaN):
+                return S.NaN
+            if isinstance(arg, Basic.Zero): return S.One
+            if arg.is_positive: return S.One
+            if arg.is_negative: return S.NegativeOne
+            if isinstance(arg, Basic.Mul):
+                coeff, terms = arg.as_coeff_terms()
+                if not isinstance(coeff, Basic.One):
+                    return cls(coeff) * cls(Basic.Mul(*terms))
+
+        is_bounded = True
+
+        def _eval_conjugate(self):
+            return self
+
+        def _eval_is_zero(self):
+            return isinstance(self[0], Basic.Zero)
+
+Two variable function:
+    class chebyshevt_root(Function):
+        nargs = 2
+
+        @classmethod
+        def eval(cls, n, k):
+            if not 0 <= k < n:
+                raise ValueError, "must have 0 <= k < n"
+            return C.cos(S.Pi*(2*k+1)/(2*n))
+
+        Note:  the first argument of @classmethod should be cls (i.e. not
+        self).
+
+
+How to define a derivative for your function:
+    class my_function(Function):
+        nargs = 1
+
+        def fdiff(self, argindex = 1):
+            return cos(self.args[0])
+
+        @classmethod
+        def eval(cls, arg):
+            arg = sympify(arg)
+            if arg == 0:
+                return sympify(0)
+
+-----------------------------------------------------------------------------
+Functions                                 *sympy_functions*
+
+abs
+arg
+conjugate
+min
+max
+re
+sqrt
+sign
+factorial(n)
+binomial(n, m)
+gamma(z)
+hyper()             Generalized hypergeometric
+
+rewrite()
+    Lets you rewrite special functions in terms of another.
+    tan(x).rewrite(sin)
+             2
+        2⋅sin (x)
+        ---------
+        sin(2⋅x)
+    tan(x).rewrite(cos)
+           ⎛    π⎞
+        cos⎜x - ─⎟
+           ⎝    2⎠
+        ──────────
+          cos(x)
+    exp(x).rewrite(cos)
+        sinh(x) + cosh(x)
+
+expand_func(gamma(x + 3))
+    x⋅(x + 1)⋅(x + 2)⋅Γ(x)
+
+combsimp(factorial(n)/factorial(n - 3))
+    n⋅(n - 2)⋅(n - 1)
+combsimp(binomial(n+1, k+1)/binomial(n, k))
+    n + 1
+    -----
+    k + 1
+
+-----------------------------------------------------------------------------
+Solvers                                             *sympy_solvers*
+
+solveset is the preferred function for such solutions.
+    solveset_real() solves the equation in the real domain.
+    solveset(equation, variable=None, domain=S.Complexes)
+        --> Outputs a FiniteSet, Interval, or ImageSet of the solutions.
+    solveset(x**2 -x, x)
+        --> {0, 1}
+    The equation can be an expression and it is implicitly set to zero.
+
+solve(equations, variables) is also available, but solveset is
+preferred and will eventually replace solve().
+
+Equations:
+    Eq(x**2, 1) means x**2 == 1
+
+linsolve to solve linear systems
+    linsolve([x + y + z - 1, x + y + 2*z - 3 ], (x, y, z))
+        --> {(-y - 1, y, 2)}
+
+nonlinsolve for nonlinear equations
+    system = [x**2 - 2*y**2 -2, x*y - 2]
+    vars = [x, y]
+    nonlinsolve(system, vars)
+        -->{(-2, -1), (2, 1), (-√2⋅ⅈ, √2⋅ⅈ), (√2⋅ⅈ, -√2⋅ⅈ)}
+
+Getting polynomial roots
+    solveset(x**3 - 6*x**2 + 9*x, x)
+        --> {0, 3}
+    roots(x**3 - 6*x**2 + 9*x, x)
+        --> {0: 1, 3: 2}
+    The roots function gives the root multiplicity as the value and the
+    root as the key.
+
+DEs
+    Create undefined functions:
+        f, g = symbols(’f g’, cls=Function)
+    For DE f''(x) − 2*f'(x) + f(x) = sin(x), use
+        diffeq = Eq(f(x).diff(x, x) - 2*f(x).diff(x) + f(x), sin(x))
+    Solve:
+        dsolve(diffeq, f(x))
+                                x   cos(x)
+            f(x) = (C1 + C2⋅x)⋅e  + ------
+                                      2
+
+----------------------------------------------------------------------
+Create a sympy function                 *sympy_create_function*
+
+Univariate function:
+    class sign(Function):
+        nargs = 1
+        @classmethod
+        def eval(cls, arg):
+            if isinstance(arg, Basic.NaN):
+                return S.NaN
+            if isinstance(arg, Basic.Zero):
+                return S.Zero
+            if arg.is_positive:
+                return S.One
+            if arg.is_negative:
+                return S.NegativeOne
+            if isinstance(arg, Basic.Mul):
+                coeff, terms = arg.as_coeff_mul()
+            if not isinstance(coeff, Basic.One):
+                return cls(coeff) * cls(Basic.Mul(*terms))
+        is_bounded = True
+        def _eval_conjugate(self):
+            return self
+        def _eval_is_zero(self):
+            return isinstance(self[0], Basic.Zero)
+
+Bivariate function:
+    class chebyshevt_root(Function):
+        nargs = 2
+        @classmethod
+        def eval(cls, n, k):
+            if not 0 <= k < n:
+                raise ValueError(”must have 0 <= k < n”)
+            return C.cos(S.Pi*(2*k + 1)/(2*n))
+
+How to define a derivative
+    from sympy import Function, sympify, cos
+    class my_function(Function):
+        nargs = 1
+        def fdiff(self, argindex = 1):
+            return cos(self.args[0])
+        @classmethod
+        def eval(cls, arg):
+            arg = sympify(arg)
+            if arg == 0:
+                return sympify(0)
+
+    It's the sine function, but pretend we don't know.  Use
+
+    from sympy import pprint
+    pprint(my_function(x).series(x, 0, 10))
+            3     5     7       9
+            x     x     x       x       / 10\
+        x - -- + --- - ---- + ------ + O\x  /
+            6    120   5040   362880
+
+----------------------------------------------------------------------
+Sets                                                *sympy_sets*
+
+i = Interval(0, 1, left_open=True)
+    Also i = Lopen(0, 1)
+j = FiniteSet(0)
+
+Union(i, j) gives Interval(0, 1)
+Intersection(i, j) gives EmptySet()
+
+Properties/methods of sets
+    boundary gives boundary of set
+    closure = union(s, s.boundary)
+    complement(universe) wrt universe (e.g., S.reals)
+    contains(other)
+    inf = infimum
+    interior (points in set not on boundary)
+    intersect(other)
+    intersection(other)
+    is_closed (i.e., its complement is open)
+    is_disjoint(other)
+    isdisjoint(other)
+    is_iterable (True if can be iterated over)
+    is_open 
+    is_proper_subset(other)
+    is_proper_superset(other)
+    is_subset(other)
+    issubset(other)
+    is_superset(other)
+    issuperset(other)
+    measure = Lebesgue measure
+    powerset()
+    sup = supremum 
+    symmetric_difference(other)
+    union(other) (can also use '+' operator)
+
+imageset(*args) Returns an image set under a xfm
+    from sympy import imageset, Lambda, symbols, S
+    imageset(x, 2*x, Interval(0, 2))
+      --> Interval(0, 4)
+    n, x = symbols("n x")
+    a = imageset(Lambda(n, 2*n), FiniteSet(*Range(0, 10)))
+        --> {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+    N = S.Naturals
+    squares = ImageSet(Lambda(x, x**2), N) # {x**2 for x in N}
+    4 in squares --> True
+    5 in squares --> False
+
+Interval
+    as_relational(x)    Rewrite interval as inequalities & logic operators
+        i = Interval(0, 1, left_open=True)
+        print(i.as_relational("x"))
+            --> (x <= 1) & (0 < x)
+    end                 The right end point
+    is_left_unbounded   If left point is -∞ 
+    is_right_unbounded  If right point is ∞ 
+    left                The left end point (== .inf)
+    left_open           True if left open
+    open(a, b)          Return open interval (classmethod)
+    right               The right end point (== .sup)
+    right_open          True if right open
+    start               The left end point (== .inf)
+
+ProductSet (Cartesian products)
+    I = Interval(0, 5)
+    S = FiniteSet(1, 2, 3)
+    ProductSet(I, S)
+        --> ProductSet(Interval(0, 5), FiniteSet(1, 2, 3))
+        == Cartesian product
+    Unit square:  Interval(0, 1)*Interval(0, 1)
+        == ProductSet(Interval(0, 1), Interval(0, 1))
+    Note the Cartesian product is neither commutative or associative
+        A*B != B*A
+        A*(A*A) != (A*A)*A
+    coin = FiniteSet('H', 'T')
+    set(coin**2)
+        --> {(H, H), (H, T), (T, H), (T, T)}
+
+Complement
+    Complement(FiniteSet(0, 1, 2), FiniteSet(1))
+        --> FiniteSet(0, 2)
+    Note it's also an attribute of a set
+
+SymmetricDifference(a, b, evaluate=True)
+    The set which are in either a or b but not both
+
+Special sets
+    EmptySet
+    UniversalSet   Also access as S.UniversalSet
+    Naturals, S.Naturals:  natural numbers = {1, 2, ...}
+    Naturals0:  naturals plus zero
+    Integers, S.Integers
+    Reals, S.Reals
+    Complexes, S.Complexes
+
+Range(start, stop, step)   Same as python's range()
+    Infinite ranges allowed, but ∞ is not included
+    Slicing allowed
+    Range(0, 10, 2).intersect(Interval(3, 7))
+        --> Range(4, 8, 2)
+    Use integer symbols
+        n = Symbol('n', integer=True)
+        r = Range(n, n + 20, 3)
+        r.inf --> n
+        pprint(r)
+            --> {n, n + 3, ..., n + 17}
+    reversed    Reverse order
+
+----------------------------------------------------------------------
+Quaternions                             *sympy_quaternions*
+
+from sympy.algebras.quaternion import Quaternion
+from sympy import symbols, I
+
+By default, quaternions are defined over the real field:
+    q = Quaternion(1, 2, 3, 4)
+        --> 1 + 2*i + 3*j + 4*k
+    To get quaternions over the complex field:
+        q = Quaternion(3 + 4*I, 2 + 5*I, 0, 7 + 8*I, real_field = False)
+            --> (3 + 4*I) + (2 + 5*I)*i + 0*j + (7 + 8*I)*k
+
+Addition:  q.add(other) or q + other
+Multiplication:  q.mul(other) or q*other
+Exponentiation:  q.exp()
+Inverse:  q.inverse()
+Norm:  q.norm()
+Normalization:  q.normalize()
+Power:  q.pow(n)    nth power (gives inverse for n == -1)
+    q.pow_cos_sin(n)
+
+Rotations
+    Quaternion.from_axis_angle(vector, angle)
+        vector is a 3-tuple
+        angle to rotate in radians
+    Quaternion.from_rotation_matrix(M)
+    Quaternion.rotate_point(pt, r)
+        pt is a 3-tuple to be rotated
+        r is a quaternion or (axis, angle) tuple (axis is 3-tuple)
+    q.to_axis_angle()
+        --> (axis, angle) tuple (axis is 3-tuple)
+    q.to_rotation_matrix(v=None)
+
+Rotation example
+  Set up a rotation matrix m that represents a rotation about the x
+  axis by the angle θ
+    >>> θ = symbols("θ")
+    >>> m = Matrix([[1,0,0], [0,cos(θ),-sin(θ)], [0,sin(θ),cos(θ)]])
+    >>> m
+        ⎡1    0        0   ⎤
+        ⎢                  ⎥
+        ⎢0  cos(θ)  -sin(θ)⎥
+        ⎢                  ⎥
+        ⎣0  sin(θ)  cos(θ) ⎦
+    >>> q = Quaternion.from_rotation_matrix(m)
+    >>> q
+        sqrt((sin(θ)**2 + cos(θ)**2)**(1/3) + 2*cos(θ) + 1)/2 +
+        sqrt((sin(θ)**2 + cos(θ)**2)**(1/3) - 2*cos(θ) + 1)/2*i +
+        sqrt((sin(θ)**2 + cos(θ)**2)**(1/3) - 1)/2*j +
+        sqrt((sin(θ)**2 + cos(θ)**2)**(1/3) - 1)/2*k
+      Note this is 
+            sqrt(a + 2*cos(θ) + 1)/2 + sqrt(a - 2*cos(θ) + 1)/2*i +
+            sqrt(a - 1)/2*j + sqrt(a - 1)/2*k
+      where a = (sin(θ)**2 + cos(θ)**2)**(1/3)
+    >>> q.subs(θ, 2**0.5)   # sqrt(2) radians is 81.03°
+        0.76024459707563 + 0.649636939080062*i + 0*j + 0*k
+    >>> r = Quaternion(0.76024459707563, 0.649636939080062, 0, 0)
+    >>> r.to_rotation_matrix()
+        ⎡1          0                  0         ⎤
+        ⎢                                        ⎥
+        ⎢0  0.155943694765375  -0.987765945992736⎥
+        ⎢                                        ⎥
+        ⎣0  0.987765945992736  0.155943694765375 ⎦
+    # Note this is m at θ = sqrt(2)
+    >>> m.subs(θ, 2**0.5)
+        ⎡1          0                  0         ⎤
+        ⎢                                        ⎥
+        ⎢0  0.155943694765374  -0.987765945992735⎥
+        ⎢                                        ⎥
+        ⎣0  0.987765945992735  0.155943694765374 ⎦
+
+

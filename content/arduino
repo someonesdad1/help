@@ -1,0 +1,291 @@
+*arduino*
+
+|ard_models|
+|ard_control_structures|
+|ard_string_functions|
+|ard_analog_io|
+|ard_digital_io|
+|ard_other_stuff|
+|ard_math|
+|ard_characters|
+|ard_bits_and_bytes|
+|ard_interrupts|
+|ard_Serial|
+
+----------------------------------------------------------------------
+Arduino models                                      *ard_models*
+
+Nano
+    Logic level                     5 V
+    Input voltage (recommended)     7-12 V
+    Input voltage (limits)          6-20 V
+    Digital I/O pins                14 (6 provide 8-bit PWM)
+    Analog input pins               8 (10-bits)
+    Analog reference pin            1
+    DC current per I/O pin (max)    40 mA
+    DC current per I/O pin (rec)    20 mA
+    DC current for package          200 mA
+    Flash                           16 kB (2 used by bootloader)
+    SRAM                            1 kB
+    EEPROM                          512 B
+    Clock                           16 MHz
+    Size                            19x43 mm
+
+Mega 2560
+    Logic level                     5 V
+    Digital I/O pins                54 (15 provide 8-bit PWM)
+    Analog input pins               16 (10-bits)
+    Serial ports                    4
+    Clock                           16 MHz
+
+Uno
+    Logic level                     5 V
+    Input voltage (recommended)     7-12 V
+    Input voltage (limits)          6-20 V
+    Digital I/O pins                14 (6 provide 8-bit PWM)
+    Analog input pins               6 (10-bits)
+    Analog reference pin            1
+    DC current per I/O pin (rec)    20 mA
+    DC current for 3.3 V pin        50 mA
+    DC current for package          200 mA
+    Flash                           32 kB
+    SRAM                            2 kB
+    EEPROM                          1024 B
+    Clock                           16 MHz
+    Size                            19x43 mm
+    
+Fairly good page:
+https://www.electroniclinic.com/arduino-uno-vs-nano-vs-mega-pinout-and-technical-specifications/
+
+----------------------------------------------------------------------
+Control structures                                  *ard_control_structures*
+
+Same as C:
+    if, if/else, for, switch/case, while, do while, break, continue,
+    return, goto, #define, #include
+
+Constants
+    HIGH, LOW
+    INPUT, OUTPUT, INPUT_PULLUP
+    LED_BUILTIN
+    true, false
+
+Types
+    const 
+    void 
+    boolean (1 byte)
+    char, unsigned char (1 byte)
+    byte (8-bit unsigned number) e.g.:  byte b = B10010;
+    word (16-bit unsigned Uno, 32-bit Due)
+    short (16-bit signed)
+    float (4 bytes ==> 6-7 decimal digits)
+    double (same as float; 8 bytes on Due)
+
+    strings:  null-terminated as in C
+    string objects:  more memory, but includes numerous member functions
+        (see |ard_string_functions|)
+
+Integers
+    Signed are 2's complement
+    int and unsigned int (16 bits)
+    long and unsigned long (32 bits)
+
+----------------------------------------------------------------------
+String Functions                            *ard_string_functions*
+
+String()
+charAt()
+compartTo()
+concat()
+c_str()
+endsWith()
+equals()
+equalsIgnoreCase()
+getBytes()
+indexOf()
+lastIndexOf()
+
+----------------------------------------------------------------------
+Analog I/O                                  *ard_analog_io*
+
+analogRead(pin)
+    Read from analog pin, such as A0 or A1.  Returns 10-bit number between
+    0 and 1023.
+
+analogReference(type)
+    Configures the analog reference value.  type can be (Mega, Uno, etc.)
+        DEFAULT         5 V
+        INTERNAL        A built-in ref, not on Mega
+        INTERNAL1V1     Built-in 1.1 V on Mega only
+        INTERNAL2V56    Built-in 2.56 V ref on Mega only
+        EXTERNAL        On pin AREF (must be 0 to 5 V)
+
+analogWrite(int pin, int value)
+    PWM functionality
+    Uno, Nano pins:  3, 5, 6, 9, 10, 11
+    Mega pins:  2-13, 44-46
+    value = duty cycle from 0 (always off) to 255 (always on).
+
+    Warning:  PWM outputs on pins 5 and 6 will have higher than expected
+    duty cycles because of some functions that share the internal timer
+    used for interrupts.  This will be noticed mostly at low duty cycle
+    settings of 0 to 10 or so.
+
+----------------------------------------------------------------------
+Digital I/O                                 *ard_digital_io*
+
+pinMode(pin, mode)
+    Configure a digital pin.
+    mode is INPUT, OUTPUT, INPUT_PULLUP.  INPUT explicitly disables the
+    pull-up resistor.  The internal pull-ups are typically 20k to 50k.
+
+    Pins default to inputs = 100 Mohm input impedance state.
+
+    Pins configured as output can provide significant current (up to 40
+    mA, but 20 mA recommended with 200 mA package limit).  Good practice
+    is to use series resistors of 470 to 1k.
+
+digitalRead(pin)
+    Returns HIGH or LOW.
+
+digitalWrite(pin, value)
+    Writes HIGH or LOW to indicated pin.
+
+    If pin is configured as an INPUT, it is recommended to use 
+    pinMode(pin, INPUT_PULLUP) to enable the pull-up resistor.
+
+    If you do not set a pin to OUTPUT and connect an LED, the LED can be
+    dim because digitalWrite() will have enabled the internal pull-up,
+    which acts like a current limiting resistor.
+
+----------------------------------------------------------------------
+Other stuff                                 *ard_other_stuff*
+
+tone(pin, ulong freq_Hz [, ulong duration_ms])
+    Generates a square wave > 31 Hz.
+noTone(pin)
+    Turns tone off.
+
+pulseIn(int pin, int value [, ulong timeout])
+    Reads a HIGH or LOW pulse on a pin.  If value is HIGH, function waits
+    for a pin to go from LOW to HIGH, starts timing, then waits for the pin
+    to go LOW again; returns a ulong of the length of the pulse in us (or 0
+    if it timed out).  Works for 10 us to 3 minutes.
+
+    pulseInLong() has same form, but is used in long pulse and
+    interrupt-affected scenarios.  Cannot be used in noInterrupts()
+    context.
+
+shiftIn(), shiftOut()   Shifts in or out a byte of data.
+
+delay(ulong ms)
+delayMicroseconds(uint us)  Don't use if us > 16383 (use delay() instead)
+
+ulong micros()   Returns us since current program started.  Overflows at
+    about 70 minutes.
+ulong millis()   Returns ms since current program started.  Overflows at
+    about 50 days.
+
+----------------------------------------------------------------------
+Math                                        *ard_math*
+
+abs(x)      Absolute value.  Do not use abs(x++).
+
+constrain(x, a, b)  Constrain a number to within a range.  All data types
+    allowed.  Do not use other functions in the paretheses.
+
+map(value, fromLow, fromHigh, toLow, toHigh)
+    Actual code:
+    long map(long x, long in_min, long in_max, long out_min, long out_max) {
+        return (x - in_min)*(out_max - out_min)/(in_max - in_min) + out_min;
+    }
+
+min(x, y), max(x, y)    Take any data types.  Avoid use of other functions
+    in the parentheses when using max.
+
+double pow(float base, float exponent)
+
+sq(x)   Squares number x (can be any data type).  No functions inside
+    parentheses.
+
+double sqrt(x)   Square root of x (can be any data type).
+
+double cos(float x)
+double sin(float x)
+double tan(float x)
+
+long random(max)
+long random(min, max)
+    Pseudorandom number generator.  min is inclusive, max is exclusive.
+randomSeed(ulong seed)
+
+----------------------------------------------------------------------
+Characters                                  *ard_characters*
+
+isAlpha()
+isAlphaNumeric()
+isAscii()
+isControl()
+isDigit()
+isGraph()
+isHexadecimalDigit()
+isLowerCase()
+isPrintable()
+isPunct()
+isSpace()
+isUpperCase()
+isWhitespace()
+
+----------------------------------------------------------------------
+Bits and Bytes                              *ard_bits_and_bytes*
+
+bit()
+bitClear()
+bitRead()
+bitSet()
+bitWrite()
+highByte()
+lowByte()
+
+----------------------------------------------------------------------
+Interrupts                                  *ard_interrupts*
+
+attachInterrupt()
+detachInterrupt()
+interrupts()
+noInterrupts()
+
+----------------------------------------------------------------------
+Serial Communications                       *ard_Serial*
+
+Serial
+    Uno, Nano:  0(TX), 1(RX)  Used for communication with computer
+    Mega:  0(TX), 1(RX)
+        Serial1:  18(TX), 19(RX)
+        Serial2:  16(TX), 17(RX)
+        Serial3:  14(TX), 15(RX)
+    The TX/RX pins use TTL logic (5 or 3.3 V depending on board)
+
+
+if(Serial)
+available()
+availableForWrite()
+begin()
+end()
+find()
+findUntil()
+flush()
+parseFloat()
+parseInt()
+peek()
+print()
+println()
+read()
+readBytes()
+readBytesUntil()
+readString()
+readStringUntil()
+setTimeout()
+write()
+serialEvent()
+
