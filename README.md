@@ -7,9 +7,16 @@ tell you how to set things up to use with vim.  When things are set up
 properly, open the output/index.hlp file.  Position the cursor on a word
 and press ^] to jump to the associated help file.
 
-See [plib](https://github.com/someonesdad1/plib) for the needed modules to
-run the python scripts in this repository.  In the python scripts, these
-are imported in the section labeled "Custom imports".
+I used python 3.7.12 to test the scripts in this repository.
+
+# Notes
+
+1. See [plib](https://github.com/someonesdad1/plib) for the needed modules
+   to run the python scripts in this repository.  In the python scripts,
+   these are imported in the section labeled "Custom imports".
+1. The contents/math_.py script may not work for you if you don't have a
+   Unicode-capable terminal.  If you don't, change the uni global variable
+   to False.
 
 # History
 

@@ -19,6 +19,8 @@ if 1:  # Copyright, license
     pass
 if 1:   # Standard imports
     import sys
+    import time
+    from pathlib import Path as P
     from math import (log, log10, sqrt, pi, sin, cos, tan, factorial, ceil, exp)
     from decimal import Decimal, getcontext
     from io import StringIO
@@ -35,9 +37,9 @@ if 1:   # Custom imports
 if 1:   # Global variables
     nl = "\n"
     title = "*Math*" + nl
-    # Set True to use Unicode symbols in output
-    uni = True
+    uni = True      # Set True to use Unicode symbols in output
     d2r = pi/180
+    headings = []
     symbols = {
         "theta" : chr(0x03b8),
         "mu" : chr(0x03bc),
@@ -59,10 +61,22 @@ def rlz(s):
     if s[0] == "0":
         s = s[1:]
     return s
+def Versions():
+    dt = time.strftime("%d %b %Y")
+    if dt[0] == "0":
+        dt = dt[1:]
+    py = '.'.join([str(i) for i in sys.version_info[:3]])
+    scr = P(sys.argv[0]).absolute()
+    print(dedent(f'''
+ 
+    The information in this document was computed using a python script
+    {scr} with python version {py} on {dt}.{nl}'''))
 def SectionHeading(title, tag):
     w = 79
     n = w - len(title) - len(tag) - 3
     h = "-"*w + nl
+    global headings
+    headings.append(f"|{tag}|")
     if n > 0:
         return f"{h}{title}{' '*n}*{tag}*"
     else:
@@ -329,28 +343,6 @@ def TrigRelations():
     '''))
     print(nl.join(s))
 def MathConstants():
-    if 0:
-        # Replace with Unicode symbols (need to get working; must change
-        # the table below so the first column uses the same amount of space
-        # for the Unicode symbols).
-        def S(s):
-            for i in ("pi", "sqrt", "degrees", "^2"):
-                if i in s and uni:
-                    s = s.replace(i, symbols[i])
-            return s
-        fmt = "{0:<20s} {1:>16.10f} {2:>16.10f}"
-        print(fmt.format(S("pi"), pi, log10(pi)))
-        print(fmt.format(S("2*pi"), 2*pi, log10(2*pi)))
-        print(fmt.format(S("3*pi"), 3*pi, log10(3*pi)))
-        print(fmt.format(S("4*pi"), 4*pi, log10(4*pi)))
-        print(fmt.format(S("pi^2"), pi**2, log10(pi**2)))
-        print(fmt.format(S("sqrt(pi)"), pi**0.5, log10(pi*0.5)))
-        print(fmt.format(S("x"*20), pi**0.5, log10(pi*0.5)))
-        print("1234567890"*5)
-        f = "{0:>20s}"
-        print(len(f.format(S("ssrt(si)"))))
-        print(len(f.format(S("sqrt(pi)"))))
-        exit()
     s = [SectionHeading("Math Constants", "Constants"), ""]
     s.append(dedent(f'''
     Constant              Number        log10(Number)
@@ -527,6 +519,7 @@ def NaturalLogarithms():
         if i > 10 and not ((i + 1)//10 % 2) and not ((i + 1) % 10) and i != 99:
             Header()
     print(dedent(f'''
+   
     Example:  calculate the natural logarithm of Avogadro's constant, 6.022e23.
      
         The natural log of 1e23 is 52.959457.  Reading down the table to the row
@@ -835,6 +828,7 @@ def SquaresSquareRoots():
         if not (count % 25) and count != max_integer:
             Header()
         count += 1
+    print()
 def DegreesAndRadians():
     deg = "°" if uni else " deg"
     s = [SectionHeading("Degrees and Radians", "Degrees_and_radians"), ""]
@@ -925,6 +919,7 @@ def ProportionalParts():
                 n = int(j/10*(i + 50*k) + 0.5)
                 print("{0:3d}".format(n), end="")
         print()
+    print()
 def Fit(x, width):
     '''Using sig(), keep increasing digits until width of sig(x) is equal to
     the desired width.
@@ -1000,6 +995,7 @@ def ListOfPrimes():
     print(nl.join(s))
     for i in Columnize(Primes(n)):
         print(i)
+    print()
 def ShortTables(digits=3):
     R0, R1, R9 = range(10), range(1, 10), range(9)
     s = [SectionHeading("Short Math Tables", "ShortMathTables"), ""]
@@ -1248,7 +1244,7 @@ def ShortTables(digits=3):
         lines.append(row)
     Table("Cube (significand)", lines, inc=1)
 if __name__ == "__main__":
-    trap = 0
+    trap = True
     if trap:
         old = sys.stdout
         stream = StringIO()
@@ -1282,6 +1278,7 @@ if __name__ == "__main__":
         print(title)
         for i in headings:
             print(i)
+        Versions()
         print(tables, end="")
         sys.stdout = old
         # Remove spaces at end of lines
