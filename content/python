@@ -11,6 +11,7 @@ Core            + means updated to python 3.7 manpage
     |python_keywords|
     |python_collections|
     |python_subprocess|
+    |python_memory_usage|
 Strings
     |python_strings|
     |python_string_formatting|
@@ -5402,14 +5403,16 @@ Operator                            Description
 (expressions...), [expressions...], Binding or tuple display,, list display,
                                     dictionary display, set display
 
-x[index], x[index:index],           Subscription, slicing, call,
+x[index], x[index:index],           Subscripting, slicing, call,
 x(arguments...), x.attribute        attribute reference
+
+await x                             Await expression
 
 **                                  Exponentiation [6]
 
 +x, -x, ~x                          Positive, negative, bitwise NOT
 
-*, /, //, %                         Multiplication, division, remainder [5]
+*, @, /, //, %                      Mult, matrix mult, division, remainder [5]
 
 +, -                                Addition and subtraction
 
@@ -8595,6 +8598,73 @@ output (this is preferred over the old method of popen()):
     If you don't print to the screen, you can complete 1000 such
     conversions in around 13 s, so a few hundred will will take on the
     order of a second or so.
+
+----------------------------------------------------------------------
+Memory usage                                *python_memory_usage*
+
+There are two modules:
+    tracemalloc 
+        Pros:  accurate
+        Cons:  slows things down a lot
+    resource
+        Pros:  Fast
+        Cons:  Only takes a snapshot
+
+Here's an example of use for testing the kolor module
+    from kolor import Color
+    from f import flt
+    from random import random
+    import sys
+
+    def MakeColors(n):
+        a = []
+        for i in range(n):
+            c = Color(random(), random(), random())
+            a.append(c)
+        return a
+
+    n = int(sys.argv[1])
+
+    if 1:
+        # Use tracemalloc
+        import tracemalloc as T
+        def Get():
+            # Return usage in bytes
+            return flt(T.get_traced_memory()[1])
+        T.start()
+        a = MakeColors(n)
+        usage_in_bytes = Get()
+        T.stop()
+        print(f"{flt(usage_in_bytes/n)} bytes per Color instance (tracemalloc)")
+    if 1:
+        # Use resource
+        import resource 
+        def Get():
+            # Returns RAM usage in bytes
+            kB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+            return 1000*kB
+        start = Get()
+        a = MakeColors(n)
+        finish = Get()
+        usage_in_bytes = finish - start
+        print(f"{flt(usage_in_bytes/n)} bytes per Color instance (resource)")
+
+Comments:  
+
+    I ran these techniques with the resource command (tracemalloc commented
+    out):
+        'for n in 1 10 100 1000 10000 ; do p mem.py $n ; done'
+    Results:
+        12000. bytes per Color instance (resource)
+        1200. bytes per Color instance (resource)
+        120. bytes per Color instance (resource)
+    **  12.0 bytes per Color instance (resource)
+        114. bytes per Color instance (resource)
+        131. bytes per Color instance (resource)
+
+    The result marked ** seems to be close to the truth (each instance
+    should have been perhaps 5-10 bytes by my reckoning.  The tracemalloc
+    module gave 4360 to 117 bytes per instance.
 
 ----------------------------------------------------------------------
 Functions                                   *python_functions*
