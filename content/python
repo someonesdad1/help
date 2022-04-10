@@ -9837,6 +9837,60 @@ __import__(name, globals=None, locals=None, fromlist=(), level=0)
 
 This is for python 3.9, last updated on May 12, 2021
 ----------------------------------------------------------------------
+Fractions
+
+Constructor
+    Fraction(numerator=0, denominator=1)
+    Fraction(other_fraction)
+    Fraction(float)
+    Fraction(decimal)
+    Fraction(string)    Must be '[sign]x[/y]'
+
+numerator
+    Numerator of the Fraction in lowest term.
+
+denominator
+    Denominator of the Fraction in lowest term.
+
+from_float(flt)
+    This class method constructs a Fraction representing the exact value of
+    flt, which must be a float. Beware that Fraction.from_float(0.3) is not
+    the same value as Fraction(3, 10).
+
+from_decimal(dec)
+    This class method constructs a Fraction representing the exact value of
+    dec, which must be a decimal.Decimal instance.
+
+limit_denominator(max_denominator=1000000)
+    Finds and returns the closest Fraction to self that has denominator at
+    most max_denominator. This method is useful for finding rational
+    approximations to a given floating-point number:
+
+__floor__()
+    Returns the greatest int <= self. This method can also be accessed
+    through the math.floor() function.
+
+__ceil__()
+    Returns the least int >= self. This method can also be accessed through
+    the math.ceil() function.
+
+__round__()
+__round__(ndigits)
+    The first version returns the nearest int to self, rounding half to
+    even.  The second version rounds self to the nearest multiple of
+    Fraction(1, 10**ndigits) (logically, if ndigits is negative), again
+    rounding half toward even. This method can also be accessed through the
+    round() function.
+
+fractions.gcd(a, b)
+    Return the greatest common divisor of the integers a and b. If either a
+    or b is nonzero, then the absolute value of gcd(a, b) is the largest
+    integer that divides both a and b. gcd(a,b) has the same sign as b if b
+    is nonzero; otherwise it takes the sign of a. gcd(0, 0) returns 0.
+
+    Deprecated since version 3.5: Use math.gcd() instead.
+
+----------------------------------------------------------------------
 vim tips
 
 Folding
