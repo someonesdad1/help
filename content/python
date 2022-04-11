@@ -24,11 +24,12 @@ Functional
     |python_toolz|
     |python_itertools|
 Numerical
+    |python_decimal|                +
+    |python_fractions|              +
     |python_uncertainties|
     |python_random|
     |python_math|                   +
     |python_cmath|                  +
-    |python_decimal|                +
     |python_number_methods|         +
 Other
     |python_PyPDF2|
@@ -63,6 +64,14 @@ Less-used stuff
 Miscellaneous stuff
 
 Python's FAQ: https://docs.python.org/3/faq/
+
+A quirk in python's if syntax (from fractions.py)
+    if type(numerator) is int is type(denominator):
+        do_something
+
+    Normally 'type(numerator) is int' returns a bool, but in the if
+    statement it returns the type of numerator, allowing this shortcut
+    syntax.
 
 How to add methods at runtime
     https://www.oreilly.com/library/view/python-cookbook/0596001673/ch05s13.html
@@ -9837,7 +9846,7 @@ __import__(name, globals=None, locals=None, fromlist=(), level=0)
 
 This is for python 3.9, last updated on May 12, 2021
 ----------------------------------------------------------------------
-Fractions
+Fractions                                           *python_fractions*
 
 Constructor
     Fraction(numerator=0, denominator=1)
