@@ -154,6 +154,9 @@ Use case
         git commit -a
         git checkout HEAD~3
 
+            Note: HEAD~ and HEAD^ are equivalent and mean the first parent
+            of the item.  HEAD~3 is equivalent to HEAD~~~.
+
     Now add changes as needed; you can even commit.  Use
 
         git checkout master 
@@ -179,15 +182,21 @@ Quick fix
     commit 1b6d:
         git commit -a
         git checkout -b fixes 1b6d
+            This creates a new branch from the revision 1b6d and you're now
+            working on this branch.
 
     Once fixed:
-
         git commit -a -m "Bug fixed"
         git checkout master
 
-    You can merge the fixes to main:
+    Now you can merge the fixes to main:
 
-    git merge fixes
+        git merge fixes
+
+    If your local repository is ahead of your remote repository and you
+    merge a branch in your local repository, you won't be able to push it
+    to the remote.  You'll have to first do a 'git pull' to get the remote
+    stuff, then do the push.
 
 Interrupted workflow
     Suppose part1 and part2 of a project are sequential (you need part1

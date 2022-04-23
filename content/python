@@ -7,6 +7,7 @@ Core            + means updated to python 3.7 manpage
     |python_sets|
     |python_dictionaries|
     |python_deque|
+    |python_files|
     |python_bytes|
     |python_keywords|
     |python_collections|
@@ -65,11 +66,51 @@ Miscellaneous stuff
 
 Python's FAQ: https://docs.python.org/3/faq/
 
-A quirk in python's if syntax (from fractions.py)
-    if type(numerator) is int is type(denominator):
+Nested scopes:  how to change variables in upper scope
+    print("Naive way:")
+    def f():
+        x = 0
+        def g():
+            x = 1
+            print("  x inside g =", x)
+        g()
+        print("  x outside g =", x)
+    f()
+    print("Note that g() was unable to change x's value")
+    print("\nUse an iterable")
+    def f():
+        x = [0]
+        def g():
+            x[0] = 1
+            print("  x inside g =", x[0])
+        g()
+        print("  x outside g =", x[0])
+    f()
+    print("\nUse an attribute of f")
+    def f():
+        f.x = 0
+        def g():
+            f.x = 1
+            print("  x inside g =", f.x)
+        g()
+        print("  x outside g =", f.x)
+    f()
+    print("\nUse nonlocal keyword")
+    def f():
+        x = 0
+        def g():
+            nonlocal x
+            x = 1
+            print("  x inside g =", x)
+        g()
+        print("  x outside g =", x)
+    f()
+
+A quirk in python's if syntax (learned from line 164 fractions.py)
+    if type(x) is int is type(y) is type(z) <... etc.>:
         do_something
 
-    Normally 'type(numerator) is int' returns a bool, but in the if
+    Normally 'type(x) is int' returns a bool, but in the if
     statement it returns the type of numerator, allowing this shortcut
     syntax.
 
@@ -641,6 +682,23 @@ Use http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html
 for useful info about styles and idioms.  Also see the links at the bottom.
 
 ---------------------------------------------------------------------------
+File I/O                                                *python_files*
+
+Interface details in io module
+
+Reading text files:
+    f = open(file)
+    while f:
+        line = f.readline() # Includes the single newline
+        Process(line)
+
+    f.read(size=-1)  # Read size bytes; for -1, read whole file
+    f.seek(offset[, whence]) # 0:start, 1:"seek" to current position and
+        offset must be 0, 2:seek to end and offset must be 0
+    f.tell()  # Current stream position
+    f.write(s: str) # Write and return number of bytes written
+
+---------------------------------------------------------------------------
 super([T[, object-or-type]]):  calling a method in a parent class
     super returns a proxy object that delegates method calls to a parent or
     sibling class of type T.  This is useful for accessing inherited methods
@@ -803,9 +861,9 @@ You can return the class' name with the following code:
 
 ---------------------------------------------------------------------------
 compile/eval/exec
-    eval(str [,globals [,locals]]) returns the result of an expression:
-        a = eval("3.5 + 7")
-
+    eval(expression, globals=None, locals=None)
+        expression is a string, globals must be a dict, locals can be any
+        mapping object.  Returns the value of expression.
     exec(object[ , globals[ , locals]])
         exec executes arbitrary python code.  It is executed in the namespace
         of the caller as if the code appeared in place of the exec statement.
