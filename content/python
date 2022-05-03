@@ -66,6 +66,21 @@ Miscellaneous stuff
 
 Python's FAQ: https://docs.python.org/3/faq/
 
+Circular imports
+    Can lead to difficult-to-debug problems
+    Fixes:
+        - Refactor
+        - Combine modules
+        - Deferred import (e.g., import one item in the function that needs
+          it)
+
+* in function parameter list
+    Either * by itself or * followed by a symbol name
+    Example:
+        def __init__(self, indent=1, width=80, depth=None, stream=None, *,
+                 compact=False):
+    Means that all arguments after that point are keyword arguments only.
+
 Nested scopes:  how to change variables in upper scope
     print("Naive way:")
     def f():
@@ -2874,63 +2889,63 @@ math                                                    *python_math*
 
 + marks functions also in cmath for complex numbers
 
+  + acos(x)         Inverse cosine 
+  + acosh(x)        Inverse hyperbolic cosine
+  + asin(x)         Inverse sine
+  + asinh(x)        Inverse hyperbolic sine
+  + atan(x)         Inverse tangent
+  + atanh(x)        Inverse hyperbolic tangent
+    atan2(y, x)     Inverse tangent & gets quadrant right; between -pi & pi
     ceil(x)         Smallest integer >= x
     copysign(x, y)  Return x with the sign of y
+  + cos(x)          Cosine
+  + cosh(x)         Hyperbolic cosine
+    degrees(x)      Converts x in radians to degrees
+  + e
+    erf(x)          Error function:  normal CDF: 1 + erf(x/sqrt(2))/2
+    erfc(x)         Complementary error function = 1 - erf(x)
+  + exp(x)          e**x
+    expm1(x)        e**x - 1 to full precision for small x
     fabs(x)         |x|
     factorial(x)    Must be integer >= 0
     floor(x)        Largest integer <= x
     fmod(x, y)      x - n*y for some integer n
     frexp(x)        (m, e) such that x = m*2**e exactly
     fsum(iterable)  Acurrately sum an iterable
+    gamma(x)        Gamma function
     gcd(a, b)       Greatest common divisor
+    hypot(x, y)     sqrt(x**2 + y**2)
+    inf             Floating point positive infinity
   + isclose(a, b, *, rel_tol=1e-9, abs_tol=0.0)
   + isfinite(x)     True if x not infinity or NaN
   + isinf(x)        True if infinite
   + isnan(x)        True if NaN
     ldexp(x, i)     Return x*(2**i)  (inverse of frexp())
-    modf(x)         Return (fractional_part, integer_part); each floats
-    remainder(x, y) x - n*y where n is the int closes to x/y (nearest even int)
-    trunc(x)        Truncate x to an integer
-  + exp(x)          e**x
-    expm1(x)        e**x - 1 to full precision for small x
+    lgamma(x)       ln(Gamma(abs(x)))
   + log(x[, base])  Logarithm to indicated base (e by default)
   + log10(x)        Logarithm to base 10
     log1p(x)        Natural logarithm of 1 + x (accurate for x near zero)
     log2(x)         Base 2 log of x (more accurate than log(x, 2))
-    pow(x, y)       Raise x to the y power
-  + sqrt(x)         Square root
-  + acos(x)         Inverse cosine 
-  + asin(x)         Inverse sine
-  + atan(x)         Inverse tangent
-    atan2(y, x)     Inverse tangent & gets quadrant right; between -pi & pi
-  + cos(x)          Cosine
-    hypot(x, y)     sqrt(x**2 + y**2)
-  + sin(x)          Sine
-  + tan(x)          Tangent
-    degrees(x)      Converts x in radians to degrees
-    radians(x)      Converts x in degrees to radians
-  + acosh(x)        Inverse hyperbolic cosine
-  + asinh(x)        Inverse hyperbolic sine
-  + atanh(x)        Inverse hyperbolic tangent
-  + cosh(x)         Hyperbolic cosine
-  + sinh(x)         Hyperbolic sine
-  + tanh(x)         Hyperbolic tangent
-    erf(x)          Error function:  normal CDF: 1 + erf(x/sqrt(2))/2
-    erfc(x)         Complementary error function = 1 - erf(x)
-    gamma(x)        Gamma function
-    lgamma(x)       ln(Gamma(abs(x)))
-  + pi
-  + e
-    tau             2*pi
-    inf             Floating point positive infinity
+    modf(x)         Return (fractional_part, integer_part); each floats
     nan             Floating point not a number == float('nan')
+  + pi
+    pow(x, y)       Raise x to the y power
+    radians(x)      Converts x in degrees to radians
+    remainder(x, y) x - n*y where n is the int closes to x/y (nearest even int)
+  + sin(x)          Sine
+  + sinh(x)         Hyperbolic sine
+  + sqrt(x)         Square root
+  + tan(x)          Tangent
+  + tanh(x)         Hyperbolic tangent
+    tau             2*pi
+    trunc(x)        Truncate x to an integer
 
 *python_cmath* also includes the following:
+    infj                == complex(0, float('inf'))
+    nanj                == complex(0, float('nan'))
     phase(x)            Arg(x)
     polar(x)            (r, theta) = (abs(x), phase(x))
     rect((r, theta)     Rectangular (x, y)
-    infj                == complex(0, float('inf'))
-    nanj                == complex(0, float('nan'))
 
 -----------------------------------------------------------------------------
 pickle             *python_pickle*

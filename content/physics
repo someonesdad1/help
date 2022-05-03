@@ -1,5 +1,6 @@
 *Physics*
 
+|Draining_water|
 |Practical_estimation|
 |Thermal_expansion|
 |Physical_Constants|
@@ -3766,3 +3767,21 @@ Digging dirt:
         I can move 1/8 kg with 1 man*second of work
         Dirt density = 1440 kg/m3
         One shovel is 2.3 liter
+
+-----------------------------------------------------------------------------
+Draining water                                      *Draining_water*
+
+Given a cylindrical tank of radius R and height h.  We want the time to
+drain the tank's volume V through a hole of radius r.
+
+Integrating Toricelli's law dV/dt = -μ*pi*r**2*sqrt(2*g*h) gives
+
+    t = μ*sqrt(2*h/g)*(R/r)**2 seconds
+
+In reality, the actual dV/dt is smaller because of a vena contracta (stated
+by D. Bernoulli in 1738 and confirmed by 1983 measurements).  For water
+draining through a round hole, the actual dV/dt is 0.65 of the theoretical,
+so multiply times by μ = 1/0.65 = 1.54.
+
+https://en.wikipedia.org/wiki/Torricelli%27s_law
+https://demonstrations.wolfram.com/TimeToDrainATankUsingTorricellisLaw/

@@ -585,6 +585,13 @@ Prompt special characters
         The shell waits for each command to finish before starting the next
         one.  The return status is that of the last command.
 
+    Here documents
+        cat >output << 'EOF' 
+            Put your text here
+            Single quotes around EOF disable variable expansion
+            Any string can be used for EOF
+        EOF
+
     Here strings
         Pared down form of a here document:  cmd <<<word
         word is expanded, then it is fed to the standard input of cmd.
