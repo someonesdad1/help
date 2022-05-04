@@ -1,0 +1,28 @@
+*mswindows*
+
+Windows key shortcuts
+
+    L           Lock PC
+    D           Display/hide desktop
+    A           Open Action center
+    Alt-D       Toggle date/time on desktop
+    E           Open file explorer
+    G           Open game bar when game is open
+    I           Open settings
+    M           Minimize all windows
+    R           Open run dialog box
+    S           Open search
+    T           Cycle through apps on taskbar
+    X           Quick links (dense setup stuff)
+    ,           Temporarily peek at desktop
+    Pause       System properties
+    Shift-M     Restore minimized
+    Num         Open corresponding app pinned on taskbar.  If it's running, switch to it.
+    Sh-Num      Same, but open new instance
+    Tab         Open task view
+    Up          Maximize window
+    +           Zoom in using magnifier
+    Esc         Exit magnifier
+    ctrl-left,
+    ctrl-right        Switch between virtual desktops
+

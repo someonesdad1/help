@@ -240,6 +240,7 @@ if 1:   # Core functionality
                 STL
                 Subversion
                 tmux
+                Windows
                 yaml
             ''', 0, 0),
         )
