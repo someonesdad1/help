@@ -8,6 +8,9 @@
 
 git revision control system
 
+Note:  'master' used to be the name of the main branch in the repository,
+but it was renamed to 'main'.
+
 [pg] Reference book:  "Pro Git" 2nd ed., 2014
 
 An older summation:
@@ -160,6 +163,7 @@ Use case
     Now add changes as needed; you can even commit.  Use
 
         git checkout master 
+        git checkout main           For latest versions of git 
 
     to return to your original work.
 
@@ -188,6 +192,7 @@ Quick fix
     Once fixed:
         git commit -a -m "Bug fixed"
         git checkout master
+            (or git checkout main)
 
     Now you can merge the fixes to main:
 
@@ -203,7 +208,7 @@ Interrupted workflow
     for part2 to work).  Because of painless branching and merging, we
     can work on part2 before part1 is ready.  
 
-    Let part1 be on the master branch and it has been committed for
+    Let part1 be on the master (or main) branch and it has been committed for
     review.  Create a new branch to work on part2:
 
     git checkout -b part2

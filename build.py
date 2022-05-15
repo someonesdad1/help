@@ -2,6 +2,13 @@
 Script for building help documentation
 Created 13 Mar 2022
 
+    - To add a new topic
+        - Create a file in ./content directory
+            - Make sure there are suitable objects to be tagged like 
+              '*mswindows*'
+        - Add this file to files in GetContentFiles()
+        - Run this script (build.py)
+
     - Build steps
         - Construct each content file in the output directory
         - Make the tags file in the output directory
@@ -37,20 +44,22 @@ if 1:
     # Custom imports
         from wrap import wrap, dedent
         from f import flt
-        from clr import Clr
+        #from clr import Clr
+        from color import TRM as t
         from columnize import Columnize
         if len(sys.argv) > 1:
             import debug
             debug.SetDebugger()
     # Global variables
-        c = Clr()
+        #c = Clr()
         class g: pass
         g.output = P("output")
         g.content = P("content")
         g.help = P("hldhelp.vim")
         g.suffix = ".hld"
         g.index = "index" + g.suffix
-        c.err = c("lred")
+        #c.err = c("lred")
+        t.err = t("redl")
 if 1:   # Help
     def Help():
         print(dedent(f'''
@@ -92,7 +101,7 @@ if 1:   # Core functionality
             pandoc pcl5 perl4 perl5 physics ps pygame python rst scipy
             scons sed shop shop.densities simpy sizes snippets sql
             statistics stl subversion svn sympy thermal_cond tmux
-            uncertainties units utilities yaml
+            uncertainties units utilities yaml mswindows 
 
         '''.split()
         return files
@@ -240,7 +249,7 @@ if 1:   # Core functionality
                 STL
                 Subversion
                 tmux
-                Windows
+                mswindows
                 yaml
             ''', 0, 0),
         )

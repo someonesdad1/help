@@ -276,7 +276,7 @@ Autonumbered
 
 Autosymbol
     
-    [*]_ creates an autosymbol
+    [*]_ creates an autosymbol (these are footnotes marked by symbols)
 
     .. [*] First
     .. [*] Second

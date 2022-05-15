@@ -2144,11 +2144,36 @@ SliceType
 EllipsisType
 
 -----------------------------------------------------------------------------
-debugger     *python_debugger*      Pg. 238 Beazley
+debugger                                                *python_debugger*
 
-import pdb
+My usual method of debugging is a line in the code
+    from pdb import set_trace as xx 
+    from dpdb import set_trace as xx  (My modified debugger with colorizing)
 
-Use .pdbrc in $HOME or current directory to init the debugger.
+Then xx() anywhere in the code drops into the debugger at that point.
+
+Key debugger commands
+
+    h           Show list of commands.  'h cmd' gives help on cmd.
+    n           Execute next statement
+    s           Step into next statement
+    a           Show arguments of current frame
+    w, bt       Show backtrace
+    b, tb       Breakpoint, temporary breakpoint
+    r           Continue until return
+    c           Continue execution
+    d, u        Down and up in the stack frames
+    p expr      Print value of expression
+    pp expr     Pretty print value of expression
+    l           List code
+    ll          List code of current function
+
+Use .pdbrc in $HOME or current directory to init the debugger.  This is
+useful to define command aliases.  Example:
+
+    alias i interact    
+        Lets you start a REPL with the current globals and locals, then
+        quit to go back to debugger.
 
 pdb module's methods:
 
@@ -2164,42 +2189,52 @@ pdb module's methods:
     post_mortem(traceback)
         Post-mortem debug using a traceback object.
     pm()
-        Enters post-mortem debug using sys.last_traceback.
+        Enters post-mortem debug using sys.last_traceback.  Example:  this
+        is called in TraceInfo() in debug.py, in turn called by
+        SetDebugger() on an unhandled exception.
 
-Commands
---------
+Command list
+------------
 
-h(elp) [command]              Help on commands
-w(here)                       Stack trace
-d(own)                        Move current frame down
-u(p)                          Move current frame up
-b(reak) [loc, [, condition]]  Set breakpoint.  loc is n (line number),
-                              file:n, function, file:function
-tbreak [loc, [, condition]]   Temporary breakpoint
-cl(ear) [bpnumber, ...]       Clear breakpoints.  'breakpoints' clears all.
-disable [bpnumber, ...]       Disable breakpoints.
-enable  [bpnumber, ...]       Enable breakpoints.
-ignore bpnumber [count]       Ignore for count hits
-condition bpnum [condition]   Conditional bp.  Omitting condition clears.
-s(tep)                        Step into
-n(ext)                        Step over
-r(eturn)                      Return from current function
-c(ontinue)                    Continue execution
-l(ist) [first [, last]]       List 11 lines around current line or spec'd line
-a(rgs)                        Parameters of current function
-p expression                  Evaluate expression & print it
-alias [name [command]]        Create an alias.  %1, %2 are replaced by params,
-                              % by all params.
-unalias name                  Delete an alias.
-[!]statement                  Execute statement in context of current frame.
-                              ! not needed unless statement resembles a
-                              debugger command.
-q(uit)                        Quit the debugger.
-
-Note:  it's not difficult to add new commands to the debugger.
-Example:  Add 'tb' as a tbreak command.  Edit the pdb.py file and find
-the method do_tbreak().  Copy its contents to a new method do_tb().
-Also find the help method and create a copy of it too.
+    a, args         Args of current function
+    alias           Make an alias
+    b, break        Set a breakpoint
+    w, where, bt    Stack trace (backtrace)
+    c               Continue execution
+    cl, clear       Remove breakpoint
+    clr             Select colorizing (only in dpdb.py)
+    commands        Set a group of commands to be executed when a breakpoint is
+                    encountered
+    condition       Sets a logical condition for a breakpoint to be honored
+    d, down         Move down in the stack frames
+    debug           Enter a recursive debugger
+    disable         Disable a breakpoint
+    display         Display an expression if it has changed each time execution
+                    stops in the current frame
+    enable          Enable one or more breakpoint numbers
+    EOF             
+    q, exit         Quit
+    h, help         Show commands, show help on a particular command.  Use arg
+                    of 'pdb' to see all help.
+    ignore          How many times to ignore a breakpoint
+    interact        Enter a python REPL with current globals/locals
+    j, jump         Set next line; only works in bottom frame
+    l, list         List source
+    ll, longlist    List source of current function
+    n, next         Step through next line
+    p               Print value of expression
+    pp              Pretty print value of expression
+    r, return       Continue until function returns
+    rv, retval      Print return value of last function
+    run, restart    Restart the program
+    s, step         Step into next line
+    source          Display source code for argument
+    tbreak          Set a temporary breakpoint
+    u, up           Move up in the stack frames
+    unalias         Delete an alias
+    undisplay       Remove a set display command
+    unt, until      Continue execution until later line or frame returns
+    whatis          Print the type of the argument
 
 -----------------------------------------------------------------------------
 re                                                      *python_re*
