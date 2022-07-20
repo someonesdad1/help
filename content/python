@@ -4,10 +4,10 @@ Core            + means updated to python 3.7 manpage
     |python_pathlib|                +
     |python_re|                     +
     |python_lists|
+    |python_deque|
     |python_sets|
     |python_dictionaries|
-    |python_deque|
-    |python_files|
+    |python_streams|
     |python_bytes|
     |python_keywords|
     |python_collections|
@@ -65,6 +65,19 @@ Less-used stuff
 Miscellaneous stuff
 
 Python's FAQ: https://docs.python.org/3/faq/
+
+How to put a dict of variables into a function's local namespace
+    di = {
+        "x":44,
+        "y":3.45,
+    }
+    def A():
+        # Put di's variables into our namespace
+        for i in di:
+            s = f"{i} = eval('di[i]')"
+            exec(s)
+        del s, i
+    A()
 
 Circular imports
     Can lead to difficult-to-debug problems
@@ -697,9 +710,44 @@ Use http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html
 for useful info about styles and idioms.  Also see the links at the bottom.
 
 ---------------------------------------------------------------------------
-File I/O                                                *python_files*
+Streams I/O (io module)                                    *python_streams*
 
-Interface details in io module
+io.IOBase
+    - No public constructor
+    - Is a context manager; file is closed after CM block finishes
+    - Iterator:  use 'for line in file:'
+    close()     Flush & close stream
+    closed      Bool:  True if stream is closed
+    fileno()    Return underlying file description (int)
+    flush()     Flush write buffers if applicable
+    isatty()    Bool:  return True if stream is interactive
+    readable()  Bool:  True if can be read from
+    readline(size=-1)   Read and return one line; at most size bytes if
+                size is not -1
+    readlines(hint=-1)  Read and return list of lines
+    seek(offset[, whence])  Change stream position to byte offset.  whence
+                is 0 = start of stream, 1 = current stream position (offset
+                can be negative), 2 = end of stream, offset is usually
+                negative).  Returns new absolute position.
+    seekable()  Bool:  True if file is seekable
+    tell()      int:  return the current stream position
+    truncate(size=None)     Resize the stream (fill with null bytes if
+                extended)
+    writable()  Bool:  True if stream supports writing
+    writelines(lines)   Write a sequence of lines (line separators not added)
+
+io.RawIOBase(io.IOBase)
+    - Base class for raw binary I/O
+    read(size=-1)   Read up to size bytes or all bytes until EOF if size is
+                    -1 and return them.  Only one system call if size is 
+                    specified.
+    readall()       Return all bytes until EOF.
+    readinto(b)     Read bytes into a preallocated bytes-like object and
+                    return number of bytes read.  If object is in
+                    non-blocking mode and no bytes are available, None is
+                    returned.
+    write(b)        Write the bytes-like object b to the stream and return
+                    the number of bytes written.
 
 Reading text files:
     f = open(file)
@@ -896,6 +944,8 @@ compile/eval/exec
             c = compile(s, "", "eval")
             a = eval(c)
 
+    Python 2 trick
+    --------------
     Here's a handy use of exec.  Suppose you want to have the same local
     variable namespace in the function you call as the one you're calling
     from.  Execute code like the following to give the function a the same
@@ -1995,7 +2045,7 @@ Dictionary methods and operations              *python_dictionaries*
 
 class dict([arg])
     dict(one=2, two=3)   Only works for valid python identifiers
-    dict("one":2, "two":3)
+    {"one":2, "two":3}
     dict(zip(("one", "two"), (2, 3)))
     dict(["one", 2], ["two", 3])
     dict(("one", 2), ("two", 3))
@@ -2092,9 +2142,10 @@ Basic operations (the methods will accept any iterables)
         A^B == (A - B)|(B - A)
     symmetric_difference_update(other)  or  set ^= other
         Update by keeping elements in either set, but not both
-    union(*othersor  set | other | ...
+    union(*others)   or  set | other | ...
     update(*others)  or  set |= other |= ...
-        Update by adding all elements from others
+        Update by adding all elements from others.  others can be a single
+        element or an iterable.
 
 Member testing
     x in x
@@ -2239,16 +2290,6 @@ Command list
 -----------------------------------------------------------------------------
 re                                                      *python_re*
 
-Match strings or bytes patterns (but they can't be mixed).  Synopsis:
-    Bytes
-        >>> r = re.compile(b'ab')
-        >>> r.search(b'cdabef')
-        <re.Match object; span=(2, 4), match=b'ab'>
-    Strings
-        >>> r = re.compile('ab')
-        >>> r.search('cdabef')
-        <re.Match object; span=(2, 4), match='ab'>
-
 Special Sequences
     \num    Matches content of the group with the same number; groups
             are numbered starting from 1.
@@ -2330,6 +2371,16 @@ Character meanings
 
     Back references:  Use \num to refer to matched groups by their number.
     For named groups, use "\g<name>".
+
+Match strings or bytes patterns (but they can't be mixed).  Synopsis:
+    Bytes
+        r = re.compile(b'ab')
+        r.search(b'cdabef')
+        Produces:  <re.Match object; span=(2, 4), match=b'ab'>
+    Strings
+        r = re.compile('ab')
+        r.search('cdabef')
+        Produces:  <re.Match object; span=(2, 4), match='ab'>
 
 Variables
     error   Exception when pattern string isn't valid RE
@@ -2986,145 +3037,65 @@ math                                                    *python_math*
 pickle             *python_pickle*
 ------
 
-The pickle module is used to persistent objects to the file system.
-If you can use cPickle, do so, as it can be 1000 times faster than the
-pickle module.
-
-By default, pickle uses an ASCII text representation for pickle files;
-this has the advantage that you can read and edit such files later;
-this is handy for debugging.
-
-See Lib/pickle.py and Lib/pickletools.py for more information.
-
-You can use pickletools.dis(s) to disassemble a pickle string.
-
-Protocols
----------
-    0   Stream of 7-bit ASCII bytes for a pickle; used before python 2.3.
-        Small, elegant, and sometimes painfully inefficient.
-
-    1   Called "binary mode" before python 2.3; can be substantially
-        smaller (and sometimes faster) than protocol 0 pickles.
-
-    2   Introduced in python 2.3 and adds useful enhancements. 
-
-    Make sure the stream is binary mode for protocols 1 and 2.  Only
-    protocol 0 can be used with text-mode streams.
-
-    You can use -1 for a pickling protocol and the highest-numbered
-    protocol will be used.
-
-    Read the docstring in Lib/pickletools.py for more information.
-
-    stream requires a write() method for pickling; read() and
-    readlines() are required for unpickling.
-
-Module functions
-----------------
-
-    dump(obj, stream [, protocol])
-        Write a pickled representation of obj to the stream.  protocol
-        defaults to 0.
-
-        You can call dump() multiple times to dump different objects.
-        To unpickle, you must have the equivalent number of load()
-        calls.
-
-    load(stream)
-        Read and return the pickled object.
-
-    dumps(obj, [, protocol])
-        Return the pickled representation of the object as a string.
-        protocol defaults to 0.
-
-    loads(string)
-        Read a pickled object hierarchy from a string.
-
-    See pickle.py and pickletools.py in python's Lib directory for
-    more info.
-
-Exceptions
-----------
-    pickle.PickleError
-    pickle.PicklingError
-    pickle.UnpicklingError
-
-Classes
--------
-    These can be subclassed.
-
-    class pickle.Pickler(stream [, protocol])
-        dump(obj)
-        clear_memo()
-
-    class pickle.Unpickler(stream)
-        load()
-        noload()
-            Just like load() but doesn't create an object.  Only
-            available with cPickle module.
+The pickle module is used to persist objects to the file system.  I find
+the module's documentation poor and I have had trouble getting object
+instances to pickle using dump and load.  See the example, which uses dumps
+and loads.
 
 What can be pickled
--------------------
- 
-    * None, True, and False
-    * Numbers:  integers, long integers, floating point numbers,
+    - Classes that are defined at the top level of a module 
+    - None, True, and False
+    - Numbers:  integers, long integers, floating point numbers,
       complex numbers 
-    * Normal and Unicode strings 
-    * tuples, lists, sets, and dictionaries containing only picklable
+    - Normal and Unicode strings 
+    - tuples, lists, sets, and dictionaries containing only picklable
       objects 
-    * Functions defined at the top level of a module 
-    * Built-in functions defined at the top level of a module 
-    * Classes that are defined at the top level of a module 
-    * Instances of such classes whose __dict__ or __setstate__() is
+    - Functions defined at the top level of a module 
+    - Built-in functions defined at the top level of a module 
+    - Instances of such classes whose __dict__ or __setstate__() is
       picklable.
 
-    Some objects are unpicklable; some are difficult
-    (collections.namedtuple is one).  The rule is:
-
-    --------------------------------------------------------------------
-    | Picklable functions and classes must be defined in the top level |
-    | of a module                                                      |
-    --------------------------------------------------------------------
-
-    You may be able to use a __slots__ attribute with objects to
-    reduce memory, but you'll need to define __getstate__ and
-    __setstate__ methods to be able to pickle.  Note your class also
-    has to be defined at module level.
-
 Example
--------
 
-    Pickling:
-        import pickle
-        data = {"a": [1, 2.0, 3, 4+6j],
-                "b": ("string", u"Unicode string"),
-                "c": None}
-        selfref_list = [1, 2, 3]
-        # Note a self-referencing list is pickled and restored correctly
-        selfref_list.append(selfref_list)
-        output = open("data.pickle", "wb")
-        # Pickle dictionary using protocol 0.
-        pickle.dump(data, output)
-        # Pickle the list using the highest protocol available.
-        pickle.dump(selfref_list, output, -1)
-        output.close()
+    This example shows how a class instance was pickled to disk.  Set X to
+    True to write to disk, then to False to read it back.
 
-    Unpickling:
-        import pprint, pickle
-        pf = open("data.pickle", "rb")
-        data1 = pickle.load(pf)
-        pprint.pprint(data1)
-        data2 = pickle.load(pf)
-        pprint.pprint(data2)
-        pf.close()
+        X = True
 
-    Results (manually formatted):
-        {
-            'a': [1, 2.0, 3, (4+6j)], 
-            'b': ('string', u'Unicode string'),
-            'c': None
-        } 
-        [1, 2, 3, <Recursion on list with id=12017296>]
+        class A:
+            def __init__(self):
+                self.me = "Hello "
+                self.count = 89
+            def __str__(self):
+                return f"  A instance:  {self.me + str(self.count)!r}"
+        a = A()
+        print("Initial state:")
+        print(a)
+        if X:
+            # Write out a modified instance
+            a.me = "Goodbye "
+            a.count = -33
+            with open("aa", "wb") as f:
+                f.write(pickle.dumps(a))
+            print("Modified instance that was pickled:")
+            print(a)
+        else:
+            with open("aa", "rb") as f:
+                b = f.read()
+            a1 = pickle.loads(b)
+            print("Instance unpickled from file:")
+            print(a1)
+
+    When written, you should get
+        Initial state:
+          A instance:  'Hello 89'
+        Modified instance that was pickled:
+          A instance:  'Goodbye -33'
+    When read back from disk, you should get
+        Initial state:
+          A instance:  'Hello 89'
+        Instance unpickled from file:
+          A instance:  'Goodbye -33'
 
 -----------------------------------------------------------------------------
 Threads             *python_threads*            Pg 177 Beazley
@@ -4652,6 +4623,7 @@ Basic
         Create the "informal" string representation of an object.
 
     __lt__(self, other)
+        Define this to be able to sort custom objects.
     __le__(self, other)
     __eq__(self, other)
     __ne__(self, other)
