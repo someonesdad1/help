@@ -22,7 +22,7 @@ Created 13 Mar 2022
         - output:  deployment of build's files
 
 '''
-if 1:  
+if 1:   # Header
     # Copyright, license
         # These "trigger strings" can be managed with trigger.py
         #∞copyright∞# Copyright (C) 2022 Don Peterson #∞copyright∞#
@@ -36,6 +36,7 @@ if 1:
         #∞what∞#
         #∞test∞# #∞test∞#
     # Standard imports
+        import getopt
         import os
         from pathlib import Path as P
         import re
@@ -51,15 +52,41 @@ if 1:
             import debug
             debug.SetDebugger()
     # Global variables
-        #c = Clr()
-        class g: pass
+        ii = isinstance
+        W = int(os.environ.get("COLUMNS", "80")) - 1
+        L = int(os.environ.get("LINES", "50"))
+        class g: pass   # Holder for globals
         g.output = P("output")
         g.content = P("content")
         g.help = P("hldhelp.vim")
         g.suffix = ".hld"
         g.index = "index" + g.suffix
-        #c.err = c("lred")
         t.err = t("redl")
+        t.note = t("lill")
+if 1:   # Utility
+    def Error(*msg, status=1):
+        print(*msg, file=sys.stderr)
+        exit(status)
+    def ParseCommandLine(d):
+        d["-v"] = False     # Verbose output
+        try:
+            opts, args = getopt.getopt(sys.argv[1:], "hv", 
+                    ["help", "debug"])
+        except getopt.GetoptError as e:
+            print(str(e))
+            exit(1)
+        for o, a in opts:
+            if o[1] in list("v"):
+                d[o] = not d[o]
+            elif o in ("-h", "--help"):
+                Help()
+                exit(0)
+            elif o in ("--debug",):
+                # Set up a handler to drop us into the debugger on an
+                # unhandled exception
+                import debug
+                debug.SetDebugger()
+        return args
 if 1:   # Help
     def Help():
         print(dedent(f'''
@@ -76,7 +103,7 @@ if 1:   # Help
 
             autocmd BufRead *.hld source $MYVIMFILES/syntax/hldhelp.vim
 
-        I also use the following:
+        I also use the following in my .vimrc file:
 
             autocmd BufRead *.hld noremap q :q!<cr>:unmap q
             " How to return from a tag jump in a help file
@@ -87,6 +114,27 @@ if 1:   # Help
 
         These help files are formatted to fit in an 80 column wide terminal
         window.  You can reformat them as needed if you use a different width.
+        {t.note}
+        - To add a new topic
+            - Create a file in ./content directory
+                - Make sure there are suitable objects to be tagged like 
+                '*this_is_a_tag*'
+            - Add this file to files in GetContentFiles()
+            - Run this script (build.py){t.n}
+
+        - Build steps
+            - Construct each content file in the output directory
+            - Make the tags file in the output directory
+            - Make the index file index.hld in the output directory
+                - Done now by makeindex.c, but move it to a python script that
+                  also does tags processing
+        - Directory structure
+            - content:  location of help files
+            - doc:  documentation on help system
+            - tools:  scripts, etc.
+            - output:  deployment of build's files
+
+        {t.note}See doc/readme.pdf for documentation.{t.n}
         '''))
         exit(0)
 if 1:   # Core functionality
@@ -94,14 +142,73 @@ if 1:   # Core functionality
         'Get list of files in the content directory'
         files = '''
 
-            arduino asciidoc astronomical awk bash basic bibtex biology c
-            chemistry constants cpp cvs darcs electrical engineering find
-            flex g gdb git go hg hp3488 hp42s hp49 html korn make_ markdown
-            materials math mathematica matplotlib mpmath numpy office
-            pandoc pcl5 perl4 perl5 physics ps pygame python rst scipy
-            scons sed shop simpy sizes snippets sql statistics stl
-            subversion svn sympy thermal_cond tmux uncertainties units
-            utilities yaml mswindows 
+            arduino
+            asciidoc
+            astronomical
+            awk
+            bash
+            basic
+            bibtex
+            biology
+            c
+            chemistry
+            constants
+            cpp
+            cvs
+            darcs
+            electrical
+            engineering
+            find
+            flex
+            g
+            gdb
+            git
+            go
+            hg
+            hp3488
+            hp42s
+            hp49
+            html
+            korn
+            make_
+            markdown
+            materials
+            math
+            mathematica
+            matplotlib
+            mpmath
+            mswindows
+            numpy
+            office
+            pandoc
+            pcl5
+            perl4
+            perl5
+            physics
+            ps
+            pygame
+            python
+            rst
+            scipy
+            scons
+            sed
+            shop
+            simpy
+            sizes
+            snippets
+            sql
+            statistics
+            stl
+            subversion
+            svn
+            sympy
+            thermal_cond
+            tmux
+            uncertainties
+            units
+            utilities
+            vim
+            yaml
 
         '''.split()
         return files
@@ -181,11 +288,13 @@ if 1:   # Core functionality
         os.chdir(cwd)
     def MakeIndexFile():
         '''This is the file that we start the vim editor from; the links
-        all go to other *.hld files.
+        all point to other *.hld files.
         '''
-        # Grouped by (topic, num_columns, column_width)
+        # Grouped by (topic, num_columns, column_width).  Note these are
+        # alphabetically ordered down the page like ls output).
         groups = (('''
                     python
+                    vim
                     git
                     uncertainties
                     shop
@@ -268,14 +377,9 @@ if 1:   # Core functionality
         print(f"Index file {index.absolute()} constructed ({count} topics)")
         os.chdir(cwd)
 if __name__ == "__main__": 
-    if len(sys.argv) > 1:
-        Help()
+    d = {}      # Options dictionary
+    args = ParseCommandLine(d)
     g.content_files = GetContentFiles()
     CopyContentFiles(g.content_files)
     BuildTagsFile()
     MakeIndexFile()
-    print(dedent(f'''
-
-    Include an argument for an explanation of the script.
-    See doc/readme.pdf for documentation.
-    '''))

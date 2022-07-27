@@ -1,2 +1,2 @@
-- Give final check, make public
+- Consider making this a subdirectory under /plib
 - Link other project files to this project

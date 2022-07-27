@@ -1,0 +1,40 @@
+*vim*
+
+Delete blank lines with only whitespace:
+    :[range]g/^\s$/d
+        Executes the given ex command on the range (default whole file)
+    :%!cat -s
+        "Squeezes" 2 or more empty lines to one 
+
+Normal mode 
+    )       Cursor N sentences forward
+    (       Cursor N sentences backwards
+    ')      Cursor to first CHAR on line end of current sentence
+    '(      Cursor to first CHAR on line start of current sentence
+    '}      Cursor to first CHAR on line end of current paragraph
+    '{      Cursor to first CHAR on line start of current paragraph
+    `(		Cursor to the start of the current sentence
+    `)		Cursor to the end of the current sentence
+    `{		Cursor to the start of the current paragraph
+    `}		Cursor to the end of the current paragraph
+    U       Undo all changes on current line
+
+Normal mode stuff with g
+    ga      Show ASCII value of character
+    g8      Show hex value of character
+    gd      Go to definition of word under cursor in current function
+    gD      Go to definition of word under cursor in current file
+    gQ      Switch to ex mode; command line editing/completion available
+    gm      Go to character at middle of the screenline
+    gM      Go to character at middle of line
+    g<      Display previous command output
+    g?      rot13 encoding operator
+	gj      Join lines without inserting space
+	gn      Find previous match with last used pattern & select it
+	gU      Next Nmove uppercase
+	gu      Next Nmove lowercase
+	gf      Start editing the file under cursor
+	gF      Start editing the file under cursor at line number after
+	gN      Find previous match with last used pattern & select it
+	gn      Find next match with last used pattern & select it
+	go      Cursor to byte N in the buffer
