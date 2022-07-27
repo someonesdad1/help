@@ -26,10 +26,10 @@ Initialize()
     # Location of the help files has changed over the years
     #dir=$DPBIN/bat/help_system
     #dir=/help/help_system
-    dir=/newhelp/help/output
+    dir=/help/output
     cd $dir
-    index_file=index.$ext
-    for file in *.$ext ; do
+    index_file=index.hld
+    for file in *.hld ; do
         filelist="$filelist $file"
     done
 

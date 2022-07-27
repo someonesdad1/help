@@ -99,9 +99,9 @@ if 1:   # Core functionality
             flex g gdb git go hg hp3488 hp42s hp49 html korn make_ markdown
             materials math mathematica matplotlib mpmath numpy office
             pandoc pcl5 perl4 perl5 physics ps pygame python rst scipy
-            scons sed shop shop.densities simpy sizes snippets sql
-            statistics stl subversion svn sympy thermal_cond tmux
-            uncertainties units utilities yaml mswindows 
+            scons sed shop simpy sizes snippets sql statistics stl
+            subversion svn sympy thermal_cond tmux uncertainties units
+            utilities yaml mswindows 
 
         '''.split()
         return files
