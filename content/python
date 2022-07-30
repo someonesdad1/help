@@ -1940,8 +1940,13 @@ Requirements files
     which describes the package and version (it's the syntax needed on the
     'pip install' line.  The second form is a wheel file.  
 
-    The easiest way to create a requirements file for an existing project
-    is 'pip freeze >file'.  
+    The easiest way to create a requirements file for an existing project is 
+
+        pip freeze >requirements.txt
+
+    Then you use it with
+
+        pip install -r requirements.txt
 
 https://pypi.python.org/pypi/pip
 ---------------------------------------------------------------------------
@@ -10020,5 +10025,9 @@ system python's libraries.
     virtualenv as needed:
             
         pip freeze >requirements.txt
+
+    Use it with
+
+        pip install -r requirements.txt
 
 vim:  wm=3
