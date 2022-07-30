@@ -6,6 +6,7 @@ Core            + means updated to python 3.7 manpage
     |python_lists|
     |python_deque|
     |python_sets|
+    |python_requests| Popular library for downloading web stuff
     |python_dictionaries|
     |python_streams|
     |python_bytes|
@@ -33,13 +34,13 @@ Numerical
     |python_cmath|                  +
     |python_number_methods|         +
 Other
+    |python_pip|
     |python_PyPDF2|
     |python_dataclasses|
     |python_enums|
     |python_exceptions|
     |python_getopt|
     |python_idioms|
-    |python_pip|
     |python_precedence|
     |python_struct|
     |python_sys|
@@ -47,7 +48,6 @@ Other
     |python_time|
     |python_types|
 Less-used stuff
-    |python_requests| Popular library for downloading web stuff
     |python_bitarray|
     |python_debugger|
     |python_inspect|
@@ -1890,48 +1890,60 @@ must be bytes objects of the same length.
 ----------------------------------------------------------------------
 pip                                                     *python_pip*
 
-Package to use as an easy method of installation of other packages.
+Use 'ph cmd' to get pip's help on a command (this script filters out the
+general options)
+
+To upgrade pip
+    python -m pip install --upgrade pip
+
+Use 'pip install --dry-run Pkg" to see what will be done
+
+Use 'pip install Pkg==2.0.0" to install a specific version of Pkg
+
+Commands:
+  install          Install packages
+    Install a package                pip install Pkg
+    Upgrade a package                pip install --upgrade Pkg
+  download         Download packages
+  uninstall        Uninstall packages
+    Uninstall a package              pip uninstall Pkg
+  freeze           Output installed packages in requirements format
+  inspect          Inspect the python environment
+  list             List installed packages
+    Show installed packages:         pip list
+    Show outdate packages:           pip list --outdated
+  show             Show information about installed packages
+    Show what was installed:         pip show -f Pkg
+    Show missing dependencies:       pip show
+  check            Verify installed packages have compatible dependencies
+  config           Manage local and global configuration
+  search           Search PyPI for packages
+  cache            Inspect and manage pip's wheel cache
+  index            Inspect information available from package indexes
+  wheel            Build wheels from your requirements
+  hash             Compute hashes of package archives
+  completion       A helper command used for command completion
+  debug            Show information useful for debugging
+  help             Show help for commands
+
+    The inspect command is experimental, but produces a JSON report of the
+    details of the installed python stuff.
+
+Requirements files
+
+    For a complicated project, you'll want to set up a requirements file.
+    This is a text file with lines like
+
+        mpmath==1.2.1
+        PyPDF4 @ file:///pub/devel/python/python-pypdf/.../PyPDF4-1.27.0-py3-none-any.whl
+
+    which describes the package and version (it's the syntax needed on the
+    'pip install' line.  The second form is a wheel file.  
+
+    The easiest way to create a requirements file for an existing project
+    is 'pip freeze >file'.  
+
 https://pypi.python.org/pypi/pip
-
-Install a package from PyPI:
-
-$ pip install SomePackage
-  [...]
-  Successfully installed SomePackage
-
-Show what files were installed:
-
-$ pip show --files SomePackage
-  Name: SomePackage
-  Version: 1.0
-  Location: /my/env/lib/pythonx.x/site-packages
-  Files:
-   ../somepackage/__init__.py
-   [...]
-
-List what packages are outdated:
-
-$ pip list --outdated
-  SomePackage (Current: 1.0 Latest: 2.0)
-
-Upgrade a package:
-
-$ pip install --upgrade SomePackage
-  [...]
-  Found existing installation: SomePackage 1.0
-  Uninstalling SomePackage:
-    Successfully uninstalled SomePackage
-  Running setup.py install for SomePackage
-  Successfully installed SomePackage
-
-Uninstall a package:
-
-$ pip uninstall SomePackage
-  Uninstalling SomePackage:
-    /my/env/lib/pythonx.x/site-packages/somepackage
-  Proceed (y/n)? y
-  Successfully uninstalled SomePackage
-
 ---------------------------------------------------------------------------
 list methods and operations                     *python_lists*
 
@@ -9979,17 +9991,34 @@ fractions.gcd(a, b)
 
     Deprecated since version 3.5: Use math.gcd() instead.
 
-----------------------------------------------------------------------
-vim tips
+--------------------------------------------------------------------------------
+virtualenv                                  *python_virtualenv*
 
-Folding
-    :set foldcolumn=2       Show folds in left margin
-    :set foldopen=all       Line under cursor always open
-        :set foldopen&          Back to default
-    :set foldclose=all      Folds close when you move out of them
-    zm                      Fold more
-    zo                      Fold less
-    zO                      Recursively unfold
-    zC                      Recursively fold
+This sets up a virtual python environment for a project in a desired
+project directory.  The core use case is to allow you to install the
+desired python library dependencies and have this be independent of the
+system python's libraries.
+
+    Example:  your system python uses somelibrary1.5, but the application
+    you're writing needs version 1.4.  Setting up a virtualenv for the
+    project allows you to do this.  
+
+    cd /tmp
+    virtualenv myproject
+    cd myproject
+    . bin/activate
+
+    The prompt will show that you're in this virtualenv.  'deactivate' is
+    now an alias and you type that to return to your previous shell
+    environment.
+
+    Note there's a .gitignore file that contains '*'.  You don't really
+    need to put this virtualenv directory under source control.  If you
+    want myproject under your regular project directory, put an ignore 
+    command in the project's .gitignore file to ignore the virtualenv
+    directory.  Include a requirements.txt file so that others can use the
+    virtualenv as needed:
+            
+        pip freeze >requirements.txt
 
 vim:  wm=3

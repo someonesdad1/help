@@ -38,3 +38,13 @@ Normal mode stuff with g
 	gN      Find previous match with last used pattern & select it
 	gn      Find next match with last used pattern & select it
 	go      Cursor to byte N in the buffer
+
+Folding
+    :set foldcolumn=2       Show folds in left margin
+    :set foldopen=all       Line under cursor always open
+        :set foldopen&          Back to default
+    :set foldclose=all      Folds close when you move out of them
+    zm                      Fold more
+    zo                      Fold less
+    zO                      Recursively unfold
+    zC                      Recursively fold

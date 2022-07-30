@@ -155,7 +155,7 @@ if 1:   # Core functionality
         # off the list.
         curdir = os.getcwd()
         os.chdir("/help/content")
-        ignore, p = ".todo a shop.densities mk".split(), P(".")
+        ignore, p = ".todo a shop.densities mk .vi".split(), P(".")
         for i in p.glob("*"):
             # Remove files we ignore
             if i.suffix == ".py" or str(i) in ignore:
