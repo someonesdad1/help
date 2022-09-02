@@ -1051,6 +1051,20 @@ It is pythonic to keep data in sequences and operate on them with map,
 
     filter(IsCondition, file(filename))
 
+  Construct predicates as needed and use filter & filterfalse
+
+    def KeepThese(x):
+        if x meets condition:
+            return True
+        return False
+
+    from itertools import filterfalse
+
+    # Keep the items in mylist
+    mylist = filter(KeepThese, mylist)
+
+    # Get rid of the relevant items in mylist
+    mylist = filterfalse(KeepThese, mylist)
 
 If you need speed, consider the following recommendations from Guido
 http://www.python.org/doc/essays/list2str.html

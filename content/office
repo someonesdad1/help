@@ -5,5 +5,11 @@
 ------------------------------------------------------------------------------
 Misc                                        *Misc*
 
-* 1500 words is about what can fit on both sides of a sheet of letter size
-  paper.
+- How many words fit on one side of a sheet of paper?
+    - My recommendations
+        - Important memo that people will read:  250-300
+        - Typical office memo:  500
+        - Technical prose:  700
+        - Maximum:  900
+    - These numbers came from experiments with OO and some 1910 Antarctic
+      prose (WorstJourneyInTheWorld.txt)

@@ -277,7 +277,7 @@ if 1:   # Core functionality
         if d["-v"]:
             print(f"Index file {index.absolute()} constructed ({count} topics)")
         os.chdir(cwd)
-        print("Success")
+        print("Successful build")
 if __name__ == "__main__": 
     d = {}      # Options dictionary
     args = ParseCommandLine(d)

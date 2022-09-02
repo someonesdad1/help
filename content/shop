@@ -691,46 +691,76 @@ tpi    inches    Single    Double    Single    Double    NF tool   Vee tool
 -----------------------------------------------------------------------------
 Bolt torque specs                                     *Bolt_Torques*
 
-Standard dry torque in ft-lbs
+Inch fasteners
+    https://www.engineeringtoolbox.com/us-bolts-torques-d_2055.html
 
-SAE Grade 0, 1, 2, 74 kpsi low carbon steel, no marks
-SAE Grade 3, 100 kpsi medium carbon steel, 2 marks
-SAE Grade 5, 120 kpsi medium carbon steel, heat treated, 3 marks
+    Assumption:  tightening torque to about 70% of yield strength.  These
+    bolts are slightly lubricated.  Increase table values by 30% for dry
+    bolts.  C = coarse, F = fine
 
+                Grade 2     Grade 5     Grade 8     18-8 SST
+    Size        C    F      C    F      C    F      C    F
+    1/4         4   4.7     6.3 7.3     9   10      6.3 7.8
+    5/16        8   9       13  14      18  20      11  11.8
+    3/8         15  17      23  26      33  37      20  22
+    7/16        24  27      37  41      52  58      31  33
+    1/2         37  41      57  64      80  90      43  45
+    9/16        53  59      82  91      115 129     57  63
+    5/8         73  83      112 128     159 180     93  104
+    3/4         115 138     200 223     282 315     128 124
+    7/8         129 144     322 355     454 501     194 193
+    1           188 210     483 541     682 764     287 289
 
-Bolt
-Size,
-Inches  TPI     SAE 2       SAE 3      SAE 5
-------  ---     -----       -----      -----
-¹/₄     20         6           9         10
-⁵/₁₆    18        12          17         19
-³/₈     16        20          30         33
-⁷/₁₆    14        32          47         54
-¹/₂     13        47          69         78
-⁹/₁₆    12        69         103        114
-⁵/₈     11        96         145        154
-³/₄     10       155         234        257
-⁷/₈      9       206         372        382
-1        8       310         551        587
+Metric fasteners
+    https://www.engineeringtoolbox.com/metric-bolts-maximum-torque-d_2054.html
+    Assumptions:  coarse threads, lightly oiled, 85% of proof load
+    Torque in ft*lbf
+                        Grade
+    Size    8.8     9.8     10.9        12.9
+    M5      5.2     5.8     7.4         8.6
+    M6      8.7     9.8     12          15
+    M8      21      24      30          36
+    M10     42      47      60          71   
+    M12     74      83      106         123
+    M16     183     204     261         305
+    M20     369             509         597
 
-For fine threads, increase above ratings by 9%.
+Calculating axial force
+    T = K*F*d*(1 - l/100)
+    F = T/(K*d*(1 - l/100))
 
-Effect of lubrication on torque:  Table shows reduction
-in torque needed for same stress in bolt.
+    where
+        T = wrench torque (N*m, lbf*ft)
+        K = constant depending on material and size
+        d = nominal bolt diameter (m, ft)
+        F = axial bolt force (N, lbf)
+        l = lubrication factor (torque reduction in % due to lubrication)
+    Typical K for mild steel bolts 1/4-1:
+        0.2     Dry bolts
+        0.3     Non-plated black finish
+        0.2     Zinc plated
+        0.18    Slightly lubricated
+        0.16    Cadmium plated
+    Example:  clamping force for a 1/2 inch coarse grade 5 bolt torqued to 
+        57 ft*lbf under dry conditions with no oil:
+            F = 57/(0.2*1/2*(1 - 0/100)) = 570 lbf
 
-                      Torque rating in ft-lbs
-Lubricant              5/16-18        1/2-13
---------------------   -------       -------
-No lube, steel           29            121
-Plated & cleaned         19 (66%)       90 (26%)
-SAE 20 oil               18 (38%)       87 (28%)
-SAE 40 oil               17 (41%)       83 (31%)
-Plated & SAE 30          16 (45%)       79 (35%)
-White grease             16 (45%)       79 (35%)
-Dry moly film            14 (52%)       66 (45%)
-Graphite & oil           13 (55%)       62 (49%)
+Effect of lubrication on torque
+    Reduction in torque needed for same stress in bolt
 
-From Glover, "Pocket Ref", 1993, page 250
+                        Torque rating in ft-lbs
+    Lubricant              5/16-18        1/2-13
+    --------------------   -------       -------
+    No lube, steel           29            121
+    Plated & cleaned         19 (66%)       90 (26%)
+    SAE 20 oil               18 (38%)       87 (28%)
+    SAE 40 oil               17 (41%)       83 (31%)
+    Plated & SAE 30          16 (45%)       79 (35%)
+    White grease             16 (45%)       79 (35%)
+    Dry moly film            14 (52%)       66 (45%)
+    Graphite & oil           13 (55%)       62 (49%)
+
+    From Glover, "Pocket Ref", 1993, page 250
 
 -----------------------------------------------------------------------------
 Spark plug torque                                           *Spark_Plug_Torques*
