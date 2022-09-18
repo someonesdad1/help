@@ -1,0 +1,250 @@
+*latex*
+
+|latex_basics|
+|latex_tables|
+|latex_bibtex|
+|latex_font_sizes|
+
+---------------------------------------------------------------------------
+*latex_basics*
+
+vim on latex files
+    Somehow the formatting of bulleted lists gets screwed up when editing a
+    *.tex file.  A quick fix is to make a soft link to it as a file name
+    like 'a'; then you can use the paragraph formatting.
+
+Basic document structure
+    <preamble:  say what packages to use, settings, etc.>
+    % A comment
+    \begin{document}
+        <document's text>
+    \end{document}
+        <anything here is ignored, so you can use it for e.g. a todo list>
+
+Setting body text to sans serif and formulas to computer modern
+    \begin{document}
+
+    {\sffamily
+
+    \begin{center}
+        \huge Document title \\
+        \normalsize someonesdad1@gmail.com\\
+        Version:  5 Jan 2022
+    \end{center}
+
+    \section{Introduction}
+        ...
+    } % End of font family
+    \end{document}
+
+Definining a new operator (e.g., sine in degrees)
+    \DeclareMathOperator{\sind}{sind}
+
+---------------------------------------------------------------------------
+Font sizes                                              *latex_font_sizes*
+
+The following fonts sizes are used when you use the 10, 11, 12 point
+document font size option in \documentclass.
+
+Command                 10pt    11pt    12pt
+\tiny                   5       6       6
+\scriptsize             7       8       8
+\footnotesize           8       9       10
+\small                  9       10      10.95
+\normalsize (default)   10      10.95   12
+\large                  12      12      14.4
+\Large                  14.4    14.4    17.28
+\LARGE                  17.28   17.28   20.74
+\huge                   20.74   20.74   24.88
+\Huge                   24.88   24.88   24.88
+
+---------------------------------------------------------------------------
+Bibtex                                                  *latex_bibtex*
+
+https://www.bibtex.com/e/entry-types/
+https://www.economics.utoronto.ca/osborne/latex/BIBTEX.HTM
+
+The Citekey can be any alphanumeric characters or one of  '-_:'.
+
++ means a required field.  Field names are case-insensitive and field order
+is unimportant.
+
+Numbers with only digits can eliminate the braces; strings must be inside
+{...}.  Note the 'and' between authors.  Probably the best form for
+authors' names is 'lastname, firstname', as the comma allows you to use
+'Guevara de la Serna, Ernesto', as 'Ernesto Guevara de la Serna' will cause
+bibtex to use 'de la Serna' for the last name, which is incorrect.
+
+Article
+    @article{CitekeyArticle,
+      + author   = {P. J. Cohen},
+      + title    = {The independence of the continuum hypothesis},
+      + journal  = {Proceedings of the National Academy of Sciences},
+      + year     = 1963,
+        volume   = {50},
+        number   = {6},
+        pages    = {1143--1148},
+    }
+
+Book
+    @book{CitekeyBook,
+      + author    = {Leonard Susskind and George Hrabovsky},
+      + title     = {Classical mechanics: the theoretical minimum},
+      + publisher = {Penguin Random House},
+        address   = {New York, NY},
+      + year      = 2014
+    }
+    Must have either 'author' or 'editor' field
+
+Booklet:   work that is bound, but does not have an identifiable publisher
+    @booklet{CitekeyBooklet,
+        title        = {Canoe tours in {S}weden},
+        author       = {Maria Swetla}, 
+        howpublished = {Distributed at the Stockholm Tourist Office},
+        month        = jul,
+        year         = 2015
+    }
+
+Conference:  See inproceedings for details
+
+Inbook:  A section, such as a chapter, or a page range within a book
+    @inbook{CitekeyInbook,
+        author    = {Lisa A. Urry and Michael L. Cain and Steven A. Wasserman and Peter V. Minorsky and Jane B. Reece},
+        title     = {Photosynthesis},
+        booktitle = {Campbell Biology},
+        year      = {2016},
+        publisher = {Pearson},
+        address   = {New York, NY},
+        pages     = {187--221}
+    }
+
+Incollection:  A titled section of a book, such as a short story within the
+larger collection of short stories that make up the book.
+    @incollection{CitekeyIncollection,
+      + author    = {Shapiro, Howard M.},
+        editor    = {Hawley, Teresa S. and Hawley, Robert G.},
+      + title     = {Flow Cytometry: The Glass Is Half Full},
+      + booktitle = {Flow Cytometry Protocols},
+      + year      = 2018,
+      + publisher = {Springer},
+        address   = {New York, NY},
+        pages     = {1--10}
+    }
+
+Inproceedings:  A paper that has been published in conference proceedings.
+The usage of conference and inproceedings is the same.
+    @inproceedings{CitekeyInproceedings,
+      + author    = {Holleis, Paul and Wagner, Matthias and Koolwaaij, Johan},
+      + title     = {Studying mobile context-aware social services in the wild},
+      + booktitle = {Proc. of the 6th Nordic Conf. on Human-Computer Interaction},
+        series    = {NordiCHI},
+      + year      = 2010,
+        pages     = {207--216},
+        publisher = {ACM},
+        address   = {New York, NY}
+    }
+
+Manual:  A technical manual for a machine software such as would come with
+a purchase to explain operation to the new owner.
+    @manual{CitekeyManual,
+        title        = {{R}: A Language and Environment for Statistical Computing},
+        author       = {{R Core Team}},
+        organization = {R Foundation for Statistical Computing},
+        address      = {Vienna, Austria},
+        year         = 2018
+    }
+
+Mastersthesis
+    @mastersthesis{CitekeyMastersthesis,
+        author  = {Jian Tang},
+        title   = {Spin structure of the nucleon in the asymptotic limit},
+        school  = {Massachusetts Institute of Technology},
+        year    = 1996,
+        address = {Cambridge, MA},
+        month   = sep
+    }
+
+Misc:  Used if none of the other entry types quite match the source.
+Frequently used to cite web pages, but can be anything from lecture slides
+to personal notes.
+    @misc{CitekeyMisc,
+        title        = {Pluto: The 'Other' Red Planet},
+        author       = {{NASA}},
+        howpublished = {\url{https://www.nasa.gov/nh/pluto-the-other-red-planet}},
+        year         = 2015,
+        note         = {Accessed: 2018-12-06}
+    }
+
+Phdthesis
+    @phdthesis{CitekeyPhdthesis,
+        author  = {Rempel, Robert Charles},
+        title   = {Relaxation Effects for Coupled Nuclear Spins},
+        school  = {Stanford University},
+        address = {Stanford, CA},
+        year    = 1956,
+        month   = jun
+    }
+
+proceedings:  A conference proceeding.
+    @proceedings{CitekeyProceedings,
+        editor    = {Susan Stepney and Sergey Verlan},
+        title     = {Proceedings of the 17th International Conference on Computation and Natural Computation, Fontainebleau, France},
+        series    = {Lecture Notes in Computer Science},
+        volume    = {10867},
+        publisher = {Springer},
+        address   = {Cham, Switzerland},
+        year      = 2018
+    }
+
+Techreport:  An institutionally-published report such as a report from a
+school, a government organization, an organization, or a company. This
+entry type is also frequently used for white papers and working papers.
+    @techreport{CitekeyTechreport,
+      + title       = {{W}asatch {S}olar {P}roject Final Report},
+      + author      = {Bennett, Vicki and Bowman, Kate and Wright, Sarah},
+      + institution = {Salt Lake City Corporation},
+        address     = {Salt Lake City, UT},
+        number      = {DOE-SLC-6903-1},
+      + year        = 2018,
+        month       = sep
+    }
+
+Unpublished:  A document that has not been officially published such as a
+paper draft or manuscript in preparation.
+    @unpublished{CitekeyUnpublished,
+      + author = {Mohinder Suresh},
+      + title  = {Evolution: a revised theory},
+        year   = 2006
+    }
+
+---------------------------------------------------------------------------
+*latex_tables*
+
+Use the array package
+    \usepackage{array}
+
+Consult https://latex-tutorial.com/tables-in-latex for examples of use
+
+Here's a handy use in the AnalyticGeometry project in the series.tex file.
+Note 1) the p use to control the column width and 2) that the cell contents
+can wrap.
+
+    \center
+    \begin{tabular}{p{3cm}p{3cm}p{3cm}p{3cm}p{3cm}}
+        $\frac{1}{1\mp\delta}$ &
+            $\left ( 1 \pm \frac{\delta}{n} \right)^n$ &
+            $\sqrt[n]{1 \pm n\delta}$ &
+            $\frac{1}{\sqrt[n]{1 \pm n\delta}}$ &
+            $\sqrt{\frac{1\pm\delta}{1 \mp \delta}}$ \\
+        $e^{\pm\delta}$ &
+            $2 - e^{\pm\delta}$ &
+            $1 + \ln(1 \pm \delta)$ &
+            $1 - \ln(1 \mp \delta)$ &
+            $1 + n\ln \left(1 \pm \frac{\delta}{n}\right)$ \\
+        $1 - n\ln \left(1 \mp \frac{\delta}{n}\right)$ &
+            $1 \pm \sin \frac{\delta}{n}$ &
+            $1 \pm \frac{1}{n} \sin n\delta$ &
+            $\cos\sqrt{\mp2\delta}$ &
+            $\phantom{}$
+    \end{tabular}
+

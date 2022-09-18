@@ -144,11 +144,11 @@ if 1:   # Core functionality
         files = '''
             arduino asciidoc astronomical awk bash basic bibtex biology c
             chemistry constants cpp cvs darcs electrical engineering find
-            flex g gdb git go hg hp3488 hp42s hp49 html korn make_ markdown
-            materials math mathematica matplotlib mpmath mswindows numpy
-            office pandoc pcl5 perl4 perl5 physics ps pygame python rst
-            scipy scons sed shop simpy sizes snippets sql statistics stl
-            subversion svn sympy thermal_cond tmux uncertainties units
+            flex g gdb git go hg hp3488 hp42s hp49 html korn latex lua make_
+            markdown materials math mathematica matplotlib mpmath mswindows
+            numpy office pandoc pcl5 perl4 perl5 physics ps pygame python
+            rst scipy scons sed shop simpy sizes snippets sql statistics
+            stl subversion svn sympy thermal_cond tmux uncertainties units
             utilities vim yaml
         '''.split()
         # The following is used to detect when a file might have been left
@@ -249,7 +249,7 @@ if 1:   # Core functionality
         # alphabetically ordered down the page like ls output).
         groups = (('''
                 python vim git uncertainties shop bash C g matplotlib numpy
-                sympy Cpp gdb scipy mpmath make_ Utilities
+                sympy Cpp gdb scipy mpmath make_ Utilities latex
             ''', 3, 20),
             ('''
                 Electrical Physics Math Engineering Astronomy Units
@@ -257,7 +257,7 @@ if 1:   # Core functionality
             ''', 3, 20),
             ('''
                 arduino asciidoc awk basic bibtex cvs darcs find flex hg
-                hp3488 HP42s HTML Korn_Shell markdown Mathematica pandoc
+                hp3488 HP42s HTML Korn_Shell lua markdown Mathematica pandoc
                 PCL5 perl4 perl5 PostScript pygame rst sed Snippets STL Subversion
                 tmux mswindows yaml
             ''', 0, 0),

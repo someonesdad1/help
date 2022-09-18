@@ -1,0 +1,318 @@
+*lua*
+
+|lua_control|
+|lua_tips|
+|lua_basics|
+|lua_command_line|
+|lua_grammar|
+
+---------------------------------------------------------------------------
+*lua_control*
+
+for namelist in explist do block end
+    If you use an integer counter, the loop ends if overflow.
+
+    namelist variables are local to loop body
+
+---------------------------------------------------------------------------
+*lua_tips*
+
+Make a file a lua script with first line of '#/home/Don/bin/lua'.
+    Or use  '#!/usr/bin/env lua' if lua is in your PATH.
+
+Hello world program
+    hello.lua:
+        print("Hello world")
+    Run:  lua.exe hello.lua
+
+Reserved words and tokens
+    and       break     do        else      elseif
+    end       false     for       function  if
+    in        local     nil       not       or
+    repeat    return    then      true      until
+    while
+
+    +     -     *     /     %     ^     #
+    &     ~     |     <<    >>    //
+    ==    ~=    <=    >=    <     >     =
+    (     )     {     }     [     ]     ::
+    ;     :     ,     .     ..    ...
+
+Identifiers
+    Avoid identifiers starting with _ and using uppercase letters (they are
+    reserved for special uses).  The concept of a letter is
+    locale-dependent.
+
+Comments
+    -- Starts a single line comment
+    --[[, --]] delimit a multiline comment
+
+    Commenting-out trick:
+        --[[
+        print(10)
+        --]]
+      Then change first line by adding a hyphen
+        ---[[
+        print(10)
+        --]]
+      Now the code will run, as the first and third line are commented out.
+
+Compiling lua: (cygwin)
+    - Download http://www.lua.org/ftp/lua-5.4.4.tar.gz
+    - Go to lua-5.4.4/src and set PLAT= generic in Makefile
+    - Run 'gcc -std=gnu99 -O2 -Wall -Wextra -DLUA_COMPAT_5_3 -c *.c' to
+      build all .o files
+    - Run 'make' and lua.exe and luac.exe are constructed.  One's the
+      interpreter and one's the compiler.
+
+---------------------------------------------------------------------------
+*lua_basics*
+
+Free-form language, ignores spaces and comments between lexical elements.
+The standard ASCII whitespace characters are recognized as spaces.
+
+Unicode:  \u{xxx} where x is in hex
+
+- Dynamically typed (variables have no type, only value do)
+    - Types are:  nil, boolean, number, string, function, userdata, thread,
+      table
+    - Numbers:  integers, real (both are 64-bit)
+        - Integers wrap around in 2's complement form
+        - 1 == 1.0
+        - Ints:  3   345   0xff   0xBEBADA
+        - Floats:  3.0     3.1416     314.16e-2     0.31416E1     34e1
+            0x0.1E  0xA23p-4   0X1.921FB54442D18P+1
+    - Strings are immutable; delimited by ' or ".
+        - Multiline strings:
+            - Level 0 long format
+                a = [[ abc
+                    123" ]]
+            - Level 1 long format
+                a = [=[ abc
+                    123" ]=]
+            - etc.
+            - Do not interpret escape sequences and ignore long brackets of
+              other levels.
+            - Any EOL type is converted to a newline.
+            - When the [[ is immediately followed by a newline, the newline
+              is not included in the string.
+    - Functions:  lua can call and manipulate functions in lua and C
+    - Userdata lets arbitrary C data be stored in variables; it's a block
+      of raw memory.  2 types:  full = object with memory block managed by
+      lua, light = C pointer.  Userdata can only be created through the C
+      API.
+    - Threads represent independent threads and are used to implement
+      coroutines.  Not equal to OS threads.
+    - Table = associative array.  They are the only data structure in lua.
+      a.name == a["name"] as syntactic sugar.
+        - a[2.0] actually uses the key a[2]
+    - type(x) returns the type of the variable x
+
+Variables
+    - global
+    - local
+    - table fields
+    - 'var ::= name' denotes a function formal parameter, a local variable
+
+Arithmetic
+    +: addition
+    -: subtraction
+    *: multiplication
+    /: float division
+    //: floor division
+    %: modulo
+    ^: exponentiation
+    -: unary minus
+
+    3*"4" works as the string is coerced to a number type
+
+Bitwise operators
+    &: bitwise AND
+    |: bitwise OR
+    ~: bitwise exclusive OR
+    >>: right shift
+    <<: left shift
+    ~: unary bitwise NOT
+
+Relational operators
+    ==: equality
+    ~=: inequality
+    <: less than
+    >: greater than
+    <=: less or equal
+    >=: greater or equal
+
+Logical operators
+    not
+    and 
+    or
+
+String concatenation
+    a .. b
+
+Length operator:  #
+    Length of string is number of bytes
+
+Operator precedence
+    Lower to higher priority
+        or
+        and
+        <     >     <=    >=    ~=    ==
+        |
+        ~
+        &
+        <<    >>
+        ..
+        +     -
+        *     /     //    %
+        unary operators (not   #     -     ~)
+        ^
+
+    Parentheses change the precedences of an expression. The concatenation
+    ('..') and exponentiation ('^') operators are right associative. All
+    other binary operators are left associative.
+
+Block and visibility
+    x = 10                -- global variable
+    do                    -- new block
+      local x = x         -- new 'x', with value 10
+      print(x)            --> 10
+      x = x+1
+      do                  -- another block
+        local x = x+1     -- another 'x'
+        print(x)          --> 12
+      end
+      print(x)            --> 11
+    end
+    print(x)              --> 10  (the global one)
+
+---------------------------------------------------------------------------
+*lua_command_line*
+
+lua [options] [script [args]]
+
+    -e stat     Execute string stat
+    -i          Enter interactive mode after running script
+    -l mod      "require" mod and assign the result to global mod
+    -v          Print version information
+    -E          Ignore environment variables
+    -W          Turn warnings on
+    --          Stop handling options
+    -           Execute stdin as a file and stop handling options
+
+When called without the option -E, the interpreter checks for an
+environment variable LUA_INIT_5_4 (or LUA_INIT if the versioned name is not
+defined) before running any argument. If the variable content has the
+format @filename, then lua executes the file. Otherwise, lua executes the
+string itself.
+
+The options -e, -l, and -W are handled in the order they appear. For
+instance, an invocation like
+
+     $ lua -e 'a=1' -llib1 script.lua
+
+will first set a to 1, then require the library lib1, and finally run the
+file script.lua with no arguments. (Here $ is the shell prompt. Your prompt
+may be different.)
+
+Before running any code, lua collects all command-line arguments in a
+global table called arg. The script name goes to index 0, the first
+argument after the script name goes to index 1, and so on. Any arguments
+before the script name (that is, the interpreter name plus its options) go
+to negative indices. For instance, in the call
+
+     $ lua -la b.lua t1 t2
+
+the table is like this:
+
+     arg = { [-2] = "lua", [-1] = "-la",
+             [0] = "b.lua",
+             [1] = "t1", [2] = "t2" }
+
+If there is no script in the call, the interpreter name goes to index 0,
+followed by the other arguments. For instance, the call
+
+     $ lua -e "print(arg[1])"
+
+will print "-e". If there is a script, the script is called with arguments
+arg[1], ···, arg[#arg]. Like all chunks in Lua, the script is compiled as a
+vararg function.
+
+If the global variable _PROMPT contains a string, then its value is used as
+the prompt. Similarly, if the global variable _PROMPT2 contains a string,
+its value is used as the secondary prompt (issued during incomplete
+statements).
+
+---------------------------------------------------------------------------
+*lua_grammar*
+
+Extended BNF:  {A} = 0 or more As; [A] = an optional A.
+
+
+chunk ::= block
+
+block ::= {stat} [retstat]
+
+stat ::=  ‘;’ | 
+          varlist ‘=’ explist | 
+          functioncall | 
+          label | 
+          break | 
+          goto Name | 
+          do block end | 
+          while exp do block end | 
+          repeat block until exp | 
+          if exp then block {elseif exp then block} [else block] end | 
+          for Name ‘=’ exp ‘,’ exp [‘,’ exp] do block end | 
+          for namelist in explist do block end | 
+          function funcname funcbody | 
+          local function Name funcbody | 
+          local attnamelist [‘=’ explist] 
+
+attnamelist ::=  Name attrib {‘,’ Name attrib}
+
+attrib ::= [‘<’ Name ‘>’]
+
+retstat ::= return [explist] [‘;’]
+
+label ::= ‘::’ Name ‘::’
+
+funcname ::= Name {‘.’ Name} [‘:’ Name]
+
+varlist ::= var {‘,’ var}
+
+var ::=  Name | prefixexp ‘[’ exp ‘]’ | prefixexp ‘.’ Name 
+
+namelist ::= Name {‘,’ Name}
+
+explist ::= exp {‘,’ exp}
+
+exp ::=  nil | false | true | Numeral | LiteralString | ‘...’ | functiondef | 
+    prefixexp | tableconstructor | exp binop exp | unop exp 
+
+prefixexp ::= var | functioncall | ‘(’ exp ‘)’
+
+functioncall ::=  prefixexp args | prefixexp ‘:’ Name args 
+
+args ::=  ‘(’ [explist] ‘)’ | tableconstructor | LiteralString 
+
+functiondef ::= function funcbody
+
+funcbody ::= ‘(’ [parlist] ‘)’ block end
+
+parlist ::= namelist [‘,’ ‘...’] | ‘...’
+
+tableconstructor ::= ‘{’ [fieldlist] ‘}’
+
+fieldlist ::= field {fieldsep field} [fieldsep]
+
+field ::= ‘[’ exp ‘]’ ‘=’ exp | Name ‘=’ exp | exp
+
+fieldsep ::= ‘,’ | ‘;’
+
+binop ::=  ‘+’ | ‘-’ | ‘*’ | ‘/’ | ‘//’ | ‘^’ | ‘%’ | 
+           ‘&’ | ‘~’ | ‘|’ | ‘>>’ | ‘<<’ | ‘..’ | 
+           ‘<’ | ‘<=’ | ‘>’ | ‘>=’ | ‘==’ | ‘~=’ | 
+           and | or
+
+unop ::= ‘-’ | not | ‘#’ | ‘~’

@@ -1,10 +1,11 @@
 *HP42s*
 
-|Key_map|
+|hp42s_Key_map|
 |hp42s_details|
+|hp42s_comments|
 
 -----------------------------------------------------------------------------
-Key Map                                               *Key_map*
+Key Map                                               *hp42s_Key_map*
 
 Sigma+:   F1, or 'a' as in "Accumulate"
 Sigma-:   Shift F1, or 'A' (Shift a)
@@ -1040,3 +1041,137 @@ It appears that, while this calculator was originally developed as a
 of its development cycle.
 
 There was talk of a follow on model (-42SX), but that never happened.
+
+---------------------------------------------------------------------------
+*hp42s_comments*
+
+https://en.wikipedia.org/wiki/HP-42S
+
+    The HP-42S RPN Scientific is a programmable RPN Scientific hand held
+    calculator introduced by Hewlett Packard in 1988. It has advanced
+    functions suitable for applications in mathematics, linear algebra,
+    statistical analysis, computer science and others.
+
+    Perhaps the HP-42S was to be released as a replacement for the aging
+    HP-41 series as it is designed to be compatible with all programs
+    written for the HP-41. Since it lacked expandability, and lacked any
+    real I/O ability, both key features of the HP-41 series, it was
+    marketed as an HP-15C replacement.
+
+    The 42S, however, has a much smaller form factor than the 41, and
+    features many more built-in functions, such as a matrix editor, complex
+    number support, an equation solver, user-defined menus, and basic
+    graphing capabilities (the 42S can draw graphs only by programs).
+    Additionally, it features a two-line dot matrix display, which made
+    stack manipulation easier to understand.
+
+    Production of the 42S ended in 1995.[2] As this calculator is regarded
+    amongst the best ever made in terms of quality, key stroke feel, ease
+    of programming, and daily usability for engineers,[3] in the HP
+    calculator community the 42S has become famous for its high prices in
+    online auctions, up to several times its introduction price, which has
+    created a scarcity for utility end users.
+
+Free42
+    
+    This is an HP-42s emulator by Thomas Okken written in C and
+    indepedently developed with no HP ROM content.  It's a wonderful
+    accomplishment and has let many people use the HP-42s who would have
+    little chance of getting their hands on the actual hardware.
+
+Swiss Micros DM42
+
+    In May 2017, SwissMicros released pre-production samples of an RPN
+    calculator closely resembling the HP-42S, the DM42. The final product
+    was released on the 9 December 2017. Even though slightly smaller
+    (144×77×13 mm, 170 g) than the original HP-42S (148×80×15 mm, 170 g),
+    the calculator comes with an additional top row of keys for soft menus,
+    a keyboard layout supporting direct alpha character input, a much
+    larger high-contrast display (Sharp low power transflective memory LCD
+    with a resolution of 400×240, protected by Gorilla Glass) showing all
+    four stack levels at once (configurable), ca. 75 KB usable RAM, a
+    beeper, a callable real-time clock as well as an infrared port for HP
+    82240A/HP 82240B printer support and a USB interface (with Micro-B
+    connector) emulating a FAT16-formatted USB mass storage device for easy
+    program transfer and state backup / transfer as well as for firmware
+    updates. The calculator, which comes in a stainless steel case with
+    matte black physical vapor deposition (PVD) coating, supports keyboard
+    overlays and is based on a modified version of Thomas Okken's GPLed
+    Free42 simulator with Intel's decimal floating-point math library for
+    higher precision (decimal128) running on an STM32L476RG processor (ARM
+    Cortex-M4 core, 128 KB RAM, 1 MB internal flash) with another 8 MB of
+    external QSPI flash (of which ca. 6 MB are available to users). It is
+    powered by a CR2032 coin cell or via USB and clocked dynamically at
+    24-80 MHz. The DM42 is also the hardware basis for the
+    community-developed WP 43S calculator,[6][7] a successor to the WP 34S.
+
+My opinions
+
+    Since the early 1970's, I owned various HP calculators such as the
+    HP-45, HP-55, HP-25, HP-25c, HP-41, HP-41CX, HP-15C, HP-11C, HP-12C,
+    and the HP-42s.  I went to work for HP as an R&D scientist in 1980 and
+    got to occasionally play with a number of other HP calculators, but
+    never found one that really struck me until the HP-42s came out in late
+    1988.  I had HP buy me one for work and I gave my HP-41CX with all its
+    goodies to my nephew who was a computer engineering student at the
+    time.  I immediately came to love the HP-42s, primarily because of its
+    excellent keyboard and it had most of the things I needed for my daily
+    work.  I liked it so much I bought another one on employee purchase to
+    keep at home.  
+
+    When I retired from HP in 2002, HP let me take my work calculator home.
+    That work calculator has been sitting next to me for more than 30 years
+    and used nearly every day.  To my knowledge, it has never failed me nor
+    lost information through many tens of battery changes.  The one I
+    bought for home use sits on my drafting table and looks nearly new.  In
+    2022 I donated my HP-41CX with all its options, the HP thermal printer,
+    and a HP-49g+ to the HHC 2022 conference to be given away as door
+    prizes.  They had been sitting in boxes for decades and I was never
+    going to use them again.  Now I only have two HP-42s calculators and
+    the HP-11C in my shop, which I believe is still on its second or third
+    set of batteries (HP labstock in the 1980's stocked silver oxide
+    batteries and these are what I last used).
+
+    Other than doing basic arithmetic and elementary calculations at my
+    desk, calculators aren't terribly useful anymore, as when I need to do
+    a more involved calculation I'll do it on my computer.  When I'm out in
+    the field, I use my cell phone with the excellent Free42 emulator, but
+    I immediately miss the wonderful real HP-42s keyboard.
+
+    I'd like to have a Swiss Micros DM-42 because I suspect it would be
+    easier for my old eyes to read, but I can't mentally justify the
+    expense (there are other toys I'd spend my money on first).
+
+    For a working scientist/engineer, the features of the HP-42s I think 
+    are most important are:
+
+        - The fantastic keyboard
+        - The excellent documentation
+        - Complex numbers and having the elementary functions carfully
+          defined over the complex domain.  
+        - The solver and integrator
+        - The ease of programming for quick repetitive tasks
+
+    When I was working, I used the statistics features a lot to reduce
+    and analyze experimental data.  I'd also occasionally use the matrix
+    features.  
+
+    After retiring, I'd occasionally consult with an electronic test
+    equipment company to write things for them.  I remember writing an
+    application note on LCR meters and using the HP-42s constantly to do
+    calculations with impedances in complex number form.  It made me
+    realize that there are probably many EEs out there who love the HP-42s
+    for this feature alone.  All calculators should have such great complex
+    number support.   Somewhere I remember reading (probably in an HP
+    manual) that complex numbers are not on by default because most people
+    don't need them.  Of course, this is true, so it compliments HP's
+    design abilities to leave such things disabled by default but letting
+    you turn them on if needed.   
+
+    Since I worked as a consultant to produce written documentation, I came
+    to appreciate even more the fabulous manuals that HP produced for its
+    calculators.  While working at HP in R&D, I got to work with some of
+    the professionals that produced documentation and they were very
+    talented and smart folks.  The divisions I worked in produced extremely
+    good documentation for products that were far more complicated than
+    calculators.
