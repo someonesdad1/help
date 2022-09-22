@@ -18,6 +18,27 @@ Wikipedia pages:
   cpp   https://en.wikipedia.org/wiki/C_preprocessor
 
 -----------------------------------------------------------------------------
+Basic C syntax
+
+Enums
+    enum output_state_t {off, on};
+    output_state_t state = on;
+    // Change state as needed
+
+Switches
+    switch (variable) {
+        case val1:
+            do stuff
+            break;
+        case val2:
+            do stuff
+            break;
+        default:
+            do stuff;
+            break;
+    };
+
+-----------------------------------------------------------------------------
 gcc options                                        *gcc_options*
 
 General stuff

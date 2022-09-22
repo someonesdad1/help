@@ -146,7 +146,7 @@ if 1:   # Core functionality
             chemistry constants cpp cvs darcs electrical engineering find
             flex g gdb git go hg hp3488 hp42s hp49 html korn latex lua make_
             markdown materials math mathematica matplotlib mpmath mswindows
-            numpy office pandoc pcl5 perl4 perl5 physics ps pygame python
+            numpy office pandoc pcl5 perl4 perl5 physics pil ps pygame python
             rst scipy scons sed shop simpy sizes snippets sql statistics
             stl subversion svn sympy thermal_cond tmux uncertainties units
             utilities vim yaml
@@ -249,7 +249,7 @@ if 1:   # Core functionality
         # alphabetically ordered down the page like ls output).
         groups = (('''
                 python vim git uncertainties shop bash C g matplotlib numpy
-                sympy Cpp gdb scipy mpmath make_ Utilities latex
+                sympy Cpp gdb scipy mpmath make_ Utilities latex PIL
             ''', 3, 20),
             ('''
                 Electrical Physics Math Engineering Astronomy Units
