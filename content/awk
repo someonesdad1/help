@@ -3,6 +3,21 @@
 |awk_variables|
 |awk_io|
 |awk_string_functions|
+|awk_debugger|
+
+Some key features of gawk
+  - Handles UTF-8 Unicode
+  - Can include files in awk code
+  - Can load shared libraries in awk code
+  - Profiler provides useful picture of where effort was spent
+  - Debugger lets you debug a script
+
+Arrays
+------
+  Only associative arrays.
+  Use 'if (var in myarray)' to test for membership.  Don't use
+      myarray[var] because it will always define an array element.
+  Use 'for (x in myarray)' for iteration.
 
 Command line
 ------------
@@ -275,3 +290,53 @@ Examples
             }'
     Note the syntax requires the opening brace for the BEGIN and END
     blocks on the same line.
+
+---------------------------------------------------------------------------
+|awk_debugger|                                              *awk_debugger*
+
+Use -D option to start; you'll see a 'gawk> ' prompt.
+
+backtrace [N] - print trace of all or N innermost (outermost if N < 0) f
+break [[filename:]N|function] - set breakpoint at the specified location
+clear [[filename:]N|function] - delete breakpoints previously set
+commands [num] - starts a list of commands to be executed at a breakpoin
+condition num [expr] - set or clear breakpoint or watchpoint condition
+continue [COUNT] - continue program being debugged
+delete [breakpoints] [range] - delete specified breakpoints
+disable [breakpoints] [range] - disable specified breakpoints
+display [var] - print value of variable each time the program stops
+down [N] - move N frames down the stack
+dump [filename] - dump instructions to file or stdout
+enable [once|del] [breakpoints] [range] - enable specified breakpoints
+end - end a list of commands or awk statements
+eval stmt|[p1, p2, ...] - evaluate awk statement(s)
+exit - (same as quit) exit debugger
+finish - execute until selected stack frame returns
+frame [N] - select and print stack frame number N
+help [command] - print list of commands or explanation of command
+ignore N COUNT - set ignore-count of breakpoint number N to COUNT
+info topic - source|sources|variables|functions|break|frame|args|locals|display|watch
+list [-|+|[filename:]lineno|function|range] - list specified line(s)
+next [COUNT] - step program, proceeding through subroutine calls
+nexti [COUNT] - step one instruction, but proceed through subroutine calls
+option [name[=value]] - set or display debugger option(s)
+print var [var] - print value of a variable or array
+printf format, [arg], ... - formatted output
+quit - exit debugger
+return [value] - make selected stack frame return to its caller
+run - start or restart executing program
+save filename - save commands from the session to file
+set var = value - assign value to a scalar variable
+silent - suspends usual message when stopped at a breakpoint/watchpoint
+source file - execute commands from file
+step [COUNT] - step program until it reaches a different source line
+stepi [COUNT] - step one instruction exactly
+tbreak [[filename:]N|function] - set a temporary breakpoint
+trace on|off - print instruction before executing
+undisplay [N] - remove variable(s) from automatic display list
+until [[filename:]N|function] - execute until program reaches a different line or line N within current frame
+unwatch [N] - remove variable(s) from watch list
+up [N] - move N frames up the stack
+watch var - set a watchpoint for a variable
+where [N] - (same as backtrace) print trace of all or N innermost (outermost if N < 0) frames
+

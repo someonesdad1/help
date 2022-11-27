@@ -21,9 +21,14 @@ Wikipedia pages:
 Basic C syntax
 
 Enums
+    enum input_state_t {state1=7, state2=44};  // Can assign integer values
     enum output_state_t {off, on};
-    output_state_t state = on;
+    enum output_state_t state = on;
     // Change state as needed
+
+    // The following will range from values of 1 to 12 because of the first
+    // integer assignment:
+    enum month_t {jan=1, feb, mar, ..., dec};
 
 Switches
     switch (variable) {
@@ -38,6 +43,16 @@ Switches
             break;
     };
 
+While statement
+    while (condition) {
+        statement;
+    };
+
+Do statement
+    Allows a statement to be executed at least once
+    do {
+        statement;
+    } while (condition);
 -----------------------------------------------------------------------------
 gcc options                                        *gcc_options*
 

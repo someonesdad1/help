@@ -1,5 +1,8 @@
 *shop*
 
+Add the common inch and metric screw sizes used in the shop along with
+their nut hex sizes and Allen wrench sizes.
+
 |Common_materials|
 |Spring_pins|
 |NumberDrills|
@@ -382,8 +385,8 @@ Common thread sizes                                    *Thread_Sizes*
 
                              Common Thread Sizes
 
-                                       Body   Body    Tap     Tap    Double
-                OD       OD    Pitch   Pitch  drill  drill   drill   depth
+                                              Body                   Double
+                    OD             Pitch      drill    Tap drill     depth
 Size            in       mm     in      mm     in      mm     in      in
 -----------    -----    ----   -----   ----   -----  -----   -----   -----
 2 mm - 0.25    0.079    2.00   0.010   0.25   0.087   2.20   0.069   0.009

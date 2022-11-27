@@ -1,5 +1,12 @@
 *vim*
 
+Unicode
+    ga      Show ASCII value of character under cursor
+    g8      Show UTF8 value of character under cursor
+    To replace a Unicode character U+03a0 in a file with the space
+    character, use ':%s;^Vu03a0; ;g'.  In other words, just enter
+    ctrl-Vu to enter the 4 hex digits.
+
 Delete blank lines with only whitespace:
     :[range]g/^\s$/d
         Executes the given ex command on the range (default whole file)
@@ -22,6 +29,7 @@ Normal mode
 Normal mode stuff with g
     ga      Show ASCII value of character
     g8      Show hex value of character
+    8g8     Find illegal UTF8 byte sequence
     gd      Go to definition of word under cursor in current function
     gD      Go to definition of word under cursor in current file
     gQ      Switch to ex mode; command line editing/completion available

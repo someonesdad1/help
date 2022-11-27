@@ -26,6 +26,9 @@ other stuff by blank lines.
 
 Transitions:  use 4 or more hyphens to produce a horizontal rule
 
+Image reference
+    .. image:: images/ball1.gif
+
 Table of contents (built from the heading structure):  
 
     .. contents:: Table of Contents
@@ -33,6 +36,23 @@ Table of contents (built from the heading structure):
     Note (18Sep2019) This doesn't appear to be supported anymore.
     pandoc has an option '--toc' to insert a table, along with
     --toc-depth=n to control how deep to go.
+
+Sections
+
+    Chapter 1 Title
+    ===============
+
+    Section 1.1 Title
+    -----------------
+
+    Subsection 1.1.1 Title
+    ~~~~~~~~~~~~~~~~~~~~~~
+
+    Section 1.2 Title
+    -----------------
+
+    Chapter 2 Title
+    ===============
 
 Titles  
         (characters can be =  -  `  "  ~  ^  _  *  +  #  <  >)

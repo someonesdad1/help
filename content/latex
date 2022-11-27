@@ -2,16 +2,33 @@
 
 |latex_basics|
 |latex_tables|
+|latex_thebibliography|
 |latex_bibtex|
 |latex_font_sizes|
 
 ---------------------------------------------------------------------------
 *latex_basics*
 
+Code listing:  use \begin{verbatim} ... \end{verbatim}
+    Here's how to indent these blocks:
+    % https://tex.stackexchange.com/questions/148407/how-can-i-indent-verbatim-blocks
+    \usepackage{fancyvrb}
+    \DefineVerbatimEnvironment{verbatim}{Verbatim}{xleftmargin=10mm}
+
+Use degree symbol:
+    $47\;^\circ$C
+
+Variable height absolute value:
+    \usepackage{mathtools}
+    \DeclarePairedDelimiter\abs{\lvert}{\rvert}
+    e.g.
+    \kappa(s) = \abs*{\frac{d^2 \bld r}{d^2 s}}
+    See pg 157 of the latex2e reference.
+
 vim on latex files
     Somehow the formatting of bulleted lists gets screwed up when editing a
     *.tex file.  A quick fix is to make a soft link to it as a file name
-    like 'a'; then you can use the paragraph formatting.
+    like 'a'; then you can use the paragraph formatting command.
 
 Basic document structure
     <preamble:  say what packages to use, settings, etc.>
@@ -39,6 +56,36 @@ Setting body text to sans serif and formulas to computer modern
 
 Definining a new operator (e.g., sine in degrees)
     \DeclareMathOperator{\sind}{sind}
+
+Definining a new command
+    \newcommand{\bld}[1]{\textbf{#1}}
+    Shows how to state & use arguments
+
+---------------------------------------------------------------------------
+*latex_thebibliography*
+
+Bibtex is the preferred method, but I've found it doesn't work because I
+don't know some magic.  Instead, this works for simple documents:
+
+(See pg 93 in the LaTeX reference manual)
+
+\begin{thebibliography}{99}
+    \bibitem{wp}
+        \href{http://en.wikipedia.org/wiki/Main\_Page}
+             {http://en.wikipedia.org/wiki/Main\_Page}.
+
+    \bibitem{at}
+        Atlas Press Company.
+        \textit{Manual of Lathe Operation and Machinist's Tables}.
+        27th ed., printed 1973.
+\end{thebibliography}
+
+The 99 is the anticipated largest number of items you'll have so space can
+be allocated for references in the text.  
+
+Citations in the text are:  \cite{at}
+
+    To e.g. include a page number, use \cite[p. 314]{at}
 
 ---------------------------------------------------------------------------
 Font sizes                                              *latex_font_sizes*

@@ -3,3 +3,86 @@
 Python Imaging Library
 
 https://pillow.readthedocs.io/en/stable/
+
+Basics
+    from PIL import Image
+    im = Image.open("a.jpg")
+    im.format:  source or None if not from reading a file
+    im.size:    2-tuple of (width, height) in pixels
+    im.mode:    RGB, L for grayscale, CMYK
+    im.show()   Nice if it works (uses IrfanView in WinPython)
+    im.save(outfile)  Type saved depends on extension
+    im.resize((x, y))
+    im.rotate(theta)    # Degrees ccw
+    # Transpose instead
+    out = im.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    out = im.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    out = im.transpose(Image.Transpose.ROTATE_90)
+    out = im.transpose(Image.Transpose.ROTATE_180)
+    out = im.transpose(Image.Transpose.ROTATE_270)
+
+Make jpg thumbnails
+    import os, sys
+    from PIL import Image
+    size = (128, 128)
+    for infile in sys.argv[1:]:
+        outfile = os.path.splitext(infile)[0] + ".thumbnail"
+        if infile != outfile:
+            try:
+                with Image.open(infile) as im:
+                    im.thumbnail(size)
+                    im.save(outfile, "JPEG")
+            except OSError:
+                print("cannot create thumbnail for", infile)
+
+Identify images
+    import sys
+    from PIL import Image
+    for infile in sys.argv[1:]:
+        try:
+            with Image.open(infile) as im:
+                print(infile, im.format, f"{im.size}x{im.mode}")
+        except OSError:
+            pass
+
+Cropping
+    box = (100, 100, 400, 400)
+    region = im.crop(box)
+    region = region.transpose(Image.Transpose.ROTATE_180)
+    # Put it back
+    im.paste(region, box)
+
+Reading from URL
+    from PIL import Image
+    from urllib.request import urlopen
+    url = "https://python-pillow.org/images/pillow-logo.png"
+    img = Image.open(urlopen(url))
+
+Batch processing
+
+    Operations can be applied to multiple image files. For example, all PNG
+    images in the current directory can be saved as JPEGs at reduced
+    quality.
+
+        import glob
+        from PIL import Image
+
+        def compress_image(source_path, dest_path):
+            with Image.open(source_path) as img:
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
+                img.save(dest_path, "JPEG", optimize=True, quality=80)
+
+        paths = glob.glob("*.png")
+        for path in paths:
+            compress_image(path, path[:-4] + ".jpg")
+
+    Since images can also be opened from a Path from the pathlib module,
+    the example could be modified to use pathlib instead of the glob
+    module.
+
+        from pathlib import Path
+
+        paths = Path(".").glob("*.png")
+        for path in paths:
+            compress_image(path, path.stem + ".jpg")
