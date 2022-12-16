@@ -8,6 +8,7 @@ Core            + means updated to python 3.7 manpage
     |python_sets|
     |python_requests| Popular library for downloading web stuff
     |python_dictionaries|
+    |python_descriptors|
     |python_streams|
     |python_bytes|
     |python_keywords|
@@ -2070,6 +2071,43 @@ Use sorted to generate a sorted list from any iterable.
                 def g(obj):
                     return tuple(obj[item] for item in items)
             return g
+
+---------------------------------------------------------------------------
+Descriptors                                    *python_descriptors*
+
+https://realpython.com/python-getter-setter/#replacing-getters-and-setters-with-more-advanced-tools
+
+Python makes it easy to let users access attributes.  However, a
+fundamental problem is that if you want to change the implementation from a
+variable access to a computed access, you'll break the user's API.  
+
+    Rule:  public attributes should only be used when you're sure no one
+    will ever need to attach behavior to them.
+
+    If you need to attach behavior, you need getters & setters.
+
+Descriptors use the __set__, __get__, and __set_name__ methods to make a
+reusable component that has computable getters and setters.
+
+You can also use __getattr__ and __setattr__ for these tasks which allow
+the attributes to be computed:
+
+    class Point:
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+        def __getattr__(self, name: str):
+            return self.__dict__[f"_{name}"]
+        def __setattr__(self, name, value):
+            self.__dict__[f"_{name}"] = float(value)
+
+    Note the addition of an underscore to the name; this is what allows you
+    to avoid a recursive mess.
+
+Properties are an intermediate way of avoiding getters and setters for each
+attribute; they allow you to turn class attributes into managed attributes.
+https://realpython.com/python-property/  This is the old "functional" form
+of property(), but today I prefer to use the @property decorator.
 
 ---------------------------------------------------------------------------
 Dictionary methods and operations              *python_dictionaries*

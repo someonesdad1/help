@@ -10,8 +10,12 @@ Basics
     im.format:  source or None if not from reading a file
     im.size:    2-tuple of (width, height) in pixels
     im.mode:    RGB, L for grayscale, CMYK
+
     im.show()   Nice if it works (uses IrfanView in WinPython)
+
     im.save(outfile)  Type saved depends on extension
+
+Common transformations
     im.resize((x, y))
     im.rotate(theta)    # Degrees ccw
     # Transpose instead
