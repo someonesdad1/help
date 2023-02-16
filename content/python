@@ -67,6 +67,13 @@ Miscellaneous stuff
 
 Python's FAQ: https://docs.python.org/3/faq/
 
+Open a website url
+    First, make sure you use this:
+        export BROWSER=cygstart
+    import webbrowser
+    url = "https://docs.python.org/3/faq/"
+    webbrowser.open(url)
+
 How to put a dict of variables into a function's local namespace
     di = {
         "x":44,
@@ -95,6 +102,13 @@ Circular imports
                  compact=False):
     Means that all arguments after that point are keyword arguments only.
 
+Fast way to remove whitespace from string s
+    ''.join(s.split())
+    Whitespace == ' ' \t \n \r \f \v
+    Use /plib/dpstr.RemoveWhitespace(s)
+    Note using regexp or str.translate() are significantly slower (see
+    http://www.qtrac.eu/01_nows.html)
+    
 Nested scopes:  how to change variables in upper scope
     print("Naive way:")
     def f():
@@ -550,19 +564,18 @@ Use of underscores in identifiers:
 maketrans and translate
   These are utilities to modify strings and bytes.
 
-  python 3:
-    str.maketrans(x[, y[, z]])
-        Returns a translation table for use with str.translate().
+  str.maketrans(x[, y[, z]])
+      Returns a translation table for use with str.translate().
 
-        maketrans(x) uses a dictionary x that maps Unicode ordinals
-        (i.e., integers) to ordinals, strings, or None.  Character keys
-        are converted to ordinals.
+      maketrans(x) uses a dictionary x that maps Unicode ordinals
+      (i.e., integers) to ordinals, strings, or None.  Character keys
+      are converted to ordinals.
 
-        maketrans(x, y) must have x and y being strings of equal length.
-        Corresponding characters in x are mapped to y.  
+      maketrans(x, y) must have x and y being strings of equal length.
+      Corresponding characters in x are mapped to y.  
 
-        If z is present, it must be a string whose characters are mapped
-        to None.
+      If z is present, it must be a string whose characters are mapped
+      to None.
 
     str.translate(table)
         Returns a copy of the string that has been mapped through the
@@ -578,7 +591,20 @@ maketrans and translate
 
     Examples:
 
-        * Delete vowels and punctuation from a string.  This is about 20%
+        - Remove a set of characters from a string.  This example shows how
+          to remove all ASCII characters.
+
+            def RemASCII(s):
+                if not hasattr(RemASCII, "table"):   
+                    # Initialize and cache a translation table
+                    r = range(0, 0x7f)
+                    chars = [chr(i) for i in r]
+                    none = [None]*len(chars)
+                    RemASCII.table = ''.maketrans(dict(zip(chars, none)))
+                # Remove ASCII characters from string s
+                return s.translate(RemASCII.table)
+
+        - Delete vowels and punctuation from a string.  This is about 20%
           faster than using re.sub().
 
             def remove(chars, di={}, replace=False):
@@ -604,7 +630,7 @@ maketrans and translate
                     di[ord(i)] = " " if replace else None
                 return lambda x: x.translate(di)
 
-        * Implement a rot13 transformation:
+        - Implement a rot13 transformation:
             import codecs
             import sys
  

@@ -1,5 +1,9 @@
 *vim*
 
+Non-greedy match
+    Instead of '.*?' (which doesn't work), use '.\{-}'
+    Also see :help non-greedy
+
 Unicode
     ga      Show ASCII value of character under cursor
     g8      Show UTF8 value of character under cursor

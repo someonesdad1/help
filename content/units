@@ -1,4 +1,4 @@
-*Units*
+*units*
 
 |constants|
 |dimensionless|
@@ -14,44 +14,41 @@
 |computer|
 |archaic_misc|
 
-Note:  taken from /usr/lib/units.lib
-
 -----------------------------------------------------------------------------
->primitive units
+GNU units help (version 2.22)
 
-m                        
-kg                       
-sec                      
-coul                     
-candela                  
-dollar                   
-bit                      
-K                        
+Unit list aliases
+    Alias       To
+    hms         hour min sec
+    time        year day hr min sec
+    dms         deg arcmin arcsec
+    ftin        feet inches 1/8inch
+    usvol       cups tbsp tsp 1/8tsp
 
 -----------------------------------------------------------------------------
 >prefixes
 
-yotta-       Y          1e24
-zetta-       Z          1e21
-exa-         E          1e18
-peta-        P          1e15
-tera-        T          1e12
-giga-        G          1e9
-mega-        M          1e6
-myria-                  1e4
-kilo-        k          1e3
-hecto-       h          1e2
-deka-                   1e1
-deci-        d          1e-1
-centi-       c          1e-2
-milli-       m          1e-3
-micro-       u          1e-6
-nano-        n          1e-9
-pico-        p          1e-12
-femto-       f          1e-15
-atto-        a          1e-18
-zopto-       z          1e-21
-yocto-       y          1e-24
+    yotta-       Y          1e24
+    zetta-       Z          1e21
+    exa-         E          1e18
+    peta-        P          1e15
+    tera-        T          1e12
+    giga-        G          1e9
+    mega-        M          1e6
+    myria-                  1e4
+    kilo-        k          1e3
+    hecto-       h          1e2
+    deka-                   1e1
+    deci-        d          1e-1
+    centi-       c          1e-2
+    milli-       m          1e-3
+    micro-       u          1e-6
+    nano-        n          1e-9
+    pico-        p          1e-12
+    femto-       f          1e-15
+    atto-        a          1e-18
+    zopto-       z          1e-21
+    yocto-       y          1e-24
 
 -----------------------------------------------------------------------------
 constants                                              *constants*
@@ -141,7 +138,7 @@ acre                    4840 yd2
 
 cc                      cm3
 liter                   kilocc
-ml                      milliliter
+ml                      milliliter = cc
 
 -----------------------------------------------------------------------------
 US Liquid                                                  *US_liquid*

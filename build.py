@@ -259,7 +259,7 @@ if 1:   # Core functionality
                 arduino asciidoc awk basic bibtex cvs darcs find flex hg
                 hp3488 HP42s HTML Korn_Shell lua markdown Mathematica pandoc
                 PCL5 perl4 perl5 PostScript pygame rst sed Snippets STL Subversion
-                tmux mswindows yaml
+                tmux units mswindows yaml
             ''', 0, 0),
         )
         cwd = os.getcwd()
