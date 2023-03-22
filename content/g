@@ -13,23 +13,37 @@
 |g_Initialization|
 
 
-Utility startup:
+Utility startup
 
+    # The following will print two red-colored circles on a line at the
+    # lower left corner of the page.
 
-def SetUp(file, orientation=portrait, units=inches):
-    ofp = open(file, "w")
-    ginitialize(ofp, wrap_in_PJL)
-    setOrientation(orientation, units)
-    return ofp
-
-
-def Main(file):
-    s = SetUp(file, portrait)
-    Do what needs to be done
-    gclose()
-    s.close()
-
-Main("file.ps")
+                                landscape or    inches or
+    def SetUp(file, orientation=portrait, units=mm):
+        '''Convenience function to set up the drawing environment and
+        return a file object to the output stream.
+        '''
+        ofp = open(file, "w")
+        ginitialize(ofp, wrap_in_PJL=0)
+        setOrientation(orientation, units)
+        return ofp
+    def DrawInit():
+        # Draw a line and circle to locate things
+        LineWidth(1)    # Lines are 1 mm thick
+        FillColor(red)
+        FillOn()
+        translate(10, 10)  # Put origin 10 mm from lower left corner of page
+        move(0, 0)      # Put current point at origin
+        a = 20
+        rline(20, 20)   # Draw line from (0, 0) to (20, 20)
+        push()          # Save graphics state
+        translate(a, a)
+        move(0, 0)
+        circle(5)       # Draw a circle 5 mm in diameter
+        pop()
+        # We are back to old state.  Draw a circle at the origin.
+        move(0, 0)
+        circle(5)       # Draw a circle 5 mm in diameter
 
 -----------------------------------------------------------------------------
 Components of the graphics state

@@ -1997,6 +1997,7 @@ s[i] = x        Replace the ith item by x
 s[i:j] = t      The slice is replaced by the contents of the iterable
 s[i:j:k] = t    The slice is replaced by the contents of the iterable; t
                 must have the same length as what's being replaced.
+del s[i]        Delete the indicated element
 del s[i:j]      Same as s[i:j] = []
 
 append(x)       Add x to end of list
@@ -4991,8 +4992,33 @@ In the following, x = 0.20 +/- 0.01 can be expressed as
 
     isinstance(x, UFloat) is true if x contains uncertainty
 
-print(sin(2*x))
-    0.909297426826+/-0.0832293673094
+    x.nominal_value == 0.2  == x.n (abbrev)
+    x.std_dev       == 0.01 == x.s (abbrev)
+
+String interpolation
+    print(f"{x:+.1uS}")     # 1 digit, shorthand with sign
+        +0.20(1)
+            Parse back to ufloat with 
+                uncertainties.ufloat_fromstr("+0.20(1)")
+    print(f"{x*1e7:.2eP}")  # Pretty printing using Unicode
+        (2.00±0.10)×10⁶
+
+    print(sin(2*x))         # Default form, 2 fig for unc
+        0.389+/-0.018
+    print(f"{x:.2f}")
+        0.20+/-0.01
+    print(f"{x:.1u}")       # 1 digit for unc
+        0.20+/-0.01
+    print(f"{x:.3u}")       # 3 digits for unc
+        0.2000+/-0.0100
+    print(f"{x:.1ue}")      # 1 digit for unc in sci
+        (2.0+/-0.1)e-01
+    print(f"{x:.1u%}")      # 1 digit, percentage
+        (20+/-1)%
+    print(x*1e7)
+        (2.00+/-0.10)e+06
+    print(f"{x*1e7:L}")     # LaTeX form
+        \left(2.00 \pm 0.10\right) \times 10^{6}
 
 print(x - x)
     0
@@ -6478,6 +6504,17 @@ str(object=b'', encoding="utf-8", errors='strict')
 
     If encoding or errors is given, object must be a bytes-like object
     (bytes or bytearray).
+
+string module constants
+    string.ascii_letters
+    string.ascii_lowercase
+    string.ascii_uppercase
+    string.digits
+    string.hexdigits
+    string.octdigits
+    string.punctuation
+    string.printable
+    string.whitespace
 
 Methods
 -------

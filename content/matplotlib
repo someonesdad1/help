@@ -6092,7 +6092,8 @@ supported at present.
 
 Keyword arguments:
 
-  *units*: ['width' | 'height' | 'dots' | 'inches' | 'x' | 'y' ]
+  + substituted for * for units
+  +units+: ['width' | 'height' | 'dots' | 'inches' | 'x' | 'y' ]
     arrow units; the arrow dimensions *except for length* are in
     multiples of this unit.
 

@@ -155,10 +155,12 @@ if 1:   # Core functionality
         # off the list.
         curdir = os.getcwd()
         os.chdir("/help/content")
-        ignore, p = ".todo a shop.densities mk .vi".split(), P(".")
+        ignore, p = "tags .todo a shop.densities mk .vi z .z".split(), P(".")
         for i in p.glob("*"):
             # Remove files we ignore
             if i.suffix == ".py" or str(i) in ignore:
+                continue
+            if i.suffix == ".swp":
                 continue
             if str(i) not in files:
                 t.print(f"{t.concern}Warning:  {i!s} not in GetContentFiles()")

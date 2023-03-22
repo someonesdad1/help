@@ -1,6 +1,12 @@
 '''
 
 ToDo
+    - Fix the misalignments caused (I believe) by dedent.  For examples,
+      look at "Regular polygon" table, "Squares, SquareRoots, Etc."
+    - Add spaces around + and - signs in trig relations
+    - Look at replacing sig by flt
+    - Explain notation used in "Natural logarithms" table under "Multiples
+      of ln(10)"
     - Print headings and Version data.
 
 '''
@@ -26,7 +32,7 @@ if 1:   # Standard imports
     from io import StringIO
     from pdb import set_trace as xx
 if 1:   # Custom imports
-    from wrap import dedent
+    #from wrap import dedent
     from columnize import Columnize
     from frange import frange
     from sig import sig
@@ -56,6 +62,15 @@ if 1:   # Global variables
         "^2" : chr(0x00b2),
         "*" : chr(0x00b7),
     }
+def dedent(string, n=4):
+    'Remove n spaces from each line'
+    lines = string.split("\n")
+    s = " "*n
+    for i in range(len(lines)):
+        if lines[i].startswith(s):
+            lines[i] = lines[i].replace(s, "", 1)
+    return '\n'.join(lines)
+
 def rlz(s):
     "Remove leading '0' from string s"
     if s[0] == "0":
@@ -82,13 +97,14 @@ def SectionHeading(title, tag):
     else:
         return f"{h}{title} *{tag}*"
 def Mensuration():
+    s = " "
     symbols = (
-        ("^2", chr(0x00b2)),
+        ("^2", chr(0x00b2) + s),
         ("pi", chr(0x03c0)),
         ("theta", chr(0x03b8)),
         ("sqrt", chr(0x221a)),
         ("*", chr(0x00b7)),
-        ("^3", chr(0x00b3)),
+        ("^3", chr(0x00b3) + s),
         ("A1", "A" + chr(0x2081)),
         ("A2", "A" + chr(0x2082)),
         #(" ~ ", " " + chr(0x2248) + " "),
@@ -115,182 +131,182 @@ def Mensuration():
         theta = angle
         n = number of sides
         h = height
-     
+    
     Regular hexagon
         d = distance across flats
         D = distance across points
-        A = sqrt(3)/2*d^2
+        A = sqrt(3)/2*d²
         a = length of side = D/2 = d/sqrt(3)
         D = 2*a = 2*(length of side) = 2*d/sqrt(3)
         s = 6*a = 6*d/sqrt(3)
-     
+    
     Regular polygon
         K = pi/n
         a = length of side = d*tan(K) = D*sin(K)
-        r = sqrt(R^2 - a^2/4) = a*cot(K)/2 = R*cos(K)
-        R = sqrt(r^2 + a^2/4) = a*csc(K)/2 = r*sec(K)
-        A = n*a*r/2 = n*a/2*sqrt((D^2 - a^2)/4)
-          = n*a^2*cot(K)/4 = n*r^2*tan(K) = n*R^2*sin(2*K)/2
-        s = 2*sqrt(R^2 - r^2) = d*tan(theta/2)
-     
+        r = sqrt(R² - a²/4) = a*cot(K)/2 = R*cos(K)
+        R = sqrt(r² + a²/4) = a*csc(K)/2 = r*sec(K)
+        A = n*a*r/2 = n*a/2*sqrt((D² - a²)/4)
+          = n*a²*cot(K)/4 = n*r²*tan(K) = n*R²*sin(2*K)/2
+        s = 2*sqrt(R² - r²) = d*tan(theta/2)
+    
       d = inscribed circle diameter, D = circumscribed circle diameter, A = area,
       s = perimeter, a = length of one side, T = angle subtended by side
-     
-     n  T(deg)   A/d^2   A/D^2   A/a^2    d/a     D/a     a/d     a/D     D/d
-     3   120.0   1.299   .3248   .4330   .1443   .2887   6.928   3.464   2.000
-     4   90.00   1.000   .5000   1.000   .2500   .3536   4.000   2.828   1.414
-     5   72.00   .9082   .5944   1.720   .3441   .4253   2.906   2.351   1.236
-     6   60.00   .8660   .6495   2.598   .4330   .5000   2.309   2.000   1.155
-     7   51.43   .8428   .6841   3.634   .5191   .5762   1.926   1.736   1.110
-     8   45.00   .8284   .7071   4.828   .6036   .6533   1.657   1.531   1.082
-     9   40.00   .8189   .7231   6.182   .6869   .7310   1.456   1.368   1.064
-    10   36.00   .8123   .7347   7.694   .7694   .8090   1.300   1.236   1.051
-    12   30.00   .8038   .7500   11.20   .9330   .9659   1.072   1.035   1.035
-    15   24.00   .7971   .7626   17.64   1.176   1.202   .8502   .8316   1.022
-    16   22.50   .7956   .7654   20.11   1.257   1.281   .7956   .7804   1.020
-    20   18.00   .7919   .7725   31.57   1.578   1.598   .6335   .6257   1.012
-    24   15.00   .7899   .7765   45.57   1.899   1.915   .5266   .5221   1.009
-    32   11.25   .7879   .7804   81.23   2.538   2.551   .3940   .3921   1.005
-    48   7.500   .7865   .7832   183.1   3.814   3.822   .2622   .2616   1.002
-    60   6.000   .7861   .7840   286.2   4.770   4.777   .2096   .2093   1.001
-    64   5.625   .7860   .7841   325.7   5.089   5.095   .1965   .1963   1.001
-     
+    
+       n  T(deg)    A/d²    A/D²    A/a²    d/a     D/a     a/d     a/D     D/d
+       3   120.0   1.299   .3248   .4330   .1443   .2887   6.928   3.464   2.000
+       4   90.00   1.000   .5000   1.000   .2500   .3536   4.000   2.828   1.414
+       5   72.00   .9082   .5944   1.720   .3441   .4253   2.906   2.351   1.236
+       6   60.00   .8660   .6495   2.598   .4330   .5000   2.309   2.000   1.155
+       7   51.43   .8428   .6841   3.634   .5191   .5762   1.926   1.736   1.110
+       8   45.00   .8284   .7071   4.828   .6036   .6533   1.657   1.531   1.082
+       9   40.00   .8189   .7231   6.182   .6869   .7310   1.456   1.368   1.064
+      10   36.00   .8123   .7347   7.694   .7694   .8090   1.300   1.236   1.051
+      12   30.00   .8038   .7500   11.20   .9330   .9659   1.072   1.035   1.035
+      15   24.00   .7971   .7626   17.64   1.176   1.202   .8502   .8316   1.022
+      16   22.50   .7956   .7654   20.11   1.257   1.281   .7956   .7804   1.020
+      20   18.00   .7919   .7725   31.57   1.578   1.598   .6335   .6257   1.012
+      24   15.00   .7899   .7765   45.57   1.899   1.915   .5266   .5221   1.009
+      32   11.25   .7879   .7804   81.23   2.538   2.551   .3940   .3921   1.005
+      48   7.500   .7865   .7832   183.1   3.814   3.822   .2622   .2616   1.002
+      60   6.000   .7861   .7840   286.2   4.770   4.777   .2096   .2093   1.001
+      64   5.625   .7860   .7841   325.7   5.089   5.095   .1965   .1963   1.001
+    
     Parallelogram
         A = a*b
         s = 2*(a + b)
-     
+    
     Trapezoid
         Sides a and b are perpendicular to the height direction
         A = (a+b)*h/2
-     
+    
     Circular sector (Pie slice)
         L = pi*theta = 2*A/r
-        A = r*L/2 = 0.008727*theta*r^2
-     
+        A = r*L/2 = 0.008727*theta*r²
+    
     Circular segment (circle with an intersecting chord)
-        h = height = r - 1/2*sqrt(4*r^2 - c^2) = r*[1 - cos(theta/2)]
+        h = height = r - 1/2*sqrt(4*r² - c²) = r*[1 - cos(theta/2)]
         c = width = 2*sqrt(h*(2*r - h))
-        r = (c^2 + 4*h^2)/(8*h)
+        r = (c² + 4*h²)/(8*h)
         A = 1/2*[r*l - c*(r - h)]
-     
+    
     Ellipse
         a = major diameter
         b = minor diameter
         A = pi*a*b
-        s ~ pi*sqrt(2*(a^2 + b^2))                   (approximation)
-        s ~ pi*sqrt(2*(a^2 + b^2) - (a - b)^2/2.2)   (Better approximation)
-        s = 4*a*E(k), k = sqrt(a^2 - b^2)/a,
+        s ~ pi*sqrt(2*(a² + b²))                   (approximation)
+        s ~ pi*sqrt(2*(a² + b²) - (a - b)²/2.2)    (better approximation)
+        s = 4*a*E(k), k = sqrt(a² - b²)/a,
             E is the complete elliptic integral of the second kind
-     
+    
     Cube
         a = length of side
-        A = 6*a^2
-        V = a^3
+        A = 6*a²
+        V = a³
         s = 4*a
-     
+    
     Pyramid
         h = height
         V = 1/3*h*(area of base)
-     
+    
         If base is a regular polygon of n sides and a = length of side,
         r = radius of inscribed circle, and R = radius of circumscribed
         circle, then
-            V = n*a*r*h/6 = n*a*h/6*sqrt(R^2 - a^2/4)
-     
+            V = n*a*r*h/6 = n*a*h/6*sqrt(R² - a²/4)
+    
     Frustum of pyramid (pyramid with top chopped off)
         A1 = area of top
         A2 = area of base
         h = height
         V = h/3*(A1 + A2 + sqrt(A1*A2))
-     
+    
     Cone
         A = area of conical surface
         h = height
         s = slant height
-        V = pi*r^2*h/3
-        A = pi*r*sqrt(r^2 + h^2)
-     
+        V = pi*r²*h/3
+        A = pi*r*sqrt(r² + h²)
+    
     Frustum of cone (cone with top chopped off)
         A = area of conical surface
         r = radius of top
         R = radius of bottom
-        S = slant height = sqrt((R - r)^2 + h^2)
+        S = slant height = sqrt((R - r)² + h²)
         A = pi*S*(R + r)
-        V = 1.0472*h*(R^2 + R*r + r^2)
-     
+        V = 1.0472*h*(R² + R*r + r²)
+    
     Sphere
         d = 2*r
-        A = 4*pi*r^2 = pi*d^2
-        V = 4/3*pi*r^3 = pi*d^3/6
-     
+        A = 4*pi*r² = pi*d²
+        V = 4/3*pi*r³ = pi*d³/6
+    
     Spherical sector (analogous to circular sector)
         r = radius of sphere
         c = diameter of cone's base = 2*sqrt(h*(2*r - h))
         h = height from cone's base to spherical surface
         A = total area of conical and spherical surface
           = pi*r*(2*h + c/2)
-        V = 2/3*pi*r^2*h
-     
+        V = 2/3*pi*r²*h
+    
     Spherical cap (analogous to circular segment)
         r = radius of sphere
         c = diameter of cutting circle = 2*sqrt(h*(2*r - h))
-        r = (c^2 + 4*h^2)/(8*h)
-        A = 2*pi*r*h = pi*(c^2/4 + h^2)
-        V = pi*h^2*(r - h/3) = pi*h*(c^2/8 + h^2/6)
-     
+        r = (c² + 4*h²)/(8*h)
+        A = 2*pi*r*h = pi*(c²/4 + h²)
+        V = pi*h²*(r - h/3) = pi*h*(c²/8 + h²/6)
+    
     Ellipsoid
         a, b, c are the three diameters
         V = 4/3*pi*a*b*c
-     
+    
     Paraboloid
         h = height
         d = diameter at height
-        p = d^2/(8*h)
-        A = 2/3*pi/p*(sqrt((d^2/4 + p^2)^3) - p^3)
-        V = 1/2*pi*r^2*h
-     
+        p = d²/(8*h)
+        A = 2/3*pi/p*(sqrt((d²/4 + p²)³) - p³)
+        V = 1/2*pi*r²*h
+    
     Torus
         d = diameter of ring = 2*r
         r = radius of ring = d/2
         R = radius from center to centerline of ring
         D = diameter of centerline of ring
-        A = 4*pi^2*R*r = pi^2*D*d
-        V = 2*pi^2*R*r^2 = pi^2/4*D*d
-     
+        A = 4*pi²*R*r = pi²*D*d
+        V = 2*pi²*R*r² = pi²/4*D*d
+    
     Barrel (approximate formulas)
         D = major diameter
         d = diameter of ends
         h = height
-     
+    
         If the sides are bent to the arc of a circle:
-            V ~ 1/12*pi*h*(2*D^2 + d^2)
-     
+            V ~ 1/12*pi*h*(2*D² + d²)
+    
         If the sides are bent to the arc of a parabola:
-            V ~ 0.209*h*(2*D^2 + D*d + 3/4*d^2)
-     
+            V ~ 0.209*h*(2*D² + D*d + 3/4*d²)
+    
     Prismoidal Formula
         This is a general formula by which the volume of any prism, pyramid,
         or frustum of a pyramid may be found.
-     
+    
         A1 = area of one end of the body
         A2 = area of the other end of the body
         Am = area of a middle section between the two end surfaces
         h  = height of body
         V = h/6*(A1 + 4*Am + A2)
-     
+    
     Area of revolution
         Let a collinear curve AB be rotated around an axis CD; the curve
         does not intersect the axis and AB and CD are coplanar.  The
         surface area of the surface of revolution is the length of AB
         multiplied by the arc length of the path of the center of gravity 
         of AB.
-     
+    
     Solid of revolution
         If a collinear set of points make up a surface S that does not 
         intersect the rotation axis A (A and S are coplanar), the volume
         of the generated solid body is the area of S multiplied by the 
         arc length of the path of the center of gravity of S.
-     
+    
     From Machinery's Handbook, 19th ed.{nl}
     ''')))
     print(nl.join(s))
@@ -298,28 +314,28 @@ def TrigRelations():
     s = [SectionHeading("Trig Relations", "Trig_relations"), ""]
     s.append(dedent(f'''
     Sum/Diff formulas
-        sin(a+b) = sin(a)*cos(b) + cos(a)*sin(b)
-        sin(a-b) = sin(a)*cos(b) - cos(a)*sin(b)
-        cos(a+b) = cos(a)*cos(b) - sin(a)*sin(b)
-        cos(a-b) = cos(a)*cos(b) + sin(a)*sin(b)
-        tan(a+b) = (tan(a)+tan(b))/(1-tan(a)*tan(b))
-        tan(a-b) = (tan(a)-tan(b))/(1+tan(a)*tan(b))
+        sin(a + b) = sin(a)*cos(b) + cos(a)*sin(b)
+        sin(a - b) = sin(a)*cos(b) - cos(a)*sin(b)
+        cos(a + b) = cos(a)*cos(b) - sin(a)*sin(b)
+        cos(a - b) = cos(a)*cos(b) + sin(a)*sin(b)
+        tan(a + b) = (tan(a) + tan(b))/(1 - tan(a)*tan(b))
+        tan(a - b) = (tan(a) - tan(b))/(1 + tan(a)*tan(b))
      
-    Multiple angle formulas
+    Multiple angle formulas (n integer)
      
-        sin(2*a) = 2*sin(a)*cos(a) = 2*tan(a)/(1+tan(a)^2)
-        cos(2*a) = cos(a)^2 - sin(a)^2 = 2*cos(a)^2 - 1 = 1 - 2*sin(a)^2
-                 = (1-tan(a)^2)/(1+tan(a)^2)
+        sin(2*a) = 2*sin(a)*cos(a) = 2*tan(a)/(1 + tan²(a))
+        cos(2*a) = cos²(a) - sin²(a) = 2*cos²(a) - 1 = 1 - 2*sin²(a)
+                 = (1 - tan²(a))/(1 + tan²(a))
      
-        sin(n*a) = 2*sin((n-1)*a)*cos(a) - sin((n-2)*a)
-        cos(n*a) = 2*cos((n-1)*a)*cos(a) - cos((n-2)*a)
-        tan(n*a) = (tan((n-1)*a) + tan(a))/(1 - tan((n-1)*a)*tan(a))
+        sin(n*a) = 2*sin((n - 1)*a)*cos(a) - sin((n - 2)*a)
+        cos(n*a) = 2*cos((n - 1)*a)*cos(a) - cos((n - 2)*a)
+        tan(n*a) = (tan((n - 1)*a) + tan(a))/(1 - tan((n - 1)*a)*tan(a))
      
     Half-angle formulas
-        sin(a/2) = +-sqrt((1-cos(a))/2)
-        cos(a/2) = +-sqrt((1+cos(a))/2)
-        tan(a/2) = +-sqrt((1-cos(a))/(1+cos(a))) = (1-cos(a))/sin(a) 
-                 = sin(a)/(1+cos(a))
+        sin(a/2) = ±sqrt((1 - cos(a))/2)
+        cos(a/2) = ±sqrt((1 + cos(a))/2)
+        tan(a/2) = ±sqrt((1 - cos(a))/(1 + cos(a))) = (1 - cos(a))/sin(a) 
+                 = sin(a)/(1 + cos(a))
      
     Hyperbolic relationships
         cos(i*x)  = cosh(x)
@@ -328,18 +344,18 @@ def TrigRelations():
         sinh(i*x) = i*sin(x)
      
     Let A, B, C be the angles of a triangle and a, b, c the corresponding
-    opposite sides, and s = (a+b+c)/2.
+    opposite sides, and s = (a + b + c)/2.
      
-        Radius of inscribed circle = sqrt((s-a)*(s-b)*(s-c)/2)
+        Radius of inscribed circle = sqrt((s - a)*(s - b)*(s - c)/2)
         Radius of circumscribed circle = a/(2*sin(A))
                                        = b/(2*sin(B))
                                        = c/(2*sin(C))
      
         Law of tangents:
      
-            (b-c)/(b+c) = tan((B-C)/2)/tan((B+C)/2)
-            (c-a)/(c+a) = tan((C-A)/2)/tan((C+A)/2)
-            (a-b)/(a+b) = tan((A-B)/2)/tan((A+B)/2){nl}
+            (b - c)/(b + c) = tan((B - C)/2)/tan((B + C)/2)
+            (c - a)/(c + a) = tan((C - A)/2)/tan((C + A)/2)
+            (a - b)/(a + b) = tan((A - B)/2)/tan((A + B)/2){nl}
     '''))
     print(nl.join(s))
 def MathConstants():
@@ -452,7 +468,7 @@ def TrigFunctions():
         print(f(cos(x), 6), end="     ")
         print(f(tan(x), 6), end="     ")
         if deg == 0:
-            print("  inf", end="    ")
+            print("   ∞ ", end="    ")
         else:
             print(f(1/tan(x), 7), end="  ")
         print("{0:3d}".format(90 - deg), end="   ")
@@ -501,7 +517,9 @@ def NaturalLogarithms():
         print()
     s = [SectionHeading("Natural Logarithms", "NaturalLogs"), ""]
     s.append(f'''
-                            Multiples of ln(10){nl}''')
+                            ln(10ⁿ)
+        Example:  ln(10⁻⁵⁰) = 0.871 - 116 = -115.129
+     n                         n                         n''')
     print(nl.join(s))
     Mult(-50, 0, indent=" "*3)
     Mult(1, 51, indent=" "*2)
@@ -519,7 +537,6 @@ def NaturalLogarithms():
         if i > 10 and not ((i + 1)//10 % 2) and not ((i + 1) % 10) and i != 99:
             Header()
     print(dedent(f'''
-   
     Example:  calculate the natural logarithm of Avogadro's constant, 6.022e23.
      
         The natural log of 1e23 is 52.959457.  Reading down the table to the row
@@ -532,25 +549,35 @@ def NaturalLogarithms():
         Add this to 52.959457 to get 54.754879.  Results:
             Calculated = 54.754879
             Actual     = 54.754877
-        so we're within about 2 parts out of 5e7.{nl}
+        so we're within about 2 parts out of 5e7.
     '''))
 def StirlingsFormula():
     s = [SectionHeading("Stirling's formula", "StirlingsFormula"), ""]
     s.append(f'''
-                        n!
-      lim       ------------------- = sqrt(2*pi)
-    n -> inf    n^n*exp(-n)*sqrt(n){nl}''')
+                       n!
+      lim       ---------------- = √(2*pi)
+     n -> ∞     n^n*exp(-n)*√(n){nl}''')
     print(nl.join(s))
 def Factorials():
     s = [SectionHeading("Factorials", "Factorials"), ""]
-    s.append(dedent('''
-     n  log10(n!)                   n!
-    --- ---------  ----------------------------------------'''))
+    s.append(dedent(f'''
+     n                  n!
+    -- {'-'*75}''')) 
     print(nl.join(s))
-    for n in range(2, 51):
+    for n in range(2, 56):
         f = factorial(n)
-        print("{0:3d}  {1:8.5f}  {2:d}".format(n, log10(f), f))
+        print(f"{n:2d} {f:d}")
     print()
+    o = []
+    # Log10 of n!
+    print(dedent(f'''
+    Logarithms of factorials
+
+      n    log(n!)'''))
+    for n in range(2, 202):
+        o.append(f"{n:3d} {log10(factorial(n)):10.6f}")
+    for i in Columnize(o):
+        print(i)
 def SumOfIntegerPowers():
     s = [SectionHeading("Sum of Integer Powers", "Sum_of_Integer_Powers"), ""]
     s.append(dedent(r'''
@@ -683,24 +710,38 @@ def SumOfIntegerPowers():
 def PowersOfTwo():
     s = [SectionHeading("Positive and Negative Powers of 2", "Powers_of_2"), ""]
     s.append(dedent('''
-    n      2**n                                       Power of 10'''))
+    n      2**n                                               log'''))
     print(nl.join(s))
     R = range(1, 101)
     for n in R:
         x = 2**n
-        s = str(int(log10(x)))
-        print("{0:3d}     {1:<38d}          {2:s}".format(n, x, s))
+        l = log10(x)
+        print(f"{n:3d}     {x:<38d}          {l:9.6f}")
     print(dedent('''
     Example:  2**35 is 34359738368 or 3.4e10.
     '''))
-    d = Decimal("2")
-    getcontext().prec = 100
-    getcontext().capitals = 0
-    print(" n     2**(-n)")
-    for n in R:
-        x = d**(-n)
-        s = str(int(log10(x)))
-        print("{0:3d}    {1:s}".format(n, str(x)))
+    if 0:
+        # Use Decimal calculations
+        d = Decimal("2")
+        getcontext().prec = 60
+        getcontext().capitals = 0
+        print(" n      2⁻ⁿ")
+        for n in R:
+            x = d**(-n)
+            s = str(int(log10(x)))
+            print(f"{n:3d}    {x!s:s}")
+    else:
+        # Use floating point calculations
+        o = [" n              2⁻ⁿ"]
+        for n in R:
+            x = 2.0**(-n)
+            s = str(int(log10(x)))
+            if n > .13:
+                o.append(f"{n:3d}    {x:.15e}")
+            else:
+                o.append(f"{n:3d}    {x!s:s}")
+        for i in Columnize(o):
+            print(i)
 def Derivatives():
     s = [SectionHeading("Derivatives", "Derivatives"), ""]
     s.append(dedent('''
@@ -713,7 +754,7 @@ def Derivatives():
     log_a u             log_a(e)*u*Du
     ln u                (1/u)*Du
     a^u                 a^u*(ln a)*Du
-    u^v                 v*u^(v-1)*Du + ln(u)*u^v*Dv
+    u^v                 v*u^(v - 1)*Du + ln(u)*u^v*Dv
      
     sin(u)              cos(u)*Du
     cos(u)              -sin(u)*Du
@@ -775,9 +816,9 @@ def Integrals():
     1/sin^2(a*x)        -1/a*cot(a*x)
     1/cos^2(a*x)        1/a*tan(a*x)
      
-    sin(m*x)*sin(n*x)   sin((m-n)*x)/(2*(m-n)) - sin((m+n)*x)/(2*(m+n)), m^2 != n^2
-    cos(m*x)*cos(n*x)   sin((m-n)*x)/(2*(m-n)) + sin((m+n)*x)/(2*(m+n)), m^2 != n^2
-    sin(m*x)*cos(n*x)   cos((m-n)*x)/(2*(m-n)) - cos((m+n)*x)/(2*(m+n)), m^2 != n^2
+    sin(m*x)*sin(n*x)   sin((m - n)*x)/(2*(m - n)) - sin((m + n)*x)/(2*(m + n)), m^2 != n^2
+    cos(m*x)*cos(n*x)   sin((m - n)*x)/(2*(m - n)) + sin((m + n)*x)/(2*(m + n)), m^2 != n^2
+    sin(m*x)*cos(n*x)   cos((m - n)*x)/(2*(m - n)) - cos((m + n)*x)/(2*(m + n)), m^2 != n^2
      
     sin(a*x)*cos(a*x)   1/(2*a)*sin^2(a*x)
     1/sin(a*x)*cos(a*x) 1/a*ln(tan(a*x))
@@ -791,15 +832,7 @@ def SquaresSquareRoots():
         s = "                    S = square root, C = cube root"
         t = s if first_line else ""
         print(t)
-        if uni:
-            # √ ∛ ² ³
-            print(dedent('''
-               n       n²    √(n)     √(10*n)            n³    ∛(n)     ∛(10*n)   ∛(100*n)
-            '''))
-        else:
-            print(dedent('''
-               n     n**2    S(n)     S(10*n)          n**3    C(n)     C(10*n)   C(100*n)
-            '''))
+        print("  n      n²     √(n)      √(10*n)        n³       ∛(n)      ∛(10*n)    ∛(100*n)")
     def f(x, width=10, dp=6):
         fmt = "{{0:{0}.{1}f}} ".format(width, dp)
         return fmt.format(x)
@@ -932,11 +965,11 @@ def Fit(x, width):
     fmt = "{{0:^{0}s}}".format(width)
     return fmt.format(sig(x, digits))
 def Exponential():
-    s = [SectionHeading("Exponential Function (E = exp)", "Exponential"), ""]
+    s = [SectionHeading("Exponential Function", "Exponential"), ""]
     print(nl.join(s))
     def Header():
         print(dedent('''
-          x      E(x)       E(10*x)    E(100*x)     E(-x)       E(-10*x)     E(-100*x)
+      x     exp(x)     exp(10*x)  exp(100*x)   exp(-x)     exp(-10*x)   exp(-100*x)
         '''))
     e, width = " "*2, 10
     #for i in range(1, 10) + range(90, 101):
@@ -1243,33 +1276,34 @@ def ShortTables(digits=3):
             row.append(s)
         lines.append(row)
     Table("Cube (significand)", lines, inc=1)
+
 if __name__ == "__main__":
     trap = True
     if trap:
         old = sys.stdout
         stream = StringIO()
         sys.stdout = stream
-    Mensuration()
-    TrigRelations()
-    Derivatives()
-    Integrals()
-    MathConstants()
-    NumericalConstants()
-    StirlingsFormula()
-    Base10Logs()
-    Base10Antilogs()
-    TrigFunctions()
-    Exponential()
-    NaturalLogarithms()
-    StirlingsFormula()
-    Factorials()
-    SumOfIntegerPowers()
-    PowersOfTwo()
-    SquaresSquareRoots()
-    DegreesAndRadians()
-    ProportionalParts()
-    ListOfPrimes()
-    ShortTables(4)
+    if 1: 
+        Mensuration()
+        TrigRelations()
+        Derivatives()
+        Integrals()
+        MathConstants()
+        NumericalConstants()
+        StirlingsFormula()
+        Base10Logs()
+        Base10Antilogs()
+        TrigFunctions()
+        Exponential()
+        NaturalLogarithms()
+        Factorials()
+        SumOfIntegerPowers()
+        PowersOfTwo()
+        SquaresSquareRoots()
+        DegreesAndRadians()
+        ProportionalParts()
+        ListOfPrimes()
+        ShortTables(4)
     if trap:
         tables = stream.getvalue()
         # Now combine with headings
@@ -1287,4 +1321,4 @@ if __name__ == "__main__":
         open("math", "w").write(s)
         if len(sys.argv) > 1:
             print(stream.getvalue(), end="")
-# vi: wm=1
+# vi: wm=4

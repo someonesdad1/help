@@ -17,13 +17,24 @@
 -----------------------------------------------------------------------------
 GNU units help (version 2.22)
 
-Unit list aliases
+Unit list aliases (+ is custom in ~/.units)
     Alias       To
     hms         hour min sec
     time        year day hr min sec
     dms         deg arcmin arcsec
     ftin        feet inches 1/8inch
     usvol       cups tbsp tsp 1/8tsp
+    lboz        lbm oz
+
+My custom units
+    ktnt        Energy of 1 kiloton of TNT
+
+Log to file:  --log <file>
+
+--version   Shows you program details
+-c          Check units data file for consistency (all units reduce to base
+            units)
+
 
 -----------------------------------------------------------------------------
 >prefixes
