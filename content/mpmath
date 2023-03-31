@@ -36,6 +36,8 @@ from mpmath import *
 
 Precision:  mp object
     mp.dps = 15   # Set decimal places
+eps
+    Working precision.  chop() uses 100*eps as it's default cutoff
 
 Numerical types:  mpf() and mpc()
     Can hold inf, -inf, nan

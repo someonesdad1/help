@@ -4810,36 +4810,34 @@ Emulating container types
     __delslice__(self, i, j)
         Implements deletion of self[i,j].
 
-Emulating numeric types
+Emulating numeric types (from 3.10.5 docs)
 
-    Binary arithmetic
-        __add__(self, other)
-        __sub__(self, other)
-        __mul__(self, other)
-        __floordiv__(self, other)
-        __mod__(self, other)
-        __divmod__(self, other)
-        __pow__(self, other[, modulo])
-        __lshift__(self, other)
-        __rshift__(self, other)
-        __and__(self, other)
-        __xor__(self, other)
-        __or__(self, other)
-
-    Division
-        __div__(self, other)
-        __truediv__(self, other)
+    Binary arithmetic to support:
+        +          __add__(self, other)
+        -          __sub__(self, other)
+        *          __mul__(self, other)
+        @          __matmul__(self, other)
+        /          __truediv__(self, other)
+        //         __floordiv__(self, other)
+        %          __mod__(self, other)
+        divmod()   __divmod__(self, other)
+        pow(), **  __pow__(self, other[, modulo])
+        <<         __lshift__(self, other)¶
+        >>         __rshift__(self, other)
+        &          __and__(self, other)
+        ^          __xor__(self, other)
+        |          __or__(self, other)
 
     Binary arithmetic with reflected (swapped) operands
         __radd__(self, other)
         __rsub__(self, other)
         __rmul__(self, other)
-        __rdiv__(self, other)
+        __rmatmul__(self, other)
         __rtruediv__(self, other)
         __rfloordiv__(self, other)
         __rmod__(self, other)
         __rdivmod__(self, other)
-        __rpow__(self, other)
+        __rpow__(self, other[, modulo])
         __rlshift__(self, other)
         __rrshift__(self, other)
         __rand__(self, other)
@@ -4850,7 +4848,7 @@ Emulating numeric types
         __iadd__(self, other)
         __isub__(self, other)
         __imul__(self, other)
-        __idiv__(self, other)
+        __imatmul__(self, other)
         __itruediv__(self, other)
         __ifloordiv__(self, other)
         __imod__(self, other)
@@ -4867,23 +4865,27 @@ Emulating numeric types
         __abs__(self) 
         __invert__(self) 
 
-    Built-ins complex(), int(), long(), and float()
+    Built-ins complex(), int(), and float()
         __complex__(self) 
         __int__(self) 
-        __long__(self) 
         __float__(self) 
 
-    Hex() and oct()
-        __oct__(self) 
-        __hex__(self) 
+    object.__index__(self)  
+        Called to implement operator.index(), and whenever Python needs to
+        losslessly convert the numeric object to an integer object (such as
+        in slicing, or in the built-in bin(), hex() and oct() functions).
+        Presence of this method indicates that the numeric object is an
+        integer type. Must return an integer.
 
-    operator.index()
-        __index(self)
+    object.__round__(self[, ndigits])
+    object.__trunc__(self)
+    object.__floor__(self)
+    object.__ceil__(self)
 
-    __coerce__(self, other)
-        Called to implement mixed-mode numeric arithmetic. Should
-        either return a 2-tuple containing self and other converted to a
-        common numeric type, or None if conversion is impossible.
+        Called to implement the built-in function round() and math
+        functions trunc(), floor() and ceil(). Unless ndigits is passed to
+        __round__() all these methods should return the value of the object
+        truncated to an Integral (typically an int).
 
 Context manager types
     For use with the 'with' statement.
