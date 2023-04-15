@@ -1,8 +1,8 @@
 *python*
                 Go to end for vim tips 
-Core            + means updated to python 3.7 manpage
-    |python_pathlib|                +
-    |python_re|                     +
+Core
+    |python_pathlib|                 
+    |python_re|                      
     |python_lists|
     |python_deque|
     |python_sets|
@@ -20,21 +20,23 @@ Strings
     |python_string_formatting|
     |python_string_stuff|
     |python_StringIO|
-    |python_strings_and_bytes|      +
+    |python_strings_and_bytes|       
 Functional
     |python_functions|
     |python_object_methods|
     |python_toolz|
     |python_itertools|
 Numerical
-    |python_decimal|                +
-    |python_fractions|              +
+    |python_decimal|                 
+    |python_fractions|               
     |python_uncertainties|
     |python_random|
-    |python_math|                   +
-    |python_cmath|                  +
-    |python_number_methods|         +
+    |python_math|                    
+    |python_cmath|                   
+    |python_number_methods|          
 Other
+    |python_typehints|
+    |python_readline|
     |python_pip|
     |python_PyPDF2|
     |python_dataclasses|
@@ -1929,13 +1931,27 @@ bytes.maketrans(from, to) to create a translation table.  from and to
 must be bytes objects of the same length.
 
 ----------------------------------------------------------------------
+readline                                                *python_readline*
+
+import readline
+
+To use readline's editing with a script:
+
+    readline.set_startup_hook(input)
+    s = input("> ")
+
+----------------------------------------------------------------------
 pip                                                     *python_pip*
 
 Use 'ph cmd' to get pip's help on a command (this script filters out the
 general options)
 
+To install pip
+    python -m pip install pip
 To upgrade pip
     python -m pip install --upgrade pip
+To install some package pkg
+    python -m pip install pkg
 
 Use 'pip install --dry-run Pkg" to see what will be done
 
@@ -3556,349 +3572,73 @@ Exceptions                                              *python_exceptions*
 To find out if something X is in the exception hierarchy, use
     issubclass(X, BaseException)
 
-Hierarchy for 2.6.5 exceptions:
-    BaseException
-     +-- SystemExit
-     +-- KeyboardInterrupt
-     +-- GeneratorExit
-     +-- Exception
-          +-- StopIteration
-          +-- StandardError
-          |    +-- BufferError
-          |    +-- ArithmeticError
-          |    |    +-- FloatingPointError
-          |    |    +-- OverflowError
-          |    |    +-- ZeroDivisionError
-          |    +-- AssertionError
-          |    +-- AttributeError
-          |    +-- EnvironmentError
-          |    |    +-- IOError
-          |    |    +-- OSError
-          |    |         +-- WindowsError (Windows)
-          |    |         +-- VMSError (VMS)
-          |    +-- EOFError
-          |    +-- ImportError
-          |    +-- LookupError
-          |    |    +-- IndexError
-          |    |    +-- KeyError
-          |    +-- MemoryError
-          |    +-- NameError
-          |    |    +-- UnboundLocalError
-          |    +-- ReferenceError
-          |    +-- RuntimeError
-          |    |    +-- NotImplementedError
-          |    +-- SyntaxError
-          |    |    +-- IndentationError
-          |    |         +-- TabError
-          |    +-- SystemError
-          |    +-- TypeError
-          |    +-- ValueError
-          |         +-- UnicodeError
-          |              +-- UnicodeDecodeError
-          |              +-- UnicodeEncodeError
-          |              +-- UnicodeTranslateError
-          +-- Warning
-               +-- DeprecationWarning
-               +-- PendingDeprecationWarning
-               +-- RuntimeWarning
-               +-- SyntaxWarning
-               +-- UserWarning
-               +-- FutureWarning
-           +-- ImportWarning
-           +-- UnicodeWarning
-           +-- BytesWarning
-
-(Ref section 7 of "The Python Standard Library")
-
-How to dump an exception message and traceback that looks like what
-the interpreter prints:
-    from traceback import print_tb
-    out("Traceback (most recent call last):")
-    print_tb(sys.exc_info()[2])
-    out(repr(e).split("(")[0], ": ", str(e), sep="")
-
-Exception
-
-    All built-in, non-system-exiting exceptions are derived from this
-    class. All user-defined exceptions should also be derived from this
-    class. Changed in version 2.5: Changed to inherit from BaseException.
-
-StandardError
-
-    The base class for all built-in exceptions except StopIteration,
-    GeneratorExit, KeyboardInterrupt and SystemExit. StandardError itself
-    is derived from Exception.
-
-ArithmeticError
-
-    The base class for those built-in exceptions that are raised for
-    various arithmetic errors: OverflowError, ZeroDivisionError,
-    FloatingPointError.
-
-LookupError
-
-    The base class for the exceptions that are raised when a key or index
-    used on a mapping or sequence is invalid: IndexError, KeyError. This
-    can be raised directly by sys.setdefaultencoding().
-
-EnvironmentError
-
-    The base class for exceptions that can occur outside the Python system:
-    IOError, OSError. When exceptions of this type are created with a
-    2-tuple, the first item is available on the instance's errno attribute
-    (it is assumed to be an error number), and the second item is available
-    on the strerror attribute (it is usually the associated error message).
-    The tuple itself is also available on the args attribute. New in
-    version 1.5.2.
-
-    When an EnvironmentError exception is instantiated with a 3-tuple, the
-    first two items are available as above, while the third item is
-    available on the filename attribute. However, for backwards
-    compatibility, the args attribute contains only a 2-tuple of the first
-    two constructor arguments.
-
-    The filename attribute is None when this exception is created with
-    other than 3 arguments. The errno and strerror attributes are also None
-    when the instance was created with other than 2 or 3 arguments. In this
-    last case, args contains the verbatim constructor arguments as a tuple.
-
-
-****************
-The following exceptions are the exceptions that are actually raised.
-
-AssertionError
-
-    Raised when an assert statement fails.
-
-AttributeError
-
-    Raised when an attribute reference or assignment fails. (When an object
-    does not support attribute references or attribute assignments at all,
-    TypeError is raised.)
-
-EOFError
-
-    Raised when one of the built-in functions (input() or raw_input()) hits
-    an end-of-file condition (EOF) without reading any data. (N.B.: the
-    read() and readline() methods of file objects return an empty string
-    when they hit EOF.)
-
-FloatingPointError
-
-    Raised when a floating point operation fails. This exception is always
-    defined, but can only be raised when Python is configured with the
-    --with-fpectl option, or the WANT_SIGFPE_HANDLER symbol is defined in
-    the pyconfig.h file.
-
-GeneratorExit
-
-    Raise when a generator's close() method is called. It directly inherits
-    from Exception instead of StandardError since it is technically not an
-    error. New in version 2.5.
-
-IOError
-
-    Raised when an I/O operation (such as a print statement, the built-in
-    open() function or a method of a file object) fails for an I/O-related
-    reason, e.g., ``file not found'' or ``disk full''.
-
-    This class is derived from EnvironmentError. See the discussion above
-    for more information on exception instance attributes.
-
-ImportError
-
-    Raised when an import statement fails to find the module definition or
-    when a from ... import fails to find a name that is to be imported.
-
-IndexError
-
-    Raised when a sequence subscript is out of range. (Slice indices are
-    silently truncated to fall in the allowed range; if an index is not a
-    plain integer, TypeError is raised.)
-
-KeyError
-
-    Raised when a mapping (dictionary) key is not found in the set of
-    existing keys.
-
-KeyboardInterrupt
-
-    Raised when the user hits the interrupt key (normally Control-C or
-    Delete). During execution, a check for interrupts is made regularly.
-    Interrupts typed when a built-in function input() or raw_input() is
-    waiting for input also raise this exception. The exception inherits
-    from BaseException so as to not be accidentally caught by code that
-    catches Exception and thus prevent the interpreter from exiting.
-    Changed in version 2.5: Changed to inherit from BaseException.
-
-MemoryError
-
-    Raised when an operation runs out of memory but the situation may still
-    be rescued (by deleting some objects). The associated value is a string
-    indicating what kind of (internal) operation ran out of memory. Note
-    that because of the underlying memory management architecture (C's
-    malloc() function), the interpreter may not always be able to
-    completely recover from this situation; it nevertheless raises an
-    exception so that a stack traceback can be printed, in case a run-away
-    program was the cause.
-
-NameError
-
-    Raised when a local or global name is not found. This applies only to
-    unqualified names. The associated value is an error message that
-    includes the name that could not be found.
-
-NotImplementedError
-
-    This exception is derived from RuntimeError. In user defined base
-    classes, abstract methods should raise this exception when they require
-    derived classes to override the method. New in version 1.5.2.
-
-OSError
-
-    This class is derived from EnvironmentError and is used primarily as
-    the os module's os.error exception. See EnvironmentError above for a
-    description of the possible associated values. New in version 1.5.2.
-
-OverflowError
-
-    Raised when the result of an arithmetic operation is too large to be
-    represented. This cannot occur for long integers (which would rather
-    raise MemoryError than give up). Because of the lack of standardization
-    of floating point exception handling in C, most floating point
-    operations also aren't checked. For plain integers, all operations that
-    can overflow are checked except left shift, where typical applications
-    prefer to drop bits than raise an exception.
-
-ReferenceError
-
-    This exception is raised when a weak reference proxy, created by the
-    weakref.proxy() function, is used to access an attribute of the
-    referent after it has been garbage collected. For more information on
-    weak references, see the weakref module. New in version 2.2: Previously
-    known as the weakref.ReferenceError exception.
-
-RuntimeError
-
-    Raised when an error is detected that doesn't fall in any of the other
-    categories. The associated value is a string indicating what precisely
-    went wrong. (This exception is mostly a relic from a previous version
-    of the interpreter; it is not used very much any more.)
-
-StopIteration
-
-    Raised by an iterator's next() method to signal that there are no
-    further values. This is derived from Exception rather than
-    StandardError, since this is not considered an error in its normal
-    application. New in version 2.2.
-
-SyntaxError
-
-    Raised when the parser encounters a syntax error. This may occur in an
-    import statement, in an exec statement, in a call to the built-in
-    function eval() or input(), or when reading the initial script or
-    standard input (also interactively).
-
-    Instances of this class have attributes filename, lineno, offset and
-    text for easier access to the details. str() of the exception instance
-    returns only the message.
-
-SystemError
-
-    Raised when the interpreter finds an internal error, but the situation
-    does not look so serious to cause it to abandon all hope. The
-    associated value is a string indicating what went wrong (in low-level
-    terms).
-
-    You should report this to the author or maintainer of your Python
-    interpreter. Be sure to report the version of the Python interpreter
-    (sys.version; it is also printed at the start of an interactive Python
-    session), the exact error message (the exception's associated value)
-    and if possible the source of the program that triggered the error.
-
-SystemExit
-
-    This exception is raised by the sys.exit() function. When it is not
-    handled, the Python interpreter exits; no stack traceback is printed.
-    If the associated value is a plain integer, it specifies the system
-    exit status (passed to C's exit() function); if it is None, the exit
-    status is zero; if it has another type (such as a string), the object's
-    value is printed and the exit status is one.
-
-    Instances have an attribute code which is set to the proposed exit
-    status or error message (defaulting to None). Also, this exception
-    derives directly from BaseException and not StandardError, since it is
-    not technically an error.
-
-    A call to sys.exit() is translated into an exception so that clean-up
-    handlers (finally clauses of try statements) can be executed, and so
-    that a debugger can execute a script without running the risk of losing
-    control. The os._exit() function can be used if it is absolutely
-    positively necessary to exit immediately (for example, in the child
-    process after a call to fork()).
-
-    The exception inherits from BaseException instead of StandardError or
-    Exception so that it is not accidentally caught by code that catches
-    Exception. This allows the exception to properly propagate up and cause
-    the interpreter to exit. Changed in version 2.5: Changed to inherit
-    from BaseException.
-
-TypeError
-
-    Raised when an operation or function is applied to an object of
-    inappropriate type. The associated value is a string giving details
-    about the type mismatch.
-
-UnboundLocalError
-
-    Raised when a reference is made to a local variable in a function or
-    method, but no value has been bound to that variable. This is a
-    subclass of NameError. New in version 2.0.
-
-UnicodeError
-
-    Raised when a Unicode-related encoding or decoding error occurs. It is
-    a subclass of ValueError. New in version 2.0.
-
-UnicodeEncodeError
-
-    Raised when a Unicode-related error occurs during encoding. It is a
-    subclass of UnicodeError. New in version 2.3.
-
-UnicodeDecodeError
-
-    Raised when a Unicode-related error occurs during decoding. It is a
-    subclass of UnicodeError. New in version 2.3.
-
-UnicodeTranslateError
-
-    Raised when a Unicode-related error occurs during translating. It is a
-    subclass of UnicodeError. New in version 2.3.
-
-ValueError
-
-    Raised when a built-in operation or function receives an argument that
-    has the right type but an inappropriate value, and the situation is not
-    described by a more precise exception such as IndexError.
-
-WindowsError
-
-    Raised when a Windows-specific error occurs or when the error number
-    does not correspond to an errno value. The winerror and strerror values
-    are created from the return values of the GetLastError() and
-    FormatMessage() functions from the Windows Platform API. The errno
-    value maps the winerror value to corresponding errno.h values. This is
-    a subclass of OSError. New in version 2.0. Changed in version 2.5:
-    Previous versions put the GetLastError() codes into errno.
-
-ZeroDivisionError
-
-    Raised when the second argument of a division or modulo operation is
-    zero. The associated value is a string indicating the type of the
-    operands and the operation.
-
-    The following exceptions are used as warning categories; see the
-    warnings module for more information.
+Exceptions 3.10.5 (see Library/Built-in Exceptions/Exception hierarchy)
+
+BaseException
+    - SystemExit
+    - KeyboardInterrupt
+    - GeneratorExit
+    - Exception
+        - StopIteration
+        - StopAsyncIteration
+        - ArithmeticError
+            - FloatingPointError
+            - OverflowError
+            - ZeroDivisionError
+        - AssertionError
+        - AttributeError
+        - BufferError
+        - EOFError
+        - ImportError
+            - ModuleNotFoundError
+        - LookupError
+            - IndexError
+            - KeyError
+        - MemoryError
+        - NameError
+            - UnboundLocalError
+        - OSError
+            - BlockingIOError
+            - ChildProcessError
+            - ConnectionError
+               - BrokenPipeError
+               - ConnectionAbortedError
+               - ConnectionRefusedError
+               - ConnectionResetError
+            - FileExistsError
+            - FileNotFoundError
+            - InterruptedError
+            - IsADirectoryError
+            - NotADirectoryError
+            - PermissionError
+            - ProcessLookupError
+            - TimeoutError
+        - ReferenceError
+        - RuntimeError
+            - NotImplementedError
+            - RecursionError
+        - SyntaxError
+            - IndentationError
+                - TabError
+        - SystemError
+        - TypeError
+        - ValueError
+            - UnicodeError
+                - UnicodeDecodeError
+                - UnicodeEncodeError
+                - UnicodeTranslateError
+        - Warning
+            - DeprecationWarning
+            - PendingDeprecationWarning
+            - RuntimeWarning
+            - SyntaxWarning
+            - UserWarning
+            - FutureWarning
+            - ImportWarning
+            - UnicodeWarning
+            - BytesWarning
+            - EncodingWarning
+            - ResourceWarning
 
 -----------------------------------------------------------------------------
 Strings and the string module                        *python_string_stuff*
@@ -10146,5 +9886,24 @@ system python's libraries.
     Use it with
 
         pip install -r requirements.txt
+
+--------------------------------------------------------------------------------
+Type hints                                  *python_typehints*
+
+Avoiding forward reference problems:
+    from __future__ import annotations
+else:
+    Put quotes around the forward references
+
+from typing import Union
+
+Num = Union[int, float, complex]
+
+Variables
+    a: int = 4
+Aliases
+    b: list[int] = [1, 2]
+Functions
+    def f(a: int, b: Num) -> Num:
 
 vim:  wm=3
