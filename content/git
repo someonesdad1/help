@@ -358,21 +358,32 @@ Blame
 ---------------------------------------------------------------------------
 git Detached Head                                       *git_DetachedHead*
 
-Suppose you want to go to a particular revision:
+A detached head is useful to do preliminary prototyping.  You go to a
+specific revision without making a branch and you're in 'detached head'
+mode.  You can explore, prototype, make changes, and commit them without
+impacting any branch.  When you're done you can either:
+    - Discard changes by switching back to a branch
+    - Keep your changes on a new branch
+
+Details:
+
+Go to a particular revision:
 
     git checkout ffc688
 
-This puts you in 'detached HEAD' state.  You can look around, make
-experimental changes, and commit them.  You can discard any commits in this
-state WITHOUT impacting any branches by switching back to a branch.
+This puts you in 'detached HEAD' state (do a 'git status').  You can look
+around, make experimental changes, and commit them.  You can discard any
+commits in this state WITHOUT impacting any branches by switching back to a
+branch.
 
 The 'git status' command will say '## HEAD (no branch)'.
 
-However, if this experimental work looks promising, use
+However, if this experimental work looks promising, you can keep these
+changes on a new branch:
 
     git switch -c my_new_branch
 
-Now this stuff is on a new branch.
+Now these changes are on my_new_branch.
 
 ---------------------------------------------------------------------------
 git Architecture                                        *git_Architecture*

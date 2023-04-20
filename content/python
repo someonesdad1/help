@@ -5255,6 +5255,7 @@ following file methods on it:
     Iterate:  each iteration returns a line with the newline
 
 Init
+    from io import StringIO
     StringIO([buffer]) 
 
     Can use 8-bit or Unicode strings; mixing them requires care.  If
@@ -5280,10 +5281,9 @@ Example usage:
         print(output.getvalue())
 
 Demo:
-    from __future__ import print_function
-    import StringIO
+    from io import StringIO
 
-    sio = StringIO.StringIO
+    sio = StringIO
 
     s = sio('''
     Hello, this is the first line.
