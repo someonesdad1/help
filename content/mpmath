@@ -2,6 +2,7 @@
 
 |basics|
 |arithmetic|
+|number_properties|
 |elem_functions|
 |interval_numbers|
 |nonelem_functions|
@@ -16,7 +17,6 @@
 |limits|
 |function_approximation|
 |number_identification|
-|number_properties|
 
 Based on the online documentation for version 0.19; however, results are
 shown using 0.18.
@@ -34,8 +34,16 @@ Basics                                                          *basics*
 
 from mpmath import *
 
-Precision:  mp object
+Precision:
     mp.dps = 15   # Set decimal places
+    with workdps(20):
+        Do stuff in context mgr
+    with extradps(20):
+        Do stuff in context mgr
+    Use autoprec() to wrap a function to get the full precision at the
+    point of call with ignorable roundoff error.  Note care is required
+    (see the manpage).
+
 eps
     Working precision.  chop() uses 100*eps as it's default cutoff
 
@@ -1549,7 +1557,7 @@ findpoly(x, n=1, **kwargs)
 -----------------------------------------------------------------------------
 Number properties                                   *number_properties*
 
-isinf(x)
+isinf(x)        True if x is infinite
 isnan(x)        True if x is Nan or complex with one component NaN
 isnormal(x)     False if x is zero, an infinity or NaN.  Test mag for mpc.
 isfinite(x)     True if not inf or Nan.

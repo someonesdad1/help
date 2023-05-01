@@ -1,5 +1,10 @@
 *git*
 
+Todo:  
+    - Find the stuff with "checkout" and change to "switch", which is the
+      modern syntax.  Test in a dummy repo to be sure things work as
+      described.
+
 |git_Branching|
 |git_Merging|
 |git_Tags|
