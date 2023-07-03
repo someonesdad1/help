@@ -3188,13 +3188,12 @@ Example
             a.me = "Goodbye "
             a.count = -33
             with open("aa", "wb") as f:
-                f.write(pickle.dumps(a))
+                pickle.dump(a, f))
             print("Modified instance that was pickled:")
             print(a)
         else:
             with open("aa", "rb") as f:
-                b = f.read()
-            a1 = pickle.loads(b)
+                a1 = pickle.load(f)
             print("Instance unpickled from file:")
             print(a1)
 
