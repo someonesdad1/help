@@ -15,7 +15,7 @@ Three-letter fields starting with x indicate more details
 -----------------------------------------------------------------------------
 Basics                                       *unc_basics*
 
-import uncertainties import ufloat, ufloat_fromstr
+from uncertainties import ufloat, ufloat_fromstr
 x = uncertainties.ufloat(nominal_value, uncertainty)
 
 uncertainties.ufloat_fromstr takes various strings:
@@ -35,8 +35,35 @@ Nominal value and uncertainty
         uncertainties.std_dev(x)
 
 Printing  xxa
+    Example using homemade shunt calibration with L&N resistor
+
+        from uncertainties import ufloat as uf
+        s = uf(0.1006, 0.0003)      # L&N 0.1 ohm standard resistance
+        v = uf(99.8, 0.1)           # Voltage across homemade shunt at 1 A
+        v0 = uf(100.1, 0.1)
+        r = s*v/v0
+        # Report
+        u = ".1uS"  # Short form uncertainty format to 1 figure
+        print(f"Measurement date 20 Jul 2023")
+        print(f"L&N standard resistance                 {s:{u}} Ω")
+        print(f"Voltage across homemade shunt @ 1 A     {v:{u}} mV")
+        print(f"Voltage across L&N resistor @ 1 A       {v0:{u}} mV")
+        print(f"Resistance of homemade shunt            {r:{u}} Ω")
+
+      produced
+
+        Measurement date 20 Jul 2023
+        L&N standard resistance                 0.1006(3) Ω
+        Voltage across homemade shunt @ 1 A     99.8(1) mV
+        Voltage across L&N resistor @ 1 A       100.1(1) mV
+        Resistance of homemade shunt            0.1003(3) Ω
+
+
     Controlling uncertainty digits with u format spec
         print("x = {:.2u}".format(x))
+    Short form
+        u = ".1uS"  # .1 means 1 digit in uncertainty
+        print(f"x = {x:{u}}")
     Pretty printing P format uses Unicode characters
         x = ufloat(2e-1, 0.1e-1)
         print(x)                    --> 0.200+/-0.010

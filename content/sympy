@@ -981,7 +981,7 @@ How to define a derivative
 
     from sympy import pprint
     pprint(my_function(x).series(x, 0, 10))
-            3     5     7       9
+             3     5     7       9
             x     x     x       x       / 10\
         x - -- + --- - ---- + ------ + O\x  /
             6    120   5040   362880

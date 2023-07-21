@@ -3967,7 +3967,7 @@ Diameter        Lengths
 Knurling                                            *Knurling*
 
 Perfect knurling diameter for decimal inch sizes For 0.75 inch diameter
-knurl with 40 teethx.
+knurl with 40 teeth.
 
 First number is nominal diameter in inches; second is what you should
 actually turn it to.
