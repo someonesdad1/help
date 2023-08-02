@@ -1,4 +1,6 @@
 '''
+To change index file order, edit MakeIndexFile()
+
 Script for building help documentation
 Created 13 Mar 2022
 

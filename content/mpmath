@@ -1,10 +1,10 @@
 *mpmath*
 
 |basics|
+|interval_numbers|
 |arithmetic|
 |number_properties|
 |elem_functions|
-|interval_numbers|
 |nonelem_functions|
 |matrices|
 |random_numbers|
@@ -152,22 +152,35 @@ Speeding things up
 -----------------------------------------------------------------------------
 Interval numbers                                         *interval_numbers*
 
-from mpmath import iv
+from mpmath import iv, mpf
 iv.dps = 15
+
+Basics
+    a = iv.mpf(['2.1', '3.7'])
+    print(a)
+        --> [2.0999999999999996447, 3.7000000000000001776]
+    print(mpf(a.a), mpf(a.b))
+        --> 2.1 3.7
+    print(mpf(a.mid), "±", mpf(a.delta)/2)
+        --> 2.9 ± 0.8
+
 a = iv.mpf('0.1')
     >>> mpi('0.099999999999999992', '0.10000000000000001')
     print(a)
         --> [0.099999999999999991673, 0.10000000000000000555]
+    # Shows how to track roundoff in a calculation
 Recommended forms:
-    iv.mpf(0.1)             # Don't use
-        --> [0.10000000000000000555, 0.10000000000000000555]
-    iv.mpf('0.1')           # Good -- gets a bounding interval
-        --> [0.099999999999999991673, 0.10000000000000000555]
-        0.1 can't be represented in binary floating point at any
-        precision.
-    iv.mpf(['0.1', '0.2'])  # Defines an interval
-        --> [0.099999999999999991673, 0.2000000000000000111]
-Complex numbers supported by iv.mpc.
+    # Don't use:
+        iv.mpf(0.1)
+            --> [0.10000000000000000555, 0.10000000000000000555]
+    # Good -- gets a bounding interval
+        iv.mpf('0.1')
+            --> [0.099999999999999991673, 0.10000000000000000555]
+        0.1 can't be represented in binary floating point at any precision
+    # Defines an interval
+        iv.mpf(['0.1', '0.2'])
+            --> [0.099999999999999991673, 0.2000000000000000111]
+Complex numbers supported by iv.mpc
     a = iv.mpc(('1', '2'), ('3', '4'))
     print(a)
         --> ([1.0, 2.0] + [3.0, 4.0]*j)
