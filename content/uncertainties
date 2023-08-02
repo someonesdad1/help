@@ -27,8 +27,8 @@ uncertainties.ufloat_fromstr takes various strings:
     x = ufloat_fromstr("0.20")          # Automatic uncertainty of +/-1 on last
 
 Nominal value and uncertainty
-    x.nominal_value
-    x.std_dev
+    x.nominal_value         also can use x.n
+    x.std_dev               also can use x.s
 
     The following work on floats and ufloats:
         uncertainties.nominal_value(x)
