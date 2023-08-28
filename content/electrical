@@ -372,5 +372,5 @@ The formulas that relate these resistances are
   Ry = RxyRyz/(Rxy + Ryz + Rxz)
   Rz = RxzRyz/(Rxy + Ryz + Rxz)
 
-Sometimes using these equations are useful for simplifying a circuit
+Sometimes using these equations is useful for simplifying a circuit
 without going through all of the equations from Kirchhoff's Laws.
