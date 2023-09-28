@@ -22,14 +22,15 @@
 |Monte_Carlo_uncertainties|
 |RangeEstimates|
 |Control_charts|
+|Regression|
 |Statistics_references|
 
-The information in these tables was computed using a python script
+The information in this file was computed using a python script
 stats.py.  The versions used were:
-           Python:  3.6.6
-            scipy:  1.1.0
-            numpy:  1.14.5
-    Date produced:  15 Mar 2022
+           Python:  3.10.4
+            scipy:  1.8.0
+            numpy:  1.21.5
+    Date produced:  28 Sep 2023
 
 The normal distribution is so frequently used that the following symbols
 are intended unless otherwise stated:
@@ -1302,7 +1303,6 @@ where m = -2.0167, p = confidence in %, and df = degrees of freedom.
 ------------------------------------------------------------------------------
 Probability Plotting                               *Probability_Plotting*
 
-
 Probability plotting involves plotting a distribution's CDF against the values
 of a sample of data points.  The CDF is estimated by simple order statistics
 and, on suitable graph paper, the data come from a particular distribution when
@@ -1369,7 +1369,6 @@ n = 15
 ------------------------------------------------------------------------------
 Binomial CDF                                       *Binomial_CDF*
 
-
 Binomial cumulative distribution function n = [2, 20]
     n = sample size
     k = number of items with characteristic, 0 <= k <= n
@@ -1389,13 +1388,13 @@ Binomial cumulative distribution function n = [2, 20]
                                 p
  n  k   1%    5%   10%   15%   20%   25%   30%   35%   40%   45%   50%
  3  0  9703  8574  7290  6141  5120  4219  3430  2746  2160  1664  1250
- 3  1  9997  9928  9720  9392  8960  8438  7840  7183  6480  5748  5000
+ 3  1  9997  9928  9720  9392  8960  8438  7840  7183  6480  5747  5000
  3  2        9999  9990  9966  9920  9844  9730  9571  9360  9089  8750
 
                                 p
  n  k  55%   60%   65%   70%   75%   80%   85%   90%   95%   99%
  3  0  0911  0640  0429  0270  0156  0080  0034  0010  0001  0000
- 3  1  4252  3520  2818  2160  1562  1040  0608  0280  0073  0003
+ 3  1  4252  3520  2817  2160  1562  1040  0608  0280  0073  0003
  3  2  8336  7840  7254  6570  5781  4880  3859  2710  1426  0297
 
                                 p
@@ -1908,7 +1907,6 @@ Binomial cumulative distribution function n = [2, 20]
 20 18  9999  9995  9979  9924  9757  9308  8244  6083  2642  0169
 20 19              9998  9992  9968  9885  9612  8784  6415  1821
 
-
 Ref. [nelson] pg 588 (tables) and 91 (discussion), [jk1:50].  Values computed
 with scipy.stats.binom().cdf().
 
@@ -2033,7 +2031,6 @@ Poisson cumulative distribution function
 21                                                          9998     9993
 22                                                          9999     9997
 
-
 Ref. [nelson:586] and [jk:87].  Values computed with scipy.stats.binom().cdf().
 
 A random variable X is from a Poisson distribution if
@@ -2053,7 +2050,7 @@ Some uses of the Poisson model to model number of:
     * Soldiers in a regiment kicked to death yearly by horses (famous example
       by Bortkiewicz 1898).
     * Defects in a sheet of material.
-    * flaws in a length of wire or computer tape.
+    * Flaws in a length of wire or computer tape.
     * Failures in a repairable product over a given period.
     * Particles emitted by a radioactive source in a given period of
       time.
@@ -2100,7 +2097,7 @@ example is radioactive decay because the total number of source atoms decreases
 over time.
 
 Example:  suppose a critical business process averages 10 events per unit time.
-Further suppose the business requires that 99.9% of the time that it's
+Further suppose the business requires that 99.9% of the time that its
 infrastructure for dealing with these events must be adequate.  What should be
 the design goal for the throughput of the infrastructure?
 
@@ -2723,7 +2720,9 @@ The most probable number of dogs in the sample is 2.
 
 Generated with python's random.random() function, first 5 digits from the
 number are used and the decimal point is stripped off.  Sequence started with
-random.seed(0).  Here are the first five generated numbers:
+random.seed(0).  Note these are pseudorandom variates.  Here are the first five
+generated numbers:
+
       xxxxx
     0.8444218515250481
     0.7579544029403025
@@ -2837,7 +2836,8 @@ Row    0      1      2      3      4      5      6      7      8      9
 5000 Uniform Random Deviates                       *Uniform_deviates*
 
 Generated with python's random.normalvariate() function.  Sequence started with
-random.seed(0).
+random.seed(0).  Note these are pseudorandom variates.
+
 Row      0      1      2      3      4      5      6      7      8      9
   0   -0.184  0.033  0.699 -0.096  1.414 -1.533  0.271 -1.206 -0.053 -0.290
   1   -0.293 -2.107  0.085  0.627  1.679  0.834 -2.315 -1.225  0.942 -1.059
@@ -2950,7 +2950,8 @@ Probabilities
 Error classification
     alpha:  type 1:  reject a true hypothesis
     beta:   type 2:  accept a false hypothesis
-    "3rd kind":  get the right answer to the wrong problem
+    "Type 3 error":  get the right answer to the wrong problem
+    "Type 4 error":  get the wrong answer to the wrong problem
 
 Python forms for statistics calculations:
     Let the n data items be
@@ -3203,16 +3204,19 @@ Factors for Constructing Control Charts            *Control_charts*
 Discussion follows the tables.  Tables ref. [duncan:968].
 
 Chart for averages:  (assumes a normally-distributed universe)
+
     n       Sample size
     Xbb     Historical average
     Xb''    Known or chosen population mean
     sigma'' Known or chosen population standard deviation
     sbar    Average of standard deviation
     Rbar    Average of range
+
   Central line        Control limits
        Xbb              Xbb  +/- A3*sbar
                         Xbb  +/- A2*Rbar
        Xb''             Xb'' +/- A*sigma''
+
      n       A          A2         A3
      2      2.121      1.881      2.659
      3      1.732      1.023      1.954
@@ -3240,15 +3244,18 @@ Chart for averages:  (assumes a normally-distributed universe)
     25      0.600      0.153      0.606
 
 Chart for ranges:  (assumes a normally-distributed universe)
+
     n       Sample size
     Rbar    Average of range
     sigma'  Historical population standard deviation
     sigma'' Known or chosen population standard deviation
     d2      Mean of w = R/sigma'
     d3      Standard deviation of w = R/sigma'
+
   Central line        Control limits
        Rbar             D3*Rbar and D4*Rbar
        d2*sigma''       D1*sigma'' and D2*sigma''
+
      n     d2      1/d2      d3       D1       D2       D3       D4
      2    1.128   0.8865    0.853     0       3.687     0       3.269
      3    1.693   0.5907    0.888     0       4.357     0       2.574
@@ -3276,13 +3283,16 @@ Chart for ranges:  (assumes a normally-distributed universe)
     25    3.931   0.2544    0.709    1.804    6.058    0.459    1.541
 
 Chart for standard deviations:  (assumes a normally-distributed universe)
+
     n       Sample size
     sbar    Average of standard deviations
     sigma'' Known or chosen population standard deviation
     c4      Constant for standard deviation central line
+
   Central line        Control limits
        sbar             B3*sbar and B4*sbar
        d2*sigma''       B5*sigma'' and B6*sigma''
+
      n     c4       B3       B4       B5       B6
      2   0.7979     0       3.267     0       2.606
      3   0.8862     0       2.568     0       2.276
@@ -3314,7 +3324,7 @@ notation probably was standardized by the "ASTM Manual on Quality Control of
 Materials", 1951 (as referenced in [crow]).  Note that [crow] and [bl] are
 about the same tables, but give different column names and values than
 [duncan]; where they overlap, they are equal.  (I used Duncan's stuff for
-controlling the ILS production process in the late 1980's and it worked fine.)
+controlling the ILS stuff in the late 1980's and it worked fine.)
 
 Formulas for the table constants:
     Xbarbar = grand average
@@ -3360,6 +3370,7 @@ Monte Carlo calculation of d2 and d3
     script that performs a Monte Carlo calculation that reproduces the data
     in [duncan:948]:
 
+    from __future__ import print_function, division
     from numpy import array, average, cov, sqrt
     from numpy.random import normal
 
@@ -3386,6 +3397,25 @@ Monte Carlo calculation of d2 and d3
         r = array(r)
         m, s = average(r), sqrt(cov(r))
         print("{0:2d}{1:9.2f}{2:10.2f}".format( n, m, s))
+
+------------------------------------------------------------------------------
+Linear_Regression                                  *Regression*
+
+Simple linear regression
+    y = mx + b
+    m = (nΣxy - ΣxΣy)/(nΣx² - (Σx)²)
+    b = (Σy - mΣx)/n = ybar = m*xbar
+    R² = (m*s_x/s_y)²
+       = (nΣxy - ΣxΣy)²/[(nΣx² - (Σx)²)(nΣy² - (Σy)²)]
+
+HP-42s registers
+    ΣREG = 11
+    R11 = Σx
+    R12 = Σx²
+    R13 = Σy
+    R14 = Σy²
+    R15 = Σxy
+    R16 = n
 
 ------------------------------------------------------------------------------
 Statistics References                              *Statistics_references*
@@ -3417,3 +3447,4 @@ Statistics References                              *Statistics_references*
             Biometrika Trust, 3rd ed. with corrections, 1976, ISBN 0904653102.
 [we]        Western Electric, "Statistical Quality Control Handbook", 2nd ed.,
             1958.
+

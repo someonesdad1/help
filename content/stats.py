@@ -80,7 +80,7 @@ def Versions():
     fmt = "    %%%ds  %%s" % max([len(i[0]) for i in versions])
     print(dedent('''
  
-    The information in these tables was computed using a python script
+    The information in this file was computed using a python script
     stats.py.  The versions used were:'''))
     for i in versions:
         print(fmt % i)
@@ -1728,7 +1728,29 @@ def StdDevSampleSize():
         99%:  df = 32670*p**m
     where m = -2.0167, p = confidence in %, and df = degrees of freedom.
     '''))
+def Regression():
+    s = [SectionHeading("Linear_Regression", "Regression")]
+    s.append(dedent('''
+
+    Simple linear regression
+        y = mx + b
+        m = (nΣxy - ΣxΣy)/(nΣx² - (Σx)²)
+        b = (Σy - mΣx)/n = ybar = m*xbar
+        R² = (m*s_x/s_y)²
+           = (nΣxy - ΣxΣy)²/[(nΣx² - (Σx)²)(nΣy² - (Σy)²)]
+
+    HP-42s registers
+        ΣREG = 11
+        R11 = Σx
+        R12 = Σx²
+        R13 = Σy
+        R14 = Σy²
+        R15 = Σxy
+        R16 = n
+    '''))
+    print(nl.join(s))
 if __name__ == "__main__":
+    dbg = 0     # True to work on a specific section
     if 1:
         # We'll capture all output to stdout so that all whitespace at the end
         # of the lines can be removed.
@@ -1736,26 +1758,26 @@ if __name__ == "__main__":
         stream = StringIO()
         sys.stdout = stream
         Versions()
-        #
-        Normal()
-        StudentT_PP()
-        ChiSquarePP()
-        FDistributionPP()
-        StdDevConfidenceLimits()
-        StdDevSampleSize()
-        ProbabilityPlotting()
-        BinomialCDF()
-        PoissonCDF()
-        ProportionCI()
-        Hypergeometric()
-        UniformRandomDeviates()
-        NormalRandomDeviates()
-        StatisticsFormulas()
-        MonteCarloProportionUncertainties()
-        RangeEstimates()
-        ControlChartFactors()
-        #
-        References()
+        if not dbg:
+            Normal()
+            StudentT_PP()
+            ChiSquarePP()
+            FDistributionPP()
+            StdDevConfidenceLimits()
+            StdDevSampleSize()
+            ProbabilityPlotting()
+            BinomialCDF()
+            PoissonCDF()
+            ProportionCI()
+            Hypergeometric()
+            UniformRandomDeviates()
+            NormalRandomDeviates()
+            StatisticsFormulas()
+            MonteCarloProportionUncertainties()
+            RangeEstimates()
+            ControlChartFactors()
+            Regression()
+            References()
         tables = stream.getvalue()
         # Now combine with headings
         stream = StringIO()
@@ -1782,5 +1804,4 @@ if __name__ == "__main__":
                 print("Error =", e)
                 open("statistics", "wb").write(s.encode("UTF-8"))
     else:
-        pass
         Normal()
