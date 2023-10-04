@@ -93,10 +93,12 @@ if 1:   # Utility
 if 1:   # Help
     def Help():
         print(dedent(f'''
-        This script constructs 'help' files in '{g.output}' with extensions
-        {g.suffix} that are intended to be opened by vim.  These *{g.suffix}
-        files are copies of those in '{g.content}', so you can (accidentally)
-        edit them without changing the original content.
+
+        This script constructs 'help' files in the directory '{g.output}'
+        with extensions '{g.suffix}' that are intended to be opened by vim.
+        These *{g.suffix} files are copies of those in '{g.content}', so
+        you can (accidentally) edit them without changing the original
+        content.
 
         You can read these files in any editor, but using vim is preferred
         because it will syntax highlight the topics.
@@ -133,8 +135,6 @@ if 1:   # Help
                   also does tags processing
         - Directory structure
             - content:  location of help files
-            - doc:  documentation on help system
-            - tools:  scripts, etc.
             - output:  deployment of build's files
 
         {t.note}See doc/readme.pdf for documentation.{t.n}
