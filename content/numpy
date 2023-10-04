@@ -305,7 +305,7 @@ Creating arrays
                            [3, 4]])
         You can also use nested sequences:
             mat([[1,5,10],[1.0,3,4j]])
-        * means matrix mulitply.
+        * means matrix multiply.
         To multiply a matrix A by a scalar b, use multiply(b, A)
         To divide, use divide()
         Also see

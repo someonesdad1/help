@@ -261,7 +261,7 @@ if 1:   # Core functionality
             ''', 3, 20),
             ('''
                 arduino asciidoc awk basic bibtex cvs darcs find flex hg
-                hp3488 HP42s HTML Korn_Shell lua markdown Mathematica pandoc
+                hp3488 HP42s html Korn_Shell lua markdown Mathematica pandoc
                 PCL5 perl4 perl5 PostScript pygame rst sed Snippets STL Subversion
                 tmux units mswindows yaml
             ''', 0, 0),
