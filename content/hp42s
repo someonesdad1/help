@@ -111,8 +111,8 @@ General:
     Family:         Pioneer
     Logic:          RPN
     Features:       scientific, programmable, -41C* replacement,
-                complex, solver, integrator, matrix,
-                all-model statistics, base w/arithmetic
+                    complex, solver, integrator, matrix,
+                    all-model statistics, base w/arithmetic
     Firsts:         polar complex notation
     Introduction:
         Date:       1988-10-31
@@ -127,12 +127,12 @@ Display:
     Size:           2 line x 22 chars, 16 x 131 pixels
     Number-Formats:     sign, 12 mantissa, ., exp sign, 2 exp
     Annunciators:       v^  arrow keys are active
-                ---^    shift key
-                printer printer data being sent
-                ((.))   executing function or program
-                battery battery low
-                RAD radians mode
-                GRAD    grads mode
+                    ---^    shift key
+                    printer printer data being sent
+                    ((.))   executing function or program
+                    battery battery low
+                    RAD radians mode
+                    GRAD    grads mode
 
 Data:
     User-Visible:
@@ -144,12 +144,12 @@ Data:
         Largest:    9.99999999999999E49999
         Signif.-Digits: 15
     Data-Types-and-Sizes:   real, 8 bytes
-                binary, 8 bytes (36 bits)
-                alpha, 8 bytes, display in ""s, up to 6 chars
-                complex, 16 bytes, display with i or \.)
-                matrix, either real or complex, display in []s
+                    binary, 8 bytes (36 bits)
+                    alpha, 8 bytes, display in ""s, up to 6 chars
+                    complex, 16 bytes, display with i or \.)
+                    matrix, either real or complex, display in []s
 
-                entire calculator is in real or complex mode
+                    entire calculator is in real or complex mode
 Memory:
     Named-Registers:    X, Y, Z, T, Last X, Alpha (44 chars)
     Flags:          100, of which 0-10 and 81-99 are user and the
@@ -210,36 +210,36 @@ Memory:
     Program-Display:    alpha
     User-RAM-Bytes:     variable
     Total-RAM-Bytes:    8,192
-    ROM-Bytes:      64K
+    ROM-Bytes:          64K
     Machine-State:      memory (includes registers, flags, random
-                  seed, 8 returns, current matrix,
-                  currnt row and column pointers, programs,
-                  etc.)
-    File-Types:     none
+                        seed, 8 returns, current matrix,
+                        currnt row and column pointers, programs,
+                        etc.)
+    File-Types:         none
 
 Physical:
     Technology-Used:    CMOS
-    Processor:      Lewis, 1 MHz
-    Chip-Count:     ?
+    Processor:          Lewis, 1 MHz
+    Chip-Count:         ?
     Power-Source:       3 alkaline (Panasonic LR44) or mercury
                 (Panasonic NR44 or MR44) button cells
     Continuous-Memory:  yes
     Expansion-Ports:    none
-    I/O-Ports:      I/R output, beeper
-    Clock:          none
+    I/O-Ports:          I/R output, beeper
+    Clock:              none
 
-    Length:         ?
-    Width:          ?
-    Height:         ?
-    Weight:         ?
+    Length:             ?
+    Width:              ?
+    Height:             ?
+    Weight:             ?
     Temperature-Range:
-        Operating:  0 to 45 deg C
-        Charging:   -
-        Storage:    -20 to 65 deg C
+        Operating:      0 to 45 deg C
+        Charging:       -
+        Storage:        -20 to 65 deg C
 
 Keyboard:
-    Switches:       none
-    Shift-Keys:     orange, orange, above
+    Switches:           none
+    Shift-Keys:         orange, orange, above
     User-Defined-Keys:  top six
 
 Key-Arrangement::
@@ -277,12 +277,12 @@ OFF [TOP.FCN]SHOW   PRGM    [CATALOG]
 
 Programmable-Operations::
 
-%       percent
-%CH     percent change
-+       addition
-+/-     change sign
--       subtraction
-->      move right one element in matrix
+%           percent
+%CH         percent change
++           addition
++/-         change sign
+-           subtraction
+->          move right one element in matrix
 ->DEC       convert octal to decimal
 ->DEG       convert radians to degrees
 ->HMS       convert decimal hours to H.MS
@@ -292,27 +292,27 @@ Programmable-Operations::
 ->RAD       convert degrees to radians
 ->REC       convert polar to rectangular
 0-9, .      enter digit or decimal point
-1/X     inverse
+1/X         inverse
 10^X        common exponent
-<-      move left one element in matrix
-ABS     absolute value
+<-          move left one element in matrix
+ABS         absolute value
 ACOS        arc cosine
 ACOS        hyperbolic arc cosine
-ADV     paper advance
+ADV         paper advance
 AGRAPH      display graphics image
-AIP     append integer part to alpha
+AIP         append integer part to alpha
 ALENG       length of alpha
-ALL     ALL display mode
+ALL         ALL display mode
 ALL\GS      use all 13 summation coefficients
-AND     logical and
+AND         logical and
 AOFF        alpha keyboard off
-AON     alpha keyboard off
+AON         alpha keyboard off
 ARCL %%%    recall alpha
 AROT        rotate alpha
 ASHF        alpha shift
 ASIN        arc sine
 ASINH       hyperbolic arc sine
-ASSIGN function/label 01-18 assign to CUSTOM key
+ASSIGN      function/label 01-18 assign to CUSTOM key
 ASTO %%%    alpha store
 ATAN        arc tangent
 ATANH       hyperbolic arc tangent
@@ -328,42 +328,42 @@ BEST        select besst fit model
 BINM        select binary mode
 BIT?        test xth bith of y
 CF 00-29,81-99  clear flag
-CLA     clear alpha
-CLD     clear display
+CLA         clear alpha
+CLD         clear display
 CLKEYS      clear keys
 CLLCD       clear LCD
 CLMENU      delete menu key assignments for the programmable menu
-CLP     clear a program
+CLP         clear a program
 CLRG        clear registers
 CLST        clear stack
 CLV variable    clear a variable
-CLX     clear x
+CLX         clear x
 CL\GS       clear summation registers
 COMB        combinations
 COMPLEX     convert to real numbers or matrices to complex
 CORR        compute correlation coefficient
-COS     cosine
+COS         cosine
 COSH        hyperbolic cosine
 CPX?        is X complex?
 CPXRES      enable complex results
 CROSS       compute cross product
 DECM        select decimal mode
-DEG     set degrees mode
+DEG         set degrees mode
 DELAY       set print delay to X seconds
 DELR        delete row of matrix
-DET     compute determinant
+DET         compute determinant
 DIM variable    dimension a matrix
 DIM?        return the matrix dimensions
-DOT     compute dot product
+DOT         compute dot product
 DSE %%%     decrement and skip if equal
-E       enter exponent
+E           enter exponent
 EDIT        edit a matrix
 EDITN variable  edit a named matrix
-END     end program
+END         end program
 ENG 00-11   engineering notation
 ENTER       enter
 EXITALL     exit all menus
-E^X     natural exponent
+E^X         natural exponent
 E^X-1       natural exponent - 1
 FC? 00-99   is flag clear
 FC?C 00-35,81-99 is flag clear and clear
@@ -371,7 +371,7 @@ FCSTX       forcast X given Y
 FCSTY       forcast Y given X
 FIX 00-11   fixed notation
 FNRM        compute Frobenius norm
-FP      fractional part
+FP          fractional part
 FS? 00-99   is flag set
 FS?C 00-35,81-99    is flag set and clear
 GAMMA       compute gamma function
@@ -383,17 +383,17 @@ GTO label   goto
 HEXM        set hexadecimal mode
 HMS+        add two times in H.MS notation
 HMS-        subtract two times in H.MS notation
-I+      increment row pointer
-I-      decrement row pointer
+I+          increment row pointer
+I-          decrement row pointer
 INDEX variable  indexes a matrix
 INPUT %%%   recall a named value, displays it, and halts
 INSR        insert a row
 INTEG variable  integrates the selected program
 INVERT      inverts a matrix
-IP      integer part
+IP          integer part
 ISG %%%     increment and skip if greater
-J+      increment a column pointer
-J-      decrement a column pointer
+J+          increment a column pointer
+J-          decrement a column pointer
 KEYASN      select key assignments mode
 KEYG 1-9 label  on menu key, go to (defines a label)
 KEYX 1-9 label  on menu key, XEQ (defines a label)
@@ -402,33 +402,33 @@ LBL label   label
 LCLBL label define a local label
 LINE\GS     use only linear summation registers
 LINF        select linear model
-LN      natural logarithm
+LN          natural logarithm
 LN1+X       natural logarithm + 1
-LOG     common logarithm
+LOG         common logarithm
 LOGF        select logarithmic model
-MAN     select manual print mode
+MAN         select manual print mode
 MAT?        does X contain a matrix
 MEAN        compute average
-MOD     modulus
+MOD         modulus
 MVAR variable   declare a menu variable
-N!      factorial
+N!          factorial
 NEWMAT      create new matrix
 NORM        select normal print
-NOT     logical not
+NOT         logical not
 OCTM        select octal mode
-OFF     turn off (not the same as OFF key)
-OLD     recalls the current matrix element same as RCLEL)
-ON      set continuous on
-OR      logical or
+OFF         turn off (not the same as OFF key)
+OLD         recalls the current matrix element same as RCLEL)
+ON          set continuous on
+OR          logical or
 PERM        permutations
 PGMINT label    select a program to integrate
 PGMSLV label    select a program to solve
-PI      constant pi
+PI          constant pi
 PIXEL       turn on a pixel
 POLAR       select polar coordinate mode for displaying complex
 numbers
 POSA        find position in alpha
-PRA     print alpha
+PRA         print alpha
 PRLCT       print display
 PROFF       turn off printing
 PROMPT      display a prompt
@@ -437,15 +437,15 @@ PRP label   print program
 PRSTK       print stack
 PRUSR       print user variables
 PRV variable    print variable
-PRX     print X
+PRX         print X
 PR\GS       print summation registers
-PSE     pause
+PSE         pause
 PUTM        put matrix
 PWRF        select power model
-R/S     run / stop
+R/S         run / stop
 R<>R        swap rows in matrix
-RAD     set radians mode
-RAN     return random number
+RAD         set radians mode
+RAN         return random number
 RCJIJ       recall pointer values
 RCL %%%     recall
 RCL +,-,x,\:- %%%   recall arithmetic
@@ -455,19 +455,19 @@ RDX.        select dot as radix mark
 REAL?       does X contain a real?
 REALRES     return real results only
 RECT        select rectangular mode for displaying complex numbers
-RND     round
+RND         round
 RNRM        compute row normal
 ROTXY       rotate binary number
 RSUM        compute row sum
-RTN     return
-Rv      roll down
-R^      roll up
+RTN         return
+Rv          roll down
+R^          roll up
 SCI 00-11   scientific notation
 SDEV        standard deviation
 SEED        store random number seed
 SF 00-35,81-99  set flag
 SIGN        sign of number
-SIN     sine
+SIN         sine
 SINH        hyperbolic sine
 SIZE        sets the number of storage registers
 SLOPE       compute slope
@@ -479,19 +479,19 @@ STOEL       store into current matrix element
 STOIJ       store row and column pointers
 STOP        stop
 STR?        does X contain a string?
-SUM     returns the statistics sums
-TAN     tangent
+SUM         returns the statistics sums
+TAN         tangent
 TANH        hyperbolic tangent
 TONE 0-9    tone
 TRACE       select trace printing
 TRANS       compute transpose
 UVEC        compute unit vector
-v       move down one element in matrix
+v           move down one element in matrix
 VARMENU     create a variable menu
 VIEW %%%    view
 WMEAN       compute weighted mean
 WRAP        selects wrap mode
-x       multiplication
+x           multiplication
 X<0?        comparison test
 X<> %%%     swap X and register
 X<>Y        swap
@@ -501,7 +501,7 @@ X=Y?        comparison test
 X>0?        comparison test
 X>Y?        comparison test
 XEQ label   subroutine call
-XOR     logical xor
+XOR         logical xor
 XTOA        x to left byte of alpha
 X\<=0?      comparison test
 X\<=Y?      comparison test
@@ -509,16 +509,16 @@ X\=/0?      comparison test
 X\=/Y?      comparison test
 X\>=0?      comparison test
 X\>=Y?      comparison test
-X^2     square
+X^2         square
 YINT        compute Y intercept
-Y^X     exponentiation
-\:-     division
+Y^X         exponentiation
+\:-         division
 \GS+        summation plus
 \GS-        summation minus
 \GSREG 00-99    set summation register
 \GSREG?     what is summation register pointer
-^       move up one element in matrix
-|-      append to alpha
+^           move up one element in matrix
+|-          append to alpha
 
 %%% is a register designator; it can be 00-99,X,Y,Z,T,L or a variable
 name.  It can also have a leading . (displays as IND) which designates
@@ -526,10 +526,10 @@ indirection.
 
 Non-Programmable-Operations::
 
-<-      clear digit, item, or program line 
+<-          clear digit, item, or program line 
 ALPHA       toggle alpha mode
 BASE        select BASE menu
-BST     back step
+BST         back step
 CATALOG     select CATALOG menu
 CLALL       clear all memory
 CLEAR       select CLEAR menu
@@ -554,8 +554,8 @@ EXIT + LOG  single factory self-test, tests are:
     STO     keyboard, need to press each key from upper-left to
             lower-right
     XEQ     URAM
-    \GS+        SPD?
-    \v/x        DISPLAY, 7 'steps' of any key
+    \GS+    SPD?
+    \v/x    DISPLAY, 7 'steps' of any key
 
 EXIT + \GS+ + XEQ   clear all memory
 EXIT + \v/x full reset
@@ -565,8 +565,8 @@ GTO . 000-999   go to line number
 GTO . label go to label
 LIST        print a program listing
 MENU        selects the programmable menu
-OFF     off
-ON      on
+OFF         off
+ON          on
 PGM.FCN     select the PGM.FCN menu
 PRGM        toggle program mode
 PRINT       select the PRINT menu
@@ -574,7 +574,7 @@ PROB        select the PROB menu
 QUIET       toggle beeper on
 SHOW        shows all 12 digits
 SOLVER      select the SOLVER menu
-SST     single step
+SST         single step
 STAT        select the STAT menu
 TOP.FCN     select the TOP.FCN men
 \.Sf(x)     select the \.Sf(x) menu
@@ -1089,7 +1089,7 @@ Swiss Micros DM42
     a keyboard layout supporting direct alpha character input, a much
     larger high-contrast display (Sharp low power transflective memory LCD
     with a resolution of 400×240, protected by Gorilla Glass) showing all
-    four stack levels at once (configurable), ca. 75 KB usable RAM, a
+    four stack levels at once (configurable), about 75 kB usable RAM, a
     beeper, a callable real-time clock as well as an infrared port for HP
     82240A/HP 82240B printer support and a USB interface (with Micro-B
     connector) emulating a FAT16-formatted USB mass storage device for easy
@@ -1109,28 +1109,30 @@ My opinions
 
     Since the early 1970's, I owned various HP calculators such as the
     HP-45, HP-55, HP-25, HP-25c, HP-41, HP-41CX, HP-15C, HP-11C, HP-12C,
-    and the HP-42s.  I went to work for HP as an R&D scientist in 1980 and
-    got to occasionally play with a number of other HP calculators, but
-    never found one that really struck me until the HP-42s came out in late
-    1988.  I had HP buy me one for work and I gave my HP-41CX with all its
-    goodies to my nephew who was a computer engineering student at the
-    time.  I immediately came to love the HP-42s, primarily because of its
-    excellent keyboard and it had most of the things I needed for my daily
-    work.  I liked it so much I bought another one on employee purchase to
-    keep at home.  
+    and the HP-42s.  I left Silicon Valley in 1980 and went to work for HP
+    as an R&D scientist in 1980.  I got to occasionally play with a number
+    of other HP calculators, but never found one that I really resonated
+    with until the HP-42s came out in late 1988.  I had HP buy me one for
+    work and I gave my HP-41CX with all its many goodies to my nephew who
+    was a computer engineering student at the time (he went to work for HP
+    after he got out of school and is still working there, even longer than
+    the 25 years I put in at HP).  I immediately came to love the HP-42s,
+    primarily because of its excellent keyboard and it had most of the
+    things I needed for my daily work.  I liked it so much I bought another
+    one on employee purchase in 1989 to use at home.  
 
     When I retired from HP in 2002, HP let me take my work calculator home.
-    That work calculator has been sitting next to me for more than 30 years
-    and used nearly every day.  To my knowledge, it has never failed me nor
-    lost information through many tens of battery changes.  The one I
-    bought for home use sits on my drafting table and looks nearly new.  In
-    2022 I donated my HP-41CX with all its options, the HP thermal printer,
-    and a HP-49g+ to the HHC 2022 conference to be given away as door
-    prizes.  They had been sitting in boxes for decades and I was never
-    going to use them again.  Now I only have two HP-42s calculators and
-    the HP-11C in my shop, which I believe is still on its second or third
-    set of batteries (HP labstock in the 1980's stocked silver oxide
-    batteries and these are what I last used).
+    That work calculator has been sitting next to me for 35 years and used
+    nearly every day.  To my knowledge, it has never failed me nor lost
+    information through many tens of battery changes.  The one I bought for
+    home use sits on my drafting table and looks nearly new.  In 2022 I
+    donated my HP-41CX with all its options, the HP thermal printer, and a
+    HP-49g+ to the HHC 2022 conference to be given away as door prizes.
+    They had been sitting in boxes for decades and I was never going to use
+    them again.  Now I only have two HP-42s calculators and the HP-11C in
+    my shop, which I believe is still on its second or third set of
+    batteries (HP labstock in the 1980's stocked silver oxide batteries and
+    these are what I last used).
 
     Other than doing basic arithmetic and elementary calculations at my
     desk, calculators aren't terribly useful anymore, as when I need to do
@@ -1140,38 +1142,54 @@ My opinions
 
     I'd like to have a Swiss Micros DM-42 because I suspect it would be
     easier for my old eyes to read, but I can't mentally justify the
-    expense (there are other toys I'd spend my money on first).
+    $200-ish expense (there are other toys I'd spend my money on first).
 
     For a working scientist/engineer, the features of the HP-42s I think 
     are most important are:
 
         - The fantastic keyboard
-        - The excellent documentation
-        - Complex numbers and having the elementary functions carfully
+        - The superb documentation
+        - Complex numbers and having the elementary functions carefully
           defined over the complex domain.  
         - The solver and integrator
         - The ease of programming for quick repetitive tasks
 
-    When I was working, I used the statistics features a lot to reduce
-    and analyze experimental data.  I'd also occasionally use the matrix
-    features.  
+    When I was working, I used the statistics features a lot to reduce and
+    analyze experimental data, especially in the lab so I didn't have to go
+    back to my desk to use a computer.  I'd also occasionally use the
+    matrix features.  
 
     After retiring, I'd occasionally consult with an electronic test
-    equipment company to write things for them.  I remember writing an
-    application note on LCR meters and using the HP-42s constantly to do
-    calculations with impedances in complex number form.  It made me
-    realize that there are probably many EEs out there who love the HP-42s
-    for this feature alone.  All calculators should have such great complex
-    number support.   Somewhere I remember reading (probably in an HP
-    manual) that complex numbers are not on by default because most people
-    don't need them.  Of course, this is true, so it compliments HP's
-    design abilities to leave such things disabled by default but letting
+    equipment company to write documents and software for them.  I remember
+    writing an application guide on LCR meters and using the HP-42s
+    constantly to do calculations with impedances in complex number form.
+    It made me realize that there are probably many engineers out there who
+    love the HP-42s for this feature alone.  All calculators should have
+    such great complex number support.   Somewhere I remember reading
+    (probably in an HP manual) that complex numbers are not on by default
+    because most people don't need them.  This is true, so it compliments
+    HP's design wisdom to leave such things disabled by default but letting
     you turn them on if needed.   
 
     Since I worked as a consultant to produce written documentation, I came
     to appreciate even more the fabulous manuals that HP produced for its
-    calculators.  While working at HP in R&D, I got to work with some of
-    the professionals that produced documentation and they were very
-    talented and smart folks.  The divisions I worked in produced extremely
-    good documentation for products that were far more complicated than
-    calculators.
+    calculators.  While working in R&D in HP's LaserJet division, I got to
+    work with some of the folks that produced documentation and they were
+    very talented and smart.
+
+    I love the robust design of the HP-42s hardware and that it has run
+    flawlessly for 35 years.  I also love the superb design of the
+    software.  The only thing that bugs me today is the lack of an easy way
+    to import and export the calculator's state.  However, the Free42
+    implementation allows this to be done and I use the Free42 program 
+    on my cell phone when the actual HP calculator is not at hand.
+    I've played a little with the Plus42 from the author of Free42 (see
+    https://thomasokken.com/free42/) and I'm considering paying $10 for a
+    copy to run on my Android phone.  I got a new cell phone in fall 2023
+    and the Free42 program seems to run instantaneously, being far faster
+    than the 1980's HP hardware.  I use the solver quite a bit for simple
+    equations and sometimes the HP hardware can take a number of seconds to
+    compute something, whereas the Free42 on the cell phone has the answer
+    in the blink of an eye.
+
+
