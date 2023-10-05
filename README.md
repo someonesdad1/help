@@ -2,12 +2,12 @@
 Collection of plain text help files (use with vim for fast navigation)
 
 To use:  run the build.py script.  This will populate the 'output'
-directory with the help files.  Run build.py with an argument and it will
-tell you how to set things up to use with vim.  When things are set up
-properly, open the output/index.hlp file.  Position the cursor on a word
-and press ^] to jump to the associated help file.
+directory with the help files.  Run 'build.py -h' to see how to set things
+up to use with vim.  When things are set up properly, open the
+output/index.hlp file in vim.  Position the cursor on a word and press ^]
+to jump to the associated help file.
 
-I used python 3.7.12 to test the scripts in this repository.
+This should build with python 3.7 or later.
 
 # Notes
 

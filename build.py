@@ -254,10 +254,11 @@ if 1:   # Core functionality
         groups = (('''
                 python vim git uncertainties shop bash C g matplotlib numpy
                 sympy Cpp gdb scipy mpmath make_ Utilities latex PIL
+                statistics_python
             ''', 3, 20),
             ('''
                 Electrical Physics Math Engineering Astronomy Units
-                Statistics constants Biology Chemistry Office
+                StatisticsTables constants Biology Chemistry Office
             ''', 3, 20),
             ('''
                 arduino asciidoc awk basic bibtex cvs darcs find flex hg

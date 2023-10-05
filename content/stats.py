@@ -1793,15 +1793,7 @@ if __name__ == "__main__":
         if len(sys.argv) > 1:
             print(stream.getvalue())
         else:
-            open("statistics", "wb").write(s.encode("UTF-8"))
-            exit(0)
-            #try:
-            if 1:
-                open("statistics", "w").write(s)
-            if 1:
-            #except UnicodeEncodeError as e:
-                print("Unicode error:  wrote to statistics as binary")
-                print("Error =", e)
-                open("statistics", "wb").write(s.encode("UTF-8"))
+            fn = "statistics_tables"
+            open(fn, "wb").write(s.encode("UTF-8"))
     else:
         Normal()
