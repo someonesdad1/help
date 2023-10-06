@@ -2680,59 +2680,140 @@ Another example:
 
 -----------------------------------------------------------------------------
 random                                              *python_random*
---------
+ 
+Random variates
+    betavariate(alpha, beta)
+        alpha > 0, beta > 0, returns on [0, 1].
+    expovariate(lambd)
+        lambd is 1/(desired mean), returns on [0, ∞].
+    gammavariate(alpha, beta)
+        alpha > 0, beta > 0.
+        pdf = (x**(alpha - 1)*math.exp(-x/beta))/A
+          A = math.gamma(alpha)*beta**alpha
+    gauss(mu, sigma)
+        Normal dist, but not thread safe.
+    lognormvariate(mu, sigma)
+    normalvariate(mu, sigma)
+        Normal dist, thread safe.
+    paretovariate(alpha)
+    random()  Returns a random float on [0, 1).
+    triangular(low, high, mode)
+        Returns x such that low <= x <= high with the indicated mode.  low
+        and high default to 0 and 1.  mode defaults to (low + high)/2.
+    uniform(a, b)
+        Return a random floating point number x such that a <= x <=b if 
+        a <= b and b <= x <= a if b < a.
+    vonmisesvariate(mu, kappa)
+        mu is the mean angle, expressed in radians between 0 and 2*pi, and
+        kappa is the concentration parameter, which must be greater than or
+        equal to zero. If kappa is equal to zero, this distribution reduces
+        to a uniform random angle over the range 0 to 2*pi.
+    weibullvariate(alpha, beta)
+        alpha is scale, beta is shape.
+
+Other selection methods
+    choice(seq)
+        Returns a random element from a sequence.
+    choices(population, weights=None, *, cum_weights=None, k=1)
+        Return a k sized list of elements chosen from the population with
+        replacement.  Selections are made with equal probability if weights are
+        not specified.  If a weights sequence is specified, selections are made
+        according to the relative weights.  The relative weights [10, 5, 30, 5]
+        are equivalent to the cumulative weights [10, 15, 45, 50].
+    getrandbits(k)
+    `   Returns a integer with k random bits.
+    randrange([start], stop[, step])
+        Randomly selected value from range(start, stop, step).  Same as 
+        choice(range(start, stop, step)).
+    randint(a, b)
+        Returns a random integer between a and b inclusive.
+    sample(population, k, *, counts=None)
+        Return a new list of k elements, samping without replacement.  The
+        original sequence is not changed.  Repeated elements can be specified
+        one at a time or with the counts parameter. For example, sample(['red',
+        'blue'], counts=[4, 2], k=5) is equivalent to sample(['red', 'red',
+        'red', 'red', 'blue', 'blue'], k=5).
+    shuffle(seq [, random])
+        Shuffle the sequence in-place.  random is a 0-arg function that
+        returns a float on [0, 1).  random argument is deprecated.
+
+Utility functions
+    seed([x]) 
+        Seed RNG with hashable object; if x is missing or None, the system
+        clock is used.
+    getstate() 
+        Return a state object that can be used with setstate().
+    setstate(state)
+        Set the state to a previously-saved state using getstate().
+    jumpahead(n)
+        Change the state from the current state.  n is an integer >= 0.
 
 If you need cryptographically-secure random number stuff, use
-    import random
-    r = random.SystemRandom()
-
+        import random
+        r = random.SystemRandom()
     and the r object has the same functions as the regular random
     module's calls (except for seed-related stuff).  The difference is
     that os.urandom() calls are used.
-
+  
     But, for security stuff, the best choice is the secrets module.
+ 
+-----------------------------------------------------------------------------
+secrets                                              *python_secrets*
 
-seed([x]) 
-    Seed RNG with hashable object; if x is missing or None, the system
-    clock is used.
-getstate() 
-    Return a state object that can be used with setstate().
-setstate(state)
-    Set the state to a previously-saved state using getstate().
-jumpahead(n)
-    Change the state from the current state.  n is an integer >= 0.
-getrandbits(k)
-`   Returns a long integer with k random bits.
-randrange([start], stop[, step])
-    Randomly selected value from range(start, stop, step).
-randint(a, b)
-    Returns a random integer between a and b inclusive.
-choice(seq)
-    Returns a random element from a sequence.
-shuffle(seq [, random])
-    Shuffle the sequence in-place.  random is a 0-arg function that
-    returns a float on [0, 1).
-sample(population, k)
-    Return a list of k elements; sampling without replacement.
-random()
-    Return a random float on [0, 1).
-uniform(a, b)
-    Return a random floating point number x such that a <= x <=b if 
-    a <= b and b <= x <= a if b < a.
-triangular(low, high, mode)
-    Returns x such that low <= x <= high with the indicated mode.  low
-    and high default to 0 and 1.  mode defaults to (low + high)/2.
+secrets.SystemRandom:  generates random numbers using system resources.
+Otherwise behaves as random.SystemRandom.
 
-Variates from other distributions:
-    betavariate(alpha, beta)
-    expovariate(lambd)
-    gammavariate(alpha, beta)
-    gauss(mu, sigma)
-    lognormvariate(mu, sigma)
-    normalvariate(mu, sigma)
-    vonmisesvariate(mu, kappa)
-    paretovariate(alpha)
-    weibullvariate(alpha, beta)
+secrets.choice(sequence)
+    Return a randomly chosen element from a non-empty sequence.
+secrets.randbelow(n)
+    Return a random int in the range [0, n).
+secrets.randbits(k)
+    Return an int with k random bits.
+
+secrets.token_bytes([nbytes=None])
+    Return a random byte string containing nbytes number of bytes. If
+    nbytes is None or not supplied, a reasonable default is used.
+secrets.token_hex([nbytes=None])
+    Return a random text string, in hexadecimal. The string has nbytes
+    random bytes, each byte converted to two hex digits. If nbytes is None
+    or not supplied, a reasonable default is used.
+secrets.token_urlsafe([nbytes=None])
+    Return a random URL-safe text string, containing nbytes random bytes.
+    The text is Base64 encoded, so on average each byte results in
+    approximately 1.3 characters. If nbytes is None or not supplied, a
+    reasonable default is used.
+
+Recipes
+    8 character password
+        import string
+        import secrets
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for i in range(8))
+ 
+    10 character alphanumeric password with at least one lowercase
+    character, at least one uppercase character, and at least three digits:
+        import string
+        import secrets
+        alphabet = string.ascii_letters + string.digits
+        while True:
+            password = ''.join(secrets.choice(alphabet) for i in range(10))
+            if (any(c.islower() for c in password)
+                    and any(c.isupper() for c in password)
+                    and sum(c.isdigit() for c in password) >= 3):
+                break
+ 
+    Generate an XKCD-style passphrase:
+        import secrets
+        # On standard Linux systems, use a convenient dictionary file.
+        # Other platforms may need to provide their own word-list.
+        with open('/usr/share/dict/words') as f:
+            words = [word.strip() for word in f]
+            password = ' '.join(secrets.choice(words) for i in range(4))
+ 
+    Generate a hard-to-guess temporary URL containing a security token
+    suitable for password recovery applications:
+        import secrets
+        url = 'https://example.com/reset=' + secrets.token_urlsafe()
 
 -----------------------------------------------------------------------------
 os                 *python_os*            Pg 145 Beazley
