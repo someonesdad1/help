@@ -1068,30 +1068,29 @@ It is pythonic to keep data in sequences and operate on them with map,
     selected = []
     fp = open(filename)
     for line in fp.readlines():
-        if IsCondition(line):
+        if predicate(line):
             selected.append(line)
     del line
 
   This can be done faster and better (and you grok it as one line) as
 
-    filter(IsCondition, open(filename))
+    filter(predicate, open(filename))
+
+  as filter returns those items for which predicate is True.
 
   Slightly more pythonic is
 
-    filter(IsCondition, file(filename))
+    filter(predicate, file(filename))
 
-  Construct predicates as needed and use filter & filterfalse
+  Construct predicates as needed and use filter & itertools.filterfalse
 
     def KeepThese(x):
         if x meets condition:
             return True
         return False
-
     from itertools import filterfalse
-
     # Keep the items in mylist
     mylist = filter(KeepThese, mylist)
-
     # Get rid of the relevant items in mylist
     mylist = filterfalse(KeepThese, mylist)
 

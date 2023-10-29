@@ -10,6 +10,9 @@ later stuff as needed.
 
 scons is 57 klines of code including comments
 
+Version v4.5.2.120fd4f633e9ef3cafbc0fec35306d7555ffd1db
+23 Oct 2023 under python 3.9.10.
+
 ------------------------------------------------------------------------------
 Introductory                                                     *scons_intro*
 
