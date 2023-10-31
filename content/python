@@ -17,6 +17,7 @@ Core
     |python_memory_usage|
 Strings
     |python_strings|
+    |python_string|
     |python_string_formatting|
     |python_string_stuff|
     |python_StringIO|
@@ -6312,6 +6313,20 @@ You can derive from the Enum class:
     gives
         (5.976e+24, 6378140.0)
         9.802652743337129
+
+----------------------------------------------------------------------
+string module                                    *python_string*
+
+Constants
+    string.ascii_letters
+    string.ascii_lowercase
+    string.ascii_uppercase
+    string.digits
+    string.hexdigits
+    string.octdigits
+    string.punctuation
+    string.printable
+    string.whitespace
 
 ----------------------------------------------------------------------
 Strings                                          *python_strings*
