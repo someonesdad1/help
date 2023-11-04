@@ -1063,8 +1063,30 @@ Using csv files:
     subsets.
 
 It is pythonic to keep data in sequences and operate on them with map,
-  filter, list comprehensions, etc.  You may be able to avoid for loops
-  entirely.  The following is a common pattern:
+  filter, and list comprehensions.  
+
+    filter(predicate, iterable)
+        Returns an iterator for those items in iterable that the function
+        predicate returns True.
+
+        filter(function, iterable) is equivalent to
+            (item for item in iterable if item) if function == None
+            (item for item in iterable if function(item)) otherwise
+
+    itertools.filterfalse(predicate, iterable)
+        Same as filter but where predicate returns False.
+
+    map(function, iterable, ...)
+        Returns an iterator that applies function to each item in the
+        iterator.  If more than one iterator is provided, then each of
+        these is an independent parameter of function; the iterables are
+        used in parallel and stop when the smallest iterature is exhausted.
+
+    itertools.starmap(function, iterable)
+        function has n parameters and iterable is a sequence of n-tuples,
+        meaning the arguments have been "pre-zipped".
+
+  Example:  The following is a common pattern:
 
     selected = []
     fp = open(filename)
@@ -1075,7 +1097,7 @@ It is pythonic to keep data in sequences and operate on them with map,
 
   This can be done faster and better (and you grok it as one line) as
 
-    filter(predicate, open(filename))
+    selected = filter(predicate, open(filename))
 
   as filter returns those items for which predicate is True.
 
@@ -6799,6 +6821,129 @@ str.swapcase()
     Return a copy of the string with uppercase characters converted to
     lowercase and vice versa. Note that it is not necessarily true
     that s.swapcase().swapcase() == s.
+
+    The reason for this is given by the following code and its printout.
+
+        '''
+        Find where str.swapcase() isn't its own inverse.
+        '''
+        fp = open("a.results", "w")
+        for i in range(1000000):
+            s = chr(i)
+            t = s.swapcase()
+            u = t.swapcase()
+            if s != u:
+                ordu = ord(u) if len(u) == 1 else ""
+                w = f"{i:5d}:{s} {t:2s} {u:2s}:{ordu}"
+                print(w)
+                print(w, file=fp)
+    which prints                        
+          181:µ Μ  μ :956
+          223:ß SS ss:
+          304:İ i̇ İ:
+          305:ı I  i :105
+          329:ŉ ʼN ʼn:
+          383:ſ S  s :115
+          496:ǰ J̌ ǰ:
+          837:ͅ Ι  ι :953
+          912:ΐ Ϊ́ ΐ:
+          944:ΰ Ϋ́ ΰ:
+          962:ς Σ  σ :963
+          976:ϐ Β  β :946
+          977:ϑ Θ  θ :952
+          981:ϕ Φ  φ :966
+          982:ϖ Π  π :960
+         1008:ϰ Κ  κ :954
+         1009:ϱ Ρ  ρ :961
+         1012:ϴ θ  Θ :920
+         1013:ϵ Ε  ε :949
+         1415:և ԵՒ եւ:
+         7296:ᲀ В  в :1074
+         7297:ᲁ Д  д :1076
+         7298:ᲂ О  о :1086
+         7299:ᲃ С  с :1089
+         7300:ᲄ Т  т :1090
+         7301:ᲅ Т  т :1090
+         7302:ᲆ Ъ  ъ :1098
+         7303:ᲇ Ѣ  ѣ :1123
+         7304:ᲈ Ꙋ  ꙋ :42571
+         7830:ẖ H̱ ẖ:
+         7831:ẗ T̈ ẗ:
+         7832:ẘ W̊ ẘ:
+         7833:ẙ Y̊ ẙ:
+         7834:ẚ Aʾ aʾ:
+         7835:ẛ Ṡ  ṡ :7777
+         7838:ẞ ß  SS:
+         8016:ὐ Υ̓ ὐ:
+         8018:ὒ Υ̓̀ ὒ:
+         8020:ὔ Υ̓́ ὔ:
+         8022:ὖ Υ̓͂ ὖ:
+         8064:ᾀ ἈΙ ἀι:
+         8065:ᾁ ἉΙ ἁι:
+         8066:ᾂ ἊΙ ἂι:
+         8067:ᾃ ἋΙ ἃι:
+         8068:ᾄ ἌΙ ἄι:
+         8069:ᾅ ἍΙ ἅι:
+         8070:ᾆ ἎΙ ἆι:
+         8071:ᾇ ἏΙ ἇι:
+         8080:ᾐ ἨΙ ἠι:
+         8081:ᾑ ἩΙ ἡι:
+         8082:ᾒ ἪΙ ἢι:
+         8083:ᾓ ἫΙ ἣι:
+         8084:ᾔ ἬΙ ἤι:
+         8085:ᾕ ἭΙ ἥι:
+         8086:ᾖ ἮΙ ἦι:
+         8087:ᾗ ἯΙ ἧι:
+         8096:ᾠ ὨΙ ὠι:
+         8097:ᾡ ὩΙ ὡι:
+         8098:ᾢ ὪΙ ὢι:
+         8099:ᾣ ὫΙ ὣι:
+         8100:ᾤ ὬΙ ὤι:
+         8101:ᾥ ὭΙ ὥι:
+         8102:ᾦ ὮΙ ὦι:
+         8103:ᾧ ὯΙ ὧι:
+         8114:ᾲ ᾺΙ ὰι:
+         8115:ᾳ ΑΙ αι:
+         8116:ᾴ ΆΙ άι:
+         8118:ᾶ Α͂ ᾶ:
+         8119:ᾷ Α͂Ι ᾶι:
+         8126:ι Ι  ι :953
+         8130:ῂ ῊΙ ὴι:
+         8131:ῃ ΗΙ ηι:
+         8132:ῄ ΉΙ ήι:
+         8134:ῆ Η͂ ῆ:
+         8135:ῇ Η͂Ι ῆι:
+         8146:ῒ Ϊ̀ ῒ:
+         8147:ΐ Ϊ́ ΐ:
+         8150:ῖ Ι͂ ῖ:
+         8151:ῗ Ϊ͂ ῗ:
+         8162:ῢ Ϋ̀ ῢ:
+         8163:ΰ Ϋ́ ΰ:
+         8164:ῤ Ρ̓ ῤ:
+         8166:ῦ Υ͂ ῦ:
+         8167:ῧ Ϋ͂ ῧ:
+         8178:ῲ ῺΙ ὼι:
+         8179:ῳ ΩΙ ωι:
+         8180:ῴ ΏΙ ώι:
+         8182:ῶ Ω͂ ῶ:
+         8183:ῷ Ω͂Ι ῶι:
+         8486:Ω ω  Ω :937
+         8490:K k  K :75
+         8491:Å å  Å :197
+        64256:ﬀ FF ff:
+        64257:ﬁ FI fi:
+        64258:ﬂ FL fl:
+        64259:ﬃ FFI ffi:
+        64260:ﬄ FFL ffl:
+        64261:ﬅ ST st:
+        64262:ﬆ ST st:
+        64275:ﬓ ՄՆ մն:
+        64276:ﬔ ՄԵ մե:
+        64277:ﬕ ՄԻ մի:
+        64278:ﬖ ՎՆ վն:
+        64279:ﬗ ՄԽ մխ:
+
+
 
 str.title()
 
