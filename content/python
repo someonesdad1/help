@@ -6099,6 +6099,48 @@ Added in 3.7
 ----------------------------------------------------------------------
 pathlib                                     *python_pathlib*
 
+PurePath for path manipulations (see purepath.py)
+  import pathlib as P
+  p = P.PurePath("/home/Don") --> '/home/Don'
+  p/"work/me.tar.gz" --> '/home/Don/work/me.tar.gz'  # How to append
+  p.parts --> '('/', 'home', 'Don', 'work', 'me.tar.gz')'     [tuple]
+  p.drive --> ''     [str]
+  p.root --> '/'     [str]
+  p.anchor --> '/'     [str]
+  p.parents --> '<PurePosixPath.parents>'     [pathlib._PathParents]
+  p.parent --> '/home/Don/work'     [pathlib.PurePosixPath]
+  p.name --> 'me.tar.gz'     [str]
+  p.suffix --> '.gz'     [str]
+  p.suffixes --> '['.tar', '.gz']'     [list]
+  p.stem --> 'me.tar'     [str]
+
+  drive is only for WindowsPath.
+  anchor is concatenation of drive and root.
+  parents:
+    q = P.PureWindowsPath("c:/foo/bar/setup.py")
+    str(q.parents[0])  --> c:\foo\bar
+    repr(q.parents[0]) --> PureWindowsPath('c:/foo/bar')
+    str(q.parents[1])  --> c:\foo
+    repr(q.parents[1]) --> PureWindowsPath('c:/foo')
+    etc.
+  is_absolute()
+  is_reserved()   Only relevant under Windows
+  joinpath(*other)
+    p = /home/Don/work/me.tar.gz
+    r = P.Path(p.stem).stem --> me
+    p.parent.joinpath(r, "other") --> /home/Don/work/me/other
+  match(glob_pattern)
+  relative_to(*other)
+    p = /home/Don/work/me.tar.gz
+    p.relative_to("/home") --> Don/work/me.tar.gz
+  with_name(name)
+    p = /home/Don/work/me.tar.gz
+    p.with_name("lib.zip") --> /home/Don/work/lib.zip
+  with_suffix(suffix)      Remove original if suffix is ''
+    p = /home/Don/work/me.tar.gz
+    p.with_suffix(".bz2") --> /home/Don/work/me.tar.bz2
+    p.with_suffix("") --> /home/Don/work/me.tar
+
 Class hierarchy
     PurePath = base class
     PurePosixPath(PurePath)
@@ -6172,48 +6214,6 @@ without accessing the file system.
     with_suffix(suffix)     Change the suffix
     write_bytes(data)
     write_text(data, encoding=None, errors=None)
-
-PurePath for path manipulations (see purepath.py)
-  import pathlib as P
-  p = P.PurePath("/home/Don") --> '/home/Don'
-  p/"work/me.tar.gz" --> '/home/Don/work/me.tar.gz'  # How to append
-  p.parts --> '('/', 'home', 'Don', 'work', 'me.tar.gz')'     [tuple]
-  p.drive --> ''     [str]
-  p.root --> '/'     [str]
-  p.anchor --> '/'     [str]
-  p.parents --> '<PurePosixPath.parents>'     [pathlib._PathParents]
-  p.parent --> '/home/Don/work'     [pathlib.PurePosixPath]
-  p.name --> 'me.tar.gz'     [str]
-  p.suffix --> '.gz'     [str]
-  p.suffixes --> '['.tar', '.gz']'     [list]
-  p.stem --> 'me.tar'     [str]
-
-  drive is only for WindowsPath.
-  anchor is concatenation of drive and root.
-  parents:
-    q = P.PureWindowsPath("c:/foo/bar/setup.py")
-    str(q.parents[0])  --> c:\foo\bar
-    repr(q.parents[0]) --> PureWindowsPath('c:/foo/bar')
-    str(q.parents[1])  --> c:\foo
-    repr(q.parents[1]) --> PureWindowsPath('c:/foo')
-    etc.
-  is_absolute()
-  is_reserved()   Only relevant under Windows
-  joinpath(*other)
-    p = /home/Don/work/me.tar.gz
-    r = P.Path(p.stem).stem --> me
-    p.parent.joinpath(r, "other") --> /home/Don/work/me/other
-  match(glob_pattern)
-  relative_to(*other)
-    p = /home/Don/work/me.tar.gz
-    p.relative_to("/home") --> Don/work/me.tar.gz
-  with_name(name)
-    p = /home/Don/work/me.tar.gz
-    p.with_name("lib.zip") --> /home/Don/work/lib.zip
-  with_suffix(suffix)      Remove original if suffix is ''
-    p = /home/Don/work/me.tar.gz
-    p.with_suffix(".bz2") --> /home/Don/work/me.tar.bz2
-    p.with_suffix("") --> /home/Don/work/me.tar
 
 os to pathlib correspondence
   os.path.abspath()           Path.resolve()
@@ -8714,9 +8714,35 @@ namedtuple(typename, field_names, *, rename=False, defaults=None,
 ----------------------------------------------------------------------
 subprocess                                      *python_subprocess*
 
+Run a program/script
+    # sys.executable is the python executable you're running
+    cmd = [sys.executable, python_script]
+    r = subprocess.run(cmd, capture_output=True)
+
+    r is a CompletedProcess instance with attributes
+        args            Arguments
+        returncode      Integer value
+        stdout          Text from stdout (bytes)
+        stderr          Text from stderr (bytes)
+
+    Use encoding="UTF-8" to get text instead of bytes in the output streams.
+
+    r.check_returncode() will raise a CalledProcessError exception if
+    the return code was nonzero.
+
+    Example:  Run a command as a string
+        cmd = "d:/cygwin64/bin/ls.exe --color=auto --group-directories-first"
+        subprocess.run(cmd, shell=True, check=True)
+        # Note you need to use the shell=True feature to get this to work
+
+    Example:  Run a command list
+        cmd = ["d:/cygwin64/bin/ls.exe", "--color=auto", 
+            "--group-directories-first"]
+        subprocess.run(cmd)
+
 Starting a file with its registered application
-    f = 'myfile.hmtl'
-    subprocess.call(['c:/cygwin/home/Don/bin/app.exe', f])
+    f = 'myfile.html'
+    subprocess.run(['d:/cygwin64/bin/cygstart.exe', f])
 
 Editing a temporary file
     with tempfile.NamedTemporaryFile() as temp:
@@ -8728,19 +8754,6 @@ Editing a temporary file
         file = tempfile.mkstemp(suffix=".txt", prefix="pye_", text=True)[1]
     if you want to keep the file name around.  You'll have to remember to
     delete the file.
-
-Here's the modern way to run a program/script
-    cmd = [sys.executable, python_script]
-    r = subprocess.run(cmd, capture_output=True)
-
-    r is a CompletedProcess instance with attributes
-        args            Arguments
-        returncode      Integer value
-        stdout          Text from stdout (bytes)
-        stderr          Text from stderr (bytes)
-    Use encoding option to run to get text in the output streams.
-    r.check_returncode() will raise a CalledProcessError exception if
-    the return code was nonzero.
 
 Here's how to use subprocess to invoke a program and capture its
 output (this is preferred over the old method of popen()):
