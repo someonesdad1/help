@@ -1078,9 +1078,10 @@ It is pythonic to keep data in sequences and operate on them with map,
 
     map(function, iterable, ...)
         Returns an iterator that applies function to each item in the
-        iterator.  If more than one iterator is provided, then each of
+        iterable.  If more than one iterable is provided, then each of
         these is an independent parameter of function; the iterables are
-        used in parallel and stop when the smallest iterature is exhausted.
+        used in parallel and stop when the smallest iteratable is
+        exhausted.
 
     itertools.starmap(function, iterable)
         function has n parameters and iterable is a sequence of n-tuples,
