@@ -70,6 +70,27 @@ Miscellaneous stuff
 
 Python's FAQ: https://docs.python.org/3/faq/
 
+See if a variable x is defined
+    Local scope
+        if x in vars():
+          or
+        if x in locals():
+          or
+        if x in dir():
+    Global scope
+        Method 1
+            if x in globals():
+                # Defined
+            else:
+                # Not defined
+        Method 2
+            try:
+                x
+            except NameError:
+                # Not defined
+            else:
+                # Is defined
+
 Open a website url
     First, make sure you use this:
         export BROWSER=cygstart
