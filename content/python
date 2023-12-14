@@ -6303,6 +6303,7 @@ Handy usages:
 Path objects access the file system.  PurePath objects can manipulate paths
 without accessing the file system.
 
+    absolute()      Same as resolve()
     as_posix()      Return with forward slashes
     as_uri()      
     chmod()
