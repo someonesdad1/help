@@ -608,14 +608,14 @@ def PoissonCDF():
         * Electron fluctuations in conductors (shot noise).
      
     Bortkiewicz noted that events with low frequency in a large population follow
-    the Poission distribution even when the probabilities of the events varies.
+    the Poisson distribution even when the probabilities of the events varies.
      
     Given a sample of n measured integer values ki (i = 1, 2, ..., n) from a
     Poisson process, the Poisson parameter mu's maximum likelihood estimate is
      
         mu = sum(ki)/n
      
-    Standard devation = sqrt(mu).
+    Standard deviation = sqrt(mu).
      
     Confidence interval for mu:  given an observation k from a Poisson distribution
     with mean mu, the 1 - alpha confidence interval for mu is
@@ -1102,7 +1102,7 @@ def MonteCarloProportionUncertainties():
  
     Example:  an experiment with a sample size of n = 1e5 resulted in a proportion
     of 1%.  The "uncertainty" is u = 0.20%.  You'd state the proportion as
-    1% +/- 0.20% and explain that this gives a 95% confidenced bound on the
+    1% +/- 0.20% and explain that this gives a 95% confidence bound on the
     estimate.  Note this a slightly different uncertainty from the standard
     uncertainty estimate made for a physical measurement using the GUM.
      

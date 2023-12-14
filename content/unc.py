@@ -130,7 +130,7 @@ Covariance matrix
      [0.0,  0.01, 0.02],
      [0.01, 0.02, 0.05]]
 
-    You can create a coveriance relation
+    You can create a covariance relation
     >>> (u2, v2, sum2) = uncertainties.correlated_values([1, 10, 21],
                             cov_matrix)
 
@@ -191,7 +191,7 @@ Pickling and text format
 
     Text format:
         numpy.savetext(filename, ftm="%r")
-        numpy.ufloat_fromstro
+        numpy.ufloat_fromstr
 
 unumpy.ulinalg
     >>> unumpy.ulinalg.inv([[ufloat(2, 0.1)]])
