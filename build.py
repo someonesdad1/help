@@ -144,14 +144,16 @@ if 1:   # Core functionality
     def GetContentFiles():
         'Get list of files in the content directory'
         files = '''
-            arduino asciidoc astronomical awk bash basic bibtex biology c
-            chemistry constants cpp cvs darcs electrical engineering find
-            flex g gdb git go hg hp3488 hp42s hp49 html korn latex lua
+
+            arduino asciidoc astronomical awk bash basic bibtex biology
+            btop c chemistry constants cpp cvs darcs electrical engineering
+            find flex g gdb git go hg hp3488 hp42s hp49 html korn latex lua
             make_ markdown materials math mathematica matplotlib mpmath
             mswindows numpy office pandoc pcl5 perl4 perl5 physics pil ps
             pygame python rst scipy scons sed shop simpy sizes snippets sql
             statistics_python statistics_tables stl subversion svn sympy
             thermal_cond tmux uncertainties units utilities vim yaml
+
         '''.split()
         # The following is used to detect when a file might have been left
         # off the list.
