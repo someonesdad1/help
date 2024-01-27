@@ -1,0 +1,31 @@
+*btop*
+
+Red letters show keys to press for functionality.  Example:  e toggles tree
+view in the processes.
+
+o   Set options
+m   Main menu
+p   Toggle configured preset  
+        0 cpu top, left mem & net, right proc
+        1 proc top, cpu bottom
+        2 cpu, mem, net
+        3 cpu, net
+q   Quit
+
+Panels
+    1   CPU
+    2   Memory  (use d to toggle disks box)
+    3   Network
+    4   Process
+            f   Filter (e.g., PID, command, etc.
+            c   Sort processes per core
+            r   Reverse list
+            e   Tree view
+            Left, right arrows:  choose sorting method:
+                name, command, threads, user, memory,
+                cpu direct, cpu lazy, pid
+            t   Terminate a process
+            k   Kill a process
+            s   Send a signal to a process
+
+https://docs.vultr.com/how-to-install-and-use-btop-on-ubuntu-20-04
