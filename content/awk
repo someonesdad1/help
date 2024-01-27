@@ -294,7 +294,7 @@ Examples
 ---------------------------------------------------------------------------
 |awk_debugger|                                              *awk_debugger*
 
-Use -D option to start; you'll see a 'gawk> ' prompt.
+gawk -D -f myprog.awk -- inputfile
 
 backtrace [N] - print trace of all or N innermost (outermost if N < 0) f
 break [[filename:]N|function] - set breakpoint at the specified location

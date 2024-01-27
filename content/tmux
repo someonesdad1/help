@@ -1,124 +1,282 @@
 *tmux*
 
+|tmux_operation|
 |tmux_basics|
+|tmux_references|
+|tmux_configuration|
+|tmux_sessions|
+|tmux_help_screen|
 
-All commands take the prefix, which is <C-b> by default.
+NOTE:  All commands take the prefix, which is <C-b> by default.  See the
+tmux_change_prefix section to change it (I use ctrl-J).
+
+NOTE:  In a command, M means the meta key, which is Alt
 
 ---------------------------------------------------------------------------
 Basics                                           *tmux_basics*
 
-Web pages
-  Very good
-    https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/
-    https://www.hamvocke.com/blog/a-guide-to-customizing-your-tmux-conf/
-  Tao
-    https://tmuxp.git-pull.com/en/latest/about_tmux.html
-  Quick summary
-    https://danielmiessler.com/study/tmux/
-  Simple start
-    https://www.sitepoint.com/tmux-a-simple-start/
-  Simple stuff, but good
-    https://thoughtbot.com/blog/love-hate-tmux
-  Good 
-    https://wiki.archlinux.org/index.php/tmux
-  Fairly slow intro
-    http://blog.hawkhost.com/2010/06/28/tmux-the-terminal-multiplexer/
-    https://blog.hawkhost.com/2010/07/02/tmux-%e2%80%93-the-terminal-multiplexer-part-2/
-  How to create useful keybindings to speed your work
-    https://spin.atomicobject.com/2013/04/11/tmux-key-binding-scripting/
-  Simulate vim's visual mode
-    https://superuser.com/questions/196060/selecting-text-in-tmux-copy-mode/197272#197272
-    Answer by p1100i shows how to use v to go into visual mode in tmux, then
-    use https://superuser.com/questions/196060/selecting-text-in-tmux-copy-mode/197272#197272the y key to yank the current selection.
-  Slightly useful
-    https://yalneb.blogspot.com/2017/05/tmux-useful-key-bindings.html
-.tmux.conf to change settings
-    # Change the prefix key
-    set-option -g prefix C-j
-    unbind-key C-b
-    bind-key C-j send-prefix
- 
-    # Status line color
-    set -g status-style fg=white,bold
-    #set -ag status-style bg=magenta
-    # Highlight active window
-    set-window-option -g window-status-current-bg red
- 
-    # Automatically set window title
-    setw -g automatic-rename on
- 
-    # Use v to trigger selection
-    bind-key -T copy-mode-vi v send-keys -X begin-selection
- 
-    # Useful stuff from Solomon White in comments about 45% down the page
-    # https://blog.hawkhost.com/2010/07/02/tmux-%e2%80%93-the-terminal-multiplexer-part-2/#modifying-tab-color
-    # use "v" and "s" to do vertical/horizontal splits, like vim
-    bind s split-window -v
-    bind v split-window -h
-    # use the vim motion keys to move between panes
-    bind h select-pane -L
-    bind j select-pane -D
-    bind k select-pane -U
-    bind l select-pane -R
-    # use vim motion keys while in copy mode
-    setw -g mode-keys vi
-Reload config
-    Put following into your config so you can reload while working in tmux:
-        unbind r
-        bind-key r source-file ~/.tmux.conf \; \
-            display-message "Reload source-file: done"
-Help:  ?
-Sessions
-    s       List sessions
-    $       Rename current session
-    New session
-        tmux new -s session-name        
-        Using a name lets you reattach more easily
-    Attach
-        tmux attach -t 0
-        tmux attach -t session-name
-    Detach
-        d
-        tmux detach
-    List sessions
-        tmux ls
-    Kill session
-        tmux kill-session -t session-name
-Command mode
-    :       Switch to command mode
-    <ret>   Exit command mode with no text
-    : new-window -n name
+Start a tmux session with 'tmux'.  This shows a new 'window' with one
+'pane'.  A status line at the bottom shows '0:bash*' as the current window
+number 0 and its default name is bash, the shell running.  Time, date, and
+computer name are at bottom right.
+
+Split the window vertically into a left and right pane with %.  Switch
+between the panes with n and p or use the vi movement keys h and l.
+
+---------------------------------------------------------------------------
+Operation                                           *tmux_operation*
+
+Help:  ?    Use ctrl-c to return
+
 Windows
-    c       Create new
-    ,       Rename current
-    w       List
-    %       Split horizontally
-    "       Split vertically
-    l       Last used window
-    n       Next window
-    p       Previous window
-    0 to 9  Windows 0 through 9
+    c          Create new
+    ,          Rename current
+    w          List
+    l          Last used window
+    n          Next window
+    p          Previous window
+    0 to 9     Windows 0 through 9
 Panes
-    <spc>   Cycle between layouts
-    %       Horizontal pane
-    "       Vertical pane
+    <spc>   Cycle between layouts (e.g. vert to horiz splits)
+    %       Split pane vertically
+    "       Split pane horizontally
     h       Move to left pane
     j       Move to pane below
     l       Move to right pane
     k       Move to pane above
-    q       Show pane numbers
+    q       Show pane numbers (brief and in center of pane)
     o       Toggle between panes
     }       Swap with next pane
     {       Swap with previous pane
     !       Break the pane out of the window
     x       Kill the current pane
-    z       Toggle current pane to full screen
+    z       Toggle current pane to full screen (again to toggle off)
+Command mode
+    :       Switch to command mode
+    <ret>   Exit command mode with no text
+    : new-window -n name
 
-Copy mode
-    <prefix>[
-    Use vi keys to move around on screen
-    Press spacebar to start selecting text
-    Hit enter key to copy to tmux's buffer
-    Hit <prefix>] to copy the buffer into your shell or app
+---------------------------------------------------------------------------
+Copy mode                                           *tmux_copy_mode*
+
+Enter copy mode:        [
+Copy buffer into app    ]
+
+- Use vi keys to move around on screen
+- Press spacebar to start selecting text
+- Hit enter key to copy to tmux's buffer
+- Hit <prefix>] to copy the buffer into your shell or app
+
+---------------------------------------------------------------------------
+Sessions                                            *tmux_sessions*
+
+A session is an invocation of tmux that is a collection of pseudoterminals
+(see 'man pty').  You can save and restore sessions because a background
+process a background server maintains them.
+
+List sessions               s
+Rename current session      $
+New session
+    tmux new -s session-name        
+    Using a name lets you reattach more easily
+Attach
+    tmux attach -t 0
+    tmux attach -t session-name
+Detach
+    d
+    tmux detach
+List sessions
+    tmux ls
+Kill session
+    tmux kill-session -t session-name
+
+Example
+    Basic 
+        In a bash window, type 'tmux new -s abcd'.  You'll get a new shell
+        window.  Type 'history' to list the history.  Then use 'ctrl-j d'
+        to detach it.  
+
+        Use 'tmux ls' and you'll see this session listed.  You can go back
+        to it later by the command 'tmux attach -t abcd'.  You should see
+        the screen return to what it was when you detached it.
+
+    Good habit
+        When you've got a bunch of windows with a goodly amount of data and
+        layout, you can detach the session and it will have e.g. a number
+        0 if you didn't name it.  You can get back to where you were by
+        attaching it again.
+
+---------------------------------------------------------------------------
+Change the prefix key                               *tmux_configuration*
+
+Edit .tmux.conf to change settings.  Here's my setup:
+
+    # tmux configuration
+    # Used in WSL 15 Jan 2024
+
+    # Change the prefix key
+    set-option -g prefix C-j
+    unbind-key C-b
+    bind-key C-j send-prefix
+    #set -ag status-style bg=magenta
+    # Automatically set window title
+    setw -g automatic-rename on
+    # Useful stuff from Solomon White in comments about 45% down the page
+    # https://blog.hawkhost.com/2010/07/02/tmux-%e2%80%93-the-terminal-multiplexer-part-2/#modifying-tab-color
+    # Use the vim motion keys to move between panes
+    bind h select-pane -L
+    bind j select-pane -D
+    bind k select-pane -U
+    bind l select-pane -R
+    # Use vim motion keys while in copy mode
+    setw -g mode-keys vi
+    # Modify status line colors
+    set -g status-bg green
+    set -g status-fg white
+    set -g window-status-current-style fg=white
+    set -g window-status-current-style bg=red
+
+    #---------------------------------------------------------------------------
+    # The following came from
+    # https://hamvocke.com/blog/a-guide-to-customizing-your-tmux-conf/
+    # use "|" and "-" to split panes
+    bind | split-window -h
+    bind - split-window -v
+
+    # Use r to reload the .tmux.conf file, allowing quick experimentation with
+    # changing configuration stuff
+    bind r source-file ~/.tmux.conf
+
+    # Pane switching with arrow keys
+    bind -n Left select-pane -L
+    bind -n Right select-pane -R
+    bind -n Up select-pane -U
+    bind -n Down select-pane -D
+
+    # Enable mouse control (clickable windows, panes, resizing)
+    set -g mouse on
+
+    # Don't rename windows automatically
+    set-option -g allow-rename off
+
+Comments
+    - Enabling mouse control is very important because you can click to
+      change a window and drag the split to resize.
+    - A core problem with tmux is that you don't have the buffer that e.g.
+      a window in WindowsTerminal has, meaning you can't scroll back to see
+      older stuff.
+
+---------------------------------------------------------------------------
+Help screen                                          *tmux_help_screen*
+
+This is the help screen for tmux under WSL:
+
+C-j C-o     Rotate through the panes                                                                                                                                                                        [32/32]C-j C-z     Suspend the current client
+C-j Space   Select next layout
+C-j !       Break pane to a new window
+C-j "       Split window vertically
+C-j #       List all paste buffers
+C-j $       Rename current session
+C-j %       Split window horizontally
+C-j &       Kill current window
+C-j '       Prompt for window index to select
+C-j (       Switch to previous client
+C-j )       Switch to next client
+C-j ,       Rename current window
+C-j -       Delete the most recent paste buffer
+C-j .       Move the current window
+C-j /       Describe key binding
+C-j 0       Select window 0
+C-j 1       Select window 1
+C-j 2       Select window 2
+C-j 3       Select window 3
+C-j 4       Select window 4
+C-j 5       Select window 5
+C-j 6       Select window 6
+C-j 7       Select window 7
+C-j 8       Select window 8
+C-j 9       Select window 9
+C-j :       Prompt for a command
+C-j ;       Move to the previously active pane
+C-j =       Choose a paste buffer from a list
+C-j ?       List key bindings
+C-j C       Customize options
+C-j D       Choose a client from a list
+C-j E       Spread panes out evenly
+C-j L       Switch to the last client
+C-j M       Clear the marked pane
+C-j [       Enter copy mode
+C-j ]       Paste the most recent paste buffer
+C-j c       Create a new window
+C-j d       Detach the current client
+C-j f       Search for a pane
+C-j i       Display window information
+C-j m       Toggle the marked pane
+C-j n       Select the next window
+C-j o       Select the next pane
+C-j p       Select the previous window
+C-j q       Display pane numbers
+C-j r       Redraw the current client
+C-j t       Show a clock
+C-j w       Choose a window from a list
+C-j x       Kill the active pane
+C-j z       Zoom the active pane
+C-j {       Swap the active pane with the pane above
+C-j }       Swap the active pane with the pane below
+C-j ~       Show messages
+C-j DC      Reset so the visible part of the window follows the cursor
+C-j PPage   Enter copy mode and scroll up
+C-j Up      Select the pane above the active pane
+C-j Down    Select the pane below the active pane
+C-j Left    Select the pane to the left of the active pane
+C-j Right   Select the pane to the right of the active pane
+C-j M-1     Set the even-horizontal layout
+C-j M-2     Set the even-vertical layout
+C-j M-3     Set the main-horizontal layout
+C-j M-4     Set the main-vertical layout
+C-j M-5     Select the tiled layout
+C-j M-n     Select the next window with an alert
+C-j M-o     Rotate through the panes in reverse
+C-j M-p     Select the previous window with an alert
+C-j M-Up    Resize the pane up by 5
+C-j M-Down  Resize the pane down by 5
+C-j M-Left  Resize the pane left by 5
+C-j M-Right Resize the pane right by 5
+C-j C-Up    Resize the pane up
+C-j C-Down  Resize the pane down
+C-j C-Left  Resize the pane left
+C-j C-Right Resize the pane right
+C-j S-Up    Move the visible part of the window up
+C-j S-Down  Move the visible part of the window down
+C-j S-Left  Move the visible part of the window left
+C-j S-Right Move the visible part of the window right
+
+---------------------------------------------------------------------------
+References                                          *tmux_references*
+
+Very good
+  https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/
+  https://www.hamvocke.com/blog/a-guide-to-customizing-your-tmux-conf/
+Tao
+  https://tmuxp.git-pull.com/en/latest/about_tmux.html
+Quick summary
+  https://danielmiessler.com/study/tmux/
+Simple start
+  https://www.sitepoint.com/tmux-a-simple-start/
+Simple stuff, but good
+  https://thoughtbot.com/blog/love-hate-tmux
+Good 
+  https://wiki.archlinux.org/index.php/tmux
+Fairly slow intro
+  http://blog.hawkhost.com/2010/06/28/tmux-the-terminal-multiplexer/
+  https://blog.hawkhost.com/2010/07/02/tmux-%e2%80%93-the-terminal-multiplexer-part-2/
+How to create useful keybindings to speed your work
+  https://spin.atomicobject.com/2013/04/11/tmux-key-binding-scripting/
+Simulate vim's visual mode
+  https://superuser.com/questions/196060/selecting-text-in-tmux-copy-mode/197272#197272
+  Answer by p1100i shows how to use v to go into visual mode in tmux, then
+  use https://superuser.com/questions/196060/selecting-text-in-tmux-copy-mode/197272#197272the y key to yank the current selection.
+Slightly useful
+  https://yalneb.blogspot.com/2017/05/tmux-useful-key-bindings.html
 
 vim:  wm=3
