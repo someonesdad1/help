@@ -49,6 +49,7 @@ Densities
 |Set_screws|
 |Knurling|
 |Stock_sizes|
+|FileSizes|
 
 Dimensions in inches unless otherwise noted
 
@@ -3834,6 +3835,33 @@ Diam.
 
 2¹/₂:  ⁵/₈: 11   ³/₄: 10   ⁷/₈: 9   ⁹/₁₆: 12
 
+From M. Klotz's data.zip file:
+
+                TAP SHANK DIAMETER vs. THREAD MINOR DIAMETER
+                        HSM 1/1/97 - PG. 23
+
+TAP             MAJOR           SHANK           MINOR
+SIZE            DIAMETER        DIAMETER        THREAD DIAMETER
+                                                (coarse thread)
+
+0               .060            .141            .0465
+1               .073            .141            .0561
+2               .086            .141            .0580
+4               .112            .141            .0764
+5               .125            .141            .0979
+6               .138            .141            .1040
+8               .164            .168            .1300
+10              .190            .194            .1450
+12              .216            .220            .1710
+
+1/4             .250            .255            .1960
+5/16            .312            .318            .2520
+3/8             .375            .381            .3070
+
+Taps 7/16" diameter and larger have shanks that are smaller than the thread
+minor diameter.
+
+
 ----------------------------------------------------------------------
 Tapers                                      *Tapers*
 
@@ -4058,6 +4086,21 @@ US Wood sizes                                              *Wood_sizes*
     3 x 6           2¹/₂ x 5¹/₂         64 x 140 
     4 x 4           3¹/₂ x 3¹/₂         89 x 89 
     4 x 6           3¹/₂ x 5¹/₂         89 x 140 
+
+----------------------------------------------------------------------
+Files                                    *FileSizes*
+
+From M. Klotz's data.zip file named files.txt
+
+From ME 18 Oct 1996 pg 464
+
+Teeth per inch    Common UK name
+    14-22           rough cut
+    16-26           middle cut
+    22-32           bastard cut
+    28-42           second cut
+    50-65           smooth cut
+    70-100          dead smooth cut
 
 ----------------------------------------------------------------------
 Sizes of various things                  *Stock_sizes*

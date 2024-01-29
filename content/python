@@ -8,6 +8,7 @@ Core
     |python_sets|
     |python_requests| Popular library for downloading web stuff
     |python_dictionaries|
+    |python_hashlib|
     |python_descriptors|
     |python_streams|
     |python_bytes|
@@ -49,6 +50,7 @@ Other
     |python_struct|
     |python_sys|
     |python_threads|
+    |python_multiprocessing|
     |python_time|
     |python_types|
 Less-used stuff
@@ -99,126 +101,37 @@ Open a website url
     webbrowser.open(url)
 
 Why you can't put a dict of variables into a function's local namespace
-    Naively, you'd think you could do the following:
 
-        from pprint import pprint as pp
-        di = {
-            "x":44,
-            "y":3.45,
-        }
-        def A():
-            # Put di's variables into our namespace
-            for i in di:
-                s = f"{i} = eval('di[i]')"
-                exec(s)
-            del s, i
-            pp(locals())
-        A()
-
-    It looks like it works, as you get
-        {'x': 44, 'y': 3.45}
-
-        However, insert the line 'print(x)' below the pp call and you'll
-        get an exception:   NameError: name 'x' is not defined
-
-        This means you can insert local variables into a function as long
-        as you never reference them.  I'd call this a Heisenbug because
-        it's not what you'd expect from the syntax.
-
-    Here's some code that illustrates the problems:
-
-    from pprint import pprint
-    from color import t
-    
-    t.name = t("ornl")
-    t.ex = t("grnl")
-    
-    example = 3
-    if example == 0:
-        '''
-        This example illustrates a problem with importing a symbol into a
-        function's local variable from a dictionary.  When switch is False,
-        the function A imports the value of y as 45, but note that x's
-        value isn't changed, as it's already defined.  When switch is True,
-        even though 'y = 45' was evaluated as before, it didn't affect the
-        function's value of y.  This appears to be because a reference to y
-        is defined below in the f-string, so the function "knows" that y
-        can't be changed, just like x's value can't.
-     
-        This behavior is not what you would expect from the syntax.
-        '''
-        def A(di, switch):
-            x = None
-            for i in di:
-                val = eval('di[i]')
-                s = f"{i} = {val}"
-                print(f"  Evaluating {s!r}")
-                exec(s, None, locals())
-            if switch:
-                print(f"  x = {x}")
-                print(f"  y = {y}")
-            else:
-                pprint(locals())
-        di = {
-            "x": 1.23,
-            "y": 45,
-        }
-        t.print(f"{t.name}Example 0")
-        t.print(f"{t.ex}switch is False:")
-        A(di, switch=False)
-        t.print(f"\n{t.ex}switch is True:")
-        A(di, switch=True)
-    elif example == 1:
-        # This example shows that both x and y were put into the locals()
-        # dictionary, but did not change the function's local variable x.
-        di = {
-            "x":44,
-            "y":3.45,
-        }
-        def A():
-            # Put di's variables into our namespace
-            for i in di:
-                val = eval('di[i]')
-                s = f"{i} = {val}"
-                print(f"  Evaluating {s!r}")
-                exec(s, None, locals())
-            del s, i
-            pprint(locals())  # x is in this dict, but not in function's local variables
+    This is best demonstrated by the following code
+        def A(di):
+            val = eval('di["x"]')
+            exec(f"x = {val}")
+            breakpoint() #xx
+            # In the debugger, type 'p x' and you'll get '1.23', implying
+            # 'x' is in the local namespace.  Type 'p locals()' and you'll
+            # see 'x' in the locals dict.
             print(x)
-        t.print(f"{t.name}Example 1")
-        A()
-    elif example == 2:
-        # You can do something like it with globals
-        x, y = None, None
-        di = {
-            "x":44,
-            "y":3.45,
-        }
-        def A():
-            for i in di:
-                s = f"{i} = {di[i]}"
-                exec(s, globals(), None)
-            t.print(f"{t.ex}x = {x}")
-            t.print(f"{t.ex}y = {y}")
-        t.print(f"{t.name}Example 2:  using global variables")
-        A()
-    elif example == 3:
-        # This is a workaround that uses attributes of a class instance to
-        # store the variables.
-        di = {
-            "x":44,
-            "y":3.45,
-        }
-        class G:
+            # When the above line executes, you get "NameError: name 'x' is not defined"
+        A({"x": 1.23})
+
+    The problem seems to be caused by an architectural behavior that the
+    function's local variables are stored in such a way that the dynamic
+    syntax does not work.  I have not found a way to make this work.
+
+    One workaround is to define a class and use its instance attributes:
+        class Myvars:
             def __init__(self, mydict):
                 self.__dict__.update(mydict)
+
+    Then you can create an instance in the function and use its attributes
+    as needed:
+
         def A(di):
-            # Put them into g as instance attributes
-            g = G(di)
-            t.print(f"{t.ex}g.x = {g.x}")
-            t.print(f"{t.ex}g.y = {g.y}")
-        t.print(f"{t.name}Example 3:  workaround with instance attributes")
-        A(di)
+            mv = Myvars(di)
+            print(mv.x)
+        A({"x": 1.23})
+
+    which prints '1.23' as expected.
 
 Circular imports
     Can lead to difficult-to-debug problems
@@ -3037,7 +2950,8 @@ rename(src, dest)            Rename/move the file or directory src to
 rmdir(path)                  Remove the directory path.
 stat(path)                   Returns (st_mode, st_ino, st_dev, st_nlink,
                              st_uid, st_gid, st_size, st_atime, st_mtime,
-                             st_ctime).  Most items are dummy on Windows.
+                             st_ctime).  Most items are dummy on Windows,
+                             but st_mtime works.
 strerror(code)               Error msg; see errno.
 system(command)              Execute string command in a subshell.
                              Returns exit status of subshell.
@@ -3443,6 +3357,176 @@ Example
           A instance:  'Hello 89'
         Instance unpickled from file:
           A instance:  'Goodbye -33'
+
+-----------------------------------------------------------------------------
+Multiprocessing                             *python_multiprocessing*
+
+This module is similar to the threading module, but it works with multiple
+processes, giving you parallel processing abilities.  Use multiprocessing
+if you have multiple cores _and_ if the problem is large enough to offset
+the overhead.
+
+import multiprocessing as mp
+    On the module doc page, read the 'Programming guidelines' section, as
+    there are quite a few things to be aware of.
+
+Alternative:  joblib is another tool for multiprocessing
+    Note it includes memoizing to avoid computing the same thing twice.
+    pip install joblib
+        (use 'pip install --prefix /usr/local joblib' for UNIX)
+        https://joblib.readthedocs.io/en/latest/index.html
+    One advantage of joblib is that it is syntactically easy to invoke and
+    usually can be done by one line of code.
+
+Basic tool (same interface as threading.Thread()):
+    mp.Process(group=None, target=None, name=None, args=(), 
+        kwargs={}, *, daemon=None)
+    Example:
+        def func(myarg):
+            # Do process work here
+            print(f"Worker process: {os.getpid()}")
+        p = mp.Process(target=func, args=('abc',))
+        p.start()
+        p.join()
+
+Pooled workers
+    mp.Pool class provides a pool of workers.  This is an easy way to get
+    multiple processes.
+
+    Here's an example (times for cygwin 3.9.10 python):
+        import random
+        def random_square(seed):
+            random.seed(seed)
+            x = random.randint(0, 10)
+            return x**2
+        if __name__ == "__main__":
+            n = 10**6
+            # Sequential method     6.5 s
+            results = []
+            sw = Stopwatch()
+            for i in range(n):
+                results.append(random_square(i))
+            print(f"Sequential [{n}]:  time = {sw()} s")
+            # Parallel method       1.82 s
+     -->    pool = mp.Pool(processes=mp.cpu_count())
+            sw = Stopwatch()
+     -->    results = [pool.map(random_square, range(n))]
+            print(f"Parallel [{n}]:  time {sw()} s")
+    The speedup on my 4-core machine was about 3.5 times.  Warning:
+    sometimes it's not obvious when there will be a benefit from using
+    multiprocessing, as there's overhead that can swamp out benefits and
+    sometimes a sequential approach will be better.
+
+Synchronization
+    Same sync primitives as threading
+
+IPC
+    Shared memory:  Value, Array
+        num = Value("d", 0.0)   # "d" is typecode for float
+        myint = Value("i", 0)   # "i" is typecode for int
+        arr = Array("i", range(10))
+        mp.sharedctypes module provides more
+    Exchanging objects
+        Queue and Pipe objects.  Queue is a clone of queue.Queue and is
+        thread and process safe.
+    Server process:  mp.Manager
+        Supports list, dict, Namespace, Lock, RLock (reentrant lock),
+        Semaphore, BoundedSemaphore, Condition, Event, Barrier, Queue,
+        Value and Array.  More flexible than shared memory because they can
+        support arbitrary types.
+        
+    
+Miscellaneous methods
+    mp.cpu_count()              Number of CPUs in system
+    mp.active_children()        Number of live children
+    mp.current_process()        Process object of current process
+    mp.parent_process()         Process object of parent of current process
+    mp.get_all_start_methods()  Supported methods in 'fork, spawn, forkserver'
+    mp.get_context(method=None)            
+        Get a context object
+    mp.get_start_method(allow_none=False)
+        Get method for starting in this platform
+    mp.set_executable(executable)
+        Set path of the python interpreter
+    mp.set_start_method(method)
+        Set method to start child processes 'fork, spawn, forkserver'
+
+Basic example
+
+    '''
+    This example uses a separate process to determine when a file's
+    contents change.  The use case is for a scripting tool that reads in a
+    datafile, processes the contents, then displays the calculations to the
+    user.  The design lets the user modify the datafile in one window and
+    see the updated values in another window whenever the modified datafile
+    is saved.
+    '''
+
+    from multiprocessing import Process, Queue, Value
+    import queue
+    import hashlib
+    import os
+    from time import sleep
+    from timer import Stopwatch
+    from color import t
+    t.called = t("ornl")
+
+    def GetDigest(file):
+        m = hashlib.md5()
+        m.update(open(file, "rb").read())
+        return m.digest()
+    def CheckFileUsingSharedMemory(file, callback, done):
+        '''This function checks the file and calls the callback function
+        when the file's contents change.  done is a Value (shared memory)
+        integer and if it contains something True, this process should
+        exit.
+        '''
+        print(f"CheckFileUsingSharedMemory() process ID = {os.getpid()}")
+        old_digest = GetDigest(file)
+        while True:
+            if done.value:
+                return
+            sleep(0.5)  # This is needed for the loop to work
+            new_digest = GetDigest(file)
+            if new_digest != old_digest:
+                callback()
+                old_digest = new_digest
+                sleep(1)
+    def MainSharedMemory(file):
+        '''Continuously loop waiting for callbacks to print a message that the
+        file's contents changed.  We communicate with the other process
+        using a shared memory variable.
+        '''
+        changed = False
+        print(f"MainSharedMemory() process ID = {os.getpid()}")
+        def Callback():
+            changed = True
+            t.print(f"{t.called}Callback called at {sw()} s")
+        # done is a shared memory tool for IPC with
+        # CheckFileUsingSharedMemory()
+        done = Value("i", 0)     # "i" is typecode for signed integer
+        p = Process(target=CheckFileUsingSharedMemory, args=(file, Callback, done))
+        p.start()
+        while True:
+            if changed:
+                print(f"Changed {sw()} s")
+                changed = False
+            if sw() > MainSharedMemory.delay:
+                break   # Exit after this time
+        # Tell the other process to return
+        done.value = 1
+        print("Exited MainSharedMemory loop")
+        print(f"{os.getpid()} exiting, p's exitcode = {p.exitcode}")
+
+    if __name__ == "__main__":
+        run_for = 10        # How long to run in s
+        file = "aa"
+        sw = Stopwatch()    # Use to get elapsed times
+        MainSharedMemory.delay = run_for
+        MainUsingQueue.delay = run_for
+        print(f"Started processing, checking file {file!r}")
+        print(f"  Change it in another terminal window and see the colored message printed")
+        ainSharedMemory(file)
 
 -----------------------------------------------------------------------------
 Threads             *python_threads*            Pg 177 Beazley
@@ -6303,6 +6387,7 @@ Handy usages:
 Path objects access the file system.  PurePath objects can manipulate paths
 without accessing the file system.
 
+    absolute()      Same as resolve()
     as_posix()      Return with forward slashes
     as_uri()      
     chmod()
@@ -10290,5 +10375,17 @@ Aliases
     b: list[int] = [1, 2]
 Functions
     def f(a: int, b: Num) -> Num:
+
+--------------------------------------------------------------------------------
+Using hashlib                               *python_hashlib*
+
+Hashing functions are:
+    md5 sha1 sha224 sha256 sha384 sha512 blake2b blake2s
+    sha3_224 sha3_256 sha3_384 sha3_512 shake_128 shake_256
+
+m = hashlib.md5()
+m.update(some_bytes)  # Note it must be bytes
+m.digest()  --> Returns bytes
+m.hexdigest()  --> hex string
 
 vim:  wm=3
