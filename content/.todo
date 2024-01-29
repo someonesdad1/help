@@ -1,2 +1,3 @@
-- Give final check, make public
-- Link other project files to this project
+- Since I'm moving to wsl, most editor windows will now be 100 or more
+  characters.  This length should be taken advantage of.
+- python re:  give example of a verbose and commented regex
