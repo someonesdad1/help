@@ -35,6 +35,11 @@ Prompt special characters
         terminal control sequence into the prompt
     \]  end a sequence of non-printing characters
 
+    PS1 is normal prompt
+    PS2 is what's seen when a command continues on the next line
+    PS3 is what's used by the 'select' command
+    PS4 is for 'set -x' tracing output (defaults to '+')
+
 *Reserved_words*
     ! case  do done elif else esac fi for function if in select then  until
      while { } time [[ ]]
