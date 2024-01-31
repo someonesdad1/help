@@ -9,6 +9,7 @@
 |go_new|
 |go_arrays|
 |go_switch|
+|go_installation|
 
 Good learning tour:  http://tour.golang.org
 Left off at http://tour.golang.org/#51
@@ -515,3 +516,22 @@ Switch with no condition can be used for long if-else chains
         fmt.Println("Good evening.")
     }
 
+-----------------------------------------------------------------------------
+Installation                                                *go_installation*
+
+Go to https://go.dev/doc/install for instructions:
+
+    - Remove any previous go installation
+        - E.g., 'sudo apt remove golang'
+    - Download the needed installation file
+        - On 1 Feb 2024 it was for version 1.21.6
+        - Linux:  go1.21.6.linux-amd64.tar.gz
+    - WSL Linux install
+        - 'rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.6.linux-amd64.tar.gz'
+        - Add /usr/local/go/bin to the PATH
+        - Verify installation 'go version'
+            - Should see 'go version go1.21.6 linux/amd64'
+
+    - Head to getting started tutorial https://go.dev/doc/tutorial/getting-started.html
+        - It takes about 10 minutes
+vim: tw=100

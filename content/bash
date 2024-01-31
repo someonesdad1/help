@@ -1,7 +1,14 @@
+TODO
+    - Use hyphens to separate sections (it makes things easier to read
+    - Move the stuff I need a lot to the front:
+        - Variables and their access
+        - Testing
+
+
 *bash*
 
-|Testing|
 |Variables|
+|Testing|
 |Arrays|
 |Quoting|
 |Arithmetic|
@@ -23,7 +30,102 @@
 |Iteration|
 |Functions|
 
-Xubuntu 14.04 came with version 4.3.11 of bash
+---------------------------------------------------------------------------
+Variables                                                       *Variables*
+    Scope is global unless declared with 'typeset' or 'local' or if a
+    function parameter.  Note local variables are dynamically scoped,
+    meaning they are visible to any functions you call.
+
+    Built-ins
+        $0      File name of script
+        $1-$N   Stores command line arguments
+                Use "set -- string_expr" to set
+        ${10}   Form for more than 9
+        $?      Exit status of last command
+        $$      PID of script
+        $-      Flags passed to script using set
+        $_      Last argument of previous command
+        $!      PID of last background job
+
+        $*      Command line arguments ($1 $2 ...)
+        "$*"    Command line arguments as single string
+        "$@"    Command line arguments individually quoted ("$1"  "$2"  ...)
+    
+      Note:  you should virtually always use "$@" if you're passing
+      arguments to functions, scripts, or programs.  This allows the
+      arguments to be e.g. filenames with embedded spaces or other
+      characters that are in IFS and would cause the shell problems if
+      they weren't quoted.
+
+    Accessing and default values
+        ${v}        Use when follow-on characters could be interpreted as part
+                    of variable name
+        ${v:o:l}    Substring:  return string at offset o and up to l
+                    characters; if l is omitted, return to end of string.
+
+        NOTE how the ':' changes the interpretation:  when it's
+        included, the operator tests for both the parameter's
+        existence and that its value is not null; if the colon is
+        omitted, the operator only tests for existence.
+
+        ${v:?msg}   If null, exit with error and print msg
+            A better practice for scripts is to use 'set -u' or 'set -o
+            nounset'.
+
+        ${v-w}      If v not set, use $w
+        ${v:-w}     If v not set or is empty, use $w
+        ${v=w}      If v not set, evaluate expression as $w
+        ${v=w}      If v not set or is empty, evaluate expression as $w
+        ${v+w}      If v set, evaluate expression as $w; otherwise null
+        ${v:+w}     Same as ${v+w}
+            Example:  a=${b:-*} fills a with files in current directory if
+            b is null.
+        ${v:=w}     Set v to w if v null and return value
+        ${v:+w}     If not null, return w; if set, return null
+
+    Variable indirection
+        ${!a} means to expand name to a string and use it as the name
+        of the variable.
+
+        ${!name[@]} and ${!name[@]} are special if name is an array
+        variable; they expand to a list of the indexes.  When '@' is
+        used and the expansion is in double quotes, each index expands
+        to a separate word.
+
+    Declaring
+        typeset         Synonym of declare (compatible with ksh)
+        declare -a v    Declare v as array
+        declare -i v    Declare v as integer
+        declare -r v    Declare v as read-only
+        declare -x v    Declare v and export to environment
+        local v         Declare v as a local to a function
+            Note:  local by itself lists the local variables.  local
+            outside the scope of a function is an error.  typeset
+            and declare also result in local variables when used
+            inside functions.
+        local, typeset, and declare all take the same options:
+            [-aAfFilrtux] [-p] [name[=value] ...]
+            -g      Forces a variable's scope to be global
+            -a      Indexed arrays 0-based
+            -A      Associative array
+            -i      Integer
+            -l      Convert upper case chars to lower
+            -r      Read-only
+            -t      Give trace attribute (only meaningful for functions)
+            -u      Convert lower case chars to upper
+            -x      Export to environment
+ 
+        Examples
+            local -ar v=(11 22 33)      Declare a read-only array
+ 
+      Note:  you can define multiple variables on one line:
+            a=3 b=4 c=7
+      However, note that following with a command does something
+      entirely different
+            a=3 b=4 c=7  ls
+      sets the variables only for the ls command.
+
+---------------------------------------------------------------------------
 
 Prompt special characters
     \d  the date in "Weekday Month Date" format 
@@ -65,95 +167,6 @@ Prompt special characters
     replaced by the stdout of the command.  I recommend never using these,
     as they are hard to see; use $(cmd) form instead.  This is called
     command substitution.
-
-*Variables*
-    Scope is global unless declared with 'typeset' or 'local' or if a
-    function parameter.  Note local variables are dynamically scoped,
-    meaning they are visible to any functions you call.
-
-    Built-ins
-        $1-$N   Stores command line arguments.  Use "set -- string_expr" to set
-        $?      Exit status of last command
-        $$      PID of script
-        $-      Flags passed to script using set
-        $_      Last argument of previous command
-        $!      PID of last background job
-
-        $0      Name of shell program
-        $*      Command line arguments ($1 $2 ...)
-        "$*"    Command line arguments as single string
-        "$@"    Command line arguments individually quoted ("$1"  "$2"  ...)
-    
-      Note:  you should virtually always use "$@" if you're passing
-      arguments to functions, scripts, or programs.  This allows the
-      arguments to be e.g. filenames with embedded spaces or other
-      characters that are in IFS and would cause the shell problems if
-      they weren't quoted.
-
-    Accessing and default values
-        ${v}        Use when follow-on characters could be interpreted as part
-                    of variable name
-        ${v:o:l}    Substring:  return string at offset o and up to l
-                    characters; if l is omitted, return to end of string.
-
-        NOTE how the ':' changes the interpretation:  when it's
-        included, the operator tests for both the parameter's
-        existence and that its value is not null; if the colon is
-        omitted, the operator only tests for existence.
-
-        ${v-w}      If v not set, use $w
-        ${v:-w}     If v not set or is empty, use $w
-        ${v=w}      If v not set, evaluate expression as $w
-        ${v=w}      If v not set or is empty, evaluate expression as $w
-        ${v+w}      If v set, evaluate expression as $w; otherwise null
-        ${v:+w}     Same as ${v+w}
-            Example:  a=${b:-*} fills a with files in current directory if
-            b is null.
-        ${v:=w}     Set v to w if v null and return value
-        ${v:?msg}   If null, exit with error and print msg
-        ${v:+w}     If not null, return w; if set, return null
-
-    Variable indirection
-        ${!a} means to expand name to a string and use it as the name
-        of the variable.
-
-        ${!name[@]} and ${!name[@]} are special if name is an array
-        variable; they expand to a list of the indexes.  When '@' is
-        used and the expansion is in double quotes, each index expands
-        to a separate word.
-
-    Declaring
-        typeset         Synonym of declare (compatible with ksh)
-        declare -a v    Declare v as array
-        declare -i v    Declare v as integer
-        declare -r v    Declare v as read-only
-        declare -x v    Declare v and export to environment
-        local v         Declare v as a local to a function
-            Note:  local by itself lists the local variables.  local
-            outside the scope of a function is an error.  that typeset
-            and declare also result in local variables when used
-            inside functions.
-        local, typeset, and declare all take the same options:
-            [-aAfFilrtux] [-p] [name[=value] ...]
-            -g      Forces a variable's scope to be global
-            -a      Indexed arrays 0-based
-            -A      Associative array
-            -i      Integer
-            -l      Convert upper case chars to lower
-            -r      Read-only
-            -t      Give trace attribute (only meaningful for functions)
-            -u      Convert lower case chars to upper
-            -x      Export to environment
-
-        Examples
-            local -ar v=(11 22 33)      Declare a read-only array
-
-      Note:  you can define multiple variables on one line:
-            a=3 b=4 c=7
-      However, note that following with a command does something
-      entirely different
-            a=3 b=4 c=7  ls
-      sets the variables only for the ls command.
 
 *Arrays*
     Array indexing is 0-based and uses only integer values

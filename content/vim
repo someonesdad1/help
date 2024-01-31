@@ -1,5 +1,9 @@
 *vim*
 
+Startup positioning
+    'vi +4 file'        Positions the cursor at line 4
+    'vi +/$sym file'    Positions the cursor at first location of sym
+
 Non-greedy match
     Instead of '.*?' (which doesn't work), use '.\{-}'
     Also see :help non-greedy
