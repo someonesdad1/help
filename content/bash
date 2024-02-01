@@ -1,34 +1,32 @@
 TODO
-    - Use hyphens to separate sections (it makes things easier to read
     - Move the stuff I need a lot to the front:
         - Variables and their access
         - Testing
 
 
 *bash*
+                                Examples
+|Variables|                     
+|Testing|                       
+|Control_flow|                       
+|String_operations|             
+|Pattern_matching|
+|Reserved_words|                
+|Arithmetic|
+|Arithmetic_operators|
+|Arithmetic_evaluation|
 
-|Variables|
-|Testing|
 |Arrays|
 |Quoting|
 |Arithmetic|
-|Pattern_matching|
 |Conditionals|
-|String_operations|
-|Arithmetic_operators|
-|Arithmetic_evaluation|
 |Process_substitution|
 |Other_stuff|
-|Reserved_words|
 |Bourne_builtins|
 |Bash_builtins|
 |Grouping|
 |Command_line_parsing|
-|Conditionals|
-|Case|
-|Select|
-|Iteration|
-|Functions|
+|References|
 
 ---------------------------------------------------------------------------
 Variables                                                       *Variables*
@@ -331,7 +329,8 @@ Prompt special characters
         a
         test
 
-*Testing*
+---------------------------------------------------------------------------
+Testing                                                 *Testing*
     test expression
         or
     [ expression ]
@@ -346,16 +345,11 @@ Prompt special characters
         int1 -lt int2
         int1 -le int2
 
-      You can use the usual conditional operators if you use double
-      parentheses:  echo $((x <= y)) && $((y > 5))
+      You can use the usual conditional operators if you use double parentheses:
+        echo $((x <= y)) && $((y > 5))
 
-      Arithmetical testing syntax is better with ((...)).  You don't
-      need to put '$' in front of variable names:
-        ((x > 3 && y < 8))
-
-    Other
-        -o opt      Shell option is enabled
-        -v var      True if variable var has been assigned a value
+      Arithmetical testing syntax is better with ((...)).  You don't need to put '$' in front of
+      variable names.
 
     Strings
         s1 = s2     s1 matches s2
@@ -365,34 +359,39 @@ Prompt special characters
         s1 < s2     s1 is less than s2
         s1 > s2     s1 is greater than s2
         s           True if s not null
-        -n s        True if len(s) > 0
-        -z s        True if len(s) == 0 (NOT the same as null!)
 
-    Files etc.
-      If f is a symbolic link, these tests operate on the target
-      rather than the link (unless they're specifically testing the
-      link).
-        -G f        Group ID is same as yours
-        -L f        File exists and is symbolic link
-        -N f        f has been modified since it was last read
-        -O f        You own the file
-        -S f        f is a socket
+    Test operators
+      If f is a symbolic link, these tests operate on the target rather than the link (unless
+      they're specifically testing the link).
+
+      * = used frequently
+
         -a f        True if file exists
         -b f        f is a block device
         -c f        f is a character device
-        -d f        Directory
-        -e f        True if file exists
+      * -d f        Directory
+      * -e f        True if file exists
         -f f        Ordinary file
+        -G f        Group ID is same as yours
         -g f        sgid flag set
-        -h f        Is symbolic link
+      * -h f        Is symbolic link
         -k f        sticky bit set
+        -L f        File exists and is symbolic link
+        -N f        f has been modified since it was last read
+      * -n s        True if len(s) > 0
+        -O f        You own the file
+        -o opt      Shell option is enabled
         -p f        f is a named pipe (FIFO)
-        -r f        File exists and can be read
-        -s f        File size > 0
+      * -r f        File exists and can be read
+        -S f        f is a socket
+      * -s f        File size > 0
         -t f        f is associated with a terminal
         -u f        suid flag set
+        -v var      True if variable var has been assigned a value
         -w f        Can be written
         -x f        Is executable
+        -z s        True if len(s) == 0 (NOT the same as null!)
+
         f1 -nt f2   File f1 is newer than f2
         f1 -ot f2   File f1 is older than f2
         f1 -ef f2   Hard links to the same file
@@ -402,14 +401,10 @@ Prompt special characters
         expr1 -a expr2  True if both expressions are true (logical and)
         expr1 -o expr2  True if either expression is true (logical or)
 
-*Conditionals*
-    &&      Logical and; example:  cmd1 %% cmd2 will execute cmd 2 if cmd1
-            returns true
-    ||      Logical or; example:  cmd1 || cmd2 will execute cmd 2 if cmd1
-            returns false
 
-*Pattern_matching*
-    (v = variable, p = pattern)
+---------------------------------------------------------------------------
+Pattern_matching                                        *Pattern_matching*
+    (v = variable, p = glob pattern)
     ${v#p}      If match at beginning, delete shortest part and return rest
     ${v##p}     If match at beginning, delete longest part and return rest
     ${v%p}      If match at end, delete shortest part and return rest
@@ -427,10 +422,12 @@ Prompt special characters
         ${a#??}             llo there   [i.e., removes 1st 2 characters]
         ${a%??}             hello the   [i.e., removes last 2 characters]
 
-*String_operations*
+---------------------------------------------------------------------------
+String_operations                                       *String_operations*
+
     s  = string
     ss = substring
-
+ 
     expr match "$s" '$ss'	    Length of matching $ss@ at beginning of $s
     expr "$s" : '$ss'	        Length of matching $ss@ at beginning of $s
     expr index "$s" $ss	        Numerical position in $s of first character in 
@@ -440,7 +437,7 @@ Prompt special characters
     expr "$s" : '\($ss\)'	    Extract $ss@ at beginning of $s
     expr match "$s" '.*\($ss\)'	Extract $ss@ at end of $s
     expr "$s" : '.*\($ss\)'	   Extract $ss@ at end of $s
-
+ 
       NOTE:  @ indicates $ss is a regular expression
 
 *Arithmetic_operators*
@@ -463,7 +460,10 @@ Prompt special characters
             longs).  Thus, exponentiation is a potential source of
             calculational bugs.
 
-*Conditionals*
+---------------------------------------------------------------------------
+Control Flow                                                  *Control_flow*
+
+Conditionals
     if [ expression ] 
     then
         commands
@@ -472,9 +472,9 @@ Prompt special characters
     else
         commands
     fi
-
+ 
         or
-
+ 
     if [ expression ] ; then
         commands
     elif [ expression ]
@@ -482,24 +482,29 @@ Prompt special characters
     else
         commands
     fi
-
-
-    [[ expression ]]
+ 
+    &&      Logical and; example:  cmd1 && cmd2 will execute cmd 2 if cmd1 returns true
+    ||      Logical or; example:  cmd1 || cmd2 will execute cmd 2 if cmd1 returns false
+ 
+    [[ expression ]]       See [fox] p 20, as this is a complicated command
         Returns 0 or 1 depending on the outcome of expression.  Parameter 
         and variable expansion, tilde expansion, arithemetic expansion, 
         command substitution, process substitution, and quote removal are
         performed.
-
-        You can use the operator =~ for regexp(3) matches; return value is
-        0 for match and 1 otherwise.
-
+ 
+        == and != compare strings
+        a =~ b returns true if string a matches regex b
+            [[ "abc" =~ "a.c" ]] && echo true   --> false
+            [[ "abc" =~ a.c ]] && echo true     --> true
+            [[ abc =~ a.c ]] && echo true       --> true
+ 
         Expressions can be combined with:
             ( expr )
             ! expr
             e1 && e2 (lazy eval)
             e1 || e2 (lazy eval)
 
-*Case*
+Case
     case string1 in 
         str1|str2)
             commands
@@ -512,19 +517,18 @@ Prompt special characters
             ;;
     esac
 
-*Select*
+Select
     select name [ in word ] ; do list ; done
-        Prompts to stderr with PS3 for a number mapped to items (command
-        line items if word omitted).  name is then set to the selected
-        value.
+        Prompts to stderr with PS3 for a number mapped to items (command line items if word
+        omitted).  name is then set to the selected value.
 
-*Iteration*
+Iteration
     for name [in list] ; do
         commands that can use $name
     done
-        Note:  if [in list] is not used, the loop iterates over the command
-        line parameters.
-
+ 
+    If [in list] is not used, the loop iterates over the command line parameters.
+ 
     for (( expr1 ; expr2 ; expr3 )) ; do list ; done
         (C-style for loop) Arithmetic expression expr1 is evaluated.  Then
         expr2 is evaluated repeatedly until it evaluates to 0.  Each time
@@ -532,29 +536,22 @@ Prompt special characters
         expression is omitted, it's as if it evaluated to 1.  Example:
             for (( i=0 ; i < 10 ; i++ )); do echo $i ; done
         prints 0 through 9 inclusive on separate lines.
-
+ 
     while [ expression ] ; do
         commands
     done
-
+ 
     until [ expression ] ; do
         commands
     done
 
-*Functions*
-    function name()
+Functions
+    function name()   or    function name()    or    name()
     {
         commands
     }
 
-        or
-
-    name()       # Older Bourne shell style
-    {
-        commands
-    }
-
-*Arithmetic_evaluation*
+Arithmetic_evaluation
     x++ x--
            variable post-increment and post-decrement
     ++x --x
@@ -678,3 +675,10 @@ Prompt special characters
     Compare the contents of two directories
         diff <(ls dir1) <(ls dir2)
 
+---------------------------------------------------------------------------
+References                                                   *References*
+
+[fox]     Ramey and Fox, "Bash Reference Manual", Rev. 5.2 (Sep 2022)
+[cooper]  M. Cooper, "Advanced Bash-Scripting Guide", ver. 10 (10 Mar 2014)
+
+vim: tw=100
