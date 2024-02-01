@@ -532,6 +532,8 @@ Go to https://go.dev/doc/install for instructions:
         - Verify installation 'go version'
             - Should see 'go version go1.21.6 linux/amd64'
 
-    - Head to getting started tutorial https://go.dev/doc/tutorial/getting-started.html
-        - It takes about 10 minutes
+    - Head to 
+        - Getting started tutorial https://go.dev/doc/tutorial/getting-started.html
+            - It takes about 10 minutes
+        - https://go.dev/doc/tutorial/index.html
 vim: tw=100
