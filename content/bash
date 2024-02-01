@@ -11,10 +11,12 @@ TODO
 |Control_flow|                       
 |String_operations|             
 |Pattern_matching|
-|Reserved_words|                
 |Arithmetic|
 |Arithmetic_operators|
 |Arithmetic_evaluation|
+|Reserved_words|                
+|Bourne_builtins|
+|Bash_builtins|
 
 |Arrays|
 |Quoting|
@@ -22,8 +24,6 @@ TODO
 |Conditionals|
 |Process_substitution|
 |Other_stuff|
-|Bourne_builtins|
-|Bash_builtins|
 |Grouping|
 |Command_line_parsing|
 |References|
@@ -140,10 +140,14 @@ Prompt special characters
     PS3 is what's used by the 'select' command
     PS4 is for 'set -x' tracing output (defaults to '+')
 
-*Reserved_words*
-    ! case  do done elif else esac fi for function if in select then  until
-     while { } time [[ ]]
+---------------------------------------------------------------------------
+Reserved Words                                             *Reserved_words*
 
+    ! [[ ]] { }
+    case do done elif else esac fi for function
+    if in select then time until while
+
+---------------------------------------------------------------------------
 *Bourne_builtins*
     :  .  break  cd  continue  eval  exec  exit  export  getopts  hash
     pwd  readonly  return  shift  test  [  times  trap  umask unset
@@ -193,10 +197,11 @@ Prompt special characters
         a=($*)
         ${a[3]}     44
 
-    The bash builtin 'mapfile' can be used to put stdin into an
-    array variable ('readarray' is a synonym):
+    The bash builtin 'mapfile' can be used to put stdin into an array variable ('readarray' is a
+    synonym):
 
-      mapfile var <input_file
+      mapfile   var <input_file
+      readarray var <input_file
 
     Then line 0 of the file will be ${var[0]}, etc.  Note there is a
     limit to the number of lines that can be read in; on bash version
@@ -404,6 +409,7 @@ Testing                                                 *Testing*
 
 ---------------------------------------------------------------------------
 Pattern_matching                                        *Pattern_matching*
+
     (v = variable, p = glob pattern)
     ${v#p}      If match at beginning, delete shortest part and return rest
     ${v##p}     If match at beginning, delete longest part and return rest
@@ -436,7 +442,7 @@ String_operations                                       *String_operations*
     expr match "$s" '\($ss\)'	Extract $ss@ at beginning of $s
     expr "$s" : '\($ss\)'	    Extract $ss@ at beginning of $s
     expr match "$s" '.*\($ss\)'	Extract $ss@ at end of $s
-    expr "$s" : '.*\($ss\)'	   Extract $ss@ at end of $s
+    expr "$s" : '.*\($ss\)'	    Extract $ss@ at end of $s
  
       NOTE:  @ indicates $ss is a regular expression
 
@@ -473,16 +479,6 @@ Conditionals
         commands
     fi
  
-        or
- 
-    if [ expression ] ; then
-        commands
-    elif [ expression ]
-        commands
-    else
-        commands
-    fi
- 
     &&      Logical and; example:  cmd1 && cmd2 will execute cmd 2 if cmd1 returns true
     ||      Logical or; example:  cmd1 || cmd2 will execute cmd 2 if cmd1 returns false
  
@@ -507,34 +503,37 @@ Conditionals
 Case
     case string1 in 
         str1|str2)
-            commands
-            ;;
+            commands ;;
         str3)
-            commands
-            ;;
+            commands ;;
         *)
-            commands
-            ;;
+            commands ;;
     esac
 
 Select
-    select name [ in word ] ; do list ; done
+    select name [ in word ] ; do 
+        list 
+    done
         Prompts to stderr with PS3 for a number mapped to items (command line items if word
         omitted).  name is then set to the selected value.
 
 Iteration
-    for name [in list] ; do
-        commands that can use $name
+    for name in [words in list] ; do
+        commands
     done
+        If words not present, iterates over positional variables
  
-    If [in list] is not used, the loop iterates over the command line parameters.
- 
-    for (( expr1 ; expr2 ; expr3 )) ; do list ; done
-        (C-style for loop) Arithmetic expression expr1 is evaluated.  Then
+    for (( expr1 ; expr2 ; expr3 )) ; do
+        commands
+    done
+
+        C-style for loop: Arithmetic expression expr1 is evaluated.  Then
         expr2 is evaluated repeatedly until it evaluates to 0.  Each time
         expr2 is nonzero, list is executed and expr3 is evaluated.  If any
         expression is omitted, it's as if it evaluated to 1.  Example:
-            for (( i=0 ; i < 10 ; i++ )); do echo $i ; done
+            for (( i=0 ; i < 10 ; i++ )); do 
+                echo $i
+            done
         prints 0 through 9 inclusive on separate lines.
  
     while [ expression ] ; do
@@ -545,13 +544,17 @@ Iteration
         commands
     done
 
-Functions
-    function name()   or    function name()    or    name()
+---------------------------------------------------------------------------
+Functions                                                       *Functions*
+
+    function name()   OR    function name()    OR    name()
     {
         commands
     }
 
-Arithmetic_evaluation
+---------------------------------------------------------------------------
+Arithmetic_evaluation                               *Arithmetic_evaluation*
+
     x++ x--
            variable post-increment and post-decrement
     ++x --x
@@ -577,17 +580,18 @@ Arithmetic_evaluation
     expr1 , expr2
            comma
 
-*Other_stuff*
+---------------------------------------------------------------------------
+Other Stuff                                                   *Other_stuff*
     printf -v var fmt var1 ...
         -v puts formatted output into a variable
 
     let arg [arg ...]
         Each arg is an arithmetic expression to be evaluated.
 
-    let a=20#12
-        Set a to a hex constant.  Here, it's in base 20 and the decimal
-        value is 22.  Base can be from 2 to 64.
-        You can also use 0n... for octal and 0xn... for hex.
+    let a=20#12     (base#value)
+        Set a to a constant.  Here, it's in base 20 and the value is 12, or 1*20 + 2*1 or a decimal
+        value of 22.  Base can be from 2 to 64.  You can also use 0n... for octal and 0xn... for
+        hex.
 
     let "a = 44 + b"
         Quoting allows more normal expression use.
@@ -605,6 +609,7 @@ Arithmetic_evaluation
             Put your text here
             Single quotes around EOF disable variable expansion
             Any string can be used for EOF
+            <<- lets you indent body with tabs for easier reading (tabs are stripped)
         EOF
 
     Here strings
