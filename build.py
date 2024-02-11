@@ -254,7 +254,7 @@ if 1:   # Core functionality
         # Grouped by (topic, num_columns, column_width).  Note these are
         # alphabetically ordered down the page like ls output).
         groups = (('''
-                python vim git uncertainties shop bash C g matplotlib numpy
+                python bash vim git uncertainties shop C g matplotlib numpy
                 sympy Cpp gdb scipy mpmath make_ Utilities latex PIL
                 StatisticsPython
             ''', 3, 20),

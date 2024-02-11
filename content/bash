@@ -1,13 +1,7 @@
-TODO
-    - Move the stuff I need a lot to the front:
-        - Variables and their access
-        - Testing
-
-
 *bash*
-                                Examples
+
+|Testing|                       |TestingExamples|
 |Variables|                     
-|Testing|                       
 |Control_flow|                       
 |String_operations|             
 |Pattern_matching|
@@ -17,6 +11,7 @@ TODO
 |Reserved_words|                
 |Bourne_builtins|
 |Bash_builtins|
+|Tips|
 
 |Arrays|
 |Quoting|
@@ -27,6 +22,76 @@ TODO
 |Grouping|
 |Command_line_parsing|
 |References|
+
+---------------------------------------------------------------------------
+*Testing* 
+    test expression   same as   [ expression ]
+    [[ expression ]]    Extended form
+
+    Numbers
+        int1 -eq int2
+        int1 -ne int2
+        int1 -gt int2
+        int1 -ge int2
+        int1 -lt int2
+        int1 -le int2
+
+      You can use the usual conditional operators if you use double parentheses:
+        echo $((x <= y)) && $((y > 5))
+
+      Arithmetical testing syntax is better with ((...)).  You don't need to put '$' in front of
+      variable names.
+
+    Strings
+        s1 = s2     s1 matches s2
+        s1 != s2    s1 does not match s2
+        s1 == s2    s1 is equal to s2
+        s1 !== s2   s1 is not equal to s2
+        s1 < s2     s1 is less than s2
+        s1 > s2     s1 is greater than s2
+        s           True if s not null
+
+    Test operators
+      If f is a symbolic link, these tests operate on the target rather than the link (unless
+      they're specifically testing the link).
+
+      * = used frequently
+
+        -a f        True if file exists
+        -b f        f is a block device
+        -c f        f is a character device
+      * -d f        Directory
+      * -e f        True if file exists
+        -f f        Ordinary file
+        -G f        Group ID is same as yours
+        -g f        sgid flag set
+      * -h f        Is symbolic link
+        -k f        sticky bit set
+        -L f        File exists and is symbolic link
+        -N f        f has been modified since it was last read
+      * -n s        True if len(s) > 0
+        -O f        You own the file
+        -o opt      Shell option is enabled
+        -p f        f is a named pipe (FIFO)
+      * -r f        File exists and can be read
+        -S f        f is a socket
+      * -s f        File size > 0
+        -t f        f is associated with a terminal
+        -u f        suid flag set
+        -v var      True if variable var has been assigned a value
+        -w f        Can be written
+        -x f        Is executable
+        -z s        True if len(s) == 0 (NOT the same as null!)
+
+        f1 -nt f2   File f1 is newer than f2
+        f1 -ot f2   File f1 is older than f2
+        f1 -ef f2   Hard links to the same file
+
+    Expressions
+        ! expression    True if expression not true
+        expr1 -a expr2  True if both expressions are true (logical and)
+        expr1 -o expr2  True if either expression is true (logical or)
+
 
 ---------------------------------------------------------------------------
 Variables                                                       *Variables*
@@ -335,79 +400,6 @@ Reserved Words                                             *Reserved_words*
         test
 
 ---------------------------------------------------------------------------
-Testing                                                 *Testing*
-    test expression
-        or
-    [ expression ]
-        or
-    [[ expression ]]        (extended test construct)
-
-    Numbers
-        int1 -eq int2
-        int1 -ne int2
-        int1 -gt int2
-        int1 -ge int2
-        int1 -lt int2
-        int1 -le int2
-
-      You can use the usual conditional operators if you use double parentheses:
-        echo $((x <= y)) && $((y > 5))
-
-      Arithmetical testing syntax is better with ((...)).  You don't need to put '$' in front of
-      variable names.
-
-    Strings
-        s1 = s2     s1 matches s2
-        s1 != s2    s1 does not match s2
-        s1 == s2    s1 is equal to s2
-        s1 !== s2   s1 is not equal to s2
-        s1 < s2     s1 is less than s2
-        s1 > s2     s1 is greater than s2
-        s           True if s not null
-
-    Test operators
-      If f is a symbolic link, these tests operate on the target rather than the link (unless
-      they're specifically testing the link).
-
-      * = used frequently
-
-        -a f        True if file exists
-        -b f        f is a block device
-        -c f        f is a character device
-      * -d f        Directory
-      * -e f        True if file exists
-        -f f        Ordinary file
-        -G f        Group ID is same as yours
-        -g f        sgid flag set
-      * -h f        Is symbolic link
-        -k f        sticky bit set
-        -L f        File exists and is symbolic link
-        -N f        f has been modified since it was last read
-      * -n s        True if len(s) > 0
-        -O f        You own the file
-        -o opt      Shell option is enabled
-        -p f        f is a named pipe (FIFO)
-      * -r f        File exists and can be read
-        -S f        f is a socket
-      * -s f        File size > 0
-        -t f        f is associated with a terminal
-        -u f        suid flag set
-        -v var      True if variable var has been assigned a value
-        -w f        Can be written
-        -x f        Is executable
-        -z s        True if len(s) == 0 (NOT the same as null!)
-
-        f1 -nt f2   File f1 is newer than f2
-        f1 -ot f2   File f1 is older than f2
-        f1 -ef f2   Hard links to the same file
-
-    Expressions
-        ! expression    True if expression not true
-        expr1 -a expr2  True if both expressions are true (logical and)
-        expr1 -o expr2  True if either expression is true (logical or)
-
-
----------------------------------------------------------------------------
 Pattern_matching                                        *Pattern_matching*
 
     (v = variable, p = glob pattern)
@@ -681,9 +673,76 @@ Other Stuff                                                   *Other_stuff*
         diff <(ls dir1) <(ls dir2)
 
 ---------------------------------------------------------------------------
+Tips and idioms                                           *Tips_and_idioms*
+
+Set operators
+    (from https://vitalyparnas.com/guides/shell/)
+
+    $ mv -v dir1/dir2/file{1,2}.txt
+    renamed 'dir1/dir2/file1.txt' -> 'dir1/dir2/file2.txt'
+
+    $ mv -v {,prefix_}file
+    renamed 'file' -> 'prefix_file'
+
+    # Copy of a file from one host to another (via localhost):
+    $ scp -3 {host1,host2}:/path/file
+
+    $ echo string{1,2{a..d}}
+    string1 string2a string2b string2c string2d
+
+    $ mkdir -pv top/mid{1,2}/bottom{1..3}
+    mkdir: created directory 'top'
+    mkdir: created directory 'top/mid1'
+    mkdir: created directory 'top/mid1/bottom1'
+    mkdir: created directory 'top/mid1/bottom2'
+    mkdir: created directory 'top/mid1/bottom3'
+    mkdir: created directory 'top/mid2'
+    mkdir: created directory 'top/mid2/bottom1'
+    mkdir: created directory 'top/mid2/bottom2'
+    mkdir: created directory 'top/mid2/bottom3'
+
+    # Rsync the local top/sub with the remote:~/top/sub
+    $ rsync -avu {,remote:~/}top/sub
+
+Replace operator
+    (from https://vitalyparnas.com/guides/shell/)
+
+    $ echo "what a dreadful day"
+    what a dreadful day
+
+    $ ^day^sentence
+    echo "what a dreadful sentence"
+    what a dreadful sentence
+
+    $ cp -v file{1,2}
+    'file1' -> 'file2'
+
+    $ ^2^3
+    cp -v file{1,3}
+    'file1' -> 'file3'
+
+    $ ^3^4
+    cp -v file{1,4}
+    'file1' -> 'file4'
+
+Changing case
+
+    a="an example"
+    echo ${a^^}
+    AN EXAMPLE
+    echo ${a^}
+    echo ${a^}
+    An example
+    a="AN EXAMPLE"
+    echo ${a,,}
+    an example
+
+
+---------------------------------------------------------------------------
 References                                                   *References*
 
-[fox]     Ramey and Fox, "Bash Reference Manual", Rev. 5.2 (Sep 2022)
-[cooper]  M. Cooper, "Advanced Bash-Scripting Guide", ver. 10 (10 Mar 2014)
+[fox]       Ramey and Fox, "Bash Reference Manual", Rev. 5.2 (Sep 2022)
+[cooper]    M. Cooper, "Advanced Bash-Scripting Guide", ver. 10 (10 Mar 2014)
+[vpg]       https://vitalyparnas.com/guides/shell/
+[bnp]       Bash Notes for Professionals https://goalkicker.com/
 
-vim: tw=100

@@ -13,6 +13,9 @@ Todo:
 |git_Commands|
 |git_Architecture|
 
+NOTE:  Open giteveryday(7) if you have it for a good overview of daily
+commands (on WSL, not in cygwin)
+
 Note:  'master' used to be the name of the main branch in the repository,
 but it was renamed to 'main'.
 
