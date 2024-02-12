@@ -1,7 +1,7 @@
 *bash*
 
-|Testing|                       |TestingExamples|
-|Variables|                     
+|TestingExamples|   |Testing|
+|VariableExamples|  |Variables|                     
 |Control_flow|                       
 |String_operations|             
 |Pattern_matching|
@@ -22,6 +22,9 @@
 |Grouping|
 |Command_line_parsing|
 |References|
+
+'grep a myfile &>/dev/null' sends stdout and stderr to the bit bucket.  This
+is equivalent to 'grep -q a myfile', but less efficient.
 
 ---------------------------------------------------------------------------
 *Testing* 
@@ -92,11 +95,62 @@
         expr1 -a expr2  True if both expressions are true (logical and)
         expr1 -o expr2  True if either expression is true (logical or)
 
+*TestingExamples* 
+
+    Examples of tests (0 is true, 1 is false) (output of bash.ex.sh script)
+    Test                    Status    Explanation
+    ----                    ------    -----------
+    [ ]                     1         Unset string
+    test                    1         Ditto
+    [ "" ]                  1         Empty string
+    test ""                 1         Ditto
+    [ " " ]                 0         Space character
+    test " "                0         Ditto
+    These show 'test' and '[' ... ']' are equivalent
+    [ "a" ]                 0         String with single character
+    [ a ]                   0         Ditto
+    [ 0 ]                   0         Ditto
+    [ 1 ]                   0         Ditto
+    [ - ]                   0         Ditto
+    [ " " -a "" ]           1         AND of true string and empty string
+    [ " " -a " " ]          0         AND of two true strings
+    [ "" -o "" ]            1         OR of two false strings
+    [ " " -o "" ]           0         OR of true string and empty string
+
+    [[ ]]                   --        Syntax error
+    [[ "" ]]                1         Empty string
+    [[ " " ]]               0         Space character
+    [[ "a" ]]               0         String with single character
+    [[ a ]]                 0         String with single character
+    [[ 0 ]]                 0         Ditto
+    [[ 1 ]]                 0         Ditto
+    [[ - ]]                 0         Ditto
+
+    Arithmetic expressions (double quotes are removed from expression)
+    Status is 0 if expression value != 0, 1 otherwise (opposite from [...])
+    (( ))                   1         Null string
+    (( "" ))                1         Empty string (quotes removed, so same as previous)
+    (( " " ))               1         Non-empty string, (quotes removed, so same as previous)
+    (( 0 ))                 1         Expr value is 0, so return 1
+    (( 1 ))                 0         Expr value is != 0, so return 0
+    (( 1 - 1 ))             1         Expr value is 0, so return 1
+    (( 1 + 1 ))             0         Expr value is 1, so return 0
+    (( 1/1 ))               0         Expr value is 1, so return 0
+    (( 1/2 ))               1         Expr value is 0, so return 1
+    ((4 > 5))               1         Integer comparison
+    ((4 > 3))               0         Integer comparison
+    ((4 == 3))              1         Integer comparison
+    ((4 != 3))              0         Integer comparison
+    (( a ))                 1         a is an empty string
+    Define a to be '7'
+    (( a ))                 0         a is '7', interpreted as an integer
+    Define a to be '7.2'
+    (( a ))                 --        Syntax error
 
 ---------------------------------------------------------------------------
 Variables                                                       *Variables*
     Scope is global unless declared with 'typeset' or 'local' or if a
-    function parameter.  Note local variables are dynamically scoped,
+    function parameter.  Local variables are dynamically scoped,
     meaning they are visible to any functions you call.
 
     Built-ins
@@ -113,32 +167,33 @@ Variables                                                       *Variables*
         $*      Command line arguments ($1 $2 ...)
         "$*"    Command line arguments as single string
         "$@"    Command line arguments individually quoted ("$1"  "$2"  ...)
-    
-      Note:  you should virtually always use "$@" if you're passing
-      arguments to functions, scripts, or programs.  This allows the
-      arguments to be e.g. filenames with embedded spaces or other
-      characters that are in IFS and would cause the shell problems if
-      they weren't quoted.
+     
+        Note:  you should virtually always use "$@" if you're passing arguments
+        to functions, scripts, or programs.  This allows the arguments to be
+        e.g. filenames with embedded spaces or other characters that are in IFS
+        and would cause the shell problems if they weren't quoted.  IFS
+        (internal field separator) is " \t\n" by default, used by the shell to
+        split words in expansion.
 
-    Accessing and default values
+    Substring
+        ${v:o:l}    Return string at offset o (1-based) and up to l characters. 
+                    If l is omitted, return to end of string.
+    Accessing, default values, and parameter substitution
         ${v}        Use when follow-on characters could be interpreted as part
                     of variable name
-        ${v:o:l}    Substring:  return string at offset o and up to l
-                    characters; if l is omitted, return to end of string.
 
-        NOTE how the ':' changes the interpretation:  when it's
-        included, the operator tests for both the parameter's
-        existence and that its value is not null; if the colon is
-        omitted, the operator only tests for existence.
+        In the following, note how the ':' changes the interpretation:  when
+        it's included, the operator tests for both the parameter's existence and
+        that its value is not null; if the colon is omitted, the operator only
+        tests for existence.
 
         ${v:?msg}   If null, exit with error and print msg
-            A better practice for scripts is to use 'set -u' or 'set -o
-            nounset'.
+            A better practice for scripts is to use 'set -u' or 'set -o nounset'.
 
-        ${v-w}      If v not set, use $w
-        ${v:-w}     If v not set or is empty, use $w
-        ${v=w}      If v not set, evaluate expression as $w
-        ${v=w}      If v not set or is empty, evaluate expression as $w
+        ${v-w}      If v unset, use w
+        ${v:-w}     If v unset or is empty, use w
+        ${v=w}      If v unset, evaluate expression as $w
+        ${v:=w}      If v unset or is empty, evaluate expression as $w
         ${v+w}      If v set, evaluate expression as $w; otherwise null
         ${v:+w}     Same as ${v+w}
             Example:  a=${b:-*} fills a with files in current directory if
@@ -187,6 +242,59 @@ Variables                                                       *Variables*
       entirely different
             a=3 b=4 c=7  ls
       sets the variables only for the ls command.
+
+*VariableExamples*
+    
+    Substrings
+        a="abcde"
+        ${a:2}    --> "cde"
+        ${a:2:2}  --> "cd"
+
+    Accessing, default values, and parameter substitution
+        
+        unset v; echo "${v?Need value}"     --> "v: Need value"
+        v=""; echo "${v?Need value}"        --> ""
+        v=""; echo "${v:?Need value}"       --> set but empty, so get "v: Need value"
+
+        w="yy"
+        unset v; echo "x${v-}x"             --> "xx"
+        unset v; echo "x${v:-}x"            --> "xx"
+        unset v; echo "x${v-w}x"            --> "xwx"
+        unset v; echo "x${v-$w}x"           --> "xyyx"
+        unset v; echo "x${v:-w}x"           --> "xwx"
+        unset v; echo "x${v:-$w}x"          --> "xyyx"
+        
+        unset v; echo "x${v=w}x"            --> "xwx"
+        unset v; echo "x${v=$w}x"           --> "xyyx"
+        
+
+        In the following, note how the ':' changes the interpretation:  when
+        it's included, the operator tests for both the parameter's existence and
+        that its value is not null; if the colon is omitted, the operator only
+        tests for existence.
+
+        ${v:?msg}   If null, exit with error and print msg
+            A better practice for scripts is to use 'set -u' or 'set -o nounset'.
+
+        ${v-w}      If v not set, use w
+        ${v:-w}     If v not set or is empty, use w
+        ${v=w}      If v not set, evaluate expression as $w
+        ${v=w}      If v not set or is empty, evaluate expression as $w
+        ${v+w}      If v set, evaluate expression as $w; otherwise null
+        ${v:+w}     Same as ${v+w}
+            Example:  a=${b:-*} fills a with files in current directory if
+            b is null.
+        ${v:=w}     Set v to w if v null and return value
+        ${v:+w}     If not null, return w; if set, return null
+
+    Variable indirection
+        ${!a} means to expand name to a string and use it as the name
+        of the variable.
+
+        ${!name[@]} and ${!name[@]} are special if name is an array
+        variable; they expand to a list of the indexes.  When '@' is
+        used and the expansion is in double quotes, each index expands
+        to a separate word.
 
 ---------------------------------------------------------------------------
 
