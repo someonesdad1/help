@@ -256,16 +256,18 @@ Variables                                                       *Variables*
         v=""; echo "${v?Need value}"        --> ""
         v=""; echo "${v:?Need value}"       --> set but empty, so get "v: Need value"
 
-        w="yy"
-        unset v; echo "x${v-}x"             --> "xx"
-        unset v; echo "x${v:-}x"            --> "xx"
-        unset v; echo "x${v-w}x"            --> "xwx"
-        unset v; echo "x${v-$w}x"           --> "xyyx"
-        unset v; echo "x${v:-w}x"           --> "xwx"
-        unset v; echo "x${v:-$w}x"          --> "xyyx"
+        -, :- operators
+            w="yy"
+            unset v; echo "x${v-}x"             --> "xx"
+            unset v; echo "x${v:-}x"            --> "xx"
+            unset v; echo "x${v-w}x"            --> "xwx"
+            unset v; echo "x${v-$w}x"           --> "xyyx"
+            unset v; echo "x${v:-w}x"           --> "xwx"
+            unset v; echo "x${v:-$w}x"          --> "xyyx"
         
-        unset v; echo "x${v=w}x"            --> "xwx"
-        unset v; echo "x${v=$w}x"           --> "xyyx"
+        =, := operators
+            unset v; echo "x${v=w}x"            --> "xwx"
+            unset v; echo "x${v=$w}x"           --> "xyyx"
         
 
         In the following, note how the ':' changes the interpretation:  when
@@ -844,6 +846,47 @@ Changing case
     a="AN EXAMPLE"
     echo ${a,,}
     an example
+
+getopts for option processing in functions
+    https://unix.stackexchange.com/questions/62950/
+
+    while getopts "bifhkp:sut" x; do
+        case "$x" in
+            h)
+                printf "%s\\n" "$USAGE"
+                exit 2
+                ;;
+            b)
+                BATCH=1
+                ;;
+            i)
+                BATCH=0
+                ;;
+            f)
+                FORCE=1
+                ;;
+            k)
+                KEEP_PKGS=1
+                ;;
+            p)
+                PREFIX="$OPTARG"
+                ;;
+            s)
+                SKIP_SCRIPTS=1
+                ;;
+            u)
+                FORCE=1
+                ;;
+            t)
+                TEST=1
+                ;;
+            ?)
+                printf "ERROR: did not recognize option '%s', please try -h\\n" "$x"
+                exit 1
+                ;;
+        esac
+    done
+
 
 
 ---------------------------------------------------------------------------
