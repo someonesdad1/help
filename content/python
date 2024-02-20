@@ -787,6 +787,12 @@ for useful info about styles and idioms.  Also see the links at the bottom.
 ---------------------------------------------------------------------------
 Streams I/O (io module)                                    *python_streams*
 
+Binary with standard streams (or use -u command line option for unbuffered I/O)
+    To read stdin in binary:
+        sys.stdin.buffer.read(...)
+    To write stdout in binary:
+        sys.stdout.buffer.write(...)
+
 io.IOBase
     - No public constructor
     - Is a context manager; file is closed after CM block finishes

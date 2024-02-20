@@ -2,7 +2,7 @@
 
 |TestingExamples|   |Testing|
 |VariableExamples|  |Variables|                     
-|Control_flow|                       
+|Control_flow|      |ctrl_keys|
 |String_operations|             
 |Pattern_matching|
 |Arithmetic|
@@ -888,12 +888,41 @@ getopts for option processing in functions
     done
 
 
+---------------------------------------------------------------------------
+*ctrl_keys*
+
+    https://skorks.com/2009/09/bash-shortcuts-for-maximum-productivity/
+    Note that most of these don't work if you use vi bindings.
+
+    Also see JOB CONTROL in the bash manual.  You'll want to use 'shopt -s checkjobs' to 
+    have bash list the job status when you press ^D.
+
+    ^s      Stop output to screen
+    ^q      Resume output to screen
+    ^c      Terminate command
+    ^y      Stop process when it tries to read input
+    ^z      Suspend/stop the command (pending output/typeahead discarded)
+
+    Type 'jobs' to see what's running.  + denotes the current job, - is the previous job
+
+    kill %2     Kill job number 2
+    bg %2       Put job 2 into background
+    fg %2       Bring job 2 to foreground
+    %2          Same as 'fg %2'
+    %2 &        Same as 'bg %2'
+
+    '%ce'       Job whose command started with 'ce'
+    '%?ce'      Job whose command has 'ce' in it
+
+    %%          Current job, the last job stopped while it was in the foreground or started in
+                the background.  Can also use %
+    %-          Previous job
 
 ---------------------------------------------------------------------------
 References                                                   *References*
 
 [fox]       Ramey and Fox, "Bash Reference Manual", Rev. 5.2 (Sep 2022)
-[cooper]    M. Cooper, "Advanced Bash-Scripting Guide", ver. 10 (10 Mar 2014)
+[cooper]    Mendel Cooper, "Advanced Bash-Scripting Guide", ver. 10 (10 Mar 2014)
 [vpg]       https://vitalyparnas.com/guides/shell/
 [bnp]       Bash Notes for Professionals https://goalkicker.com/
 
