@@ -2189,6 +2189,76 @@ Use sorted to generate a sorted list from any iterable.
                     return tuple(obj[item] for item in items)
             return g
 
+py_array_indexing
+    See https://en.wikipedia.org/wiki/Row-_and_column-major_order#Address_calculation_in_general
+    for the general formulas for row-major and column-major addressing.
+
+    Here, we'll assume we're using python lists which store their elements consecutively in memory
+    in row-major order.  We'll use [row][col] index notation (0-based) for the lists as if they
+    were nested appropriately.
+
+    Let R = number of rows and C = number of columns of the 2D array.
+
+        Name matching       Here            Wikipedia page
+        First index         row             n1  
+        Second index        col             n2
+        First (row) dim     R               N1
+        First (col) dim     C               N2
+
+    Row-major offset of element [n1][n2] is 
+        n2 + N2*n1
+    translates to [row][col] being 
+        col + C*row
+
+    Column-major offset of element [n1][n2] is
+        n1 + N1*n2
+    translates to [row][col] being 
+        row + R*col
+
+    Summary:  given a python list with R*C elements where R is number of rows and C is number of
+    columns.  Using [row][col] index notation (0-based), the relevant list element's offset is
+
+        Row major:      col + C*row
+        Column major:   row + R*col
+
+    Example for checking:  matrix is
+        [1 2 3
+         4 5 6]
+
+    and list is [1, 2, 3, 4, 5, 6].  We have R = 2 and C = 3.  
+
+    A) The elements for column-major ordering are 'col + 3*row' and are:
+
+        row, col    Index       List element
+          0, 0        0              1
+          0, 1        1              2
+          0, 2        2              3
+          1, 0        3              4
+          1, 1        4              5
+          1, 2        5              6
+
+    A) The elements for column-major ordering are 'row + 2*col' and are:
+
+        row, col    Index       List element
+          0, 0        0              1
+          0, 1        2              3
+          0, 2        4              5
+          1, 0        1              2
+          1, 1        3              4
+          1, 2        5              6
+
+    C) Note:  if we read the matrix out in column-major order, we get the sequence 
+    [1, 4, 2, 5, 3, 6].  Using this order for the above table and still using
+    'row + 2*col', we get
+
+        row, col    Index       List element
+          0, 0        0              1
+          1, 0        1              2
+          0, 1        2              3
+          1, 1        3              4
+          0, 2        4              5
+          1, 2        5              6
+
 ---------------------------------------------------------------------------
 Descriptors                                    *python_descriptors*
 
@@ -2795,7 +2865,7 @@ Other selection methods
         according to the relative weights.  The relative weights [10, 5, 30, 5]
         are equivalent to the cumulative weights [10, 15, 45, 50].
     getrandbits(k)
-    `   Returns a integer with k random bits.
+        Returns a integer with k random bits.
     randrange([start], stop[, step])
         Randomly selected value from range(start, stop, step).  Same as 
         choice(range(start, stop, step)).
