@@ -1602,6 +1602,7 @@ Closures
             return power
 
 For mutable objects, x += y and x = x + y may not be the same; example:
+        NOTE:  for CPython, id returns the pointer address in memory
     >>> z = [1, 2, 3]
     >>> id(z)
     11050240
