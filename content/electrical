@@ -124,29 +124,80 @@ Physical properties of electrical conductors            *PhysProperties*
 
 Multiply sp.gr. by 0.0361 to get Density in lb/in^3
 Resistivity in uohm*cm
+Resistivity in nΩ·m
 Temp coeff at 20 deg C, 1/(deg C)
-Tensile strength in psi
+Tensile strength in MPa (multiply by 6895 to get Pa)
 m.p. in deg C
 
 Material     sp.gr.    Resistivity    Temp Coeff   Tensile Str.  m.p.
 ----------   ------    -----------    ----------   ------------  -----
-Aluminum      2.70         2.824        .0039        30000        659
-Copper        8.89         1.7241       .00393       30000       1083
-Brass         8.6          7            .002                      900
-Gold         19.3          2.44         .0034        20000       1063
-Iron          7.8         10            .005                     1530
-Lead         11.4         22            .0039         3000        327
-Magnesium     1.74         4.6          .004         33000        651
-Monel         8.9         42            .0020       160000       1300
-Nichrome      8.2        100            .0004       150000       1500
-Nickel        8.9          7.8          .0033       120000       1452
-Platinum     21.4         10            .003         50000       1755
-Silver       10.5          1.59         .0038        42000        960
-Steel         7.7         11            .004         58000       1510
-Tin           7.3         11.5          .0042         4000        232
-Zinc          7.1          5.8          .0037        10000        419
+Aluminum      2.70        28.24         0.0039        206          659
+Copper        8.89        17.241        0.00393       206         1083
+Brass         8.6         70            0.002                      900
+Gold         19.3         24.4          0.0034        138         1063
+Iron          7.8        100            0.005                     1530
+Lead         11.4        220            0.0039         21          327
+Magnesium     1.74        46            0.004         228          651
+Monel         8.9        420            0.0020       1100         1300
+Nichrome      8.2       1000            0.0004       1030         1500
+Nickel        8.9         78            0.0033        830         1452
+Platinum     21.4        100            0.003         345         1755
+Silver       10.5         15.9          0.0038        290          960
+Steel         7.7        110            0.004         400         1510
+Tin           7.3        115            0.0042         28          232
+Zinc          7.1         58            0.0037         69          419
 
 Source:  CRC Handbook of Chemistry & Physics, 59th ed., pg E-84.
+
+Resistivity of copper
+    Absolute temperature = T is in K
+    Resistivity = ρ, nΩ·m
+    Function form of a + b*T + c*T²
+    Solid 298-1358 K:    ρ = 1.5699e-5*T² + 5.3348e-2*T - 1.0205e-1
+        Note:  this gives 16.886, which is  2% low from the correct value at 20 °C
+    Liquid 1358-2843 K:  ρ = 1.2481e-5*T² + 5.0574e-2*T + 1.1948e2
+        Test values:  for T = 800 K,  ρ = 52.6237 nΩ·m
+                      for T = 2000 K, ρ = 270.5520 nΩ·m
+    
+    Source:  Section 3.2, "Copper resistivity" of R. Berning and M. Coppinger, "An Exploding-Wire
+    Circuit Model", ARL-TR-8983, June 2020 (Weapons and Materials Research Directorate, CCDC Army
+    Research Laboratory).  This source, in turn, uses the data from Matula RA. "Electrical
+    resistivity of copper, gold, palladium, and silver", J Phys Chem Ref Data, 1979;8(4):1147–1298
+    and Gathers GR, "Thermophysical properties of liquid copper and aluminum", International
+    Journal of Thermophysics, 1983;4(3):209–226.
+
+Specific heat of copper
+    Shorter form
+        Specific heat = ΔH is in J/g
+        Absolute temperature = T is in K
+        Function form of a + b*T + c*T²
+        Solid phase 298-1358 K
+            ΔH = 5.1939e-5*T² + 3.5265e-1*T - 1.0929e2
+        Liquid phase 1358-2843 K
+            ΔH = 5.1686e-1*T - 2.8402e1
+        Gas phase 2843-6000 K
+            ΔH = 2.4316e-5*T² + 2.7071e-1*T + 5.2001e3
+        Source:  Section 3, "Copper Wires" of R. Berning and M. Coppinger, "An Exploding-Wire
+        Circuit Model", ARL-TR-8983, June 2020 (Weapons and Materials Research Directorate, CCDC
+        Army Research Laboratory)
+
+    NIST Shomate equation for specific heat of copper
+        https://webbook.nist.gov/cgi/inchi?ID=C7440508&Type=JANAFS&Plot=on
+
+            Cp = A + B*t + C*t2 + D*t3 + E/t2
+
+        for 298 to 1358 K.  Symbols:
+            Cp = specific heat, J/(mol*K)
+            T = temperature, K
+            t = T/1000, K
+            A = 17.72891
+            B = 28.09870
+            C = -31.25289
+            D = 13.97243
+            E = 0.068611
+    
+            Ref:  Chase, M.W., Jr., NIST-JANAF Themochemical Tables, Fourth Edition, J. Phys.
+            Chem. Ref. Data, Monograph 9, 1998, 1-1951.
 
 -----------------------------------------------------------------------------
 Allowable current carrying capacities of conductors (NEC)   *Ampacities*
@@ -171,68 +222,75 @@ AWG       Insulation        Insulation        Conductor
  0            125              150               200      
 00            150              180               225       
 
-*  The allowable carrying capacities of No. 18 and 16 are 5 and
-   7 A respectively when in flexible cords.
+*  The allowable carrying capacities of No. 18 and 16 are 5 and 7 A respectively when in flexible
+   cords.
 
-** The allowable carrying capacities of No. 18 and 16 are 10 and
-   15 A respectively when in cords for portable heaters.  Types
-   AFS, AFSJ, HC, HPD, and HSJ.
+** The allowable carrying capacities of No. 18 and 16 are 10 and 15 A respectively when in cords
+   for portable heaters.  Types AFS, AFSJ, HC, HPD, and HSJ.
 
 Source:  CRC Handbook of Chemistry & Physics, 59th ed., pg F-163.
 
-Also see https://www.powerstream.com/Wire_Size.htm.  Richard Nelson uses
-this for his references; note 18 gauge is rated at 16 A for chassis
-wiring.  Here are ratings from my python script which are made from
-regressions of NEC ampacities.
+Here's a copper wire table from my /plib/pgm/cu_wire.py script.  The Chass current in A is what 
+has been determined to be a reasonable ampacity for a single wire in air.
 
-       Diameter      Res/length   Length/mass    Area          Amps
- AWG  mils    mm   ohm/ft  ohm/m  ft/lb  m/kg    mm^2    60 C   75 C   90 C
-----  ----- ------ ------  -----  -----  -----  -----   -----  -----  -----
-   0  324.9  8.252  98.2μ   322μ   3.13   2.10   53.5     120    150    170
-   2  257.6  6.543   156μ   513μ   4.97   3.34   33.6      92    120    130
-   4  204.3  5.189   248μ   815μ   7.91   5.31   21.1      70     87    100
-   6  162.0  4.115   395μ  1.30m   12.6   8.45   13.3      53     67     77
-   8  128.5  3.264   628μ  2.06m   20.0   13.4   8.37      40     51     58
-  10  101.9  2.588   999μ  3.28m   31.8   21.4   5.26      31     38     44
-  12  80.80  2.052  1.59m  5.21m   50.5   34.0   3.31      20     20     20
-  14  64.10  1.628  2.52m  8.28m   80.3   54.0   2.08      15     15     15
-  16  50.80  1.290  4.02m  13.2m    128   85.9   1.31     9.3    9.3    9.3
-  18  40.30  1.024  6.39m  21.0m    203    137   823m     5.8    5.8    5.8
-  20  32.00  .8128  10.1m  33.2m    322    217   519m     3.7    3.7    3.7
-  22  25.30  .6426  16.2m  53.2m    516    346   324m     2.3    2.3    2.3
-  24  20.10  .5105  25.7m  84.2m    817    549   205m     1.4    1.4    1.4
-  26  15.90  .4039  41.0m   135m  1.31k    877   128m    910m   910m   910m
-  28  12.60  .3200  65.3m   214m  2.08k  1.40k  80.4m    570m   570m   570m
-  30  10.00  .2540   104m   340m  3.30k  2.22k  50.7m    360m   360m   360m
-  32  7.950  .2019   164m   538m  5.22k  3.51k  32.0m    230m   230m   230m
-  34  6.300  .1600   261m   857m  8.31k  5.59k  20.1m    140m   140m   140m
-  36  5.000  .1270   415m   1.36  13.2k  8.87k  12.7m     90m    90m    90m
-  38  3.960  .1006   661m   2.17  21.0k  14.1k  7.95m     56m    56m    56m
-  40  3.140 .07976   1.05   3.45  33.5k  22.5k  5.00m     35m    35m    35m
+    Copper wire table (annealed copper)
+                                                Chass
+    AWG    ∅ mm      Ω/m     m/kg       mm²       A
+    ---    ----     -----    ----      -----    -----
+    4/0    11.7      161μ    1.05        107      380 
+    3/0    10.4      203μ    1.32       85.0      330 
+    2/0    9.27      256μ    1.67       67.4      280 
+      0    8.25      322μ    2.10       53.5      240 
+      2    6.54      513μ    3.34       33.6      180 
+      4    5.19      815μ    5.31       21.1      140 
+      6    4.11     1.30m    8.45       13.3      100 
+      8    3.26     2.06m    13.4       8.37       73 
+     10    2.59     3.28m    21.4       5.26       55 
+     12    2.05     5.21m    34.0       3.31       41 
+     14    1.63     8.28m    54.0       2.08       32 
+     16    1.29     13.2m    85.9       1.31       22 
+     18    1.02     21.0m     137       823m       16 
+     20    .813     33.2m     217       519m       11 
+     22    .643     53.2m     346       324m      7.0 
+     24    .511     84.2m     549       205m      3.5 
+     26    .404      135m     877       128m      2.2 
+     28    .320      214m   1.40k      80.4m      1.4 
+     30    .254      340m   2.22k      50.7m     860m 
+    
+    Resistivities in nΩ·m @ 20 °C   [Rel. to Cu]
+    Silver          15.9  [0.92]    Platinum        106   [6.1]
+    Copper          17.2  [1.0]     Tin             109   [6.3]
+    Gold            24.4  [1.4]     Steel           143   [8.3]
+    Aluminum        26.5  [1.5]     Lead            220   [13]
+    Tungsten         56   [3.2]     Titanium        420   [24]
+    Zinc             59   [3.4]     Manganin        480   [28]
+    Brass, 30% Zn   59.9  [3.5]     Constantan      490   [28]
+    Cobalt          62.4  [3.6]     304 steel       690   [40]
+    Nickel          69.9  [4.1]     Mercury         980   [57]
+    Iron             97   [5.6]
 
-Amps = maximum current for <= 3 wires with insulation temp rating in deg C.
-Ambient T <= 30 C.  (From regression of NEC-allowed current densities.)
-Range of j in A/mm2:  2.5 for wire isolated from free air to 6 for a
-wire in free air.  Substantially higher with forced air flow.
-Silicone test wire A/mm2:  23 ga: 9.1, 21 ga: 15, >= 20 ga: 20.
+    Amps = maximum current for <= 3 wires with insulation temp rating in deg C.  Ambient T <= 30
+    C.  (From regression of NEC-allowed current densities.) Range of j in A/mm2:  2.5 for wire
+    isolated from free air to 6 for a wire in free air.  Substantially higher with forced air
+    flow.  Silicone test wire A/mm2:  23 ga: 9.1, 21 ga: 15, >= 20 ga: 20.
 
-Resistance per unit length is for solid copper.  Stranded wire of the
-same size can have a resistance up to 8% higher.  Twisting wires together
-can add 0.5% to 3% more resistance because of increased length.
+    Resistance per unit length is for solid copper.  Stranded wire of the same size can have a
+    resistance up to 8% higher.  Twisting wires together can add 0.5% to 3% more resistance
+    because of increased length.
 
-Resistivity of Cu is 17.2 nohm*m.  Factors for other materials (at 20 C):
-Al: 1.6, Graphite: 2-36, Constantan (55Cu-45Ni): 29.1, Fe: 5.8, Pb: 12.3,
-Manganin (86Cu-12Mn-2Ni): 25-27.9, Pt: 6.28, Ag: 0.950, W: 3.38, Zn: 3.54,
-Nichrome(~ 80Ni-20Cr, sometimes Fe): 58-87, Stainless steel: 40
+    Resistivity of Cu is 17.2 nohm*m.  Factors for other materials (at 20 C): Al: 1.6, Graphite:
+    2-36, Constantan (55Cu-45Ni): 29.1, Fe: 5.8, Pb: 12.3, Manganin (86Cu-12Mn-2Ni): 25-27.9, Pt:
+    6.28, Ag: 0.950, W: 3.38, Zn: 3.54, Nichrome(~ 80Ni-20Cr, sometimes Fe): 58-87, Stainless
+    steel: 40
 
-The 0.041" diameter stainless steel wire from Harbor Freight has a resistance
-of 0.1 ohm per 119 mm = 8.4 mohm/cm = 21 mohm/inch = 0.26 ohm/ft.
+    The 0.041" diameter stainless steel wire from Harbor Freight has a resistance of 0.1 ohm per
+    119 mm = 8.4 mohm/cm = 21 mohm/inch = 0.26 ohm/ft.
 
-RG-58/U coax has a 0.9 mm diameter inner conductor (19 gauge) and an outside
-diameter of 5 mm.  Capacitance is 90 ± 5 pF/m.
+    RG-58/U coax has a 0.9 mm diameter inner conductor (19 gauge) and an outside diameter of 5 mm.
+    Capacitance is 90 ± 5 pF/m.
 
-1000*TCR in 1/K @ 20 degC:  annealed copper: 3.93, aluminum: 3.8, carbon:
--0.25, iron: 5.0, lead: 4.3, Pt: 3.8, Ag: 4.0, W: 4.5, Zn: 3.7
+    1000*TCR in 1/K @ 20 degC:  annealed copper: 3.93, aluminum: 3.8, carbon: -0.25, iron: 5.0,
+    lead: 4.3, Pt: 3.8, Ag: 4.0, W: 4.5, Zn: 3.7
 
 -----------------------------------------------------------------------------
 Nichrome wire                                            *Nichrome_Wire*
