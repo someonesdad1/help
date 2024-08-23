@@ -16,118 +16,110 @@
 Note:  a circularmil is a unit of area; it is gotten by expressing the
 diameter in mils and squaring.  Thus, 
     circularmil = pi*mil^2/4 = 5.06707e-10 m^2
+It's 'cmil' in the GNU units program.
 
 -----------------------------------------------------------------------------
-Annealed copper wire table (20 deg C)                          *Cu_wire*
+Copper wire table (annealed copper)                             *Cu_wire*
+                                            Chass
+AWG    ∅ mm      Ω/m     m/kg       mm²       A
+---    ----     -----    ----      -----    -----
+4/0    11.7      161μ    1.05        107      380 
+3/0    10.4      203μ    1.32       85.0      330 
+2/0    9.27      256μ    1.67       67.4      280 
+  0    8.25      322μ    2.10       53.5      240 
+  2    6.54      513μ    3.34       33.6      180 
+  4    5.19      815μ    5.31       21.1      140 
+  6    4.11     1.30m    8.45       13.3      100 
+  8    3.26     2.06m    13.4       8.37       73 
+ 10    2.59     3.28m    21.4       5.26       55 
+ 12    2.05     5.21m    34.0       3.31       41 
+ 14    1.63     8.28m    54.0       2.08       32 
+ 16    1.29     13.2m    85.9       1.31       22 
+ 18    1.02     21.0m     137       823m       16 
+ 20    .813     33.2m     217       519m       11 
+ 22    .643     53.2m     346       324m      7.0 
+ 24    .511     84.2m     549       205m      3.5 
+ 26    .404      135m     877       128m      2.2 
+ 28    .320      214m   1.40k      80.4m      1.4 
+ 30    .254      340m   2.22k      50.7m     860m 
 
-       Diameter     Res/length    Mass/length    Area          Amps
- AWG  mils    mm   ohm/ft  ohm/m  ft/lb  m/kg    mm^2    60 C   75 C   90 C
-----  ----- ------ ------  -----  -----  -----  -----   -----  -----  -----
-   4  204.3  5.189   248u   815u   7.91   5.31   21.2      70     87    100
-   6  162.0  4.115   395u  1.30m   12.6   8.45   13.3      53     67     77
-   8  128.5  3.264   628u  2.06m   20.0   13.4   8.37      40     51     58
-  10  101.9  2.588   999u  3.28m   31.8   21.4   5.26      31     38     44
-  12  80.81  2.053  1.59m  5.21m   50.5   34.0   3.31      20     20     20
-  14  64.08  1.628  2.53m  8.29m   80.4   54.0   2.08      15     15     15
-  16  50.82  1.291  4.02m  13.2m    128   85.9   1.31     9.3    9.3    9.3
-  18  40.30  1.024  6.38m  20.9m    203    137   823m     5.8    5.8    5.8
-  20  31.96  .8118  10.2m  33.3m    323    217   518m     3.7    3.7    3.7
-  22  25.35  .6438  16.1m  53.0m    514    345   326m     2.3    2.3    2.3
-  24  20.10  .5106  25.7m  84.2m    817    549   205m     1.4    1.4    1.4
-  26  15.94  .4049  40.8m   134m  1.30k    873   129m    910m   910m   910m
-  28  12.64  .3211  64.9m   213m  2.06k  1.39k  81.0m    570m   570m   570m
-  30  10.03  .2546   103m   339m  3.28k  2.21k  50.9m    360m   360m   360m
+Resistivities in nΩ·m @ 20 °C   [Rel. to Cu]
+Silver          15.9  [0.92]    Platinum        106   [6.1]
+Copper          17.2  [1.0]     Tin             109   [6.3]
+Gold            24.4  [1.4]     Steel           143   [8.3]
+Aluminum        26.5  [1.5]     Lead            220   [13]
+Tungsten         56   [3.2]     Titanium        420   [24]
+Zinc             59   [3.4]     Manganin        480   [28]
+Brass, 30% Zn   59.9  [3.5]     Constantan      490   [28]
+Cobalt          62.4  [3.6]     304 steel       690   [40]
+Nickel          69.9  [4.1]     Mercury         980   [57]
+Iron             97   [5.6]
 
-       Diameter     Res/length    Mass/length    Area          Amps
- AWG  mils    mm   ohm/ft  ohm/m  ft/lb  m/kg    mm^2    60 C   75 C   90 C
-----  ----- ------ ------  -----  -----  -----  -----   -----  -----  -----
-0000  460.0  11.68  49.0u   161u   1.56   1.05    107     180    230    260
- 000  409.6  10.40  61.8u   203u   1.97   1.32   85.0     160    200    230
-  00  364.8  9.266  77.9u   256u   2.48   1.67   67.4     140    170    200
-   0  324.9  8.251  98.3u   322u   3.13   2.10   53.5     120    150    170
-   1  289.3  7.348   124u   407u   3.94   2.65   42.4     110    130    150
-   2  257.6  6.544   156u   513u   4.97   3.34   33.6      92    120    130
-   3  229.4  5.827   197u   646u   6.27   4.21   26.7      80    100    120
-   4  204.3  5.189   248u   815u   7.91   5.31   21.2      70     87    100
-   5  181.9  4.621   313u  1.03m   9.97   6.70   16.8      61     76     88
-   6  162.0  4.115   395u  1.30m   12.6   8.45   13.3      53     67     77
-   7  144.3  3.665   498u  1.63m   15.9   10.7   10.5      46     58     67
-   8  128.5  3.264   628u  2.06m   20.0   13.4   8.37      40     51     58
-   9  114.4  2.906   792u  2.60m   25.2   16.9   6.63      35     44     51
-  10  101.9  2.588   999u  3.28m   31.8   21.4   5.26      31     38     44
-  11  90.74  2.305  1.26m  4.13m   40.1   26.9   4.17      24     26     28
-  12  80.81  2.053  1.59m  5.21m   50.5   34.0   3.31      20     20     20
-  13  71.96  1.828  2.00m  6.57m   63.7   42.8   2.62      17     17     17
-  14  64.08  1.628  2.53m  8.29m   80.4   54.0   2.08      15     15     15
-  15  57.07  1.450  3.18m  10.4m    101   68.1   1.65      12     12     12
-  16  50.82  1.291  4.02m  13.2m    128   85.9   1.31     9.3    9.3    9.3
-  17  45.26  1.150  5.06m  16.6m    161    108   1.04     7.3    7.3    7.3
-  18  40.30  1.024  6.38m  20.9m    203    137   823m     5.8    5.8    5.8
-  19  35.89  .9116  8.05m  26.4m    256    172   653m     4.6    4.6    4.6
-  20  31.96  .8118  10.2m  33.3m    323    217   518m     3.7    3.7    3.7
-  21  28.46  .7229  12.8m  42.0m    407    274   410m     2.9    2.9    2.9
-  22  25.35  .6438  16.1m  53.0m    514    345   326m     2.3    2.3    2.3
-  23  22.57  .5733  20.4m  66.8m    648    435   258m     1.8    1.8    1.8
-  24  20.10  .5106  25.7m  84.2m    817    549   205m     1.4    1.4    1.4
-  25  17.90  .4547  32.4m   106m  1.03k    692   162m     1.1    1.1    1.1
-  26  15.94  .4049  40.8m   134m  1.30k    873   129m    910m   910m   910m
-  27  14.20  .3606  51.5m   169m  1.64k  1.10k   102m    720m   720m   720m
-  28  12.64  .3211  64.9m   213m  2.06k  1.39k  81.0m    570m   570m   570m
-  29  11.26  .2859  81.8m   268m  2.60k  1.75k  64.2m    450m   450m   450m
-  30  10.03  .2546   103m   339m  3.28k  2.21k  50.9m    360m   360m   360m
-  31  8.928  .2268   130m   427m  4.14k  2.78k  40.4m    290m   290m   290m
-  32  7.950  .2019   164m   538m  5.22k  3.51k  32.0m    230m   230m   230m
-  33  7.080  .1798   207m   679m  6.58k  4.42k  25.4m    180m   180m   180m
-  34  6.305  .1601   261m   856m  8.30k  5.58k  20.1m    140m   140m   140m
-  35  5.615  .1426   329m   1.08  10.5k  7.03k  16.0m    110m   110m   110m
-  36  5.000  .1270   415m   1.36  13.2k  8.87k  12.7m     90m    90m    90m
-  37  4.453  .1131   523m   1.72  16.6k  11.2k  10.0m     71m    71m    71m
-  38  3.965  .1007   660m   2.16  21.0k  14.1k  7.97m     56m    56m    56m
-  39  3.531 .08969   832m   2.73  26.5k  17.8k  6.32m     45m    45m    45m
-  40  3.145 .07987   1.05   3.44  33.4k  22.4k  5.01m     35m    35m    35m
-  41  2.800 .07113   1.32   4.34  42.1k  28.3k  3.97m     28m    28m    28m
-  42  2.494 .06334   1.67   5.47  53.1k  35.7k  3.15m     22m    22m    22m
-  43  2.221 .05641   2.10   6.90  66.9k  45.0k  2.50m     18m    18m    18m
-  44  1.978 .05023   2.65   8.70  84.4k  56.7k  1.98m     14m    14m    14m
-  45  1.761 .04473   3.34   11.0   106k  71.5k  1.57m     11m    11m    11m
-  46  1.568 .03984   4.22   13.8   134k  90.2k  1.25m    8.8m   8.8m   8.8m
-  47  1.397 .03547   5.32   17.4   169k   114k   988u    7.0m   7.0m   7.0m
-  48  1.244 .03159   6.70   22.0   213k   143k   784u    5.5m   5.5m   5.5m
-  49  1.108 .02813   8.45   27.7   269k   181k   622u    4.4m   4.4m   4.4m
-  50  .9863 .02505   10.7   35.0   339k   228k   493u    3.5m   3.5m   3.5m
-  51  .8783 .02231   13.4   44.1   428k   287k   391u    2.8m   2.8m   2.8m
-  52  .7822 .01987   17.0   55.6   539k   362k   310u    2.2m   2.2m   2.2m
-  53  .6966 .01769   21.4   70.1   680k   457k   246u    1.7m   1.7m   1.7m
-  54  .6203 .01576   27.0   88.4   858k   576k   195u    1.4m   1.4m   1.4m
-
-    Amps = maximum current for <= 3 wires with insul temp rating in deg C.  
-    Ambient T <= 30 C.  (From regression of NEC-allowed current densities.)
+Chass is chassis current in A and is about the limit you'd want a single conductor to be run at in
+air.  The wire will be heated, but not enough to damage the insulation.  Apparently these data
+came from SAMS, Handbook of Electronics Tables and Formulas, various editions.  The web page
+https://www.powerstream.com/Wire_Size.htm quotes this reference as the source for the Chassis
+wiring ampacity values (I don't have a copy of the original book).  These data, in turn, probably
+came from MIL-W-5088L.  In particular, look at Figure 3 on page 46 and 47.  The Chass ratings in
+this script come pretty close to the numbers given in MIL-W-5088L for a ΔT of 60°C.  If you assume
+an ambient temperature of 30°C, then this means the insulation temperature will be around 90°C, a
+common insulation temperature rating.  5088L was produced from measurements made in the 1960's for
+the design of aerospace vehicles.
 
 Source:
-    Calculated from python script.
-    diameter in inches = 92.**((36 - n)/39)/200
-        Formula from units.dat file of GNU units program version 1.80.
-        This, in turn, states it comes from ASTM B-258 and that the gauge
-        is based on geometric interpolation between gauge 0000, which is
-        0.46 inches exactly, and gauge 36, which is 0.005 inches exactly.
-        Then it makes the statement that the above formula is the proper
-        one for this relationship.  Gauges < 44 are to be rounded to the
-        nearest 1e-4 inches; gauges from 44 to 56 are to be rounded to the
-        nearest 1e-5 inches.  Note that typical published tables don't
-        necessarily agree with the formula.
-    Density = 8.9 g/cc = 8900 kg/m3 = 0.3215 lb/in^3
+    Calculated from python script /plib/pgm/cu_wire.py
+    diameter in inches = 92**((36 - n)/39)/200
+        Formula from units.dat file of GNU units program version 1.80.  This, in turn, states it
+        comes from ASTM B-258 and that the gauge is based on geometric interpolation between gauge
+        0000, which is 0.46 inches exactly, and gauge 36, which is 0.005 inches exactly.  Then it
+        makes the statement that the above formula is the proper one for this relationship.
+        Gauges < 44 are to be rounded to the nearest 1e-4 inches; gauges from 44 to 56 are to be
+        rounded to the nearest 1e-5 inches.  Note that typical published tables don't necessarily
+        agree with the formula.
+    Density of copper = 8.9 g/cc = 8900 kg/m3 = 0.3215 lb/in^3
     Conductivity = 58 MS/m at 68 deg F.
-    (same as a resistivity of 1.724 uohm*cm = 17.24 nohm*m)
+    Resistivity of copper is 17.241 nΩ·m at 20 °C (international agreement in 1914)
+
+Temperature coefficient of resistivity α (TCR) in 1/kK @ 20 °C 
+    annealed copper     3.93
+    aluminum            3.8
+    carbon             -0.25
+    iron                5.0
+    lead                4.3
+    Pt                  3.8
+    Ag                  4.0
+    W                   4.5
+    Zn                  3.7
+
+    The linear approximation using α is then
+
+        R = R₀*(1 + α(T - T₀)]
+
+    where R₀ is the resistance at T₀ = 20 °C
+
+The TCR of copper is essentially linear to 400 °C and mildly quadratic to the melting point at
+1085 °C.  See ExplodingWireCircuitModel_2020.pdf in /ebooks, which gives temperature models for
+enthalpy and resistivity of Cu, Al, Mo, W, Ti, and Mg wires.
+
+Resistance per unit length is for solid copper.  Stranded wire of the same size can have a
+resistance up to 8% higher.  Twisting wires together can add 0.5% to 3% more resistance because of
+increased length.
+
+The 0.041" diameter stainless steel wire from Harbor Freight has a resistance of 0.1 ohm per 119
+mm = 8.4 mohm/cm = 21 mohm/inch = 0.26 ohm/ft.
+
+RG-58/U coax has a 0.9 mm diameter inner conductor (19 gauge) and an outside diameter of 5 mm.
+Capacitance is 90 ± 5 pF/m.
 
 -----------------------------------------------------------------------------
 Physical properties of electrical conductors            *PhysProperties*
 
-Multiply sp.gr. by 0.0361 to get Density in lb/in^3
-Resistivity in uohm*cm
+sp.gr. is specific gravity in g/mL
+Multiply sp.gr. by 0.0361 to get density in lb/in^3
 Resistivity in nΩ·m
-Temp coeff at 20 deg C, 1/(deg C)
+Temp coeff at 20 °C in 1/K
 Tensile strength in MPa (multiply by 6895 to get Pa)
-m.p. in deg C
+m.p. = melting point in °C
 
 Material     sp.gr.    Resistivity    Temp Coeff   Tensile Str.  m.p.
 ----------   ------    -----------    ----------   ------------  -----
@@ -231,68 +223,6 @@ AWG       Insulation        Insulation        Conductor
    for portable heaters.  Types AFS, AFSJ, HC, HPD, and HSJ.
 
 Source:  CRC Handbook of Chemistry & Physics, 59th ed., pg F-163.
-
-Here's a copper wire table from my /plib/pgm/cu_wire.py script.  The Chass current in A is what 
-has been determined to be a reasonable ampacity for a single wire in air.
-
-    Copper wire table (annealed copper)
-                                                Chass
-    AWG    ∅ mm      Ω/m     m/kg       mm²       A
-    ---    ----     -----    ----      -----    -----
-    4/0    11.7      161μ    1.05        107      380 
-    3/0    10.4      203μ    1.32       85.0      330 
-    2/0    9.27      256μ    1.67       67.4      280 
-      0    8.25      322μ    2.10       53.5      240 
-      2    6.54      513μ    3.34       33.6      180 
-      4    5.19      815μ    5.31       21.1      140 
-      6    4.11     1.30m    8.45       13.3      100 
-      8    3.26     2.06m    13.4       8.37       73 
-     10    2.59     3.28m    21.4       5.26       55 
-     12    2.05     5.21m    34.0       3.31       41 
-     14    1.63     8.28m    54.0       2.08       32 
-     16    1.29     13.2m    85.9       1.31       22 
-     18    1.02     21.0m     137       823m       16 
-     20    .813     33.2m     217       519m       11 
-     22    .643     53.2m     346       324m      7.0 
-     24    .511     84.2m     549       205m      3.5 
-     26    .404      135m     877       128m      2.2 
-     28    .320      214m   1.40k      80.4m      1.4 
-     30    .254      340m   2.22k      50.7m     860m 
-    
-    Resistivities in nΩ·m @ 20 °C   [Rel. to Cu]
-    Silver          15.9  [0.92]    Platinum        106   [6.1]
-    Copper          17.2  [1.0]     Tin             109   [6.3]
-    Gold            24.4  [1.4]     Steel           143   [8.3]
-    Aluminum        26.5  [1.5]     Lead            220   [13]
-    Tungsten         56   [3.2]     Titanium        420   [24]
-    Zinc             59   [3.4]     Manganin        480   [28]
-    Brass, 30% Zn   59.9  [3.5]     Constantan      490   [28]
-    Cobalt          62.4  [3.6]     304 steel       690   [40]
-    Nickel          69.9  [4.1]     Mercury         980   [57]
-    Iron             97   [5.6]
-
-    Amps = maximum current for <= 3 wires with insulation temp rating in deg C.  Ambient T <= 30
-    C.  (From regression of NEC-allowed current densities.) Range of j in A/mm2:  2.5 for wire
-    isolated from free air to 6 for a wire in free air.  Substantially higher with forced air
-    flow.  Silicone test wire A/mm2:  23 ga: 9.1, 21 ga: 15, >= 20 ga: 20.
-
-    Resistance per unit length is for solid copper.  Stranded wire of the same size can have a
-    resistance up to 8% higher.  Twisting wires together can add 0.5% to 3% more resistance
-    because of increased length.
-
-    Resistivity of Cu is 17.2 nohm*m.  Factors for other materials (at 20 C): Al: 1.6, Graphite:
-    2-36, Constantan (55Cu-45Ni): 29.1, Fe: 5.8, Pb: 12.3, Manganin (86Cu-12Mn-2Ni): 25-27.9, Pt:
-    6.28, Ag: 0.950, W: 3.38, Zn: 3.54, Nichrome(~ 80Ni-20Cr, sometimes Fe): 58-87, Stainless
-    steel: 40
-
-    The 0.041" diameter stainless steel wire from Harbor Freight has a resistance of 0.1 ohm per
-    119 mm = 8.4 mohm/cm = 21 mohm/inch = 0.26 ohm/ft.
-
-    RG-58/U coax has a 0.9 mm diameter inner conductor (19 gauge) and an outside diameter of 5 mm.
-    Capacitance is 90 ± 5 pF/m.
-
-    1000*TCR in 1/K @ 20 degC:  annealed copper: 3.93, aluminum: 3.8, carbon: -0.25, iron: 5.0,
-    lead: 4.3, Pt: 3.8, Ag: 4.0, W: 4.5, Zn: 3.7
 
 -----------------------------------------------------------------------------
 Nichrome wire                                            *Nichrome_Wire*
