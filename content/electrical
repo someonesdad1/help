@@ -158,6 +158,8 @@ Resistivity of copper
     Liquid 1358-2843 K:  ρ = 1.2481e-5*T² + 5.0574e-2*T + 1.1948e2
         Test values:  for T = 800 K,  ρ = 52.6237 nΩ·m
                       for T = 2000 K, ρ = 270.5520 nΩ·m
+
+    See copper_resistivity.png produced by /plib/pgm/cu_resistivity.py
     
     Source:  Section 3.2, "Copper resistivity" of R. Berning and M. Coppinger, "An Exploding-Wire
     Circuit Model", ARL-TR-8983, June 2020 (Weapons and Materials Research Directorate, CCDC Army
