@@ -13,8 +13,8 @@
     Brass screw is hot
     Silver screw is neutral
 
-Note:  a circularmil is a unit of area; it is gotten by expressing the
-diameter in mils and squaring.  Thus, 
+Note:  a circularmil is a unit of area; it is gotten by expressing the diameter in mils and
+squaring.  Thus, 
     circularmil = pi*mil^2/4 = 5.06707e-10 m^2
 It's 'cmil' in the GNU units program.
 
@@ -139,7 +139,7 @@ Steel         7.7        110            0.004         400         1510
 Tin           7.3        115            0.0042         28          232
 Zinc          7.1         58            0.0037         69          419
 
-Source:  CRC Handbook of Chemistry & Physics, 59th ed., pg E-84.
+Source:  CRC Handbook of Chemistry & Physics, 59th ed., 1979, pg E-84.
 
 Resistivity of copper
     Absolute temperature = T is in K
@@ -216,13 +216,12 @@ AWG       Insulation        Insulation        Conductor
  0            125              150               200      
 00            150              180               225       
 
-*  The allowable carrying capacities of No. 18 and 16 are 5 and 7 A respectively when in flexible
-   cords.
+*  The allowable carrying capacities of No. 18 and 16 are 5 and 7 A respectively when in flexible cords.
 
 ** The allowable carrying capacities of No. 18 and 16 are 10 and 15 A respectively when in cords
-   for portable heaters.  Types AFS, AFSJ, HC, HPD, and HSJ.
+    for portable heaters.  Types AFS, AFSJ, HC, HPD, and HSJ.
 
-Source:  CRC Handbook of Chemistry & Physics, 59th ed., pg F-163.
+Source:  CRC Handbook of Chemistry & Physics, 59th ed., 1979, pg F-163.
 
 -----------------------------------------------------------------------------
 Nichrome wire                                            *Nichrome_Wire*
@@ -242,9 +241,8 @@ Nichrome wire                                            *Nichrome_Wire*
 -----------------------------------------------------------------------------
 Resistor color code                                *Resistor_Color_Code*
 
-Note the decimal point is implied after the last digit.  The standard is
-IEC 60062:2016.  To orient left to right, there is a gap between the last
-two bands.
+Note the decimal point is implied after the last digit.  The standard is IEC 60062:2016.  To
+orient left to right, there is a gap between the last two bands.
 
          Abbreviation       Digit     Multiplier    Tolerance, %
 Black        blk              0           1             -
@@ -321,7 +319,7 @@ Thermoelectric voltages                         *Thermoelectric_voltages*
 
 (From Agilent app note 1389-1, pg. 2)
 
-Copper-to-          uV/degC
+Copper-to-           μV/°C
 ----------------    -------
 Copper                < 0.3
 Gold                    0.5
@@ -362,5 +360,5 @@ The formulas that relate these resistances are
   Ry = RxyRyz/(Rxy + Ryz + Rxz)
   Rz = RxzRyz/(Rxy + Ryz + Rxz)
 
-Sometimes using these equations is useful for simplifying a circuit
-without going through all of the equations from Kirchhoff's Laws.
+Sometimes using these equations is useful for simplifying a circuit without going through all of
+the equations from Kirchhoff's Laws.
