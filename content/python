@@ -37,6 +37,7 @@ Numerical
     |python_cmath|                   
     |python_number_methods|          
 Other
+    |python_plotext|
     |python_typehints|
     |python_readline|
     |python_pip|
@@ -10464,5 +10465,54 @@ m = hashlib.md5()
 m.update(some_bytes)  # Note it must be bytes
 m.digest()  --> Returns bytes
 m.hexdigest()  --> hex string
+
+--------------------------------------------------------------------------------
+plotext                                     *python_plotext*
+
+Terminal plotting tool with matplotlib syntax
+https://github.com/piccolomo/plotext/blob/master/readme/basic.md#introduction
+
+Example will fit itself to terminal window:
+    import plotext as p
+    y = p.sin()
+    width, height = p.terminal_size()
+    if 0:   # Change height to half
+        p.plot_size(width, height/2)
+    p.plot(y)
+    p.xlabel("x axis label")
+    p.ylabel("y axis label")
+    p.title("Sinusoid")
+    p.grid(False, True)   # horiz, vert booleans
+    p.theme("clear")
+        # Also try "pro", "matrix", "dark"
+    p.show()
+
+p.build() == show() except final figure is returned as string
+p.savefig(path, append=bool, keep_colors=bool)
+    If path ends in .html, then colors will be preserved
+
+Other plots
+    p.scatter(y)
+
+Logarithmic plot
+    p.sin(periods=2, length=1)
+    p.plot(y)
+    p.xscale("log")    # for logarithmic x scale
+    p.yscale("linear") # for linear y scale
+    p.grid(0, 1)       # to add vertical grid lines
+    p.title("Logarithmic Plot")
+    p.xlabel("logarithmic scale")
+    p.ylabel("linear scale")
+    p.show()
+
+Multiple axes plot
+    y1 = p.sin()
+    y2 = p.sin(2, phase = -1)
+    p.plot(y1, xside = "lower", yside = "left", label = "lower left")
+    p.plot(y2, xside = "upper", yside = "right", label = "upper right")
+    p.title("Multiple Axes Plot")
+    p.show()
+
+
 
 vim:  wm=3
