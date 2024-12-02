@@ -16,6 +16,7 @@ Core
     |python_collections|
     |python_subprocess|
     |python_memory_usage|
+    |python_properties|
 Strings
     |python_strings|
     |python_string|
@@ -9109,6 +9110,21 @@ output (this is preferred over the old method of popen()):
     If you don't print to the screen, you can complete 1000 such
     conversions in around 13 s, so a few hundred will will take on the
     order of a second or so.
+
+----------------------------------------------------------------------
+Properties                                  *python_properties*
+
+Typical modern syntax in a class definition
+
+if 1:   # Properties
+    @property
+    def N(self):
+        return self._N
+    @N.setter
+    def N(self, value):
+        self._N = int(value)
+        if self._N <= 0:
+            raise ValueError("Property N must be integer > 0")
 
 ----------------------------------------------------------------------
 Memory usage                                *python_memory_usage*
