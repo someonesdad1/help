@@ -1,6 +1,7 @@
 *arduino*
 
 |ard_FastLED|
+|ard_LiquidCrystal|
 |ard_models|
 |ard_control_structures|
 |ard_string_functions|
@@ -421,3 +422,118 @@ CRGB is a struct representing an RGB pixel.  Uses HTML color names:
     FairyLightNCC        MediumVioletRed      WhiteSmoke
     FireBrick            MidnightBlue         Yellow
     FloralWhite          MintCream            YellowGreen
+
+----------------------------------------------------------------------
+LiquidCrystal.h                             *ard_LiquidCrystal*
+
+https://reference.arduino.cc/reference/en/libraries/liquidcrystal/
+
+This library allows an Arduino board to control LiquidCrystal displays (LCDs) based on the Hitachi
+HD44780 (or a compatible) chipset, which is found on most text-based LCDs. The library works with
+in either 4- or 8-bit mode (i.e. using 4 or 8 data lines in addition to the rs, enable, and,
+optionally, the rw control lines).
+
+LiquidCrystal(rs, enable, d4, d5, d6, d7)
+    rs = pin number connected to RS pin on LCD
+    enable pin
+    d4-d7 pins for data line
+
+begin(width, height, charsize)
+    Initializes the interface to the LCD screen, and specifies the dimensions (width and height)
+    of the display. begin() needs to be called before any other LCD library commands.  charsize is
+    LCD_5x8DOTS (default) or LCD_5x10DOTS for 5x10.
+
+clear()
+    Clears the LCD screen and positions the cursor in the upper-left corner.
+
+home()
+    Positions the cursor in the upper-left of the LCD. That is, use that location in outputting
+    subsequent text to the display. To also clear the display, use the clear() function instead.
+
+setCursor(col, row)
+    Set the location at which subsequent text written to the LCD will be displayed.  0 is the
+    first column, 0 is first row.
+
+write(char)
+    Write a character to the LCD.  Returns number of bytes written.
+
+print(text)
+    Prints text to the LCD.  text can be char, byte, int, long, or string.
+
+cursor()
+    Display the LCD cursor: an underscore (line) at the position to which the next character will
+    be written.
+
+noCursor()
+    Hides the LCD cursor.
+
+blink()
+    Display the blinking LCD cursor. If used in combination with the cursor() function, the result
+    will depend on the particular display.
+
+noBlink()
+    Turns off the blinking LCD cursor.
+
+display()
+    Turns on the LCD display, after it’s been turned off with noDisplay(). This will restore the
+    text (and cursor) that was on the display.
+
+noDisplay()
+    Turns off the LCD display, without losing the text currently shown on it.
+
+scrollDisplayLeft()
+    Scrolls the contents of the display (text and cursor) one space to the left.
+
+scrollDisplayRight()
+    Scrolls the contents of the display (text and cursor) one space to the right.
+
+autoscroll()
+    Turns on automatic scrolling of the LCD. This causes each character output to the display to
+    push previous characters over by one space. If the current text direction is left-to-right
+    (the default), the display scrolls to the left; if the current direction is right-to-left, the
+    display scrolls to the right. This has the effect of outputting each new character to the same
+    location on the LCD.
+
+noAutoscroll()
+    Turns off automatic scrolling of the LCD.
+
+leftToRight()
+    Set the direction for text written to the LCD to left-to-right, the default. This means that
+    subsequent characters written to the display will go from left to right, but does not affect
+    previously-output text.
+
+rightToLeft()
+    Set the direction for text written to the LCD to right-to-left (the default is left-to-right).
+    This means that subsequent characters written to the display will go from right to left, but
+    does not affect previously-output text.
+
+createChar(num, data)
+    Create a custom character (glyph) for use on the LCD. Up to eight characters of 5x8 pixels are
+    supported (numbered 0 to 7). The appearance of each custom character is specified by an array
+    of eight bytes, one for each row. The five least significant bits of each byte determine the
+    pixels in that row. To display a custom character on the screen, write() its number.
+
+    Note:  When referencing custom character "0", if it is not in a variable, you need to cast it
+    as a byte, otherwise the compiler throws an error.
+
+    num:  which character to create (0 to 7)
+    data: the character’s pixel data
+
+    Example:
+        #include <LiquidCrystal.h>
+        LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+        byte smiley[8] = {
+            B00000,
+            B10001,
+            B00000,
+            B00000,
+            B10001,
+            B01110,
+            B00000,
+        };
+        void setup() {
+            lcd.createChar(0, smiley);
+            lcd.begin(16, 2);
+            lcd.write(byte(0));
+        }
+        void loop() {}
