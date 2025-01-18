@@ -1,5 +1,6 @@
 *arduino*
 
+|ard_FastLED|
 |ard_models|
 |ard_control_structures|
 |ard_string_functions|
@@ -289,3 +290,134 @@ setTimeout()
 write()
 serialEvent()
 
+----------------------------------------------------------------------
+FastLED                                     *ard_FastLED*
+
+FastLED library at https://github.com/FastLED/FastLED
+Class reference at https://fastled.io/docs/class_c_fast_l_e_d.html
+
+    Measured output to addressable LED on Mega from FastLED:  Captured a signal that was one
+    change of state, going to the red output.  A 24 pulse packet was captured, which contains the
+    three bytes of the RGB color, with the red 8 bits appearing first.  The frequency for two
+    successive narrow pulses is 800 kHz.  Scope measurements: 0 to 4.6 V pulses, a wide pulse is
+    880 ns wide and a narrow pulse is 250 ns.  Pulses have rise and fall times of 12 ns.  This
+    pulse burst lasted 30 μs.
+
+void addListener(fl::EngineEvents::Listener *listener)
+
+void removeListener(fl::EngineEvents::Listener *listener)
+
+void setBrightness(uint8_t scale)
+    Set the global brightness scaling.
+
+uint8_t getBrightness()
+    Get the current global brightness setting.
+
+void setMaxPowerInVoltsAndMilliamps(uint8_t volts, uint32_t milliamps)
+    Set the maximum power to be used, given in volts and milliamps.
+
+void setMaxPowerInMilliWatts(uint32_t milliwatts)
+    Set the maximum power to be used, given in milliwatts.
+
+void show(uint8_t scale)
+    Update all our controllers with the current led colors, using the passed in brightness.
+
+void show()
+    Update all our controllers with the current led colors.
+
+void clear(bool writeData=false)
+    Clear the LEDs, wiping the local array of data.
+
+void clearData()
+    Clear out the local data array.
+
+void showColor(const struct CRGB &color, uint8_t scale)
+    Set all LEDs on all controllers to the given color/scale.
+
+void showColor(const struct CRGB &color)
+    Set all LEDs on all controllers to the given color.
+
+void delay(unsigned long ms)
+    Delay for the given number of milliseconds.
+
+void setTemperature(const struct CRGB &temp)
+    Set a global color temperature.
+
+void setCorrection(const struct CRGB &correction)
+    Set a global color correction.
+
+void setDither(uint8_t ditherMode=BINARY_DITHER)
+    Set the dithering mode.
+
+void setMaxRefreshRate(uint16_t refresh, bool constrain=false)
+    Set the maximum refresh rate.
+
+void countFPS(int nFrames=25)
+    For debugging, this will keep track of time between calls to countFPS().
+
+uint16_t getFPS()
+    Get the number of frames/second being written out.
+
+int count()
+    Get how many controllers have been registered.
+
+CLEDController & operator[](int x)
+    Get a reference to a registered controller.
+
+int size()
+    Get the number of LEDs in the first controller.
+
+CRGB * leds()
+    Get a pointer to led data for the first controller.
+
+CRGB is a struct representing an RGB pixel.  Uses HTML color names:
+    AliceBlue            ForestGreen          MistyRose
+    Amethyst             Fuchsia              Moccasin
+    AntiqueWhite         Gainsboro            NavajoWhite
+    Aqua                 GhostWhite           Navy
+    Aquamarine           Gold                 OldLace
+    Azure                Goldenrod            Olive
+    Beige                Gray                 OliveDrab
+    Bisque               Green                Orange
+    Black                GreenYellow          OrangeRed
+    BlanchedAlmond       Grey                 Orchid
+    Blue                 Honeydew             PaleGoldenrod
+    BlueViolet           HotPink              PaleGreen
+    Brown                IndianRed            PaleTurquoise
+    BurlyWood            Indigo               PaleVioletRed
+    CadetBlue            Ivory                PapayaWhip
+    Chartreuse           Khaki                PeachPuff
+    Chocolate            Lavender             Peru
+    Coral                LavenderBlush        Pink
+    CornflowerBlue       LawnGreen            Plaid
+    Cornsilk             LemonChiffon         Plum
+    Crimson              LightBlue            PowderBlue
+    Cyan                 LightCoral           Purple
+    DarkBlue             LightCyan            Red
+    DarkCyan             LightGoldenrodYellow RosyBrown
+    DarkGoldenrod        LightGreen           RoyalBlue
+    DarkGray             LightGrey            SaddleBrown
+    DarkGreen            LightPink            Salmon
+    DarkGrey             LightSalmon          SandyBrown
+    DarkKhaki            LightSeaGreen        SeaGreen
+    DarkMagenta          LightSkyBlue         Seashell
+    DarkOliveGreen       LightSlateGray       Sienna
+    DarkOrange           LightSlateGrey       Silver
+    DarkOrchid           LightSteelBlue       SkyBlue
+    DarkRed              LightYellow          SlateBlue
+    DarkSalmon           Lime                 SlateGray
+    DarkSeaGreen         LimeGreen            SlateGrey
+    DarkSlateBlue        Linen                Snow
+    DarkSlateGray        Magenta              SpringGreen
+    DarkSlateGrey        Maroon               SteelBlue
+    DarkTurquoise        MediumAquamarine     Tan
+    DarkViolet           MediumBlue           Teal
+    DeepPink             MediumOrchid         Thistle
+    DeepSkyBlue          MediumPurple         Tomato
+    DimGray              MediumSeaGreen       Turquoise
+    DimGrey              MediumSlateBlue      Violet
+    DodgerBlue           MediumSpringGreen    Wheat
+    FairyLight           MediumTurquoise      White
+    FairyLightNCC        MediumVioletRed      WhiteSmoke
+    FireBrick            MidnightBlue         Yellow
+    FloralWhite          MintCream            YellowGreen

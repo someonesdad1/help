@@ -3970,6 +3970,14 @@ Exceptions                                              *python_exceptions*
 To find out if something X is in the exception hierarchy, use
     issubclass(X, BaseException)
 
+Create your own
+    class CalculatorException(Exception):
+        'The calculator had a problem'
+
+    Inheriting from Exception is the most common.  Python requires some indented code in the body
+    of your class; 'pass' or '...' could have been used, but the docstring is nice to give more
+    information on the exception.
+
 Exceptions 3.10.5 (see Library/Built-in Exceptions/Exception hierarchy)
 
 BaseException

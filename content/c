@@ -1,6 +1,7 @@
 *C*
 
 |gcc_options|
+|C_preprocessor|
 |C_escapes|
 |C_operator_precedence|
 |C_iostreams|
@@ -3249,4 +3250,60 @@ Alphabetical
     /Zp[n] pack structs on n-byte boundary
     /Zs syntax check only
     @<file> options response file
+
+---------------------------------------------------------------------------
+Preprocessor                                               *C_preprocessor*
+
+#define TRUE 1
+    Substitute optional string for identifier
+#define NEG(x) (-(x))
+    Substitute expanded macro for identifier
+#undef DEBUG
+    Forget previous #define
+#if MODE == 1
+    Compile if expression is true
+#if defined DEBUG       or
+#ifdef DEBUG
+    Compile if identifier is defined
+#if !defined TESTME       or
+#ifndef TESTME
+    Compile if identifier is not defined
+#elif defined (FLAG)
+    Compile if identifier is defined ( () optional)
+#elif !defined SPECIAL
+    Compile if identifier is not defined
+#else
+    Compile if previous condition was false
+#endif 
+    Terminate conditional compile
+#error I blew up
+    Write optional diagnostic message to error output
+#include "local.h"
+    Replace line with contents of file (reprocess as below if not found)
+#include <local.h>
+    Replace line with contents of system header file
+#include FAVORITE
+    Use value of macro FAVORITE as file name
+#line 100 "somewhere"
+    Renumber and optional rename for diagnostics
+#pragma
+    Implementation defined
+#
+    Null directive, ignored; also "stringize"
+##
+    Concatenate strings in macro definition
+__LINE__
+    Current line number in decimal
+__FILE__
+    Current source file (string literal)
+__DATE__
+    Date compile started as Mmm dd yyyy
+__TIME__
+    Time compile started as hh:mm:ss
+__STDC__
+    Set to 1 by ANSI conforming compilers
+
+Spaces and horizontal tabs may surround #.
+A \ at the end of a line can be used to break any token.
+    
 
