@@ -6,20 +6,22 @@
 |NormalDist|
 |NormalDistExamples|
 
+These are all symbols in the statistics module.
+
 Let x_i be a set of data points for i in [1, 2, ..., n]
 
 ------------------------------------------------------------------------------
 Averages                                *Averages*
 
 mean(data)              Arithmetic mean
-fmean(data)             Fast floating point mean
+fmean(data)             Fast floating point mean with optional weighting
 geometric_mean(data)    Product of x_i, take 1/n root
 harmonic_mean(data, weights=None)
     n/(1/x_1 + ... + 1/x_n)
 median(data)            Uses mean of middle two (may be interpolated)
-meadian_low(data)       Lower median, always in data set
-meadian_high(data)      Higher median, always in data set
-meadian_grouped(data, interval = 1)     See python docs
+median_low(data)        Lower median, always in data set
+median_high(data)       Higher median, always in data set
+median_grouped(data, interval=1)     See python docs
 mode(data)              Most common data point
 multimodemode(data)     Returns list of most frequently occurring values
     multimodemode("aabbbbccddddeeffffgg") returns ['b', 'd', 'f']

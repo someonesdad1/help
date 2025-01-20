@@ -3,14 +3,14 @@ To change index file order, edit MakeIndexFile()
 
 Script for building help documentation
 Created 13 Mar 2022
-
+    
     - To add a new topic
         - Create a file in ./content directory
             - Make sure there are suitable objects to be tagged like 
               '*mswindows*'
         - Add this file to files in GetContentFiles()
         - Run this script (build.py)
-
+    
     - Build steps
         - Construct each content file in the output directory
         - Make the tags file in the output directory
@@ -22,7 +22,7 @@ Created 13 Mar 2022
         - doc:  documentation on help system
         - tools:  scripts, etc.
         - output:  deployment of build's files
-
+    
 '''
 if 1:   # Header
     # Copyright, license
@@ -93,30 +93,30 @@ if 1:   # Utility
 if 1:   # Help
     def Help():
         print(dedent(f'''
-
+        
         This script constructs 'help' files in the directory '{g.output}'
         with extensions '{g.suffix}' that are intended to be opened by vim.
         These *{g.suffix} files are copies of those in '{g.content}', so
         you can (accidentally) edit them without changing the original
         content.
-
+        
         You can read these files in any editor, but using vim is preferred
         because it will syntax highlight the topics.
-
+        
         To use these files with vim, you'll need to utilize the '{g.help}'
         file.  This is the relevant command I use in my vimrc file:
-
+        
             autocmd BufRead *.hld source $MYVIMFILES/syntax/hldhelp.vim
-
+        
         I also use the following in my .vimrc file:
-
+        
             autocmd BufRead *.hld noremap q :q!<cr>:unmap q
             " How to return from a tag jump in a help file
             autocmd BufRead *.hld noremap t ^T
-
+        
         The first lets me exit the help file by pressing the 'q' key.  The
         second lets me return from a tags jump (^]) by pressing the 't' key.
-
+        
         These help files are formatted to fit in an 80 column wide terminal
         window.  You can reformat them as needed if you use a different width.
         {t.note}
@@ -126,7 +126,7 @@ if 1:   # Help
                 '*this_is_a_tag*'
             - Add this file to files in GetContentFiles()
             - Run this script (build.py){t.n}
-
+        
         - Build steps
             - Construct each content file in the output directory
             - Make the tags file in the output directory
@@ -136,7 +136,7 @@ if 1:   # Help
         - Directory structure
             - content:  location of help files
             - output:  deployment of build's files
-
+        
         {t.note}See doc/readme.pdf for documentation.{t.n}
         '''))
         exit(0)
@@ -144,7 +144,7 @@ if 1:   # Core functionality
     def GetContentFiles():
         'Get list of files in the content directory'
         files = '''
-
+        
             arduino asciidoc astronomical awk bash basic bibtex biology
             btop c chemistry constants cpp cvs darcs electrical engineering
             find flex g gdb git go hg hp3488 hp42s hp49 html korn latex lua
@@ -153,7 +153,7 @@ if 1:   # Core functionality
             pygame python rst scipy scons sed shop simpy sizes snippets sql
             statistics_python statistics_tables stl subversion svn sympy
             thermal_cond tmux uncertainties units utilities vim yaml
-
+        
         '''.split()
         # The following is used to detect when a file might have been left
         # off the list.
@@ -252,38 +252,35 @@ if 1:   # Core functionality
         '''This is the file that we start the vim editor from; the links
         all point to other *.hld files.
         '''
-        # Grouped by (topic, num_columns, column_width).  Note these are
-        # alphabetically ordered down the page like ls output).
-        groups = (('''
-                python bash vim git uncertainties shop C g matplotlib numpy
-                sympy Cpp gdb scipy mpmath make_ Utilities latex PIL
-                StatisticsPython
-            ''', 3, 20),
-            ('''
-                Electrical Physics Math Engineering Astronomy Units
-                StatisticsTables constants Biology Chemistry Office
-            ''', 3, 20),
-            ('''
-                arduino asciidoc awk basic bibtex cvs darcs find flex hg
-                hp3488 HP42s html Korn_Shell lua markdown Mathematica pandoc
-                PCL5 perl4 perl5 PostScript pygame rst sed Snippets STL Subversion
-                tmux units mswindows yaml
-            ''', 0, 0),
-        )
+        # This file used to be made by the script, but now I prefer to be 
+        # able to manually determine its structure here.
+        data = dedent('''
+
+        python numpy scipy
+        arduino shop
+        
+        Science∇ (∇ means it's not a link)
+            Physics Electrical Engineering Astronomy units constants Biology Chemistry
+        Math
+            mpmath matplotlib sympy StatisticsTables StatisticsPython Mathematica
+        Prog∇
+            C Cpp gdb g bash vim make_ PIL basic flex pygame Snippets STL perl4 perl5
+            uncertainties PCL5 yaml Korn_Shell lua
+        VCS∇
+            git hg darcs cvs Subversion
+        Utilities 
+            find awk sed tmux
+        Doc∇
+            html pandoc rst latex Office bibtex html markdown asciidoc PostScript mswindows
+        Hardware∇
+            hp3488 HP42s 
+
+        ''')
         cwd = os.getcwd()
         os.chdir(g.output)
         index = P(g.index)
-        count = 0
         with open(index, "w") as f:
-            for group, n, w in groups:
-                G = group.split()
-                count += len(G)
-                lines = Columnize(G, columns=n, col_width=w)
-                for line in lines:
-                    print(line, file=f)
-                print("", file=f)
-        if d["-v"]:
-            print(f"Index file {index.absolute()} constructed ({count} topics)")
+            print(data.rstrip(), file=f)
         os.chdir(cwd)
         print("Successful build")
 if __name__ == "__main__": 

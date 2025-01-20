@@ -268,7 +268,30 @@ Serial
         Serial3:  14(TX), 15(RX)
     The TX/RX pins use TTL logic (5 or 3.3 V depending on board)
 
-∇ means an optional argument.
+Function list
+    if(Serial)
+    available()
+    availableForWrite()
+    begin()
+    end()
+    find()
+    findUntil()
+    flush()
+    parseFloat()
+    parseInt()
+    peek()
+    print()
+    println()
+    read()
+    readBytes()
+    readBytesUntil()
+    readString()
+    readStringUntil()
+    setTimeout()
+    write()
+    serialEvent()
+
+Function details; ∇ means an optional argument.
 
 if(Serial)
     Returns true if serial port is ready.
