@@ -1,5 +1,6 @@
 *arduino*
 
+|ard_Serial|
 |ard_FastLED|
 |ard_LiquidCrystal|
 |ard_models|
@@ -12,7 +13,6 @@
 |ard_characters|
 |ard_bits_and_bytes|
 |ard_interrupts|
-|ard_Serial|
 
 ----------------------------------------------------------------------
 Arduino models                                      *ard_models*
@@ -268,28 +268,234 @@ Serial
         Serial3:  14(TX), 15(RX)
     The TX/RX pins use TTL logic (5 or 3.3 V depending on board)
 
+∇ means an optional argument.
 
 if(Serial)
+    Returns true if serial port is ready.
+
 available()
+    Return number of bytes in serial receive buffer which holds 64 bytes.
+
 availableForWrite()
+    Get the number of bytes (characters) available for writing in the serial buffer without
+    blocking the write operation.
+
 begin()
+    Sets the data rate in bits per second (baud) for serial data transmission. For communicating
+    with Serial Monitor, make sure to use one of the baud rates listed in the menu at the bottom
+    right corner of its screen. You can, however, specify other rates - for example, to
+    communicate over pins 0 and 1 with a component that requires a particular baud rate.
+
+    An optional second argument configures the data, parity, and stop bits. The default is 8 data
+    bits, no parity, one stop bit:
+        SERIAL_5E1    SERIAL_5O2    SERIAL_6O1    SERIAL_7N2    SERIAL_8N1
+        SERIAL_5E2    SERIAL_6E1    SERIAL_6O2    SERIAL_7O1    SERIAL_8N2
+        SERIAL_5N1    SERIAL_6E2    SERIAL_7E1    SERIAL_7O2    SERIAL_8O1
+        SERIAL_5N2    SERIAL_6N1    SERIAL_7E2    SERIAL_8E1    SERIAL_8O2
+        SERIAL_5O1    SERIAL_6N2    SERIAL_7N1    SERIAL_8E2
+
 end()
-find()
-findUntil()
+    Disables serial communication, allowing the RX and TX pins to be used for general input and
+    output. To re-enable serial communication, call Serial.begin().
+
+find(target, length∇) --> bool
+    Serial.find() reads data from the serial buffer until the target is found. The function
+    returns true if target is found, false if it times out.  target is string to search for
+    (char).  length is the length of the target (size_t).
+
+findUntil(target, terminal) --> bool
+    Serial.findUntil() reads data from the serial buffer until a target string of given length or
+    terminator string is found.  The function returns true if the target string is found, false if
+    it times out.  
+
 flush()
-parseFloat()
-parseInt()
-peek()
-print()
-println()
-read()
-readBytes()
-readBytesUntil()
-readString()
-readStringUntil()
-setTimeout()
-write()
-serialEvent()
+    Waits for the transmission of outgoing serial data to complete. (Prior to Arduino 1.0, this
+    instead removed any buffered incoming serial data.)
+
+parseFloat(lookahead∇, ignore∇) --> float
+    Serial.parseFloat() returns the first valid floating point number from the Serial buffer.
+    parseFloat() is terminated by the first character that is not a floating point number. The
+    function terminates if it times out (see Serial.setTimeout()).  Both arguments are optional.  
+
+    lookahead: the mode used to look ahead in the stream for a floating point number. Allowed data
+    types: LookaheadMode. Allowed lookahead values:
+
+        SKIP_ALL: all characters other than a minus sign, decimal point, or digits are ignored
+        when scanning the stream for a floating point number. This is the default mode.
+
+        SKIP_NONE: Nothing is skipped, and the stream is not touched unless the first waiting
+        character is valid.
+
+        SKIP_WHITESPACE: Only tabs, spaces, line feeds, and carriage returns are skipped.
+
+    ignore: used to skip the indicated char in the search. Used for example to skip thousands
+    divider. Allowed data types: char
+
+parseInt(lookahead∇, ignore∇) --> long
+    Looks for the next valid integer in the incoming serial. The function terminates if it times
+    out (see Serial.setTimeout()).
+
+    Serial.parseInt() inherits from the Stream utility class.
+
+    Parsing stops when no characters have been read for a configurable time-out value, or a
+    non-digit is read; if no valid digits were read when the time-out (see Serial.setTimeout())
+    occurs, 0 is returned;
+
+    Syntax
+    Serial.parseInt()
+    Serial.parseInt(lookahead)
+    Serial.parseInt(lookahead, ignore)
+
+    lookahead: the mode used to look ahead in the stream for an integer. Allowed data types: LookaheadMode. Allowed lookahead values:
+
+        SKIP_ALL: all characters other than digits or a minus sign are ignored when scanning the stream for an integer. This is the default mode.
+
+        SKIP_NONE: Nothing is skipped, and the stream is not touched unless the first waiting character is valid.
+
+        SKIP_WHITESPACE: Only tabs, spaces, line feeds, and carriage returns are skipped.
+
+    ignore: used to skip the indicated char in the search. Used for example to skip thousands divider. Allowed data types: char
+
+peek() --> int
+    Returns the next byte (character) of incoming serial data without removing it from the
+    internal serial buffer. That is, successive calls to peek() will return the same character, as
+    will the next call to read().  Returns -1 if no data is available.
+
+print(val, format∇) --> size_t (number of bytes written)
+    Prints data to the serial port as human-readable ASCII text. This command can take many forms.
+    Numbers are printed using an ASCII character for each digit. Floats are similarly printed as
+    ASCII digits, defaulting to two decimal places. Bytes are sent as a single character.
+    Characters and strings are sent as is. Examples:
+
+        Serial.print(78) gives "78"
+
+        Serial.print(1.23456) gives "1.23"
+
+        Serial.print('N') gives "N"
+
+        Serial.print("Hello world.") gives "Hello world."
+
+    An optional second parameter specifies the base (format) to use; permitted values are BIN
+    (binary, or base 2), OCT (octal, or base 8), DEC (decimal, or base 10), HEX (hexadecimal, or
+    base 16). For floating point numbers, this parameter specifies the number of decimal places to
+    use. Examples:
+
+        Serial.print(78, BIN) gives "1001110"
+        Serial.print(78, OCT) gives "116"
+        Serial.print(78, DEC) gives "78"
+        Serial.print(78, HEX) gives "4E"
+        Serial.print(1.23456, 0) gives "1"
+        Serial.print(1.23456, 2) gives "1.23"
+        Serial.print(1.23456, 4) gives "1.2346"
+
+    You can pass flash-memory based strings to Serial.print() by wrapping them with F(). For
+    example:
+
+        Serial.print(F(“Hello World”))
+
+    To send data without conversion to its representation as characters, use Serial.write().
+
+println(val, format∇) --> size_t (number of bytes written)
+    Same as print() except output following by \r\n.
+
+read() --> int
+    Reads a byte from the serial port and returns it or returns -1 if no data available.
+
+readBytes(buffer, length) --> size_t (number of bytes placed in buffer)
+
+    Serial.readBytes() reads characters from the serial port into a buffer. The function
+    terminates if the determined length has been read, or it times out (see Serial.setTimeout()).
+
+    Serial.readBytes() returns the number of characters placed in the buffer. A 0 means no valid
+    data was found.
+
+    Serial.readBytes() inherits from the Stream utility class.
+
+    buffer: the buffer to store the bytes in (char[] or byte[])
+
+    length: the number of bytes to read (int)
+
+    Serial.readBytesUntil() reads characters from the serial buffer into an array. The function
+    terminates if the terminator character is detected, the determined length has been read, or it
+    times out (see Serial.setTimeout()). The function returns the characters up to the last
+    character before the supplied terminator. The terminator itself is not returned in the buffer.
+
+    Arguments:
+
+        character : the character to search for (char)
+
+        buffer: the buffer to store the bytes in (char[] or byte[])
+
+        length : the number of bytes to read (int)
+
+readString() --> char (a string read from the serial buffer)
+
+    Serial.readString() reads characters from the serial buffer into a String. The function
+    terminates if it times out (see setTimeout()).
+
+    Serial.readString() inherits from the Stream utility class.
+
+readStringUntil(terminator) --> char (a string read from the serial buffer)
+
+    readStringUntil() reads characters from the serial buffer into a String. The function
+    terminates if it times out (see setTimeout()).  Returns the entire String read from the serial
+    buffer, up to but not including the terminator character
+
+    terminator: the character to search for (char)
+
+setTimeout(time) --> void
+
+    Serial.setTimeout() sets the maximum milliseconds to wait for serial data. It defaults to 1000
+    milliseconds.
+
+    time : timeout duration in milliseconds (long).
+
+    Functions that use the timeout value:
+        Serial.find()
+        Serial.findUntil()
+        Serial.parseInt()
+        Serial.parseFloat()
+        Serial.readBytes()
+        Serial.readBytesUntil()
+        Serial.readString()
+        Serial.readStringUntil()
+
+write() --> size_t (number of bytes written)
+
+    Writes binary data to the serial port. This data is sent as a byte or series of bytes; to send
+    the characters representing the digits of a number use the print() function instead.
+
+    Serial.write(val)
+    Serial.write(str)
+    Serial.write(buf, len)
+
+        val: a value to send as a single byte
+        str: a string to send as a series of bytes
+        buf: an array to send as a series of bytes
+        len: the number of bytes to be sent from the array
+
+serialEvent() --> void
+
+    Called when data is available. Use Serial.read() to capture this data.
+
+    void serialEvent() {
+        //statements
+    }
+
+    For boards with additional serial ports (see the list of available serial ports for each board
+    on the Serial main page):
+
+    void serialEvent1() {
+        //statements
+    }
+
+    void serialEvent2() {
+        //statements
+    }
+
+    void serialEvent3() {
+        //statements
+    }
 
 ----------------------------------------------------------------------
 FastLED                                     *ard_FastLED*
