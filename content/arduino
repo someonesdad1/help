@@ -4,6 +4,7 @@
 |ard_FastLED|
 |ard_LiquidCrystal|
 |ard_models|
+|ard_types|
 |ard_control_structures|
 |ard_string_functions|
 |ard_analog_io|
@@ -13,6 +14,90 @@
 |ard_characters|
 |ard_bits_and_bytes|
 |ard_interrupts|
+
+----------------------------------------------------------------------
+Types, constants, conversions, scopes                *ard_types*
+
+Types
+    array
+        int myInts[6];
+        int myPins[] = {2, 4, 8, 3, 6};
+        int mySensVals[6] = {2, 4, -8, 3, 2};
+        char message[6] = "hello";
+    bool            1-byte of memory, true or false
+    boolean         non-standard type alias for bool
+    byte            8-bit unsigned
+    char            signed, at least 8 bits
+    double          4-byte float (same as float)
+    float           4-byte float 
+    int             2-byte signed integer
+    long            4-byte integer
+    short           2-byte signed integer
+    size_t          Data type able to represent the size of an object in bytes
+    string          char arrays
+    String()        Another string type that takes more memory
+    unsigned char           
+    unsigned int            
+    unsigned long           
+    void            Only for function declarations
+    word            2-byte unsigned integer
+
+Constants
+    HIGH
+        OUTPUT pin:  > 3 V for 5 V boards, > 2 V for 3.3 V boards
+        INPUT pin:  5 V on 5 V boards, 3.3 V on 3.3 V boards
+    LOW
+        OUTPUT pin:  > 3 V for 5 V boards, > 2 V for 3.3 V boards
+        INPUT pin:  100 MΩ input R, so a floating input is unpredictable; you need a 10 kΩ 
+                    pullup or pulldown
+    INPUT
+        Pins in high impedance state, 100 MΩ
+    OUTPUT
+        Low impedance state; can source or sink up to 40 mA.
+    INPUT_PULLUP
+        Use this as pinMode second argument to use internal pull-ups.  Do not connect these pins
+        to negative voltages or voltages above the positive rail.
+    LED_BUILTIN
+        Usually pin 13.
+    true, false
+        Boolean values
+    Integer constants
+        B1111011    Only works with 8-bit values
+        07          Octal
+        0x7b        Hex
+        7u or 7U    Unsigned
+        7l or 7L    Long
+        7ul or 7UL  Unsigned long
+
+Conversions
+    byte(x), char(x), float(x), int(x), long(x), word(x)
+    Converts a value x of any type to the indicated type
+
+Variable scope & qualifiers
+    const       Makes a variable read-only
+    scope       Global, local, and in for loops
+    static      Local variables in a function that persist their values between calls.
+                Created and initialized the first time the function is called.
+    volatile    Variables with this modifier can be changed by things other than the code section
+                it appears in.
+
+        For ints and longs, use the ATOMIC_BLOCK macro when changing them to avoid an 
+        interrupt changing the location, as the processors are 8-bit.  See the documentation
+        details.  Also read about interrupts, ISRs, and the attachInterrupt() function.
+
+Utilities
+    PROGMEM
+        Modifier to variable declaration to put variable in flash rather than SRAM.  Should only
+        be used with datatypes defined in pgmspace.h; it is included automatically in modern IDEs.
+
+        const datatype variable[] PROGMEM = {};     // Use this form
+        const PROGMEM datatype variable[] = {};     // Or this form
+        const datatype PROGMEM variable[] = {};     // Do not use this form
+
+        See https://reference.arduino.cc/reference/cs/language/variables/utilities/progmem
+        for details, as once stored, you also need to read them back out of flash.
+    sizeof(variable)
+        Returns the number of bytes in a variable type, or the number of bytes occupied by an array.
 
 ----------------------------------------------------------------------
 Arduino models                                      *ard_models*
