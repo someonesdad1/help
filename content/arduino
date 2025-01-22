@@ -1,6 +1,7 @@
 *arduino*
 
 |ard_Serial|
+|ard_cli|
 |ard_FastLED|
 |ard_LiquidCrystal|
 |ard_models|
@@ -604,6 +605,18 @@ serialEvent() --> void
     void serialEvent3() {
         //statements
     }
+
+----------------------------------------------------------------------
+Command line interface                      *ard_cli*
+
+I have the CLI tool /usr/local/bin/arduino-cli.exe named to be 'ard'.  Note it runs significantly
+faster under cygwin than WSL.
+
+Getting started:
+    https://docs.arduino.cc/arduino-cli/getting-started/
+
+arduino-cli config init
+Config file written to: C:\Users\Don\AppData\Local\Arduino15\arduino-cli.yaml
 
 ----------------------------------------------------------------------
 FastLED                                     *ard_FastLED*
