@@ -1,11 +1,11 @@
 *arduino*
 
 |ard_Serial|
+|ard_types|
 |ard_cli|
 |ard_FastLED|
 |ard_LiquidCrystal|
 |ard_models|
-|ard_types|
 |ard_control_structures|
 |ard_string_functions|
 |ard_analog_io|
@@ -25,21 +25,22 @@ Types
     void    Only for function declarations
     Integers
         1-byte
-            byte            1-byte unsigned
-            char            signed, at least 1-byte
+            byte            1-byte unsigned (0 to 255)
+            char            signed, at least 1-byte (-128 to 127)
             unsigned char   unsigned, at least 1-byte
         2-bytes
-            short           2-byte signed integer
-            int             2-byte signed integer
-            unsigned int    2-byte unsigned integer
-            word            2-byte unsigned integer
+            short           2-byte signed integer (-32768 to 32767)
+            int             2-byte signed integer(-32768 to 32767)
+            unsigned int    2-byte unsigned integer (0 to 65536)
+            word            2-byte unsigned integer (0 to 65536)
         4-bytes
-            long            4-byte signed integer
-            unsigned long   4-byte unsigned integer       
+            long            4-byte signed integer (-2147483648 to 2147483647)
+            unsigned long   4-byte unsigned integer (0 to 4294967296)
         size_t              Data type able to represent the size of an object in bytes
     Floating point
         double              4-byte float (same as float)
         float               4-byte float 
+          For fastest performance, avoid floating point arithmetic.
     Strings
         string          char arrays
         String()        Another string type that takes more memory
@@ -202,23 +203,30 @@ lastIndexOf()
 ----------------------------------------------------------------------
 Analog I/O                                  *ard_analog_io*
 
-analogRead(pin)
+analogRead(pin) --> int
     Read from analog pin, such as A0 or A1.  Returns 10-bit number between
     0 and 1023.
 
-analogReference(type)
-    Configures the analog reference value.  type can be (Mega, Uno, etc.)
+    For best accuracy, use an analog reference between 0 and 5 V on the AREF pin.  
+    Then the measured value is reading*AREF/1024.
+
+analogReference(choice) --> void
+
+    Configures the analog reference value; this is the value used as the top of the input
+    range.  On Nano, Mega, and Uno.  choice can be
         DEFAULT         5 V
         INTERNAL        A built-in ref, not on Mega
         INTERNAL1V1     Built-in 1.1 V on Mega only
         INTERNAL2V56    Built-in 2.56 V ref on Mega only
         EXTERNAL        On pin AREF (must be 0 to 5 V)
 
-analogWrite(int pin, int value)
+analogWrite(int pin, int value) --> void
+    Writes an analog value to a pin, which causes a PWM output.
+
     PWM functionality
-    Uno, Nano pins:  3, 5, 6, 9, 10, 11
-    Mega pins:  2-13, 44-46
-    value = duty cycle from 0 (always off) to 255 (always on).
+        Uno (R3 & earlier), Nano, Mini:  3, 9, 10, 11: 490 Hz; 5, 6: 980 Hz
+        Mega pins:  2-13, 44-46, all 490 Hz
+        Value:  duty cycle from 0 (always off) to 255 (always on).
 
     Warning:  PWM outputs on pins 5 and 6 will have higher than expected
     duty cycles because of some functions that share the internal timer
@@ -870,3 +878,5 @@ createChar(num, data)
             lcd.write(byte(0));
         }
         void loop() {}
+
+vim: tw=90
