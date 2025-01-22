@@ -20,28 +20,34 @@
 Types, constants, conversions, scopes                *ard_types*
 
 Types
-    array
+    bool    1-byte of memory, true or false
+    boolean non-standard type alias for bool
+    void    Only for function declarations
+    Integers
+        1-byte
+            byte            1-byte unsigned
+            char            signed, at least 1-byte
+            unsigned char   unsigned, at least 1-byte
+        2-bytes
+            short           2-byte signed integer
+            int             2-byte signed integer
+            unsigned int    2-byte unsigned integer
+            word            2-byte unsigned integer
+        4-bytes
+            long            4-byte signed integer
+            unsigned long   4-byte unsigned integer       
+        size_t              Data type able to represent the size of an object in bytes
+    Floating point
+        double              4-byte float (same as float)
+        float               4-byte float 
+    Strings
+        string          char arrays
+        String()        Another string type that takes more memory
+    arrays
         int myInts[6];
         int myPins[] = {2, 4, 8, 3, 6};
         int mySensVals[6] = {2, 4, -8, 3, 2};
         char message[6] = "hello";
-    bool            1-byte of memory, true or false
-    boolean         non-standard type alias for bool
-    byte            8-bit unsigned
-    char            signed, at least 8 bits
-    double          4-byte float (same as float)
-    float           4-byte float 
-    int             2-byte signed integer
-    long            4-byte integer
-    short           2-byte signed integer
-    size_t          Data type able to represent the size of an object in bytes
-    string          char arrays
-    String()        Another string type that takes more memory
-    unsigned char           
-    unsigned int            
-    unsigned long           
-    void            Only for function declarations
-    word            2-byte unsigned integer
 
 Constants
     HIGH
