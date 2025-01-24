@@ -1,6 +1,7 @@
 *arduino*
 
 |ard_Serial|
+|ard_SoftTimers|
 |ard_types|
 |ard_cli|
 |ard_FastLED|
@@ -16,6 +17,74 @@
 |ard_bits_and_bytes|
 |ard_interrupts|
 
+----------------------------------------------------------------------
+Soft Timers                                          *ard_SoftTimers*
+
+Simple timers that don't block, don't cause interrupts, and must be polled to find when
+they have timed out.
+
+Time is a ulong in ms
+
+millis()
+    Is an Arduino timer that returns a ulong in ms since the program started.  Wraps
+    around in 2**32/(10**3*3600*24) = 49.71 days.
+micros()
+    Is an Arduino timer that returns a ulong in μs since the program started.  Wraps
+    around in 2**32/(10**6*3600*24) = 71.5828 minutes.
+
+Each instance of SoftTimer() has:
+    - Pointer to callback function
+
+Constructors
+    SoftTimer() uses the built-in mills() Arduino timer.
+    SoftTimer(CounterFunctionPointer iCntFuncPtr)
+        Use iCntFuncPtr = &millis() to get a millisecond timer
+        Use iCntFuncPtr = &micros() to get a microsecond timer
+
+void reset()     
+    Resets the internal counter of the timer:  mStartTime = mCntFuncPtr()();
+ulong getElapsedTime()
+    Returns ms since last reset
+ulong getRemainingTime()
+    Returns ms until timer times out
+void setTimeOutTime(ulong iTimeOutTime_ms)
+    Set time in ms at which hasTimedOut() will return true.
+ulong getTimeOutTime()
+    Return time in ms which hasTimedOut() will return true.
+bool hasTimedOut()
+    Return true if elapsed time is >= the set timeout time.
+double getProgess()
+    Current timer progress fraction on [0, 1].  Note 0 == 1.
+
+Examples
+--------
+
+Battery charger:  Run the charging routine once every 24 hours.  Monitor the battery
+voltage every hour.
+
+    SoftTimer timer_daily_charging;
+    SoftTimer timer_hourly_measure;
+
+    void setup() {
+        timer_daily_charging.setTimeOutTime(uint(24*3600*1000));  // 24 hours
+        timer_daily_charging.reset();                             // Start the counter
+        timer_hourly_measure.setTimeOutTime(uint(3600*1000));     // 1 hour
+        timer_hourly_measure.reset();                             // Start the counter
+    }
+    void loop() {
+        if (timer_hourly_measure.hasTimedOut()) {
+            Measure_battery_voltage();
+            Display_battery_voltage_state();
+            timer_hourly_measure.reset();
+        }
+        if (timer_daily_charging.hasTimedOut()) {
+            timer_daily_charging.reset();
+            Start_daily_charging_cycle();
+            Measure_battery_voltage();
+            Display_battery_voltage_state();
+            timer_hourly_measure.reset();
+    }
+    
 ----------------------------------------------------------------------
 Types, constants, conversions, scopes                *ard_types*
 
