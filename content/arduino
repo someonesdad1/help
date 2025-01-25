@@ -1,6 +1,7 @@
 *arduino*
 
 |ard_Serial|
+|ard_LiquidCrystal|
 |ard_SoftTimers|
 |ard_types|
 |ard_cli|
@@ -16,6 +17,150 @@
 |ard_characters|
 |ard_bits_and_bytes|
 |ard_interrupts|
+
+----------------------------------------------------------------------
+Liquid Crystal displays                              *ard_LiquidCrystal*
+
+https://docs.arduino.cc/libraries/liquidcrystal/
+I've only included the details relevant to the display from Proto Supplies
+#include <LiquidCrystal.h>
+
+∇ = optional argument
+
+LiquidCrystal()
+    Creates a variable of type LiquidCrystal. The display can be controlled using 4 or 8
+    data lines. If the former, omit the pin numbers for d0 to d3 and leave those lines
+    unconnected. The RW pin can be tied to ground instead of connected to a pin on the
+    Arduino; if so, omit it from this function's parameters.
+
+    LiquidCrystal(rs, enable, d4, d5, d6, d7)
+    LiquidCrystal(rs, rw, enable, d4, d5, d6, d7)
+    LiquidCrystal(rs, enable, d0, d1, d2, d3, d4, d5, d6, d7)
+    LiquidCrystal(rs, rw, enable, d0, d1, d2, d3, d4, d5, d6, d7)
+
+    rs: the number of the Arduino pin that is connected to the RS pin on the LCD
+
+    rw: the number of the Arduino pin that is connected to the RW pin on the LCD
+    (optional)
+
+    enable: the number of the Arduino pin that is connected to the enable pin on the LCD
+
+    d0, d1, d2, d3, d4, d5, d6, d7: the numbers of the Arduino pins that are connected to
+    the corresponding data pins on the LCD. d0, d1, d2, and d3 are optional; if omitted,
+    the LCD will be controlled using only the four data lines (d4, d5, d6, d7).
+
+begin(num_cols, num_rows, ∇charsize)
+    Initializes the interface to the LCD screen, and specifies the dimensions (width and
+    height) of the display.  begin() needs to be called before any other LCD library
+    commands.
+
+    charsize (optional): the number of dots the display has per character:
+        LCD_5x8DOTS for 5x8 [default]
+        LCD_5x10DOTS for 5x10
+
+clear()
+    Clears the LCD screen and positions the cursor in the upper-left corner.
+
+home()
+    Positions the cursor in the upper-left of the LCD. That is, use that location in
+    outputting subsequent text to the display. To also clear the display, use the clear()
+    function instead.
+
+setCursor(col, row)
+    Position the LCD cursor; that is, set the location at which subsequent text written to
+    the LCD will be displayed.
+
+write(data)
+    Write a character to the LCD.
+
+print(data, ∇BASE)
+    Prints text to the LCD.
+    data:  char, byte, int, long, or string
+    BASE (optional):  BIN, DEC, OCT, HEX
+
+    print("word 1\nword 2") results in one line, not two.  The carriage return is four
+    stacked horizontal lines.
+
+cursor()
+    Display the LCD cursor: an underscore (line) at the position to which the next
+    character will be written.
+
+noCursor()
+    Hides the LCD cursor.
+
+blink()
+    Display the blinking LCD cursor. If used in combination with the cursor() function,
+    the result will depend on the particular display.
+
+noBlink()
+    Turns off the blinking LCD cursor.
+
+display()
+    Turns on the LCD display, after it's been turned off with noDisplay(). This will
+    restore the text (and cursor) that was on the display.
+
+noDisplay()
+    Turns off the LCD display, without losing the text currently shown on it.
+
+scrollDisplayLeft()
+    Scrolls the contents of the display (text and cursor) one space to the left.
+
+scrollDisplayRight()
+    Scrolls the contents of the display (text and cursor) one space to the right.
+
+autoscroll()
+    Turns on automatic scrolling of the LCD. This causes each character output to the
+    display to push previous characters over by one space. If the current text direction
+    is left-to-right (the default), the display scrolls to the left; if the current
+    direction is right-to-left, the display scrolls to the right. This has the effect of
+    outputting each new character to the same location on the LCD.
+
+noAutoscroll()
+    Turns off automatic scrolling of the LCD.
+
+leftToRight()
+    Set the direction for text written to the LCD to left-to-right, the default. This
+    means that subsequent characters written to the display will go from left to right,
+    but does not affect previously-output text.
+
+rightToLeft()
+    Set the direction for text written to the LCD to right-to-left (the default is
+    left-to-right). This means that subsequent characters written to the display will go
+    from right to left, but does not affect previously-output text.
+
+createChar(num, data)
+
+    Create a custom character (glyph) for use on the LCD. Up to eight characters of 5x8
+    pixels are supported (numbered 0 to 7). The appearance of each custom character is
+    specified by an array of eight bytes, one for each row. The five least significant
+    bits of each byte determine the pixels in that row. To display a custom character on
+    the screen, write() its number.
+
+    When referencing custom character "0", if it is not in a variable, you need to cast it
+    to a byte, otherwise the compiler throws an error.
+
+    num: which character to create (0 to 7)
+
+    data: the character's pixel data
+
+    Example:
+
+            byte smiley[8] = {
+                B00000,
+                B10001,
+                B00000,
+                B00000,
+                B10001,
+                B01110,
+                B00000,
+            };
+            void setup() {
+                lcd.createChar(0, smiley);
+                lcd.begin(16, 2);  
+                lcd.write(byte(0));
+            }
+            void loop() {
+            }
 
 ----------------------------------------------------------------------
 Soft Timers                                          *ard_SoftTimers*
@@ -108,8 +253,9 @@ Types
         size_t              Data type able to represent the size of an object in bytes
     Floating point
         double              4-byte float (same as float)
-        float               4-byte float 
-          For fastest performance, avoid floating point arithmetic.
+        float               4-byte float (about 6 decimal digits)
+                            range:  ±3.4028235E+38
+        For fastest performance, avoid floating point arithmetic.
     Strings
         string          char arrays
         String()        Another string type that takes more memory
