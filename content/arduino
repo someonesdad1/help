@@ -403,7 +403,53 @@ Integers
 ----------------------------------------------------------------------
 String Functions                            *ard_string_functions*
 
+String
+charAt
+compartTo
+concat
+c_str
+endsWith
+equals
+equalsIgnoreCase
+getBytes
+indexOf
+lastIndexOf
+length
+remove
+replace
+reserve
+setCharAt
+startsWith
+substring
+toCharArray
+toDouble
+toInt
+toFloat
+toLowerCase
+toUpperCase
+trim
+
+Character tests
+    isAlpha()
+    isAlphaNumeric()
+    isAscii()
+    isControl()
+    isDigit()
+    isGraph()
+    isHexadecimalDigit()
+    isLowerCase()
+    isPrintable()
+    isPunct()
+    isSpace()
+    isUpperCase()
+    isWhitespace()
+
 String()
+    String(val)
+        val:  string char, byte, int, long, unsigned int, unsigned long, float, double
+    String(val, base) val must be integer, base DEC HEX BIN OCT
+    String(val, decimalPlaces) if val is float or double
+
 charAt()
 compartTo()
 concat()
@@ -414,6 +460,20 @@ equalsIgnoreCase()
 getBytes()
 indexOf()
 lastIndexOf()
+length()
+remove()
+replace()
+reserve()
+setCharAt()
+startsWith()
+substring()
+toCharArray()
+toDouble()
+toInt()
+toFloat()
+toLowerCase()
+toUpperCase()
+trim()
 
 ----------------------------------------------------------------------
 Analog I/O                                  *ard_analog_io*
