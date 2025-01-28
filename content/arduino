@@ -17,7 +17,150 @@
 |ard_characters|
 |ard_bits_and_bytes|
 |ard_interrupts|
+|ard_EEPROM|
 
+----------------------------------------------------------------------
+EEPROM                                               *ard_EEPROM*
+
+https://docs.arduino.cc/learn/programming/eeprom-guide
+
+#include <EEPROM.h>
+
+EEPROM is byte-oriented and each byte has a limit of 1e5 writes.  Because of this, try
+to use the EEPROM.put() method to update EEPROM, as it only writes a byte if the value is
+changed.
+
+    Uno, Nano   1 kB of EEPROM storage
+    Mega        4 kB of EEPROM storage
+
+read
+    byte read(int)
+    Locations that have never been written contain 0xff.
+write
+    void write(int address, byte value)
+    Takes 33 ms to complete and 1e5 write life for each byte.
+update
+    void update(int address, byte value)
+    Same as write() but only writes data if the new byte is different.
+get
+    reference_to_object get(int address, object)
+    object can be a primitive type (e.g. float) or a custom structure.
+put
+    reference_to_object put(int address, object)
+    This uses update() for the data, so an EEPROM byte is not overwritten unless it has
+    changed.
+EEPROM[]
+    reference_to_cell EEPROM[int address]
+    Way to read and write EEPROM locations like an array.
+length
+    unsigned int length()
+    Returns number of cells in EEPROM.
+
+Examples
+
+    // Write data into a specific address of the EEPROM memory
+        EEPROM.write(address, value);
+    // Read data of a specific address of the EEPROM memory
+        EEPROM.read(address);
+
+    Clear EEPROM:  some various iterators
+        for (int i = 0 ; i < EEPROM.length() ; i++) {
+            EEPROM.write(i, 0);
+        }
+        //
+        int i = 0;
+        while (i < EEPROM.length()) {
+            EEPROM[i] = 0;
+            i++;
+        }
+        //
+        int i = 0;
+        do {
+            EEPROM[i] = 0;
+            i++;
+        } while (i < EEPROM.length());
+
+    CRC to check EEPROM
+        From https://docs.arduino.cc/learn/programming/eeprom-guide/
+
+        #include <Arduino.h>
+        #include <EEPROM.h>
+
+        typedef unsigned long ulong;
+
+        void setup() {
+            Serial.begin(9600);
+            while (!Serial) {}
+            // Print length of data to run CRC on
+            Serial.print("EEPROM length: ");
+            Serial.println(EEPROM.length());
+            //Print the result of calling eeprom_crc()
+            Serial.print("CRC32 of EEPROM data: 0x");
+            Serial.println(eeprom_crc(), HEX);
+        }
+
+        void loop() {}
+
+        ulong eeprom_crc(void) {
+            const ulong crc_table[16] = {
+                0x00000000, 0x1db71064, 0x3b6e20c8, 0x26d930ac, 0x76dc4190, 0x6b6b51f4, 0x4db26158, 0x5005713c,
+                0xedb88320, 0xf00f9344, 0xd6d6a3e8, 0xcb61b38c, 0x9b64c2b0, 0x86d3d2d4, 0xa00ae278, 0xbdbdf21c
+            };
+            ulong crc = ~0L;
+            for (int index = 0 ; index < EEPROM.length()  ; ++index) {
+                crc = crc_table[(crc ^ EEPROM[index]) & 0x0f] ^ (crc >> 4);
+                crc = crc_table[(crc ^ (EEPROM[index] >> 4)) & 0x0f] ^ (crc >> 4);
+                crc = ~crc;
+            }
+            return crc;
+        }
+
+    EEPROM get and put methods
+        /* This shows how to use the EEPROM.get() method
+
+            To pre-set the EEPROM data, run the example sketch eeprom_put.  This sketch will run without
+            it, however, the values shown will be shown from what ever is already on the EEPROM.  This may
+            cause the serial object to print out a large string of garbage if there is no null character
+            inside one of the strings loaded.  */
+
+        #include <EEPROM.h>
+
+        void setup() {  // Read a float from EEPROM
+            float f = 0.0f;
+            int eepromAddress = 0;
+            Serial.begin(9600);
+            while (!Serial) {}
+            Serial.print("Read float from EEPROM: ");
+
+            //Get the float data from the EEPROM at position 'eeAddress'
+            EEPROM.get(eeAddress, f);
+
+            // This may print 'ovf, nan' if the data inside the EEPROM is not a valid float.
+            Serial.println(f, 3);
+            // Since get returns a reference, you can also use
+            Serial.print(EEPROM.get(eeAddress, f));
+
+            // Get can be used with custom structures too
+            CustomStructure();
+        }
+
+        struct MyCustomStruct {
+            float field1;
+            byte field2;
+            char name[10];
+        };
+
+        void CustomStructure(void) {
+            int eeAddress = sizeof(float); // Move address to the next byte after float 'f'.
+            MyCustomStruct custom;
+            EEPROM.get(eeAddress, customVar);
+            Serial.println("Read custom object from EEPROM: ");
+            Serial.println(customVar.field1);
+            Serial.println(customVar.field2);
+            Serial.println(customVar.name);
+        }
+
+        void loop() {}
 ----------------------------------------------------------------------
 Liquid Crystal displays                              *ard_LiquidCrystal*
 
