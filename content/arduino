@@ -22,65 +22,68 @@
 ----------------------------------------------------------------------
 EEPROM                                               *ard_EEPROM*
 
+The EEPROM is typically 1k to 4k bytes in size on the Arduinos.  It is byte-oriented and
+each byte has a lifetime of about 1e5 writes; because of this, try to use the EEPROM.put()
+method to update EEPROM, as it only writes a byte if the value is changed.
+
+You can use custom structs to store your data, meaning it's one function call to read it
+back.  Write your data with EEPROM.put(address, object), get it with EEPROM.get(address,
+object).  For important data, you can use a 32 bit CRC given below.
+
 https://docs.arduino.cc/learn/programming/eeprom-guide
 
 #include <EEPROM.h>
 
-EEPROM is byte-oriented and each byte has a limit of 1e5 writes.  Because of this, try
-to use the EEPROM.put() method to update EEPROM, as it only writes a byte if the value is
-changed.
+Uno, Nano   1 kB of EEPROM storage
+Mega        4 kB of EEPROM storage
 
-    Uno, Nano   1 kB of EEPROM storage
-    Mega        4 kB of EEPROM storage
-
-read
+read()
     byte read(int)
     Locations that have never been written contain 0xff.
-write
+write()
     void write(int address, byte value)
     Takes 33 ms to complete and 1e5 write life for each byte.
-update
+update()
     void update(int address, byte value)
     Same as write() but only writes data if the new byte is different.
-get
+get()
     reference_to_object get(int address, object)
     object can be a primitive type (e.g. float) or a custom structure.
-put
+put()
     reference_to_object put(int address, object)
     This uses update() for the data, so an EEPROM byte is not overwritten unless it has
     changed.
 EEPROM[]
     reference_to_cell EEPROM[int address]
     Way to read and write EEPROM locations like an array.
-length
+length()
     unsigned int length()
     Returns number of cells in EEPROM.
 
 Examples
 
-    // Write data into a specific address of the EEPROM memory
+    - Write data to a specific byte address of the EEPROM memory
         EEPROM.write(address, value);
-    // Read data of a specific address of the EEPROM memory
+    - Read data from a specific byte address of the EEPROM memory
         EEPROM.read(address);
-
-    Clear EEPROM:  some various iterators
-        for (int i = 0 ; i < EEPROM.length() ; i++) {
-            EEPROM.write(i, 0);
-        }
-        //
-        int i = 0;
-        while (i < EEPROM.length()) {
-            EEPROM[i] = 0;
-            i++;
-        }
-        //
-        int i = 0;
-        do {
-            EEPROM[i] = 0;
-            i++;
-        } while (i < EEPROM.length());
-
-    CRC to check EEPROM
+    - Clear the EEPROM
+        - for loop
+            for (int i = 0 ; i < EEPROM.length() ; i++) {
+                EEPROM.write(i, 0);
+            }
+        - while loop
+            int i = 0;
+            while (i < EEPROM.length()) {
+                EEPROM[i] = 0;
+                i++;
+            }
+        - do-while loop
+            int i = 0;
+            do {
+                EEPROM[i] = 0;
+                i++;
+            } while (i < EEPROM.length());
+    - CRC to check EEPROM
         From https://docs.arduino.cc/learn/programming/eeprom-guide/
 
         #include <Arduino.h>
