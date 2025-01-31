@@ -5,6 +5,7 @@ Todo:
       modern syntax.  Test in a dummy repo to be sure things work as
       described.
 
+|git_Tips|
 |git_Branching|
 |git_Merging|
 |git_Tags|
@@ -74,87 +75,101 @@ An older summation:
 git commit_checksum is 7 digits or more of the hex hash string of the
 revision.
 
-Helpful tips
+---------------------------------------------------------------------------
+Helpful tips                                            *git_Tips*
     Note git times are Zulu.
 
-    Listing files
-        git status
-            --porcelain     Use for scripts, as output syntax constant
-            -u untracked
-            --ignored
-            -s    Short, gives XY status
-                  Letters are:
-                        ' ' = unmodified
-                        M = modified
-                        A = added
-                        D = deleted
-                        R = renamed
-                        C = copied
-                        U = updated but unmerged
-                        ? = untracked
-                        ! = ignored
+Looking at the log
+    git log |less shows you all the commits, their hash, author, and date.
 
-    Saving state
-        If you're about to do something drastic that might cause nasty
-        changes in a directory, use
+    git log -5 
+        Only look at the last 5 commits
+
+    A useful option is -p, which can generate a lot of output, but shows you the diffs of
+    the changes made in files.  It's great for source files, but interestingly it also
+    shows the diffs of text made in e.g. OO *.odt files (very handy).  The following shows
+    the change diffs for the last 10 commits:
+
+        git log -10 -p
+
+Listing files
+    git status
+        --porcelain     Use for scripts, as output syntax constant
+        -u untracked
+        --ignored
+        -s    Short, gives XY status
+              Letters are:
+                    ' ' = unmodified
+                    M = modified
+                    A = added
+                    D = deleted
+                    R = renamed
+                    C = copied
+                    U = updated but unmerged
+                    ? = untracked
+                    ! = ignored
+
+Saving state
+    If you're about to do something drastic that might cause nasty
+    changes in a directory, use
  
-            git init    # Turn the direction into a git repository
-            git add .   # Add everything in the directory to the repository
-            git commit -m "First backup"    # Commit the stuff
+        git init    # Turn the directory into a git repository
+        git add .   # Add everything in the directory to the repository
+        git commit -m "First backup"    # Commit the stuff
  
-        Now you can do what you want (except things like 'rm -rf *') and
-        you can recover the previous state by
+    Now you can do what you want (except things like 'rm -rf *') and
+    you can recover the previous state by
  
-            git reset --hard    # Restore original version
+        git reset --hard    # Restore original version
  
-        If the experiment worked, then you can save state for a new nasty
-        experiment by
+    If the experiment worked, then you can save state for a new nasty
+    experiment by
  
-            git commit -a -m "Another backup"
+        git commit -a -m "Another backup"
 
-    Add, delete, rename
-        Add new files with
-            git add readme.txt doc ...
-        Remove stuff
-            git rm other.stuff junk
-        Rename
-            git mv bug.c feature.c
+Add, delete, rename
+    Add new files with
+        git add readme.txt doc ...
+    Remove stuff
+        git rm other.stuff junk
+    Rename
+        git mv bug.c feature.c
 
-    Undo/redo
-        Show recent commits
-            git log
-        You can go to a rev using the first few characters of the hash
-            git reset --hard 766f
-            **********************************************
-            * IMPORTANT:  This erases all later commits! *
-            **********************************************
-        To go to an older version:
-            git checkout 82f5
-                ** NOTE:  if you make edits, you'll be doing it on a branch **
-            git checkout master~5   # 5th-last saved state
-        To go to main 
-            git checkout master
-        To prevent git complaining, always do a commit before using
-        checkout using
-            git commit -a       # The -a commits all changed files
+Undo/redo
+    Show recent commits
+        git log
+    You can go to a rev using the first few characters of the hash
+        git reset --hard 766f
+        **********************************************
+        * IMPORTANT:  This erases all later commits! *
+        **********************************************
+    To go to an older version:
+        git checkout 82f5
+            ** NOTE:  if you make edits, you'll be doing it on a branch **
+        git checkout master~5   # 5th-last saved state
+    To go to main 
+        git checkout master
+    To prevent git complaining, always do a commit before using
+    checkout using
+        git commit -a       # The -a commits all changed files
 
-    Reverting
-        Undo a specific commit:
-            git commit -a
-            git revert 1b6d
-        The revert is recorded as a new commit.
+Reverting
+    Undo a specific commit:
+        git commit -a
+        git revert 1b6d
+    The revert is recorded as a new commit.
 
-    Seeing what's been done
-        git diff    # Changes since last commit
-        git diff "@{yesterday}"       # Since yesterday
-        git diff 1b6d "master~2"      # Between a particular version and 2 back
+Seeing what's been done
+    git diff    # Changes since last commit
+    git diff "@{yesterday}"       # Since yesterday
+    git diff 1b6d "master~2"      # Between a particular version and 2 back
 
-    Aliases
-        Command line:
-            git config --global alias.co checkout
-        ~/.gitconfig:
-            [alias]
-                co = checkout
+Aliases
+    Command line:
+        git config --global alias.co checkout
+    ~/.gitconfig:
+        [alias]
+            co = checkout
 
 ---------------------------------------------------------------------------
 git Tags                                                *git_Tags*
@@ -399,3 +414,4 @@ git Architecture                                        *git_Architecture*
 ---------------------------------------------------------------------------
 git Commands                                            *git_Commands*
 
+vim: tw=90
