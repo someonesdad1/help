@@ -762,13 +762,20 @@ isWhitespace()
 ----------------------------------------------------------------------
 Bits and Bytes                              *ard_bits_and_bytes*
 
-bit()
-bitClear()
-bitRead()
-bitSet()
-bitWrite()
-highByte()
+bit(n)
+    Returns 2**n
+bitClear(x, n)
+    Returns x with bit n cleared
+bitRead(x, n)
+    Returns 0 or 1 of the value of bit n in x
+bitSet(x, n)
+    Write a 1 in bit n of x
+bitWrite(x, n, b)
+    Write b (0 or 1) to bit n of x.  n = 0 is the LSB.
+highByte(x)
+    Returns the second lowest byte of any type x.
 lowByte()
+    Returns the lowest byte of any type x.
 
 ----------------------------------------------------------------------
 Interrupts                                  *ard_interrupts*
