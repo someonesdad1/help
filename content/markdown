@@ -44,7 +44,9 @@ Block quotes
 Images
     ![description](/images/my.png)
 
-Comment
-    <!-- COMMENT -->
+Comment (uses HTML comments)
+    <!-- 
+        COMMENT
+     -->
 
 vim:  wm=3
