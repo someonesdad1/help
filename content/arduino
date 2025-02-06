@@ -781,14 +781,51 @@ lowByte()
 ----------------------------------------------------------------------
 Interrupts                                  *ard_interrupts*
 
-Overview:  https://gammon.com.au/interrupts
-
 attachInterrupt()
 detachInterrupt()
 interrupts()
     Enables interrupts.  Same as sei() (sets interrupt flag).
 noInterrupts()
     Disables interrupts.  Same as cli() (clears interrupt flag).
+
+Example
+    This example shows the use of a pin interrupt and is from the Arduino
+    attachInterrupt() documentation page.
+        
+        Pin interrupts for various Arduinos:
+            Uno R3, Nano        2, 3
+            Mega                2, 3, 18, 19, 20, 21 (20/21 used for I2C)
+
+    The example sets pin 2 as a digital input that is pulled high.  When pin 2 is then
+    connected to a ground pin, the blink ISR is called and the state variable is changed.
+    The on-board LED blinks, showing the interrupt was caught.
+
+    This works, but it's intermittent, probably because of pin "bounce" when making
+    the connection in the prototyping board.
+
+    It's important to declare state as volatile, which tells the compiler that things
+    other than code might change the value of this variable.
+
+    Inside an ISR, delay() won't work and the value returned by millis() won't increment.
+    
+            volatile byte state = LOW;
+            void setup() {
+                const byte interruptPin = 2;
+                pinMode(13, OUTPUT);  // On-board LED
+                pinMode(interruptPin, INPUT_PULLUP);
+                attachInterrupt(digitalPinToInterrupt(interruptPin),
+                                BlinkLED,
+                                CHANGE);
+            }
+            void loop() {
+                digitalWrite(ledPin, state);
+            }
+
+            void BlinkLED() {
+                state = !state;
+            }
+
+Overview:  https://gammon.com.au/interrupts
 
 Interrupts for Atmega328 in prority order
      1  Reset
