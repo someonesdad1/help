@@ -19,6 +19,14 @@
 |ard_interrupts|
 |ard_EEPROM|
 
+If you run out of dynamic memory, store big things in flash; e.g.
+    #include <avr/pgmspace.h>
+    const PROGMEM uint8_t matrix[][4] = {...};
+
+    The PROGMEM keyword tells the compiler to not load it into SRAM during initialization,
+    so that code doesn't need to load what is needed within the program's functions.
+    Typically 32k of flash versus 2k of SRAM.
+
 ----------------------------------------------------------------------
 EEPROM                                               *ard_EEPROM*
 
