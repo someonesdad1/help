@@ -74,6 +74,20 @@ Miscellaneous stuff
 
 Python's FAQ: https://docs.python.org/3/faq/
 
+Make an attribute read-only
+    There's no way to set a variable to be read-only, but you can make it a class instance and
+    only provide the read property:
+
+        class ReadOnly:
+            def __init__(self, value):
+                self._value = value
+            @property
+            def value(self):
+                return self._value
+        x = ReadOnly(7.2)
+        print(x.value)  # Gives 7.2
+        x.value = 8.8   # raises AttributeError
+
 See if a variable x is defined
     Local scope
         if x in vars():
