@@ -72,34 +72,52 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
-nonlocal identifier1, identifier2, ...
+nonlocal keyword
 
-    Lets identifiers refer to previously bound variables in the nearest enclosing scope excluding
-    globals.  Here's an example from plib/pgm/diodes.py:  set_of_diodes is a list of diode name
-    strings; these index into the dict diodes to give class Diode instances.  Then a specific
-    instance's voltage as a function of current relationship is gotten from the class method
-    diodes[name].V().  I wanted to find the current that would return a desired voltage Vref, so I
-    defined a function that a root finder could use:
+    Syntax:  nonlocal identifier1, identifier2, ...
+
+    This keyword lets identifiers refer to previously bound variables in the nearest
+    enclosing scope excluding globals.  Here's an example from plib/pgm/diodes.py:
+    set_of_diodes is a list of diode name strings; these index into the dict diodes to give
+    class Diode instances.  Then a specific diode's voltage as a function of current
+    relationship is gotten from the class method diodes[name].V(i).  I wanted to find the
+    current that would return a desired voltage Vref, so I defined a function that a root
+    finder could use:
 
         def GetVrefFunction(set_of_diodes, Vref):
-            '''Return a function of current i in A that a root finder can use to find the current
-            that gives the diode stack operating point such that the sum of the diodes' drops is
-            Vref.
+            '''Return a function of current i in A that a root finder can use to find the
+            current that gives the diode stack's operating point such that the sum of the
+            diodes' drops is Vref.  This stack is a series connection of diodes, used to get
+            a desired voltage drop == Vref.
             '''
             def f(i):
                 nonlocal set_of_diodes, Vref    # Get GetVrefFunction's local variables
                 global diodes                   # A dict containing class instances
-                V = 0           # Sum of voltages across a group of diodes in series
+                V = 0            # Sum of voltages across a group of diodes in series
                 for diode_ID in set_of_diodes:
                     V += diodes[diode_ID].V(i)
-                return V - Vref     # The desired current will be such that V - Vref is zero
+                return V - Vref  # The desired current will be such that V - Vref is zero
             return f
 
-    Function f is a nested function inside GetVrefFunction and is called a closure, as it "closes"
-    around information from the enclosing scope.  Even though the call to GetVrefFunction is
-    "forgotten" (the script only used it once for a given invocation), the closure f() "remembers"
-    the values of GetVrefFunction's two local variables set_of_diodes (a list of strings) and 
-    Vref (a floating point number representing a voltage).
+    Function f is a nested function inside GetVrefFunction and is called a closure, as it
+    "closes" around information from the enclosing scope.  Even though the call to
+    GetVrefFunction is "forgotten" (the script only used it once for a given invocation),
+    the closure f() "remembers" the values of GetVrefFunction's two local variables
+    set_of_diodes (a list of strings) and Vref (a floating point number representing a
+    voltage).  Note also the use of the keyword 'global', allowing access to a global
+    variable.
+
+    This function was passed to a /plib/root.py rootfinder:
+
+        i, num_iterations = root.Crenshaw(ilow, ihigh, f, eps=1e-2, dbg=sys.stdout)
+
+    The function instance f includes the values of Vref, the list of diodes' names
+    set_of_diodes, and the global dict diodes which maps the diode's name to a class
+    instance containing the interpolation functions for the i(V) and V(i) relationships
+    using the excellent and very handy scipy.interpolation.interp1d routine.
+
+    https://realpython.com/python-closure/ gives a good discussion with examples of why
+    closures are useful for numerous programming patterns.
 
 Python's FAQ: https://docs.python.org/3/faq/
 
@@ -10580,6 +10598,4 @@ Multiple axes plot
     p.title("Multiple Axes Plot")
     p.show()
 
-
-
-vim:  wm=3
+vim:  tw=92
