@@ -791,6 +791,27 @@ Interpreting escaped string characters:
         \uxxxx      Character with 16 bit hex value xxxx
         \uxxxxxxxx  Character with 32 bit hex value xxxxxxxx
 
+Sorting and defining your own classes
+    
+    It is important to define all of the 6 methods to make your class orderable:
+        __lt__, __gt__, __ge__, __le__, __ne__ and __eq__.  If you don't, you may have
+        subtle bugs.  See the beginning of Ch 72 in PythonNotesForProfessionals.pdf.
+
+    The recommendation is to use the functools.total_ordering class decorator
+
+    @total_ordering
+    class Student:
+        def __eq__(self, other):
+            return ((self.lastname.lower(), self.firstname.lower()) ==
+                    (other.lastname.lower(), other.firstname.lower()))
+        def __lt__(self, other):
+            return ((self.lastname.lower(), self.firstname.lower()) <
+                    (other.lastname.lower(), other.firstname.lower()))
+
+    Python's documentation (as of 2012) indicated that only __lt__ was needed; Raymond
+    Hettinger points out that this decorator makes it trivially easy to comply with the best
+    practice with only a single line of code.
+
 Case-insensitive sort:
     keys = sorted(keys, key=str.lower, reverse=False)
         Sorts folded with 'A' and 'a' adjacent
