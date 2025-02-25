@@ -5440,91 +5440,84 @@ chris@newcenturycomputers.net
 ---------------------------------------------------------------------------
 time module                             *python_time*
 
+To time code, use /plib/timer.py; use a Timer instance for the most versatility or a
+Stopwatch instance for ease of use.  Both of these use time.perf_counter_ns(), which returns
+an integer.  Beware that long Stopwatch times can have resolution problems because of the
+limited resolution of floats.  Since a float has about 15 digits, 1e15*(1 ns) is 1e6 s,
+which is 11.6 days.
 
 time.accept2dyear 
-    Boolean value indicating whether two-digit year values will be
-    accepted. This is true by default, but will be set to false if the
-    environment variable PYTHONY2K has been set to a non-empty string.
-    It may also be modified at run time.
+    Boolean value indicating whether two-digit year values will be accepted. This is true by
+    default, but will be set to false if the environment variable PYTHONY2K has been set to
+    a non-empty string.  It may also be modified at run time.
 
 time.altzone 
-    The offset of the local DST timezone, in seconds west of UTC, if
-    one is defined. This is negative if the local DST timezone is east
-    of UTC (as in Western Europe, including the UK). Only use this if
-    daylight is nonzero.
+    The offset of the local DST timezone, in seconds west of UTC, if one is defined. This is
+    negative if the local DST timezone is east of UTC (as in Western Europe, including the
+    UK). Only use this if daylight is nonzero.
 
 time.asctime([t]) 
-    Convert a tuple or struct_time representing a time as returned by
-    gmtime() or localtime() to a 24-character string of the following
-    form: 'Sun Jun 20 23:21:05 1993'. If t is not provided, the
-    current time as returned by localtime() is used. Locale
+    Convert a tuple or struct_time representing a time as returned by gmtime() or
+    localtime() to a 24-character string of the following form: 'Sun Jun 20 23:21:05 1993'.
+    If t is not provided, the current time as returned by localtime() is used. Locale
     information is not used by asctime().
 
 time.clock() 
-    On Unix, return the current processor time as a floating point
-    number expressed in seconds. The precision, and in fact the very
-    definition of the meaning of "processor time", depends on that of
-    the C function of the same name, but in any case, this is the
+    On Unix, return the current processor time as a floating point number expressed in
+    seconds. The precision, and in fact the very definition of the meaning of "processor
+    time", depends on that of the C function of the same name, but in any case, this is the
     function to use for benchmarking Python or timing algorithms.
 
-    On Windows, this function returns wall-clock seconds elapsed since
-    the first call to this function, as a floating point number, based
-    on the Win32 function QueryPerformanceCounter(). The resolution is
-    typically better than one microsecond.
+    On Windows, this function returns wall-clock seconds elapsed since the first call to
+    this function, as a floating point number, based on the Win32 function
+    QueryPerformanceCounter(). The resolution is typically better than one microsecond.
 
 time.ctime([secs]) 
-    Convert a time expressed in seconds since the epoch to a string
-    representing local time. If secs is not provided or None, the
-    current time as returned by time() is used. ctime(secs) is
-    equivalent to asctime(localtime(secs)). Locale information is not
-    used by ctime().
+    Convert a time expressed in seconds since the epoch to a string representing local time.
+    If secs is not provided or None, the current time as returned by time() is used.
+    ctime(secs) is equivalent to asctime(localtime(secs)). Locale information is not used by
+    ctime().
 
 time.daylight 
     Nonzero if a DST timezone is defined.
 
 time.gmtime([secs]) 
-    Convert a time expressed in seconds since the epoch to a
-    struct_time in UTC in which the dst flag is always zero. If secs
-    is not provided or None, the current time as returned by time() is
-    used. Fractions of a second are ignored. See above for a
-    description of the struct_time object. See calendar.timegm() for
-    the inverse of this function.
+    Convert a time expressed in seconds since the epoch to a struct_time in UTC in which the
+    dst flag is always zero. If secs is not provided or None, the current time as returned
+    by time() is used. Fractions of a second are ignored. See above for a description of the
+    struct_time object. See calendar.timegm() for the inverse of this function.
 
 time.localtime([secs]) 
-    Like gmtime() but converts to local time. If secs is not provided
-    or None, the current time as returned by time() is used. The dst
-    flag is set to 1 when DST applies to the given time.
+    Like gmtime() but converts to local time. If secs is not provided or None, the current
+    time as returned by time() is used. The dst flag is set to 1 when DST applies to the
+    given time.
 
 time.mktime(t) 
-    This is the inverse function of localtime(). Its argument is the
-    struct_time or full 9-tuple (since the dst flag is needed; use -1
-    as the dst flag if it is unknown) which expresses the time in
-    local time, not UTC. It returns a floating point number, for
-    compatibility with time(). If the input value cannot be
-    represented as a valid time, either OverflowError or ValueError
-    will be raised (which depends on whether the invalid value is
-    caught by Python or the underlying C libraries). The earliest date
-    for which it can generate a time is platform-dependent.
+    This is the inverse function of localtime(). Its argument is the struct_time or full
+    9-tuple (since the dst flag is needed; use -1 as the dst flag if it is unknown) which
+    expresses the time in local time, not UTC. It returns a floating point number, for
+    compatibility with time(). If the input value cannot be represented as a valid time,
+    either OverflowError or ValueError will be raised (which depends on whether the invalid
+    value is caught by Python or the underlying C libraries). The earliest date for which it
+    can generate a time is platform-dependent.
 
 time.sleep(secs) 
-    Suspend execution for the given number of seconds. The argument
-    may be a floating point number to indicate a more precise sleep
-    time. The actual suspension time may be less than that requested
-    because any caught signal will terminate the sleep() following
-    execution of that signal's catching routine. Also, the suspension
-    time may be longer than requested by an arbitrary amount because
-    of the scheduling of other activity in the system.
+    Suspend execution for the given number of seconds. The argument may be a floating point
+    number to indicate a more precise sleep time. The actual suspension time may be less
+    than that requested because any caught signal will terminate the sleep() following
+    execution of that signal's catching routine. Also, the suspension time may be longer
+    than requested by an arbitrary amount because of the scheduling of other activity in the
+    system.
 
 time.strftime(format[, t]) 
-    Convert a tuple or struct_time representing a time as returned by
-    gmtime() or localtime() to a string as specified by the format
-    argument. If t is not provided, the current time as returned by
-    localtime() is used. format must be a string. ValueError is raised
-    if any field in t is outside of the allowed range.
+    Convert a tuple or struct_time representing a time as returned by gmtime() or
+    localtime() to a string as specified by the format argument. If t is not provided, the
+    current time as returned by localtime() is used. format must be a string. ValueError is
+    raised if any field in t is outside of the allowed range.
 
-The following directives can be embedded in the format string. They are shown
-without the optional field width and precision specification, and are
-replaced by the indicated characters in the strftime() result:
+The following directives can be embedded in the format string. They are shown without the
+optional field width and precision specification, and are replaced by the indicated
+characters in the strftime() result:
 
     %a Locale's abbreviated weekday name. 
     %A Locale's full weekday name. 
@@ -5555,39 +5548,33 @@ replaced by the indicated characters in the strftime() result:
 
     Notes:
 
-    When used with the strptime() function, the %p directive only
-    affects the output hour field if the %I directive is used to parse
-    the hour.  The range really is 0 to 61; this accounts for leap
-    seconds and the (very rare) double leap seconds.  When used with
-    the strptime() function, %U and %W are only used in calculations
-    when the day of the week and the year are specified.  Here is an
-    example, a format for dates compatible with that specified in the
-    RFC 2822 Internet email standard. [1]
+    When used with the strptime() function, the %p directive only affects the output hour
+    field if the %I directive is used to parse the hour.  The range really is 0 to 61; this
+    accounts for leap seconds and the (very rare) double leap seconds.  When used with the
+    strptime() function, %U and %W are only used in calculations when the day of the week
+    and the year are specified.  Here is an example, a format for dates compatible with that
+    specified in the RFC 2822 Internet email standard. [1]
 
     >>> from time import gmtime, strftime
     >>> strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
     'Thu, 28 Jun 2001 14:17:15 +0000'
 
-    Additional directives may be supported on certain platforms, but
-    only the ones listed here have a meaning standardized by ANSI C.
+    Additional directives may be supported on certain platforms, but only the ones listed
+    here have a meaning standardized by ANSI C.
 
-    On some platforms, an optional field width and precision
-    specification can immediately follow the initial '%' of a
-    directive in the following order; this is also not portable. The
-    field width is normally 2 except for %j where it is 3.
+    On some platforms, an optional field width and precision specification can immediately
+    follow the initial '%' of a directive in the following order; this is also not portable.
+    The field width is normally 2 except for %j where it is 3.
 
 time.strptime(string[, format]) 
-    Parse a string representing a time according to a format. The
-    return value is a struct_time as returned by gmtime() or
-    localtime().
+    Parse a string representing a time according to a format. The return value is a
+    struct_time as returned by gmtime() or localtime().
 
-    The format parameter uses the same directives as those used by
-    strftime(); it defaults to "%a %b %d %H:%M:%S %Y" which matches
-    the formatting returned by ctime(). If string cannot be parsed
-    according to format, or if it has excess data after parsing,
-    ValueError is raised. The default values used to fill in any
-    missing data when more accurate values cannot be inferred are
-    (1900, 1, 1, 0, 0, 0, 0, 1, -1).
+    The format parameter uses the same directives as those used by strftime(); it defaults
+    to "%a %b %d %H:%M:%S %Y" which matches the formatting returned by ctime(). If string
+    cannot be parsed according to format, or if it has excess data after parsing, ValueError
+    is raised. The default values used to fill in any missing data when more accurate values
+    cannot be inferred are (1900, 1, 1, 0, 0, 0, 0, 1, -1).
 
     For example:
 
@@ -5596,44 +5583,38 @@ time.strptime(string[, format])
     time.struct_time(tm_year=2000, tm_mon=11, tm_mday=30, tm_hour=0, tm_min=0,
                      tm_sec=0, tm_wday=3, tm_yday=335, tm_isdst=-1)
 
-    Support for the %Z directive is based on the values contained in
-    tzname and whether daylight is true. Because of this, it is
-    platform-specific except for recognizing UTC and GMT which are
-    always known (and are considered to be non-daylight savings
+    Support for the %Z directive is based on the values contained in tzname and whether
+    daylight is true. Because of this, it is platform-specific except for recognizing UTC
+    and GMT which are always known (and are considered to be non-daylight savings
     timezones).
 
-    Only the directives specified in the documentation are supported.
-    Because strftime() is implemented per platform it can sometimes
-    offer more directives than those listed. But strptime() is
-    independent of any platform and thus does not necessarily support
-    all directives available that are not documented as supported.
+    Only the directives specified in the documentation are supported.  Because strftime() is
+    implemented per platform it can sometimes offer more directives than those listed. But
+    strptime() is independent of any platform and thus does not necessarily support all
+    directives available that are not documented as supported.
 
 time.struct_time 
-    The type of the time value sequence returned by gmtime(),
-    localtime(), and strptime().
+    The type of the time value sequence returned by gmtime(), localtime(), and strptime().
 
 time.time() 
-    Return the time as a floating point number expressed in seconds
-    since the epoch, in UTC. Note that even though the time is always
-    returned as a floating point number, not all systems provide time
-    with a better precision than 1 second. While this function
-    normally returns non-decreasing values, it can return a lower
-    value than a previous call if the system clock has been set back
-    between the two calls.
+    Return the time as a floating point number expressed in seconds since the epoch, in UTC.
+    Note that even though the time is always returned as a floating point number, not all
+    systems provide time with a better precision than 1 second. While this function normally
+    returns non-decreasing values, it can return a lower value than a previous call if the
+    system clock has been set back between the two calls.
 
 time.timezone 
-    The offset of the local (non-DST) timezone, in seconds west of UTC
-    (negative in most of Western Europe, positive in the US, zero in
-    the UK).
+    The offset of the local (non-DST) timezone, in seconds west of UTC (negative in most of
+    Western Europe, positive in the US, zero in the UK).
 
 time.tzname 
-    A tuple of two strings: the first is the name of the local non-DST
-    timezone, the second is the name of the local DST timezone. If no
-    DST timezone is defined, the second string should not be used.
+    A tuple of two strings: the first is the name of the local non-DST timezone, the second
+    is the name of the local DST timezone. If no DST timezone is defined, the second string
+    should not be used.
 
 time.tzset() 
-    Resets the time conversion rules used by the library routines. The
-    environment variable TZ specifies how this is done.
+    Resets the time conversion rules used by the library routines. The environment variable
+    TZ specifies how this is done.
 
 ----------------------------------------------------------------------
 Inspect module                                      *python_inspect*
@@ -9282,6 +9263,72 @@ Comments:
     The result marked ** seems to be close to the truth (each instance
     should have been perhaps 5-10 bytes by my reckoning.  The tracemalloc
     module gave 4360 to 117 bytes per instance.
+
+----------------------------------------------------------------------
+Functional programming                      *python_functional_programming*
+
+Programming paradigm where primary method of computation is evaluation of functions.
+Pure functions have output that comes from its input with no side effects.  Functional
+programming mostly consists of the evaluation of pure functions in nested or composed calls
+without changes to state or mutable data.
+
+    - High level:  you describe what you want instead of the steps to get there
+    - Facilitated debugging because of no side effects
+    - Routines with no side effects can be run in parallel
+
+To support functional programming, a function must be able to take another function as an
+argument and return a function to its caller.
+
+Function composition
+
+    def inner():
+        print("I am inner()")
+    def outer(function):            
+        function()
+
+    outer(inner) --> "I am inner()"
+
+    Steps:  outer was called with the function inner as argument.  Python bound inner to the
+    function parameter of outer.  outer then called its argument as a function.
+
+    Python decorators are a shortcut notation for function composition.
+
+map() applies function to iterable
+----------------------------------
+
+    map(function, iterable, *iterables)
+        Returns iterator that applies function to every item of iterable, giving the result
+        iterable.
+
+    Example:  f = lambda x: -x
+        map(f, (1, -2, 3)) returns an iterator that will give (-1, 2, -3)
+
+    Another common use case example:
+        lst = [1, 2, 3]
+        Make "1+2+3":
+            Generator comp:  '+'.join(str(i) for i in lst)
+        More concise with map:
+            "+".join(map(str, lst))
+
+    Variadic function
+        Suppose f() takes two number arguments and squares them, then adds them.  You have
+        two lists of number a = [1, 2, 3] and b = [4, 5, 6] and you'd like to calculate the
+        square and sum of the first elements, then the second elements, etc.
+
+            f = lambda x, y: (x + y)**2
+            list(map(f, a, b)) --> [25, 49, 81]
+
+        It's pretty concise and when you grok how map works, it's effective.  It's
+        considered more pythonic, however, to use e.g. list comprehensions:
+
+            [f(x, y) for x, y in zip(a, b)]
+
+    An advantage of using map() is that it is written in C and highly optimized, so it can
+    be faster than a regular for loop.  Another advantage is that map only consumes one item
+    at a time, so unlike a for loop, you don't need to have the whole sequence in memory.
+
+
+Good discussion:  https://realpython.com/python-functional-programming/
 
 ----------------------------------------------------------------------
 Functions                                   *python_functions*
