@@ -19,9 +19,12 @@
 |Command_line_syntax|
 |Where_to_get|
 
-
 pandoc is a tool to convert to and from various markdown and rendering
 file formats.
+
+Example:  convert github markdown to HTML
+
+    pandoc -f gfm -t html README.md >out.html
 
 ----------------------------------------------------------------------
 Common input/output formats                 *Common_in_out_formats*
