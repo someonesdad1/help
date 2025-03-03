@@ -14,11 +14,11 @@ Todo:
 |git_Commands|
 |git_Architecture|
 
-NOTE:  Open giteveryday(7) if you have it for a good overview of daily
-commands (on WSL, not in cygwin)
+NOTE:  Open giteveryday(7) if you have it for a good overview of daily commands (on WSL,
+not in cygwin)
 
-Note:  'master' used to be the name of the main branch in the repository,
-but it was renamed to 'main'.
+Note:  'master' used to be the name of the main branch in the repository, but it was
+renamed to 'main'.  Today, instead of 'checkout', use 'switch'.
 
 Here's an example of a simple git workflow for my stuff:
 
@@ -33,33 +33,32 @@ Here's an example of a simple git workflow for my stuff:
 
     # Rinse and repeat...
 
-    # Now main is in good shape (usually).  Suppose I want to work on a new
-    # feature and not break main.  We'll do this on a branch.  First make
-    # sure main has no modified/staged files.
+    # Now main is in good shape (usually).  Suppose I want to work on a new feature and
+    # not break main.  We'll do this on a branch.  First make sure main has no
+    # modified/staged files.
 
         git commit ...              # Make sure main is clean
 
         git switch -c mybranch      # Create new branch and switch to it
 
-    # Do the necessary development work.  If you need to go back to main,
-    # make sure there are no staged/changed files (do a commit), then use
+    # Do the necessary development work.  If you need to go back to main, make sure there
+    # are no staged/changed files (do a commit), then use
 
         git switch main             # Note your set of files may change
 
-    # Do any work needed on main and commit.  When done, go back to working
-    # on mybranch
+    # Do any work needed on main and commit.  When done, go back to working on mybranch
 
         git switch mybranch
 
-    # When mybranch is ready, you can merge to main.  First, make sure all
-    # stuff on mybranch is committed.
+    # When mybranch is ready, you can merge to main.  First, make sure all stuff on
+    # mybranch is committed.
     
         git commit ...          # All stuff on mybranch needs to be committed
         git switch main
         git merge mybranch
 
-    # Usually this completes with no problem.  Conflicts will require work
-    # and some e.g. tool like kdiff3, meld, etc.
+    # Usually this completes with no problem.  Conflicts will require work and some e.g.
+    # tool like kdiff3, meld, etc.
 
         git commit ...          # Update main to latest stuff
 
@@ -72,8 +71,7 @@ Reference book:  "Pro Git" 2nd ed., 2014
 An older summation:
     http://www-cs-students.stanford.edu/~blynn/gitmagic/book.pdf
 
-git commit_checksum is 7 digits or more of the hex hash string of the
-revision.
+git commit_checksum is 7 digits or more of the hex hash string of the revision.
 
 ---------------------------------------------------------------------------
 Helpful tips                                            *git_Tips*
@@ -110,20 +108,19 @@ Listing files
                     ! = ignored
 
 Saving state
-    If you're about to do something drastic that might cause nasty
-    changes in a directory, use
+    If you're about to do something drastic that might cause nasty changes in a directory,
+    use
  
         git init    # Turn the directory into a git repository
         git add .   # Add everything in the directory to the repository
         git commit -m "First backup"    # Commit the stuff
  
-    Now you can do what you want (except things like 'rm -rf *') and
-    you can recover the previous state by
+    Now you can do what you want (except things like 'rm -rf *') and you can recover the
+    previous state by
  
         git reset --hard    # Restore original version
  
-    If the experiment worked, then you can save state for a new nasty
-    experiment by
+    If the experiment worked, then you can save state for a new nasty experiment by
  
         git commit -a -m "Another backup"
 
@@ -179,16 +176,16 @@ View your tags:
     git tag --list 'v*'     # List those that match pattern
 
 Two types:
-    * Lightweight:  points to a specific commit:  private/temp labels
+    - Lightweight:  points to a specific commit:  private/temp labels
         git tag <tagname> [commit_checksum]
-    * Annotated:  full object in git database:  meant for releases
+    - Annotated:  full object in git database:  meant for releases
         git tag -a <tagname> -m "Commit message" [commit_checksum]
 
 Use 'git show name' to show the details of a tag.
 
-If tags are private to your repo and you just want to change it with the -f
-option.  But if the database has been pushed to others, see the "On
-Re-tagging" section in the tag manpage.
+If tags are private to your repo and you just want to change it with the -f option.  But
+if the database has been pushed to others, see the "On Re-tagging" section in the tag
+manpage.
 
 git push doesn't transfer tags to remote servers.  Use
     git push origin <tagname>
@@ -199,10 +196,10 @@ Deleting tags
     git tag -d <tagname>
     git push origin --delete <tagname>
 
-To view ths source the tag is pointing to, use
+To view the source the tag is pointing to, use
     git checkout <tagname>
-    You'll get a message about being in a detached HEAD state.  If you want
-    to create a new branch from where you are, use
+    You'll get a message about being in a detached HEAD state.  If you want to create a
+    new branch from where you are, use
         git switch -c <new_branch_name>
     Undo this with git switch -
 
@@ -212,8 +209,8 @@ To view ths source the tag is pointing to, use
 ---------------------------------------------------------------------------
 git Branching                                           *git_Branching*
 
-Note:  if your working directory or staging area has uncommitted changes,
-git won't let you switch branches.
+Note:  if your working directory or staging area has uncommitted changes, git won't let
+you switch branches.
 
 Switch to existing branch
     git switch name
@@ -231,14 +228,14 @@ Renaming
     git branch -m
 
 Use case
-    Suppose you're working on something and you need to go back 3
-    versions and put in a few print statements:
+    Suppose you're working on something and you need to go back 3 versions and put in a
+    few print statements:
 
         git commit -a
         git checkout HEAD~3
 
-            Note: HEAD~ and HEAD^ are equivalent and mean the first parent
-            of the item.  HEAD~3 is equivalent to HEAD~~~.
+            Note: HEAD~ and HEAD^ are equivalent and mean the first parent of the item.
+            HEAD~3 is equivalent to HEAD~~~.
 
     Now add changes as needed; you can even commit.  Use
 
@@ -252,23 +249,20 @@ Use case
         git checkout -b dirty
         git commit -a
 
-    This creates a new named branch 'dirty'.  Go back to it at any time
-    with
+    This creates a new named branch 'dirty'.  Go back to it at any time with
 
         git checkout dirty
 
-    In other words, after checking out an old state, git puts you in a
-    new unnamed branch, which can be named and saved with 'git checkout
-    -b name'.
+    In other words, after checking out an old state, git puts you in a new unnamed branch,
+    which can be named and saved with 'git checkout -b name'.
 
 Quick fix
-    You're in the middle of something when you find out there's a bug in
-    commit 1b6d:
+    You're in the middle of something when you find out there's a bug in commit 1b6d:
         git commit -a       # Commit all changed files
 
         git checkout -b fixes 1b6d
-            This creates a new branch from the revision 1b6d and you're now
-            working on this branch.
+            This creates a new branch from the revision 1b6d and you're now working on
+            this branch.
 
     Once fixed:
         git commit -a -m "Bug fixed"
@@ -279,35 +273,34 @@ Quick fix
 
         git merge fixes
 
-    If your local repository is ahead of your remote repository and you
-    merge a branch in your local repository, you won't be able to push it
-    to the remote.  You'll have to first do a 'git pull' to get the remote
-    stuff, then do the push.
+    If your local repository is ahead of your remote repository and you merge a branch in
+    your local repository, you won't be able to push it to the remote.  You'll have to
+    first do a 'git pull' to get the remote stuff, then do the push.
 
 Interrupted workflow
-    Suppose part1 and part2 of a project are sequential (you need part1
-    for part2 to work).  Because of painless branching and merging, we
-    can work on part2 before part1 is ready.  
+    Suppose part1 and part2 of a project are sequential (you need part1 for part2 to
+    work).  Because of painless branching and merging, we can work on part2 before part1
+    is ready.  
 
-    Let part1 be on the master (or main) branch and it has been committed for
-    review.  Create a new branch to work on part2:
+    Let part1 be on the master (or main) branch and it has been committed for review.
+    Create a new branch to work on part2:
 
-    git checkout -b part2
+        git checkout -b part2
 
     You can go back and fix things in part1 as needed and as found:
 
-    git checkout master     # Go back to part1
-    fix_problem
-    git commit -a
-    git checkout part2      # Go back to part2
-    git merge master        # Merge in the fixes
+        git checkout master     # Go back to part1
+        fix_problem
+        git commit -a
+        git checkout part2      # Go back to part2
+        git merge master        # Merge in the fixes
 
     When part1 is approved
 
-    git checkout master     # Go back to part1
-    submit files            # Release to the world
-    git merge part2         # Merge in part2
-    git branch -d part2     # Delete the part2 branch
+        git checkout master     # Go back to part1
+        submit files            # Release to the world
+        git merge part2         # Merge in part2
+        git branch -d part2     # Delete the part2 branch
 
     Now you're in the master branch again with part2 in the working directory.
 
@@ -316,53 +309,50 @@ git Merging                                           *git_Merging*
 
 Here's a common pattern
     
-    You've got a problem and you're working on main
-    Create a branch to work on the fix:
+    You've got a problem and you're working on main.  Create a branch to work on the fix:
         
         git switch -c myfix
 
-    When this work is finished, you'll want to merge the changes back to
-    main:
+    When this work is finished, you'll want to merge the changes back to main:
 
         git switch main
         git merge myfix
 
-    For simple stuff, this always works.  When you're satisfied with main
-    and how it works, you can delete the myfix branch if you wish:
+    For simple stuff, this always works.  When you're satisfied with main and how it
+    works, you can delete the myfix branch if you wish:
 
         git branch -d myfix
 
 Merge conflicts
     The ProGit book talks about merge conflicts on pg 77
 
-    git mergetool starts a GUI that can be used to resolve merge issues.
-    You'll need to configure it to use a GUI tool like kdiff3 meld vimdiff,
-    etc.
+    git mergetool starts a GUI that can be used to resolve merge issues.  You'll need to
+    configure it to use a GUI tool like kdiff3 meld vimdiff, etc.
 
-    git status will be needed to verify that all conflicts have been
-    resolved.
+    git status will be needed to verify that all conflicts have been resolved.
 
-    For text files, you'll typically see a merged version of the file with
-    <<<< and >>>> markers for the conflicting stuff.  You can often resolve
-    this manually in your editor for simpler stuff.
+    For text files, you'll typically see a merged version of the file with <<<< and >>>>
+    markers for the conflicting stuff.  You can often resolve this manually in your editor
+    for simpler stuff.
 
 ---------------------------------------------------------------------------
 Find a bug                                              *git_Find_a_bug*
 
-The code on the master is broken, but you know it was working a few
-months ago.  If you've been committing frequently, you can find it
-pretty easily:
+The code on the master is broken, but you know it was working a few months ago.  If you've
+been committing frequently, you can find it pretty easily:
+
     git bisect start
     git bisect bad HEAD
     git bisect good 1b6d
 
-git checks out a state halfway between.  Test to see if the bug is
-present; if it's still broken
+git checks out a state halfway between.  Test to see if the bug is present; if it's still
+broken
+
     git bisect bad
 
-If not, replace 'bad' with 'good'.  This results in a binary search that
-leads to the commit that caused the problem.  Return to the original
-state with
+If not, replace 'bad' with 'good'.  This results in a binary search that leads to the
+commit that caused the problem.  Return to the original state with
+
     git bisect reset
 
 You can also automate the search with a script:
@@ -375,16 +365,16 @@ The return value decides the behavior:
     A negative value aborts the bisect.
 
 Blame
-    git blame bug.c
+        git blame bug.c
     annotates every line in a file showing who last changed it and when.
 
 ---------------------------------------------------------------------------
 git Detached Head                                       *git_DetachedHead*
 
-A detached head is useful to do preliminary prototyping.  You go to a
-specific revision without making a branch and you're in 'detached head'
-mode.  You can explore, prototype, make changes, and commit them without
-impacting any branch.  When you're done you can either:
+A detached head is useful to do preliminary prototyping.  You go to a specific revision
+without making a branch and you're in 'detached head' mode.  You can explore, prototype,
+make changes, and commit them without impacting any branch.  When you're done you can
+either:
     - Discard changes by switching back to a branch
     - Keep your changes on a new branch
 
