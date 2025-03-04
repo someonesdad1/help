@@ -2,51 +2,132 @@
  
 |github_markdown|
 
+I use the function 'md2html infile outfile' to make HTML from github flavored markdown.
+
 ----------------------------------------------------------------------
 Github markdown                                 *github_markdown*
+
+    https://docs.github.com/en/get-started/writing-on-github
+    https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+    Spec:  https://github.github.com/gfm/
+    Math:  https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions
 
 Headers
     # Header level 1
     ## Header level 2
+    etc.
 
 Formatting
-    *italic*   _italic_
     **bold**   __bold__
-    Inline code:  Use `backticks`
+    *italic*   _italic_
     ~~strikethrough~~
+    ***bold and italic***
+    <sub>Subscript</sub>
+    <sup>Superscript</sup>
+    <ins>Underline</ins>
+    Ignore formatting with backslash:  \*not italics\*
+
+Inline code:  Use `backticks`
 
 Lists
+    You can use -, *, or +
     Unordered
-        * Item 1
-        * Item 2
-            * Item 2a
+        - Item 1
+        - Item 2
+            - Item 2a
     Ordered
         1. Item 1
         1. Item 2
             1. Item 2a
+    Task lists
+        - [ ] for incomplete tasks
+        - [x] for completed tasks
+        - [ ] \(Optional) Needs backslash if starts with parenthesis
+
+Images
+    ![description](images/my.png)
 
 Links
     Automatic:  http://github.com
     [GitHub](http://github.com)
 
+    Section links
+        Suppose there's a section named '## Sample heading'
+        [Link to sample heading](#Sample heading)
+
+    Relative links
+        Suppose you're in README.md for your project and there's a doc/HELP.md file.
+        You should use a relative link to get to it.  Links starting with '/' will be
+        relative to the repository's root.  You can use './' and '../'.
+
+        [see readme](doc/HELP.md)  Link text 'see readme' needs to be on one line.
+
+        Absolute links may not work in clones of your repository, so try to use relative
+        links.
+
+    Custom anchors
+        You can use standard HTML anchor tags '(<a name="unique-anchor-name"></a>)' to
+        create anchor points for any location in the document.
+         [link to custom anchor](#unique-anchor-name)
+
+Line breaks
+    In markdown files, include two spaces at the end of a line, a backslash, or <br/>.
+
 Tables
-    First header | Second header
-    -------------|--------------
-    Cell 1 content | Cell 2 content
-    Cell 1 content | Cell 2 content
+    |First header   | Second header |
+    |---------------|---------------|
+    |Cell 1 content | Cell 2 content|
+    |Cell 1 content | Cell 2 content|
 
-Block quotes
-    Here's a quote
+Footnotes:  The reference is [^1].
+    [^1]:  This is the footnote.
 
-    > Here's some text
-    > in a quote.
+Details:  <details> and <summary>
+    <details>
+        <summary>Click to expand</summary>
+        Hidden content here
+    </details>
 
-Images
-    ![description](/images/my.png)
+Syntax highlighting
+    ```python
+    def hello():
+        print("Hello world")
+    ```
+Raw HTML
+    <p>This is a paragraph in HTML.</p>
 
-Comment (uses HTML comments)
-    <!-- 
-        COMMENT
-     -->
+Quoting code
+    Use `git status` to see status.
 
-vim:  wm=3
+    ```
+    Multiple lines of quoted code.
+    ```
+
+Quoting
+    This is not quoted.
+
+    > Quoted text
+
+    Quoted text is indented with a vertical left line using gray type.
+
+Comment (uses HTML comment syntax)
+    <!-- COMMENT -->
+
+Mentions:   @username to mention users
+Emojis:     :smile:
+    See https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md
+
+Math (LaTeX syntax)
+    To get $ in expression, use \$.  Outside, use <span>$</span>.
+    Inline:  $\sqrt{3x-1}+(1+x)^2$
+    $`, `$ delimiters:  $`\sqrt{3x-1}+(1+x)^2`$
+
+    Blocks:  start a newline and delimit with $$
+        **The Cauchy-Schwarz Inequality**\
+        $$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left(
+        \sum_{k=1}^n b_k^2 \right)$$
+    or
+        ```math
+        \left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left(
+        \sum_{k=1}^n b_k^2 \right)
+        ```
