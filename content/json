@@ -1,0 +1,264 @@
+*json*
+    
+|json_overview|                 
+|json_grammar|                 
+|json_mckeeman_form|                 
+
+---------------------------------------------------------------------------
+JSON Overview                                               *json_overview*
+
+The two key structures are objects (dicts) and arrays (lists)
+
+    object:  unordered set of name/value pairs
+        {
+            "name1": value1,
+            "name2": value2,
+        }
+
+    arrays:  ordered collection of elements
+        [ value1, value2, ...]
+
+Values
+    object
+    array
+    string      Characters in double quotes
+    number      int or float
+    true        bool
+    false       bool
+    null        nothing or empty
+
+Whitespace:  "", '0020', '000A', '000D', '0009'
+    '0020 == U+0020 Unicode codepoint
+
+---------------------------------------------------------------------------
+JSON grammar in McKeeman form                       *json_grammar*
+
+See McKeeman below for grammar details.
+
+json
+    element
+
+value
+    object
+    array
+    string
+    number
+    "true"
+    "false"
+    "null"
+
+object
+    '{' ws '}'
+    '{' members '}'
+
+members
+    member
+    member ',' members
+
+member
+    ws string ws ':' element
+
+array
+    '[' ws ']'
+    '[' elements ']'
+
+elements
+    element
+    element ',' elements
+
+element
+    ws value ws
+
+string
+    '"' characters '"'
+
+characters
+    ""
+    character characters
+
+character
+    '0020' . '10FFFF' - '"' - '\'
+    '\' escape
+
+escape
+    '"'
+    '\'
+    '/'
+    'b'
+    'f'
+    'n'
+    'r'
+    't'
+    'u' hex hex hex hex
+
+hex
+    digit
+    'A' . 'F'
+    'a' . 'f'
+
+number
+    integer fraction exponent
+
+integer
+    digit
+    onenine digits
+    '-' digit
+    '-' onenine digits
+
+digits
+    digit
+    digit digits
+
+digit
+    '0'
+    onenine
+
+onenine
+    '1' . '9'
+
+fraction
+    ""
+    '.' digits
+
+exponent
+    ""
+    'E' sign digits
+    'e' sign digits
+
+sign
+    ""
+    '+'
+    '-'
+
+ws
+    ""
+    '0020' ws
+    '000A' ws
+    '000D' ws
+    '0009' ws
+
+---------------------------------------------------------------------------
+McKeeman Form                                           *json_mckeeman_form*
+
+https://www.crockford.com/mckeeman.html
+https://github.com/antlr/grammars-v4/tree/master/mckeeman-form
+
+McKeeman Form is a notation for expressing grammars. It was proposed by Bill McKeeman of
+Dartmouth College. It is a simplified Backus-Naur Form with significant whitespace and
+minimal use of metacharacters.
+
+Grammar
+We can express the grammar of McKeeman Form in McKeeman Form.
+
+A grammar is a list of one or more rules.
+
+    grammar
+        rules
+
+The Unicode code point U+0020 is used as the space. The Unicode code point U+000A is
+used as the newline.
+
+    space
+        '0020'
+
+    newline
+        '000A'
+
+A name is a sequence of letters or _underbar.
+
+    name
+        letter
+        letter name
+
+    letter
+        'a' . 'z'
+        'A' . 'Z'
+        '_'
+
+An indentation is four spaces.
+
+    indentation
+        space space space space
+
+Each of the rules is separated by a newline. A rule has a name on one line, with
+alternatives indented below it.
+
+    rules
+        rule
+        rule newline rules
+
+    rule
+        name newline nothing alternatives
+
+If the first line after the name of a rule is "", then the rule may match nothing.
+
+    nothing
+        ""
+        indentation '"' '"' newline
+
+Each alternative is indented on its own line. Each alternative contains items followed
+by a newline.
+
+    alternatives
+        alternative
+        alternative alternatives
+
+    alternative
+        indentation items newline
+
+The items are separated by spaces. An item is a literal or the name of a rule.
+
+    items
+        item
+        item space items
+
+    item
+        literal
+        name
+
+    literal
+        singleton
+        range exclude
+        '"' characters '"'
+
+Any single Unicode code point except the 32 control codes may be placed within the
+single quotes. The hexcode of any Unicode code point may also be placed within the
+single quotes. A hexcode can contain 4, 5, or 6 hexadecimal digits.
+
+    singleton
+        ''' codepoint '''
+
+    codepoint
+        ' ' . '10FFFF'
+        hexcode
+
+    hexcode
+        "10" hex hex hex hex
+        hex hex hex hex hex
+        hex hex hex hex
+
+    hex
+        '0' . '9'
+        'A' . 'F'
+
+A range is specified as a singleton, a .period, and another singleton. Literal ranges
+can optionally be followed by -minus sign and characters to be excluded.
+
+    range
+        singleton space '.' space singleton
+
+    exclude
+        ""
+        space '-' space singleton exclude
+        space '-' space range exclude
+
+A character wrapped in " (double quote) can be any of the Unicode code points except the
+32 control codes and " (double quote). The definition of character shows an example of a
+codepoint range and exclude.
+
+    characters
+        character
+        character characters
+
+    character
+        ' ' . '10FFFF' - '"'

@@ -145,13 +145,12 @@ if 1:   # Core functionality
         'Get list of files in the content directory'
         files = '''
         
-            arduino asciidoc astronomical awk bash basic bibtex biology
-            btop c chemistry constants cpp cvs darcs electrical engineering
-            find flex g gdb git go hg hp3488 hp42s hp49 html korn latex lua
-            make_ markdown materials math mathematica matplotlib mpmath
-            mswindows numpy office pandoc pcl5 perl4 perl5 physics pil ps
-            pygame python rst scipy scons sed shop simpy sizes snippets sql
-            statistics_python statistics_tables stl subversion svn sympy
+            arduino asciidoc astronomical awk bash basic bibtex biology btop c chemistry
+            constants cpp cvs darcs electrical engineering find flex g gdb git go hg
+            hp3488 hp42s hp49 html json korn latex lua make_ markdown materials math
+            mathematica matplotlib mpmath mswindows numpy office pandoc pcl5 perl4 perl5
+            physics pil ps pygame python rst scipy scons sed shop simpy sizes snippets
+            sql statistics_python statistics_tables stl subversion svn sympy
             thermal_cond tmux uncertainties units utilities vim yaml
         
         '''.split()
@@ -258,6 +257,7 @@ if 1:   # Core functionality
 
         python numpy scipy
         arduino shop
+        git markdown
         
         Science∇ (∇ means it's not a link)
             Physics Electrical Engineering Astronomy units constants Biology Chemistry
@@ -265,13 +265,13 @@ if 1:   # Core functionality
             mpmath matplotlib sympy StatisticsTables StatisticsPython Mathematica
         Prog∇
             C Cpp gdb g bash vim make_ PIL basic flex pygame Snippets STL perl4 perl5
-            uncertainties PCL5 yaml Korn_Shell lua
+            json uncertainties PCL5 yaml Korn_Shell lua
         VCS∇
             git hg darcs cvs Subversion
         Utilities 
             find awk sed tmux
         Doc∇
-            html pandoc rst latex Office bibtex html markdown asciidoc PostScript mswindows
+            markdown html pandoc rst latex Office bibtex asciidoc PostScript mswindows
         Hardware∇
             hp3488 HP42s 
 
