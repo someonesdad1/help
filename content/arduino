@@ -1,6 +1,7 @@
 *arduino*
 
 |ard_Serial|
+|ard_Button|
 |ard_LiquidCrystal|
 |ard_SoftTimers|
 |ard_types|
@@ -862,6 +863,131 @@ Interrupts for Atmega328 in prority order
     24  Analog Comparator                               (ANALOG_COMP_vect)
     25  2-wire Serial Interface  (I2C)                  (TWI_vect)
     26  Store Program Memory Ready                      (SPM_READY_vect)
+
+----------------------------------------------------------------------
+Button libary                               *ard_Button*
+
+https://github.com/madleech/Button
+
+Create new button
+    Button button1(2);      // Pin 2 and ground is the connection
+Setup
+    button1.begin();        // Sets correct pin mode
+Pressed
+    bool button1.pressed(); 
+        Fires on the rising edge:  returns true only when button is pressed.  Won't return
+        true again until after the button is released.
+Released
+    bool button1.released(); 
+        Fires when the button is released.
+Toggled
+    bool button1.toggled();
+        Returns true when button is pressed or released.  Use button1.read() to determine
+        state, either Button::PRESSED or Button::RELEASED.
+Changed
+    bool button1.has_changed();
+        Returns whether the state of button has changed after calling the previous read()
+        function.
+
+Basic code
+    #include <Button.h>
+
+    Button button1(2); // Connect your button between pin 2 and GND
+    Button button2(3); // Connect your button between pin 3 and GND
+    Button button3(4); // Connect your button between pin 4 and GND
+    void setup() {
+        button1.begin();
+        button2.begin();
+        button3.begin();
+        Serial.begin(9600);
+    }
+    void loop() {
+        if (button1.pressed()) {
+            Serial.println("Button 1 pressed");
+        }
+        if (button2.released()) {
+            Serial.println("Button 2 released");
+        }
+        if (button3.toggled()) {
+            if (button3.read() == Button::PRESSED)
+                Serial.println("Button 3 has been pressed");
+            else
+                Serial.println("Button 3 has been released");
+        }
+    }
+
+Electrical
+    The library assumes the button's terminals are connected between the digital input pin
+    and ground.  Thus, the switch is asserted low and the pin's internal pullup resistor
+    makes sure the pin isn't floating.  Thus, the "pressed" state is low and the
+    "released" state is high.  For better documentation in your code, use Button::PRESSED
+    and Button::RELEASED.
+
+Include file
+    class Button
+    {
+        public:
+            Button(uint8_t pin, uint16_t debounce_ms = 100);
+            void begin();
+            bool read();
+            bool toggled();
+            bool pressed();
+            bool released();
+            bool has_changed();
+            
+            const static bool PRESSED = LOW;
+            const static bool RELEASED = HIGH;
+        
+        private:
+            uint8_t  _pin;
+            uint16_t _delay;
+            bool     _state;
+            uint32_t _ignore_until;
+            bool     _has_changed;
+    };
+
+Source file
+    Button::Button(uint8_t pin, uint16_t debounce_ms)
+        :  _pin(pin)
+        ,  _delay(debounce_ms)
+        ,  _state(HIGH)
+        ,  _ignore_until(0)
+        ,  _has_changed(false)
+    {}
+    void Button::begin()
+    {
+        pinMode(_pin, INPUT_PULLUP);
+    }
+    bool Button::read()
+    {
+        // Ignore pin changes until after this delay time
+        if (_ignore_until > millis())  // Ignore any changes during this period
+        {}
+        else if (digitalRead(_pin) != _state) { // Pin has changed
+            _ignore_until = millis() + _delay;
+            _state = !_state;
+            _has_changed = true;
+        }
+        return _state;
+    }
+    bool Button::toggled() { // has the button been toggled from on -> off, or vice versa
+        read();
+        return has_changed();
+    }
+    bool Button::has_changed() {
+        // Mostly internal, tells you if a button has changed after calling the read() function
+        if (_has_changed) {
+            _has_changed = false;
+            return true;
+        }
+        return false;
+    }
+    bool Button::pressed() { // has the button gone from off -> on
+        return (read() == PRESSED && has_changed());
+    }
+    bool Button::released() { // has the button gone from on -> off
+        return (read() == RELEASED && has_changed());
+    }
 
 ----------------------------------------------------------------------
 Serial Communications                       *ard_Serial*
