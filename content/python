@@ -2909,6 +2909,10 @@ Another example:
 
 -----------------------------------------------------------------------------
 random                                              *python_random*
+
+You can subclass random.Random to use your own generator.  A useful way to get
+non-repeatable random behavior is to use random.SystemRandom instead, as it uses
+os.urandom(); note that seed() is ignored and you can't get or set the state.
  
 Random variates
     betavariate(alpha, beta)
