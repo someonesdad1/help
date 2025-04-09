@@ -888,8 +888,8 @@ io.IOBase
     isatty()    Bool:  return True if stream is interactive
     readable()  Bool:  True if can be read from
     readline(size=-1)   Read and return one line; at most size bytes if
-                size is not -1
-    readlines(hint=-1)  Read and return list of lines
+                size is not -1 (includes newline)
+    readlines(hint=-1)  Read and return list of lines (includes newline)
     seek(offset[, whence])  Change stream position to byte offset.  whence
                 is 0 = start of stream, 1 = current stream position (offset
                 can be negative), 2 = end of stream, offset is usually
