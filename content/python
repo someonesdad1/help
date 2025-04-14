@@ -10616,7 +10616,6 @@ Functions
 termtables                                  *python_termtables*
 
 For the majority of my table uses, the following call is all that's needed:
-
     tt.print(
         data,
         header=header,      # List of column header strings
@@ -10628,6 +10627,43 @@ For the majority of my table uses, the following call is all that's needed:
     When you want full control over the width of each column, set style to None; then
     each column will be butted up against its neighbors with the column width controlled
     by the longest string in the column.
+
+    Use 'pd texttable' for a usage statement.
+
+Style control
+
+    Use "x0123456789abcd" for the style; the demo at
+    https://github.com/nschloe/termtables prints as
+
+        1xxxxxxxxxxxxxxxxx7xxxxxxxxxxxxxxxxx7xxxxxxxxxxxxxxxxx2
+        0 a               0 bb              0 ccc             0
+        abbbbbbbbbbbbbbbbbcbbbbbbbbbbbbbbbbbcbbbbbbbbbbbbbbbbbd
+        0 1               0 2               0 3               0
+        5xxxxxxxxxxxxxxxxx9xxxxxxxxxxxxxxxxx9xxxxxxxxxxxxxxxxx6
+        0 613.23236243236 0 613.23236243236 0 613.23236243236 0
+        3xxxxxxxxxxxxxxxxx8xxxxxxxxxxxxxxxxx8xxxxxxxxxxxxxxxxx4
+
+    showing you where the style characters wind up.  Example:  for only vertical lines
+    between the columns, use " │             " for the style.
+
+Defined styles in site-packages/termtables/styles.py
+    thin = "─│┌┐└┘├┤┬┴┼"
+    thin_thick = "─│┌┐└┘├┤┬┴┼┝━┿┥"
+    thin_double = "─│┌┐└┘├┤┬┴┼╞═╪╡"
+    rounded = "─│╭╮╰╯├┤┬┴┼"
+    rounded_thick = "─│╭╮╰╯├┤┬┴┼┝━┿┥"
+    rounded_double = "─│╭╮╰╯├┤┬┴┼╞═╪╡"
+    thick = "━┃┏┓┗┛┣┫┳┻╋"
+    thick_thin = "─│┌┐└┘├┤┬┴┼┠─╂┨"
+    double = "═║╔╗╚╝╠╣╦╩╬"
+    double_thin = "═║╔╗╚╝╠╣╦╩╬╟─╫╢"
+    booktabs = "─       ─── ━━ "
+    ascii_thin = "-|+++++++++"
+    ascii_thin_double = "-|++++++++++=++"
+    ascii_double = "=H+++++++++"
+    ascii_double_thin = "=H++++++++++-++"
+    ascii_booktabs = "-       --- == "
+    markdown = " |         |-||"
 
 A core strength of this library is that each cell's contents can have ASCII color escape
 codes and the cell's formatting is still correct.
