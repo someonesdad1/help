@@ -8,6 +8,7 @@ Core
     |python_sets|
     |python_requests| Popular library for downloading web stuff
     |python_dictionaries|
+    |python_termtables| ASCII table formatting
     |python_hashlib|
     |python_descriptors|
     |python_streams|
@@ -10612,6 +10613,91 @@ Functions
     def f(a: int, b: Num) -> Num:
 
 --------------------------------------------------------------------------------
+termtables                                  *python_termtables*
+
+For the majority of my table uses, the following call is all that's needed:
+
+    tt.print(
+        data,
+        header=header,      # List of column header strings
+        padding=(0, 0),     # Lines before & after formatted line
+        style=" "*15,       # All borders are spaces
+        alignment="ccc"     # l=left, c=center, r=right, must be same len as header
+    )
+
+    When you want full control over the width of each column, set style to None; then
+    each column will be butted up against its neighbors with the column width controlled
+    by the longest string in the column.
+
+A core strength of this library is that each cell's contents can have ASCII color escape
+codes and the cell's formatting is still correct.
+
+The thin_double style is handy for a bordered table:
+    ┌─────┬────┬────────────────────┐
+    │  n  │ D  │         A          │
+    ╞═════╪════╪════════════════════╡
+    │  1  │ 2  │         3          │
+    ├─────┼────┼────────────────────┤
+    │0.027│18.2│      -6.23e-7      │
+    └─────┴────┴────────────────────┘
+
+Run the following demo
+    import termtables as tt
+    from color import t
+    from f import flt
+
+    header = [f"{t.redl}n{t.n}", f"{t.purl}D{t.n}", f"{t.brnl}A{t.n}"]
+    data = [
+        [1, 2, 3], [flt(1/37), flt(18.2377), f"{t.ornl}      {flt(-6.23e-7)}      {t.n}"]
+    ]
+    styles = {  # In termtables.styles.py
+        "thin": tt.styles.thin,
+        "thin_thick": tt.styles.thin_thick,
+        "thin_double": tt.styles.thin_double,
+        "rounded": tt.styles.rounded,
+        "rounded_thick": tt.styles.rounded_thick,
+        "rounded_double": tt.styles.rounded_double,
+        "thick": tt.styles.thick,
+        "thick_thin": tt.styles.thick_thin,
+        "double": tt.styles.double,
+        "double_thin": tt.styles.double_thin,
+        "booktabs": tt.styles.booktabs,
+        "ascii_thin": tt.styles.ascii_thin,
+        "ascii_thin_double": tt.styles.ascii_thin_double,
+        "ascii_double": tt.styles.ascii_double,
+        "ascii_double_thin": tt.styles.ascii_double_thin,
+        "ascii_booktabs": tt.styles.ascii_booktabs,
+        "markdown": tt.styles.markdown
+    }
+
+    for style in styles:
+        t.print(f"{t.magl}{style}")
+        tt.print(
+            data,
+            header=header,
+            padding=(0, 0),
+            style=styles[style],
+            alignment="ccc"
+        )
+
+    t.print(f"{t.magl}None")
+    tt.print(
+        data,
+        header=header,
+        padding=(0, 0),
+        style=None,
+        alignment="ccc"
+    )
+    t.print(f"{t.magl}All spaces")
+    tt.print(
+        data,
+        header=header,
+        padding=(0, 0),
+        style=" "*15,
+        alignment="ccc"
+    )
+
+--------------------------------------------------------------------------------
 Using hashlib                               *python_hashlib*
 
 Hashing functions are:
@@ -10670,4 +10756,4 @@ Multiple axes plot
     p.title("Multiple Axes Plot")
     p.show()
 
-vim:  tw=92
+vim:  tw=88
