@@ -10668,8 +10668,8 @@ Defined styles in site-packages/termtables/styles.py
     ascii_booktabs = "-       --- == "
     markdown = " |         |-||"
 
-A core strength of this library is that each cell's contents can have ASCII color escape
-codes and the cell's formatting is still correct.
+A feature of this library is that each cell's contents can have ASCII color escape codes
+and the cell's formatting is still correct.
 
 The thin_double style is handy for a bordered table:
     ┌─────┬────┬────────────────────┐
@@ -10687,7 +10687,8 @@ Run the following demo
 
     header = [f"{t.redl}n{t.n}", f"{t.purl}D{t.n}", f"{t.brnl}A{t.n}"]
     data = [
-        [1, 2, 3], [flt(1/37), flt(18.2377), f"{t.ornl}      {flt(-6.23e-7)}      {t.n}"]
+        [1, 2, 3], 
+        [flt(1/37), flt(18.2377), f"{t.ornl}      {flt(-6.23e-7)}      {t.n}"]
     ]
     styles = {  # In termtables.styles.py
         "thin": tt.styles.thin,
@@ -10708,7 +10709,6 @@ Run the following demo
         "ascii_booktabs": tt.styles.ascii_booktabs,
         "markdown": tt.styles.markdown
     }
-
     for style in styles:
         t.print(f"{t.magl}{style}")
         tt.print(
@@ -10718,7 +10718,6 @@ Run the following demo
             style=styles[style],
             alignment="ccc"
         )
-
     t.print(f"{t.magl}None")
     tt.print(
         data,
