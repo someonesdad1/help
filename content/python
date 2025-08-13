@@ -58,6 +58,7 @@ Other
     |python_time|
     |python_types|
 Less-used stuff
+    |python_bit_manipulations|
     |python_bitarray|
     |python_debugger|
     |python_inspect|
@@ -2956,25 +2957,11 @@ Driver code:
 getopt                                              *python_getopt*
 
 Example:
-    # Invocation was 'python test.py -c hi -a arg1 arg2'
-    opts, args = getopt.getopt(sys.argv[1:], 'ab:c:')
-    # opts would be
-        [('-c', 'hi'), ('-a', '')]
-    # args would be
-        ['arg1', 'arg2']
+    # Invocation was 'python test.py --test -c hi -a arg1 arg2'
+    opts, args = getopt.getopt(sys.argv[1:], 'ab:c:', [[test"])
 
-Another example:
-
-    try:
-        optlist, args = getopt.getopt(sys.argv[1:], "v:d")
-    except getopt.error, str:
-        print("getopt error:  %s\n" % str)
-        sys.exit(1)
-    for opt in optlist:
-        if opt[0] == "-v":
-            PrintVersions()
-        elif opt[0] == "-d":
-            dbfileG = "stdout"
+        opts is  [('--test', ''), ('-c', 'hi'), ('-a', '')]
+        args is  ['arg1', 'arg2']
 
 -----------------------------------------------------------------------------
 random                                              *python_random*
@@ -6085,6 +6072,17 @@ Examples:
             9     9    11  1001
            10     A    12  1010
            11     B    13  1011
+
+----------------------------------------------------------------------
+Bit manipulations                                      *python_bit_manipulations*
+
+Reference:  https://realpython.com/python-bitwise-operators
+
+Recipes to deal with bits.  This will illustrate things with byte arrays, but they can
+apply to the bits in arbitrarily-sized integers.
+
+    a = bytearray(2)    --> bytearray(b'\x00\x00')
+    a[0] = 4            --> bytearray(b'\x04\x00')
 
 ----------------------------------------------------------------------
 python_bitarray                                        *python_bitarray*
