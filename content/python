@@ -6078,12 +6078,33 @@ Bit manipulations                                      *python_bit_manipulations
 
 Reference:  https://realpython.com/python-bitwise-operators
 
-Recipes to deal with bits.  This will illustrate things with byte arrays, but they can
-apply to the bits in arbitrarily-sized integers.
+Examples of python bit manipulations
+  Bit indexes in a byte go from 0 to 7 with 0 the rightmost bit
 
-    a = bytearray(2)    --> bytearray(b'\x00\x00')
-    a[0] = 4            --> bytearray(b'\x04\x00')
+Setting a bit:  set bit 2 to 1
+  Method:  shift a 1 appropriately and OR with the byte
+  a = bytearray(1) --> bytearray(b'\x00') = 0b00000000
+  a[0] |= (1 << 2)) --> 0b00000100
+Getting a bit:  get bit 2
+  Method:  shift a 1 appropriately and AND with the byte, then use bool() of result 
+  a is 0b00000100
+  bool(a[0] &= (1 << 2)) --> True
+  Note bit 0 is False:
+  a is 0b00000100
+  bool(a[0] &= (1 << 0)) --> False
+Clearing a bit:  set bit 2 to 0
+  Method:  shift a 1 appropriately, invert, and AND with the byte
+  a is 0b00000100
+  a[0] &= ~(1 << 2) --> 0b00000000
+Toggling a bit:  toggle bit 2
+  Method:  shift a 1 appropriately and XOR with the byte
+  a is 0b00000100
+  a[0] ^= (1 << 2) --> 0b00000000
+  Do it again
+  a is 0b00000000
+  a[0] ^= (1 << 2) --> 0b00000100
 
+(Produced from /help/content/bit_manip.py)
 ----------------------------------------------------------------------
 python_bitarray                                        *python_bitarray*
 
