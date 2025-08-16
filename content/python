@@ -1,12 +1,13 @@
 *python*
-                Go to end for vim tips 
+
 Core
     |python_pathlib|                 
     |python_re|                      
     |python_lists|
+    |python_bitarray| Efficient boolean arrays
     |python_deque|
     |python_sets|
-    |python_requests| Popular library for downloading web stuff
+    |python_requests| Download web stuff
     |python_dictionaries|
     |python_termtables| ASCII table formatting
     |python_hashlib|
@@ -59,7 +60,6 @@ Other
     |python_types|
 Less-used stuff
     |python_bit_manipulations|
-    |python_bitarray|
     |python_debugger|
     |python_inspect|
     |python_logging|
