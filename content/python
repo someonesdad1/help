@@ -6121,6 +6121,18 @@ Bitarray objects act like lists.
     print(a)
         >>> bitarray('1011')
 
+Example
+    a, b = bitarray(4), bitarray(4)
+    a[3] = 1    # Set bit 3
+    b[1] = 1    # Set bit 1
+        >> a --> bitarray('0001')
+        >> b --> bitarray('0100')
+        >> a + b --> bitarray('00010100')  # Concatenation
+        >> a | b --> bitarray('0101')
+        >> a & b --> bitarray('0000')
+        >> a ^ b --> bitarray('0101')
+        >> ~(a ^ b) --> bitarray('1010')
+
 Instantiation
     bitarray(n)             # Length n
     bitarray('1001011')     # From a string
@@ -6131,18 +6143,16 @@ Instantiation
     # Effectively applies bool() to each element
 
 Support slicing:
-    a = bitarray(50)
-    a.setall(False)
-    a[11:37:3] = 9*bitarray([True])
-    print(a)
-        >>> bitarray('00000000000100100100100100100100100100000000000000')
-
-    also:
-
-    a = 20*bitarray('0')
-    a[1:15:3] = True
-    print(a)
-        >>> bitarray('01001001001001000000')
+        a = bitarray(50)
+        a.setall(False)
+        a[11:37:3] = 9*bitarray([True])
+        print(a)
+            >>> bitarray('00000000000100100100100100100100100100000000000000')
+    Also:
+        a = 20*bitarray('0')
+        a[1:15:3] = True
+        print(a)
+            >>> bitarray('01001001001001000000')
 
 Endianness
     a = bitarray(endian="big")
