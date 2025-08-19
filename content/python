@@ -42,6 +42,7 @@ Numerical
     |python_number_methods|          
 Other
     |python_base64|
+    |python_basencode|
     |python_plotext|
     |python_typehints|
     |python_readline|
@@ -11281,6 +11282,309 @@ m = hashlib.md5()
 m.update(some_bytes)  # Note it must be bytes
 m.digest()  --> Returns bytes
 m.hexdigest()  --> hex string
+
+--------------------------------------------------------------------------------
+basencode                                      *python_basencode*
+
+python module to encode integers and floats in any base
+    Classes:  
+        Integer:    integers >= 0
+        Float:      floating point numbers >= 0
+        Number      Union of Integer or Number
+
+From 'pd basencode' (reorderd)
+
+class Integer(_Number)
+    Integer(n: Union[int, float, str, Tuple[Union[int, str]], List[Union[int, str]]], base: int = 10, digits: List[str] = None)
+    
+    The ``Integer`` class, a child of ``_Number``, for whole numbers
+    
+    :param n: The number to be converted to decimal and stored
+    :param base: The base in which the number provided is represented (this information is used to convert the number to decimal)
+    :param digits: The digits used in the provided representation of the number
+    
+    Method resolution order:
+        Integer
+        _Number
+        builtins.object
+    
+    Methods defined here:
+    
+    __and__ = convert_from_int_and_call(self, other=None)
+    
+    __lshift__ = convert_from_int_and_call(self, other=None)
+    
+    __or__ = convert_from_int_and_call(self, other=None)
+    
+    __rshift__ = convert_from_int_and_call(self, other=None)
+    
+    ----------------------------------------------------------------------
+    Methods inherited from _Number:
+    
+    __abs__ = convert_from_int_and_call(self, other=None)
+    
+    __add__ = convert_from_int_and_call(self, other=None)
+    
+    __bool__ = convert_from_int_and_call(self, other=None)
+    
+    __ceil__ = convert_from_int_and_call(self, other=None)
+    
+    __divmod__ = convert_from_int_and_call(self, other=None)
+    
+    __eq__ = convert_from_int_and_call(self, other=None)
+    
+    __float__ = convert_from_int_and_call(self, other=None)
+    
+    __floordiv__ = convert_from_int_and_call(self, other=None)
+    
+    __hash__ = convert_from_int_and_call(self, other=None)
+    
+    __init__(self, n: Union[int, float, str, Tuple[Union[int, str]], List[Union[int, str]]], base: int = 10, digits: List[str] = None)
+        Initialize self.  See help(type(self)) for accurate signature.
+    
+    __int__ = convert_from_int_and_call(self, other=None)
+    
+    __mod__ = convert_from_int_and_call(self, other=None)
+    
+    __mul__ = convert_from_int_and_call(self, other=None)
+    
+    __pow__ = convert_from_int_and_call(self, other=None)
+    
+    __repr__(self)
+        Return repr(self).
+    
+    __round__ = convert_from_int_and_call(self, other=None)
+    
+    __sub__ = convert_from_int_and_call(self, other=None)
+    
+    __truediv__ = convert_from_int_and_call(self, other=None)
+    
+    repr_in_base(self, base: int, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Represents the decimal value of the instance of ``_Number`` in the base provided.
+        
+        :param base: The base to represent the ``_Number``'s decimal value in
+        :param digits: The digits to use in the representation; these are also set as the default digits (for this object) for the base provided.
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The representation of the ``_Number``'s decimal value in the base provided
+        :rtype: str | list[str]
+    
+    repr_in_base64(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to base 64.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The base 64 representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    repr_in_bin(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to binary.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The binary representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    repr_in_dec(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to decimal.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The decimal representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    repr_in_hex(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to hexadecimal.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The hexadecimal representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    repr_in_octal(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to octal.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The octal representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    ----------------------------------------------------------------------
+    Readonly properties inherited from _Number:
+    
+    dec_value
+        Getter returns the decimal value of the ``_Number``.
+    
+    ----------------------------------------------------------------------
+    Data descriptors inherited from _Number:
+    
+    __dict__
+        dictionary for instance variables (if defined)
+    
+    __weakref__
+        list of weak references to the object (if defined)
+class Float(_Number)
+    Float(n: Union[float, str, Tuple[Union[int, str]], List[Union[int, str]]], base: int = 10, digits: List[str] = None, radix_point: str = '.')
+    
+    The ``Float`` class, a child of ``_Number``, for non-negative floating point numbers
+    
+    :param n: The number to be converted to decimal and stored
+    :param base: The base in which the number provided is represented (this information is used to convert the number to decimal)
+    :param digits: The digits used in the provided representation of the number
+    :param radix_point: The radix point used in the provided representation of the number, if at all
+    
+    Method resolution order:
+        Float
+        _Number
+        builtins.object
+    
+    Methods defined here:
+    
+    __eq__(self, other) -> bool
+        Return self==value.
+    
+    __hash__ = convert_from_int_and_call(self, other=None)
+    
+    __init__(self, n: Union[float, str, Tuple[Union[int, str]], List[Union[int, str]]], base: int = 10, digits: List[str] = None, radix_point: str = '.')
+        Initialize self.  See help(type(self)) for accurate signature.
+    
+    repr_in_base(self, base: int, digits: List[str] = None, mode: str = 's', max_frac_places: int = 100) -> Union[str, List[str]]
+        Represents the decimal value of the instance of ``_Number`` in the base provided.
+        
+        :param base: The base to represent the ``_Number``'s decimal value in
+        :param digits: The digits to use in the representation; these are also set as the default digits (for this object) for the base provided.
+        :param mode: Whether to return the representation as a string or a list
+        :param max_frac_places: The maximum number of digits succeeding the radix point
+        :returns: The representation of the ``_Number``'s decimal value in the base provided
+        :rtype: str | list[str]
+    
+    ----------------------------------------------------------------------
+    Methods inherited from _Number:
+    
+    __abs__ = convert_from_int_and_call(self, other=None)
+    
+    __add__ = convert_from_int_and_call(self, other=None)
+    
+    __bool__ = convert_from_int_and_call(self, other=None)
+    
+    __ceil__ = convert_from_int_and_call(self, other=None)
+    
+    __divmod__ = convert_from_int_and_call(self, other=None)
+    
+    __float__ = convert_from_int_and_call(self, other=None)
+    
+    __floordiv__ = convert_from_int_and_call(self, other=None)
+    
+    __int__ = convert_from_int_and_call(self, other=None)
+    
+    __mod__ = convert_from_int_and_call(self, other=None)
+    
+    __mul__ = convert_from_int_and_call(self, other=None)
+    
+    __pow__ = convert_from_int_and_call(self, other=None)
+    
+    __repr__(self)
+        Return repr(self).
+    
+    __round__ = convert_from_int_and_call(self, other=None)
+    
+    __sub__ = convert_from_int_and_call(self, other=None)
+    
+    __truediv__ = convert_from_int_and_call(self, other=None)
+    
+    repr_in_base64(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to base 64.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The base 64 representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    repr_in_bin(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to binary.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The binary representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    repr_in_dec(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to decimal.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The decimal representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    repr_in_hex(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to hexadecimal.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The hexadecimal representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    repr_in_octal(self, digits: List[str] = None, mode: str = 's') -> Union[str, List[str]]
+        Uses ``repr_in_base`` to convert the ``_Number`` to octal.
+        
+        :param digits: The digits to use in the representation
+        :param mode: Whether to return the representation as a string or a list
+        :returns: The octal representation of the ``_Number``'s decimal value
+        :rtype: str | list[str]
+    
+    ----------------------------------------------------------------------
+    Readonly properties inherited from _Number:
+    
+    dec_value
+        Getter returns the decimal value of the ``_Number``.
+    
+    ----------------------------------------------------------------------
+    Data descriptors inherited from _Number:
+    
+    __dict__
+        dictionary for instance variables (if defined)
+    
+    __weakref__
+        list of weak references to the object (if defined)
+class Number(builtins.object)
+    Number(n: Union[int, float, str, Tuple[Union[int, str]], List[Union[int, str]]], base: int = 10, digits: List[str] = None, radix_point: str = '.')
+    
+    Constructs a ``Float`` if a number with a radix point is provided, otherwise an ``Integer``.
+    
+    :param n: The number to be converted to decimal and stored
+    :param base: The base in which the number provided is represented (this information is used to convert the number to decimal)
+    :param digits: The digits used in the provided representation of the number
+    :param radix_point: The radix point used in the provided representation of the number, if at all
+    :returns: A ``Float`` if a number with a radix point is provided, otherwise an ``Integer``
+    :rtype: Float | Integer
+    
+    Static methods defined here:
+    
+    __new__(cls, n: Union[int, float, str, Tuple[Union[int, str]], List[Union[int, str]]], base: int = 10, digits: List[str] = None, radix_point: str = '.')
+        Create and return a new object.  See help(type) for accurate signature.
+    
+    ----------------------------------------------------------------------
+    Data descriptors defined here:
+    
+    __dict__
+        dictionary for instance variables (if defined)
+    
+    __weakref__
+        list of weak references to the object (if defined)
+_Number(builtins.object)
+    Float
+    Integer
+builtins.object
+    Number
+DATA
+    ALL_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRST...
+    BASE_DIGITS = {2: ['0', '1'], 3: ['0', '1', '2'], 4: ['0', '1', '2', '...
+    RADIX_POINT = '.'
+    __all__ = ('ALL_DIGITS', 'BASE_DIGITS', 'RADIX_POINT', 'Integer', 'Flo...
+    __annotations__ = {'BASE_DIGITS': typing.Dict[int, typing.List[str]]}
+
+FILE
+    /home/dpbin/miniconda3/envs/11/lib/python3.11/site-packages/basencode/__init__.py
+
 
 --------------------------------------------------------------------------------
 Base64                                      *python_base64*
