@@ -6135,6 +6135,12 @@ Example
         >> a ^ b --> bitarray('0101')
         >> ~(a ^ b) --> bitarray('1010')
 
+    Note endianness is important for string interpolation:
+        a = int2ba(13)
+        print(a) --> bitarray('1101'); a.endian --> "big"
+        a=int2ba(13, endianness="little")
+        print(a) --> bitarray('1011'; a.endian --> "little")
+
 Instantiation
     bitarray(n)             # Length n
     bitarray('1001011')     # From a string
