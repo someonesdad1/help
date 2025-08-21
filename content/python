@@ -77,6 +77,24 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
+Loop-else
+    Applies to 'for' and 'while' loops:  if a 'break' is executed in the loop, the
+    'else' class is NOT executed; otherwise, it is.  
+
+        Example:  Given a sequence of integers, see if any is 7:
+
+            from color import t
+            def DoesItHave7(seq):
+                for i in seq:
+                    if i == 7:
+                        break
+                else:
+                    t.print(f"{t.redl}7 not found")
+                    return
+                t.print(f"{t.grnl}7 was found")
+            DoesItHave7(range(7))
+            DoesItHave7(range(8))
+
 Process a big file line-by-line
     with open(filename) as file:
         for line in file:
