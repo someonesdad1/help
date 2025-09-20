@@ -224,6 +224,10 @@ From Machinery's Handbook, 19th ed.
 -------------------------------------------------------------------------------
 Trig Relations                                                *Trig_relations*
 
+The useful tangent
+    m = tan(θ)
+    cos(θ) = 1/sqrt(1 + m**2)
+    sin(θ) = m/sqrt(1 + m**2)
 
 Sum/Diff formulas
     sin(a + b) = sin(a)*cos(b) + cos(a)*sin(b)
