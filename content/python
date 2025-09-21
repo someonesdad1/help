@@ -7,6 +7,7 @@ Core
     |python_bitarray| Efficient boolean arrays
     |python_deque|
     |python_sets|
+    |python_multisets|
     |python_requests| Download web stuff
     |python_dictionaries|
     |python_termtables| ASCII table formatting
@@ -2536,6 +2537,24 @@ This is because each dictionary value is initialized to an empty list.  If
 you wanted integers instead, use defaultdict(int) and each value would
 start at zero.  Note, however, that you'll never get a KeyError with a
 properly-initialized defaultdict.
+
+---------------------------------------------------------------------------
+Multiset methods and operations                     *python_multisets*
+
+'pip install multiset' from PyPi
+
+See https://multiset.readthedocs.io/en/stable/
+
+Implementation uses a dict that counts number in container.  It supports the same
+methods as set and will interoperate with sets.
+
+Constructor
+    s = Multiset(mapping)   Values must be positive integers
+    s = Multiset(iterable) 
+
+len(s)
+    Total number of elements = sum of value elements
+    Use s.distinct_elements() for the number of distinct items
 
 ---------------------------------------------------------------------------
 Set methods and operations                     *python_sets*
