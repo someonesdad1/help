@@ -2265,14 +2265,14 @@ del s[i:j]      Same as s[i:j] = []
 
 append(x)       Add x to end of list
 clear()         Empty the list
-extend(L)       Append items from list L to end of list
-insert(i, x)    Insert x before item i
-remove(x)       Remove first x from list
-pop([i])        Remove item from position i (default -1) and return it
-index(x)        Return index of x (ValueError if not present)
 count(x)        Return number of times x is in list
-sort()          Sort items in place (see below)
+extend(L)       Append items from list L to end of list
+index(x)        Return index of x (ValueError if not present)
+insert(i, x)    Insert x before item i
+pop([i])        Remove item from position i (default -1) and return it
+remove(x)       Remove first x from list
 reverse()       Reverse items in place
+sort()          Sort items in place (see below)
 
 You can change or clear a slice:
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
