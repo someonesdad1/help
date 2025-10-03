@@ -110,6 +110,13 @@ Built-in Variables      *awk_variables*
   RSTART      Beginning position of string matched by match
   SUBSEP      Separator for array subscripts of form [i,j,...] (default "\034")
 
+Functions
+---------
+
+  Any variable in a function's parameters is a local variable.  All other variable
+  references are to global variables.  It's an inelegant design, but at least the
+  needed local variables are there.
+
 Built-in String Functions                     *awk_string_functions*
 -------------------------
   s and t are strings, r a regexp, i and n integers.
