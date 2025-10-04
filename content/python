@@ -4,13 +4,14 @@ Core
     |python_pathlib|                 
     |python_re|                      
     |python_lists|
-    |python_bitarray| Efficient boolean arrays
     |python_deque|
     |python_sets|
     |python_multisets|
-    |python_requests| Download web stuff
     |python_dictionaries|
-    |python_termtables| ASCII table formatting
+    |python_requests|       Download web stuff
+    |python_termtables|     ASCII table formatting
+    |python_match|          New match statement syntax
+    |python_bitarray|       Efficient boolean arrays
     |python_hashlib|
     |python_descriptors|
     |python_streams|
@@ -6145,7 +6146,59 @@ Toggling a bit:  toggle bit 2
 
 (Produced from /help/content/bit_manip.py)
 ----------------------------------------------------------------------
-python_bitarray                                        *python_bitarray*
+python_match                                            *python_match*
+
+See https://peps.python.org/pep-0636
+
+# point is an (x, y) tuple
+match point:
+    case (0, 0):
+        print("Origin")
+    case (0, y):            # Note this binds a variable
+        print(f"Y={y}")
+    case (x, 0):            # Note this binds a variable
+        print(f"X={x}")
+    case (x, y):            # Note this binds two variables
+        print(f"X={x}, Y={y}")
+    case _:                 # _ never fails to match
+        raise ValueError("Not a point")
+
+tuple and list patterns have the same meaning and match sequences except iterators or
+strings.
+
+Sequence patterns support wildcards: [x, y, *rest] and (x, y, *rest) work similar to
+wildcards in unpacking assignments. The name after * may also be _, so (x, y, *_)
+matches a sequence of at least two items without binding the remaining items.
+
+Mapping patterns: {"bandwidth": b, "latency": l} captures the "bandwidth" and "latency"
+values from a dict. Unlike sequence patterns, extra keys are ignored. A wildcard **rest
+is also supported. (But **_ would be redundant, so it is not allowed.)
+
+Subpatterns may be captured using the as keyword:
+
+case (Point(x1, y1), Point(x2, y2) as p2): ...
+
+Most literals are compared by equality, however the singletons True, False and None are
+compared by identity.
+
+Patterns may use named constants. These must be dotted names to prevent them from being
+interpreted as capture variable:
+    from enum import Enum
+    class Color(Enum):
+        RED = 0
+        GREEN = 1
+        BLUE = 2
+
+    match color:
+        case Color.RED:
+            print("I see red!")
+        case Color.GREEN:
+            print("Grass is green")
+        case Color.BLUE:
+            print("I'm feeling the blues :(")
+
+----------------------------------------------------------------------
+python_bitarray                                         *python_bitarray*
 
 This is an optional C-based bit array module; these items act as lists.  
     https://pypi.org/project/bitarray/
