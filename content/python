@@ -79,6 +79,19 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
+Class methods and attributes
+    class Cat:
+        species = "Felis catus"   # Class attribute
+        def __init__(self, name):
+            self.name = name      # Instance attribute
+        def meow(self):
+            return f"{self.name} says Meow!"
+        @classmethod
+        def create_kitten(cls, name):
+            return cls(f"Baby {name}")
+    Class method is called with Cat.create_kitten("baby").
+    Class attribute is accessed as Cat.species.
+
 Loop-else
     Applies to 'for' and 'while' loops:  if a 'break' is executed in the loop, the
     'else' class is NOT executed; otherwise, it is.  
