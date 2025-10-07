@@ -7092,15 +7092,16 @@ You can derive from the Enum class:
 string module                                    *python_string*
 
 Constants
-    string.ascii_letters
-    string.ascii_lowercase
-    string.ascii_uppercase
-    string.digits
-    string.hexdigits
-    string.octdigits
-    string.punctuation
-    string.printable
-    string.whitespace
+    string.ascii_letters    abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+    string.ascii_lowercase  abcdefghijklmnopqrstuvwxyz
+    string.ascii_uppercase  ABCDEFGHIJKLMNOPQRSTUVWXYZ
+    string.digits           0123456789
+    string.hexdigits        0123456789ABCDEF
+    string.octdigits        01234567
+    string.punctuation      !"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~
+    string.printable        digits, ascii_lowercase, ascii_uppercase
+                            punctuation, whitespace
+    string.whitespace       ' \t\n\r\x0b\x0c'
 
 ----------------------------------------------------------------------
 Strings                                          *python_strings*
