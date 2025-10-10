@@ -6242,7 +6242,7 @@ Example
         a = int2ba(13)
         print(a) --> bitarray('1101'); a.endian --> "big"
         a=int2ba(13, endianness="little")
-        print(a) --> bitarray('1011'; a.endian --> "little")
+        print(a) --> bitarray('1011'); a.endian --> "little")
 
 Instantiation
     bitarray(n)             # Length n
