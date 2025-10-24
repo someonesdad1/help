@@ -11,6 +11,9 @@
 |sympy_solvers|
 |sympy_create_function|
 
+sympy.__version__
+    20 Oct 2025:  version 1.14.0 is installed
+
 Home page:  https://www.sympy.org/en/index.html
 Docs:  https://docs.sympy.org/latest/index.html
 
