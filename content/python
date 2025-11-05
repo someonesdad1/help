@@ -12,6 +12,7 @@ Core
     |python_termtables|     ASCII table formatting
     |python_match|          New match statement syntax
     |python_bitarray|       Efficient boolean arrays
+    |python_datetime|
     |python_hashlib|
     |python_descriptors|
     |python_streams|
@@ -6243,6 +6244,134 @@ interpreted as capture variable:
             print("Grass is green")
         case Color.BLUE:
             print("I'm feeling the blues :(")
+
+----------------------------------------------------------------------
+datetime module                                         *python_datetime*
+
+Immutable objects:
+    date            Naive date
+        year, month, day attributes
+    time            Idealized time of 24*3600 seconds
+        hour, minute, second, microsecond, and tzinfo attributes
+    datetime        Combination of date and time
+        year, month, day, hour, minute, second, microsecond, and tzinfo attributes
+    timedelta       Duration = diff between two datetime or date instances
+
+date:   date(year, month, day) all arguments required as integers
+    ValueError raised if you give it incorrect numbers
+    Methods:
+    today()    Local current date
+    fromtimestamp(timestamp)
+        From e.g. time.time()
+    fromordinal(ordinal)   1 Jan 1 has ordinal 1
+    fromisoformat(dates_tring)   e.g. '2019-12-04' or '20191204'
+    fromisocalendar(year, week, day)
+    min, max:  earliest & latest representable date
+    resolution (= timedelta(days=1))
+    year
+    month
+    day
+    replace(year=self.year, month=self.month, day=self.day)
+    timetuple()
+    toordinal()
+    weekday()  Monday is 0, Tue is 1, etc.
+    isoweekday()  Monday is 1, Tue is 2, etc.
+    isocalendar()  Returns namedtuple with year, week, weekday
+    isoformat() Returns string in format YYYY-MM-DD
+    ctime() Returns string  like 'Wed Dec  4 00:00:00 2002'
+    strftime(format)
+    __format__(format)
+    Operations
+        dt_new = dt + timedelta
+        dt_new = dt - timedelta
+        timedelta = dt1 - dt2
+        Operators:  ==, !=, >, <, >=, <=
+
+datetime:  datetime(year, month, day, hour=0, minute=0, second=0, microsecond=0, tzinfo=None, *, fold=0)
+    today()
+    now()
+    utcnow()
+    fromtimestamp(timestamp, tz=None)
+    utcfromtimestamp(timestamp)
+    fromordinal(ordinal)
+    combine(date, time, tzinfo=self.tzinfo)
+    fromisoformat(date_string)
+    fromisocalendar(year, week, day)
+    strptime(date_string, format)
+    min, max:  earliest & latest representable date
+    resolution (= timedelta(microseconds=1))
+    year
+    month
+    day
+    hour
+    minute
+    second
+    microsecond
+    tzinfo
+    fold (returns 0 or 1, to disambiguate wall times during rollback)
+    date()
+    time()
+    timetz()
+    replace(year=self.year, month=self.month, day=self.day, hour=self.hour, 
+            minute=self.minute, second=self.second, microsecond=self.microsecond,
+            tzinfo=self.tzinfo, *, fold=0)
+    astimezone(tz=None)
+    utcoffset()
+    dst()
+    tzname()
+    timetuple()
+    utctimetuple()
+    toordinal()
+    timestamp()
+    weekday()
+    isoweekday()
+    isocalendar()
+    isoformat(sep='T', timespec='auto')
+    dt.__str__() Same as dt.isoformat(' ')
+    ctime()
+    strftime(format)
+    __format__(format)
+    Operations
+        dt_new = dt + timedelta
+        dt_new = dt - timedelta
+        timedelta = dt1 - dt2
+        Operators:  ==, !=, >, <, >=, <=
+
+time
+    time(hour=0, minute=0, second=0, microsecond=0, tzinfo=None, *, fold=0)
+    min, max:  earliest & latest representable date
+    resolution (= timedelta(microseconds=1))
+    hour
+    minute
+    second
+    microsecond
+    tzinfo
+    fold (returns 0 or 1, to disambiguate wall times during rollback)
+    fromisoformat(time_string)
+    replace(hour=self.hour, minute=self.minute, second=self.second, microsecond=self.microsecond,
+            tzinfo=self.tzinfo, *, fold=0)
+    isoformat(timespec='auto')
+    t.__str__() == t.isoformat()
+    strftime(format)
+    __format__(format)
+    utcoffset()
+    dst()
+    tzname()
+
+tzinfo (it's an abstract base class)
+    utcoffset(dt)
+    dst(dt)
+    tzname(dt)
+    fromutc(dt)
+timezone (subclass of tzinfo, fixed offset from UTC)
+    timezone(offset, name=None)
+    utcoffset(dt)
+    tzname(dt)
+    dst(dt) Always returns None
+    fromutc(dt)
+    utc  The UTC timezone, timezone(timedelta(0))
+    
+
 
 ----------------------------------------------------------------------
 python_bitarray                                         *python_bitarray*
