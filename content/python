@@ -6257,6 +6257,22 @@ Immutable objects:
         year, month, day, hour, minute, second, microsecond, and tzinfo attributes
     timedelta       Duration = diff between two datetime or date instances
 
+timedelta
+    timedelta(days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0)
+
+
+How to add months to a date
+    From https://stackoverflow.com/questions/4130922/how-to-increment-datetime-by-custom-months-in-python-without-using-library
+        David Webb's 9 Nov 2010 answer
+    import datetime
+    import calendar
+    def add_months(sourcedate, months):
+        month = sourcedate.month - 1 + months
+        year = sourcedate.year + month // 12
+        month = month % 12 + 1
+        day = min(sourcedate.day, calendar.monthrange(year, month)[1])
+        return datetime.date(year, month, day)
+
 date:   date(year, month, day) all arguments required as integers
     ValueError raised if you give it incorrect numbers
     Methods:
