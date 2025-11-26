@@ -350,7 +350,7 @@ Circular imports
 
 Fast way to remove whitespace from string s
     ''.join(s.split())
-    Whitespace == ' ' \t \n \r \f \v
+    Whitespace == " \t\n\r\f\v"
     Use /plib/dpstr.RemoveWhitespace(s)
     Note using regexp or str.translate() are significantly slower (see
     http://www.qtrac.eu/01_nows.html)
@@ -6272,6 +6272,7 @@ How to add months to a date
         month = month % 12 + 1
         day = min(sourcedate.day, calendar.monthrange(year, month)[1])
         return datetime.date(year, month, day)
+    # Also see https://www.pythontutorials.net/blog/is-there-a-simple-way-to-increment-a-datetime-object-one-month-in-python/
 
 date:   date(year, month, day) all arguments required as integers
     ValueError raised if you give it incorrect numbers
