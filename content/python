@@ -959,6 +959,51 @@ Case-insensitive sort:
         print(sorted(a, key=f))
             --> [(-4, -3), (2, 8), (1, 10)]
 
+Sorting hetergeneous sequences
+    From https://mark-summerfield.github.io/02_sorting.html
+    Method 1:  a generic approach
+        seq = [9, 4, -3, 'Twelve', 17, datetime.date(2021, 5, 22),
+        '20', '8', 150, '-14', datetime.date(1921, 11, 7), 'one', 0]
+        result = sorted(seq, key=lambda x: (x.__class__.__name__, x))
+        print(result)
+
+        produces
+
+        [datetime.date(1921, 11, 7), datetime.date(2021, 5, 22), -3, 0, 4, 9,
+         17, 150, '-14', '20', '8', 'Twelve', 'one']
+
+    Method 2:  a type-specific approach
+        # Sorts known types in a desired order
+        def by_custom(value):
+            if isinstance(value, str):
+                try: # sort as int if poss.
+                    return 3, int(value)
+                except ValueError:
+                    return 1, value.lower()
+            if isinstance(value, datetime.date):
+                return 2, value
+            if isinstance(value, int):
+                return 3, value
+            raise TypeError('can only sort: str int date')
+
+        seq = [9, 4, -3, 'Twelve', 17, datetime.date(2021, 5, 22), '20', '8', 150, '-14',
+            datetime.date(1921, 11, 7), 'one', 0]
+        result = sorted(seq, key=by_custom)
+        print(result)
+
+        produces
+
+        ['one', 'Twelve', datetime.date(1921, 11, 7), datetime.date(2021, 5, 22), '-14',
+        -3, 0, 4, '8', 9, 17, '20', 150]
+
+        Here, we've chosen to sort strings before dates before ints (str < date < int).
+        And in addition, if a string’s text is an int we sort it as an int, otherwise we
+        sort the string case-insensitively.  Rather than using type names we’ve used
+        simple ints, 1 for strings, 2 for dates, and so on. This makes it easy to add
+        support for extra types and to get the ordering we want.  Clearly we can easily
+        add additional types and logic to get any ordering of our heterogeneous data
+        that we like.
+
 PEP-8 recommendations:
     Use
         if x is None:
