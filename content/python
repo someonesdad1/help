@@ -93,6 +93,10 @@ Class methods and attributes
     Class method is called with Cat.create_kitten("baby").
     Class attribute is accessed as Cat.species.
 
+Size of things
+    Use sys.getsizeof(object)
+    For container objects, use util.GetSize().
+
 Looping
     Only two constructs:  for and while
     for:  used mostly for a known number of items
@@ -7075,6 +7079,55 @@ Added in 3.7
 ----------------------------------------------------------------------
 pathlib                                     *python_pathlib*
 
+Path objects access the file system.  PurePath objects can manipulate paths
+without accessing the file system.  Methods:
+
+    absolute()      Same as resolve()
+    as_posix()      Return with forward slashes
+    as_uri()      
+    chmod()
+    cwd()           Current directory
+    exists()
+    expanduser()    Expand with ~ and ~user constructs
+    glob()          **/* finds everything recursively     See rglob
+    group()
+    home()          User's home directory
+    is_absolute()
+    is_block_device()
+    is_char_device()
+    is_dir()
+    is_fifo()
+    is_file()
+    is_mount()
+    is_reserved()   Only relevant under Windows
+    is_socket()
+    is_symlink()
+    iterdir()       Generator to iterate on directory's contents
+    joinpath(*other)
+    lchmod()
+    lstat()
+    match(pattern)  Match against glob-style pattern; return bool
+    mkdir()
+    open()
+    owner()
+    read_bytes()
+    read_text(encoding=None, errors=None)
+    relative_to(*other)
+    rename(target)
+    replace(target)
+    resolve()       Make absolute; resolve symlinks and '..'
+    rglob()         Recursive glob (like glob("**/" + pattern))
+    rmdir()
+    samefile()
+    stat()
+    symlink_to(target, target_is_directory=False)   Make a symlink
+    touch(mode=0o666, exist_ok=True)
+    unlink()
+    with_name(name)         Change the name
+    with_suffix(suffix)     Change the suffix
+    write_bytes(data)
+    write_text(data, encoding=None, errors=None)
+
 PurePath for path manipulations (see purepath.py)
   import pathlib as P
   p = P.PurePath("/home/Don") --> '/home/Don'
@@ -7143,55 +7196,6 @@ Handy usages:
     File size
         p.stat().st_size
 
-Path objects access the file system.  PurePath objects can manipulate paths
-without accessing the file system.
-
-    absolute()      Same as resolve()
-    as_posix()      Return with forward slashes
-    as_uri()      
-    chmod()
-    cwd()           Current directory
-    exists()
-    expanduser()    Expand with ~ and ~user constructs
-    glob()          **/* finds everything recursively     See rglob
-    group()
-    home()          User's home directory
-    is_absolute()
-    is_block_device()
-    is_char_device()
-    is_dir()
-    is_fifo()
-    is_file()
-    is_mount()
-    is_reserved()   Only relevant under Windows
-    is_socket()
-    is_symlink()
-    iterdir()       Generator to iterate on directory's contents
-    joinpath(*other)
-    lchmod()
-    lstat()
-    match(pattern)  Match against glob-style pattern; return bool
-    mkdir()
-    open()
-    owner()
-    read_bytes()
-    read_text(encoding=None, errors=None)
-    relative_to(*other)
-    rename(target)
-    replace(target)
-    resolve()       Make absolute; resolve symlinks and '..'
-    rglob()         Recursive glob (like glob("**/" + pattern))
-    rmdir()
-    samefile()
-    stat()
-    symlink_to(target, target_is_directory=False)   Make a symlink
-    touch(mode=0o666, exist_ok=True)
-    unlink()
-    with_name(name)         Change the name
-    with_suffix(suffix)     Change the suffix
-    write_bytes(data)
-    write_text(data, encoding=None, errors=None)
-
 os to pathlib correspondence
   os.path.abspath()           Path.resolve()
   os.chmod()                  Path.chmod()
@@ -7258,6 +7262,8 @@ Examples:
 
 ----------------------------------------------------------------------
 Enums                                               *python_enums*
+
+https://mark-summerfield.github.io/pyenum.html has some good thoughts.
 
 import enum
 

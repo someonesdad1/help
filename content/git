@@ -33,6 +33,11 @@ Here's an example of a simple git workflow for my stuff:
 
     # Rinse and repeat...
 
+    # When repository is updated by other processes/computers, you can update your copy
+    # with
+
+        git pull
+
     # Now main is in good shape (usually).  Suppose I want to work on a new feature and
     # not break main.  We'll do this on a branch.  First make sure main has no
     # modified/staged files.
