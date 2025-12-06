@@ -44,6 +44,7 @@ Numerical
     |python_cmath|                   
     |python_number_methods|          
 Other
+    |python_zipfile|
     |python_base64|
     |python_basencode|
     |python_plotext|
@@ -11926,6 +11927,135 @@ DATA
 FILE
     /home/dpbin/miniconda3/envs/11/lib/python3.11/site-packages/basencode/__init__.py
 
+--------------------------------------------------------------------------------
+ZipFile                                     *python_zipfile*
+
+Packaging a set of files into a zipfile
+    # Given a list of file names at and below a particular location:
+    with zipfile.ZipFile(f"{prefix}{key}.zip", "w") as zf:
+        for file in filelist:
+            zf.write(file)
+
+Open a zipfile 
+    zf = zipfile.ZipFile(file, mode='r', compression=ZIP_STORED, allowZip64=True,
+                         compresslevel=None, *, strict_timestamps=True, metadata_encoding=None)
+    Methods:
+        close()     
+            Closes the archive
+        getinfo(name)
+            Returns ZipInfo object with information about the member
+        infolist(name)
+            Returns ZipInfo object for each member
+        namelist()
+            Returns a list of archive member names
+        open(name, mode='r', pwd=None, *, force_zip64=False)
+            Access a member as a binary file-like object.  Example read:
+                with ZipFile('spam.zip') as myzip:
+                    with myzip.open('eggs.txt') as myfile:
+                        print(myfile.read())
+
+            With mode 'r', the file-like object (ZipExtFile) is read-only and provides
+            the following methods: read(), readline(), readlines(), seek(), tell(),
+            __iter__(), __next__(). These objects can operate independently of the
+            ZipFile.
+
+            With mode 'w', a writable file handle is returned, which supports the
+            write() method. While a writable file handle is open, attempting to read or
+            write other files in the ZIP file will raise a ValueError.
+
+            When writing a file, if the file size is not known in advance but may exceed
+            2 GiB, pass force_zip64=True to ensure that the header format is capable of
+            supporting large files. If the file size is known in advance, construct a
+            ZipInfo object with file_size set, and use that as the name parameter.
+        extract(member, path=None, pwd=None)
+            Extract a member from the archive to the current working directory; member
+            must be its full name or a ZipInfo object. Its file information is extracted
+            as accurately as possible. path specifies a different directory to extract
+            to. member can be a filename or a ZipInfo object. pwd is the password used
+            for encrypted files as a bytes object.
+
+            Returns the normalized path created (a directory or new file).
+        ZipFile.extractall(path=None, members=None, pwd=None)
+            Extract all members from the archive to the current working directory. path
+            specifies a different directory to extract to. members is optional and must
+            be a subset of the list returned by namelist(). pwd is the password used for
+            encrypted files as a bytes object.
+        ZipFile.printdir()
+            Print a table of contents for the archive to sys.stdout.
+        ZipFile.setpassword(pwd)
+            Set pwd (a bytes object) as default password to extract encrypted files.
+        ZipFile.read(name, pwd=None)
+            Return the bytes of the file name in the archive. name is the name of the
+            file in the archive, or a ZipInfo object. The archive must be open for read
+            or append. pwd is the password used for encrypted files as a bytes object
+            and, if specified, overrides the default password set with setpassword().
+            Calling read() on a ZipFile that uses a compression method other than
+            ZIP_STORED, ZIP_DEFLATED, ZIP_BZIP2 or ZIP_LZMA will raise a
+            NotImplementedError. An error will also be raised if the corresponding
+            compression module is not available.
+        ZipFile.testzip()
+            Read all the files in the archive and check their CRC’s and file headers.
+            Return the name of the first bad file, or else return None.
+        ZipFile.write(filename, arcname=None, compress_type=None, compresslevel=None)
+            Write the file named filename to the archive, giving it the archive name
+            arcname (by default, this will be the same as filename, but without a drive
+            letter and with leading path separators removed). If given, compress_type
+            overrides the value given for the compression parameter to the constructor
+            for the new entry.  Similarly, compresslevel will override the constructor
+            if given. The archive must be open with mode 'w', 'x' or 'a'.
+
+            Note The ZIP file standard historically did not specify a metadata encoding,
+            but strongly recommended CP437 (the original IBM PC encoding) for
+            interoperability. Recent versions allow use of UTF-8 (only). In this module,
+            UTF-8 will automatically be used to write the member names if they contain
+            any non-ASCII characters. It is not possible to write member names in any
+            encoding other than ASCII or UTF-8.
+
+            Note Archive names should be relative to the archive root, that is, they
+            should not start with a path separator.
+
+            Note If arcname (or filename, if arcname is not given) contains a null byte,
+            the name of the file in the archive will be truncated at the null byte.
+
+            Note A leading slash in the filename may lead to the archive being
+            impossible to open in some zip programs on Windows systems.
+        ZipFile.writestr(zinfo_or_arcname, data, compress_type=None, compresslevel=None)
+            Write a file into the archive. The contents is data, which may be either a
+            str or a bytes instance; if it is a str, it is encoded as UTF-8 first.
+            zinfo_or_arcname is either the file name it will be given in the archive, or
+            a ZipInfo instance. If it’s an instance, at least the filename, date, and
+            time must be given. If it’s a name, the date and time is set to the current
+            date and time. The archive must be opened with mode 'w', 'x' or 'a'.
+
+            If given, compress_type overrides the value given for the compression
+            parameter to the constructor for the new entry, or in the zinfo_or_arcname
+            (if that is a ZipInfo instance). Similarly, compresslevel will override the
+            constructor if given.
+
+            Note When passing a ZipInfo instance as the zinfo_or_arcname parameter, the
+            compression method used will be that specified in the compress_type member
+            of the given ZipInfo instance. By default, the ZipInfo constructor sets this
+            member to ZIP_STORED.
+        ZipFile.mkdir(zinfo_or_directory, mode=511)
+            Create a directory inside the archive. If zinfo_or_directory is a string, a
+            directory is created inside the archive with the mode that is specified in
+            the mode argument. If, however, zinfo_or_directory is a ZipInfo instance
+            then the mode argument is ignored.
+
+            The archive must be opened with mode 'w', 'x' or 'a'.
+
+        The following data attributes are also available:
+            ZipFile.filename
+                Name of the ZIP file.
+            ZipFile.debug
+                The level of debug output to use. This may be set from 0 (the default,
+                no output) to 3 (the most output). Debugging information is written to
+                sys.stdout.
+            ZipFile.comment
+                The comment associated with the ZIP file as a bytes object. If assigning
+                a comment to a ZipFile instance created with mode 'w', 'x' or 'a', it
+                should be no longer than 65535 bytes. Comments longer than this will be
+                truncated.
 
 --------------------------------------------------------------------------------
 Base64                                      *python_base64*
