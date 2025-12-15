@@ -3,6 +3,7 @@
 Add the common inch and metric screw sizes used in the shop along with
 their nut hex sizes and Allen wrench sizes.
 
+|Cutting_Speeds|
 |Common_materials|
 |Spring_pins|
 |NumberDrills|
@@ -18,7 +19,6 @@ Densities
 |Bar_Stock_Weight|
 |Plywood_Weight|
 |LetterDrills|
-|Cutting_Speeds|
 |SFPM_to_RPM|
 |Decimal_Fractions|
 |Thread_Dimensions|
