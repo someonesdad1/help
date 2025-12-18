@@ -83,7 +83,7 @@ Miscellaneous stuff
 
 Open a URL under WSL
     Firefox:  browserexe = "/mnt/c/Program Files/Mozilla Firefox/firefox.exe"
-    Chrome:   browserexe = "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
+    Chrome:   browserexe = "/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe"
     Edge:     browserexe = "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
 
     import subprocess
