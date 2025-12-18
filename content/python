@@ -81,6 +81,18 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
+Open a URL under WSL
+    Firefox:  browserexe = "/mnt/c/Program Files/Mozilla Firefox/firefox.exe"
+    Chrome:   browserexe = "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
+    Edge:     browserexe = "/mnt/c/Program Files\(x86\)/Microsoft/Edge/Application/msedge.exe"
+
+    import subprocess
+    subprocess.run([browserexe, URL])
+
+    Details at 
+    https://linuxvox.com/blog/wsl-ubuntu-how-to-open-localhost-in-browser-from-bash-terminal/
+
+
 Class methods and attributes
     class Cat:
         species = "Felis catus"   # Class attribute
