@@ -8145,16 +8145,19 @@ Byte arrays
 ----------------------------------------------------------------------
 requests library                            *python_requests*
 
-Installation
-    pip install requests
-
 Getting a file from the web
+    import requests
     # Download the url contents in binary format
     url = https://www.hpl.hp.com/hpjournal/pdfs/IssuePDFs/1971-03.pdf
     r = requests.get(url)
+    # Note its a string of bytes
+    # s = r.content.decode()    # Convert to UTF8 string if needed
     # Write to file
     with open("1971-03.pdf", "wb") as fp:
         fp.write(r.content)
+
+Installation
+    pip install requests
 
 ----------------------------------------------------------------------
 PyPDF2                                      *python_PyPDF2*
