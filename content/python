@@ -8,6 +8,7 @@ Core
     |python_sets|
     |python_multisets|
     |python_dictionaries|
+    |python_ruff|
     |python_requests|       Download web stuff
     |python_termtables|     ASCII table formatting
     |python_match|          New match statement syntax
@@ -2677,6 +2678,17 @@ For sets of sets, the inner sets must be frozen sets.
 
 Two sets are equal iff every element of one set is in the other (each is a
 subset of the other).
+
+Core operators & tests
+    A | B   Union
+    A & B   Intersection
+    A - B   Difference = A with B's elements removed
+    A ^ B   Symmetric difference = (A - B) | (B - A)
+
+    A < B   True if A is a proper subset of B
+    A <= B  True if A is a subset of B
+    A > B   True if A is a proper superset of B
+    A >= B  True if A is a superset of B
 
 Basic operations (the methods will accept any iterables)
     add(elem)
@@ -8141,6 +8153,55 @@ Byte arrays
         From an iterable of integers: bytearray(range(20))
         Copying existing binary data via the buffer protocol: bytearray(b'Hi!')
 
+
+----------------------------------------------------------------------
+ruff                                        *python_ruff*
+
+Python linter & formatter       (https://github.com/astral-sh/ruff)
+    Configuration page:     https://docs.astral.sh/ruff/configuration/
+    List of settings:       https://docs.astral.sh/ruff/settings/
+    Configuration:  Some projects use pyproject.toml, but this is (apparently) aimed at
+    projects to be deployed on PyPi.  I'll stick with a /plib/ruff.toml file.
+
+    Updated to latest on 13 Jan 2026:  version 0.14.1
+
+ruff help:
+
+    Usage: ruff [OPTIONS] <COMMAND>
+
+    Commands:
+    check    Run Ruff on the given files or directories
+    rule     Explain a rule (or all rules)
+    config   List or describe the available configuration options
+    linter   List all supported upstream linters
+    clean    Clear any caches in the current directory and any subdirectories
+    format   Run the Ruff formatter on the given files or directories
+    server   Run the language server
+    analyze  Run analysis over Python source code
+    version  Display Ruff's version
+    help     Print this message or the help of the given subcommand(s)
+
+    Options:
+    -h, --help     Print help
+    -V, --version  Print version
+
+    Log levels:
+    -v, --verbose  Enable verbose logging
+    -q, --quiet    Print diagnostics, but nothing else
+    -s, --silent   Disable all logging (but still exit with status code "1" upon detecting diagnostics)
+
+    Global options:
+        --config <CONFIG_OPTION>  
+            Either a path to a TOML configuration file (`pyproject.toml` or
+            `ruff.toml`), or a TOML `<KEY> = <VALUE>` pair (such as you might find in a
+            `ruff.toml` configuration file) overriding a specific configuration option.
+            Overrides of individual settings using this option always take precedence
+            over all configuration files, including configuration files that were also
+            specified using `--config`
+
+        --isolated                Ignore all configuration files
+
+    For help with a specific command, see: `ruff help <command>`.
 
 ----------------------------------------------------------------------
 requests library                            *python_requests*
