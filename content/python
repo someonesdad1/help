@@ -673,8 +673,15 @@ Performance measurement with timeit
     Then execute
         python -mtimeit -s'import a' 'a.foo()'
     It will execute the loop many times and return the best of 3 
-    measurements.  See the timeit module for more details and how to do 
-    this from within a script.
+    measurements. 
+
+    To put some code in a script, use the following method which causes the code to be
+    executed in your global namespace:
+        def f(x): return x**2
+        def g(x): return x**4
+        def h(x): return x**8
+        import timeit
+        print(timeit.timeit('[func(42) for func in (f,g,h)]', globals=globals()))
 
 Stdout going to tty
     It's useful to distinguish when stdout is going to a tty or not.  For
