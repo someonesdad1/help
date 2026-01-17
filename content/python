@@ -5240,14 +5240,15 @@ __slots__
                 self.object = object
             def __hash__(self):
                 return hash(id(self.object))
+            def __eq__(self, other):
+                return self.object == other.object
 
         n, dup, nodup = len(seq), [], []
         seen = set()
         for i in range(n):
-            item = Hashable(seq[i])
-            h_item = Hashable(item)
-            dup.append(item) if h_item in seen else nodup.append(item)
-            seen.add(h_item)
+            item, sitem = seq[i], Hashable(seq[i])
+            dup.append(item) if sitem in seen else nodup.append(item)
+            seen.add(sitem)
         return (nodup, dup)
 
 Emulating callable objects
