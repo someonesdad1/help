@@ -5217,13 +5217,38 @@ Implementing descriptors
     __delete__(self, instance)
 
 __slots__
-    By default, objects use dictionaries for attribute storage.  This is
-    wasteful for objects with few instance variables (e.g. when creating
-    lots of instances).
+    See https://wiki.python.org/moin/UsingSlots
 
-    Define the __slots__ variable as an iterable that returns string names
-    of the attributes.  This reserves space for the attributes and prevents
-    an attribute dict from being created.
+    __slots__ is a class variable tuple used to define string names for the instances'
+    attributes.  By default, objects use dictionaries for attribute storage.  This is
+    wasteful for objects with few instance variables (e.g. when creating lots of
+    instances).
+
+    Define the __slots__ variable as an iterable that returns string names of the
+    attributes.  This reserves space for the attributes and prevents an attribute dict
+    from being created.
+
+    Example:  dpseq contains a function to find the duplicates in a sequence.  The
+    simplest algorithm to do this is to convert the sequence to a list, then look at
+    each item sequentially and see if it's in the remaining part of the array.  It's
+    simple to program but unfortunately O(n²) because of the second implied for loop.
+    A way around this was:
+
+        class Hashable:
+            __slots__ = ("object",)
+            def __init__(self, object):
+                self.object = object
+            def __hash__(self):
+                return hash(id(self.object))
+
+        n, dup, nodup = len(seq), [], []
+        seen = set()
+        for i in range(n):
+            item = Hashable(seq[i])
+            h_item = Hashable(item)
+            dup.append(item) if h_item in seen else nodup.append(item)
+            seen.add(h_item)
+        return (nodup, dup)
 
 Emulating callable objects
 
