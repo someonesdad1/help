@@ -5228,11 +5228,12 @@ __slots__
     attributes.  This reserves space for the attributes and prevents an attribute dict
     from being created.
 
-    Example:  dpseq contains a function to find the duplicates in a sequence.  The
-    simplest algorithm to do this is to convert the sequence to a list, then look at
+    Example:  /plib/dpseq.py contains a function to find the duplicates in a sequence.
+    The simplest algorithm to do this is to convert the sequence to a list, then look at
     each item sequentially and see if it's in the remaining part of the array.  It's
-    simple to program but unfortunately O(n²) because of the second implied for loop.
-    A way around this was:
+    simple to program but unfortunately O(n²) because of the second implied for loop.  A
+    way around this was (this only shows the idea; look at the dpseq.py function for the
+    details):
 
         class Hashable:
             __slots__ = ("object",)
