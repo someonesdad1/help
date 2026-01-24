@@ -2887,12 +2887,14 @@ Special Sequences
     \Z      Matches only at the end of the string
 
 Flags
-    A       ASCII only matching instead of Unicode
-    I       Ignore case
-    L       \w, \b etc. locale-dependent (only works with bytes)
-    M       Multiline
-    S       '.' matches any character including a newline
-    X       Verbose expressions (lets you use comments)
+    A   ASCII       ASCII only matching instead of Unicode
+    I   IGNORECASE  Ignore case
+    L   LOCALE      \w, \b etc. locale-dependent (only works with bytes)
+    M   MULTILINE   '^' matches at beginning of string and line; ditto for '$'
+    S   DOTALL      '.' matches any character including a newline
+    X   VERBOSE     Verbose expressions (lets you use comments)
+        DEBUG       Display debug information about compiled expression
+        NOFLAG      No flag applied; value is 0.  You can OR it with the other flags.
 
 Character meanings
     .           Matches any character (including newline if DOTALL flag
