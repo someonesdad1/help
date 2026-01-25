@@ -93,6 +93,21 @@ Open a URL under WSL
     Details at 
     https://linuxvox.com/blog/wsl-ubuntu-how-to-open-localhost-in-browser-from-bash-terminal/
 
+importlib
+    Use importlib.import_module(name).  Note this imports into the global namespace, so
+    to use things in a function you need to use e.g. (this uses the code in the gist.GetGist
+    function:
+
+    modname = file
+    if file.endswith(".py"):
+        modname = file[:-3]
+    # Make a global variable to hold the imported name
+    global GetGist_imported_module
+    GetGist_imported_module = importlib.import_module(modname)
+    # Here, varname is a string that names a global variable in the module and we want
+    # what's in that variable:
+    var = eval(f"GetGist_imported_module.{varname}")
+    print(var)
 
 Class methods and attributes
     class Cat:
