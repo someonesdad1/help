@@ -8,10 +8,10 @@ Core
     |python_sets|
     |python_multisets|
     |python_dictionaries|
-    |python_ruff|
+    |python_subprocess|
     |python_requests|       Download web stuff
     |python_termtables|     ASCII table formatting
-    |python_match|          New match statement syntax
+    |python_match|          match statement syntax
     |python_bitarray|       Efficient boolean arrays
     |python_datetime|
     |python_hashlib|
@@ -20,9 +20,9 @@ Core
     |python_bytes|
     |python_keywords|
     |python_collections|
-    |python_subprocess|
     |python_memory_usage|
     |python_properties|
+    |python_ruff|
 Strings
     |python_strings|
     |python_string|
