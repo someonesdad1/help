@@ -45,6 +45,7 @@ Numerical
     |python_cmath|                   
     |python_number_methods|          
 Other
+    |python_zip|
     |python_zipfile|
     |python_base64|
     |python_basencode|
@@ -1089,6 +1090,45 @@ How to ignore deprecation warnings with command line switch:
 
 Use http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html
 for useful info about styles and idioms.  Also see the links at the bottom.
+
+---------------------------------------------------------------------------
+zip                                                            *python_zip*
+
+list(zip([1, 2], [3, 4])) --> [(1, 3), (2, 4)]
+    First call gets first elements (1, 3)
+    Next call gets second elements (2, 4)
+
+zip(*iterables, strict=False)
+    Iterate over several iterables in parallel, producing tuples with an item from each
+    one.  Stops when the shortest iterable is exhausted.  If you're assuming the
+    iterables are the same length, use strict=True and you'll get a ValueError if not.
+
+    zip returns an iterator of tuples where the i-th tuple contains the i-th element
+    from each of the argument iterables.
+
+    zip() turns rows into columns, and columns into rows (transpose)
+        
+Transpose
+    def transpose(it):
+        return zip(*it, strict=True)
+
+    Example:  transpose([(1, 2, 3), (11, 22, 33)]) --> [(1, 11) (2, 22) (3, 33)]
+
+Unzip a list
+    x, y = [1, 2, 3], [4, 5, 6]
+    z = list(zip(x, y)) 
+        --> [(1, 4), (2, 5), (3, 6)]
+    a, b = zip(*z)
+        --> a == x, b == y
+
+Clustering a sequence into n-length groups
+    zip(*[iter(seq)]*n, strict=True)
+        
+    def cluster(seq, n):
+        'Return a list of seq in clusters of n'
+        return list(zip(*[iter(seq)]*n, strict=True))
+
+    cluster(range(9), 3) --> [(0, 1, 2), (3, 4, 5), (6, 7, 8)]
 
 ---------------------------------------------------------------------------
 Streams I/O (io module)                                    *python_streams*
