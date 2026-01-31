@@ -2669,17 +2669,14 @@ copy()                  Shallow copy
 fromkeys(seq[, x)       New dictionary with keys from seq and values set to x
 get(key[, x])           Return value for key or x if key not in dict
 has_key(key)            Deprecated; use key in d
-items()                 Copy of (key, value) pairs
-iteritems()             Return an iterator over (key, value) pairs
-iterkeys()              Return an iterator over keys
-itervalues()            Return an iterator over values
-keys()                  Copy of list of keys
+items()                 Copy of (key, value) pairs (iterator)
+keys()                  Copy of list of keys (iterator)
 pop(key[, x])           Return d[key] or x if key not present
 popitem()               Remove and return arbitrary (key, value)
 setdefault(key[, x])    If key in d, return value; otherwise set d[key] = x
                         and return x.
 update([other])         Update with key/value pairs from other.
-values()                Return copy of list of values
+values()                Return copy of list of values (iterator)
 
 If you want to iterate and change the dictionary, use
     for key in d.keys():
