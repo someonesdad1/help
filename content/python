@@ -6205,9 +6205,14 @@ lambda                              Lambda expression
 ----------------------------------------------------------------------
 String formatting using "".format()           *python_string_formatting*
 
-Commas in integers
-    n = 12
-    f"{int(a):>{n},d}
+Commas and underscores in integers
+    n = 12000
+    f"{n:,d}" --> '12,000'
+    f"{n:,}" --> '12,000'
+    f"{n:_d}" --> '12_000'
+    f"{n:_}" --> '12_000'
+    An advantage of using underscores is that for an integer n
+        int(f"{n:_}") == n
 
 f-strings (3.6+)
     f"{x}" form uses format() syntax directly
