@@ -1,0 +1,273 @@
+*winmerge*
+
+Downloaded from https://manual.winmerge.org/en/Command_line.html on 4 Feb 2026.  I've
+changed the options to use dash characters, as I only use this tool from cygwin or WSL.
+
+The WinMerge command line accepts several parameters in addition to the paths to
+compare. Most of these parameters are intended for using WinMerge as an external compare
+application or starting a compare operation from a batch file.
+
+Use one of these formats for the WinMerge command:
+
+WinMergeU [-?]
+
+WinMergeU [-r] [-r-] [-e] [-f filter] [-m compare-method] [-t window-type] [-x] [-xq]
+
+          [-s] [-sw] [-s-] [-ul] [-um] [-ur] [-u] [-wl] [-wm] [-wr] [-new]
+          [-self-compare] [-clipboard-compare] [-minimize] [-maximize] [-fl] [-fm] [-fr]
+          [-l linenumber] [-c charpos] [-table-delimiter delimiter] [-dl leftdesc]
+          [-dm middledesc] [-dr rightdesc] [-al] [-am] [-ar] [-noninteractive] [-noprefs]
+          [-enableexitcode] [-ignorews] [-ignoreblanklines] [-ignorecase] [-ignoreeol]
+          [-ignorecodepage] [-ignorecomments] [-unpacker unpacker-name] 
+          [-prediffer prediffer-name] [-cp codepage] [-fileext file-extension]
+          [-cfg name=value] [-inifile inifile] 
+
+        leftpath [middlepath] rightpath [-o outputpath] [-or reportpath]
+
+WinMergeU conflictfile
+
+Entering the command with no parameters or pathnames simply opens the WinMerge window.
+Parameters are prefixed with either a forward slash ( / ) or dash ( - ) character.
+Pathnames have no prefix character.
+
+-?
+    Opens WinMerge Help at this topic.
+-r
+    Compares all files in all subfolders (recursive compare). Unique folders (occurring
+    only on one side) are listed in the compare result as separate items. Note that
+    including subfolders can increase compare time significantly. Without this
+    parameter, WinMerge lists only files and subfolders at the top level of the two
+    target folders. It does not compare the subfolders.
+-r-
+    Compares all files within the specified folders but excludes the files and
+    subfolders within its subfolders. This allows for a shorter comparison time.
+-e
+    Enables you to close WinMerge with a single Esc key press. This is useful when you
+    use WinMerge as an external compare application: you can close WinMerge quickly,
+    like a dialog. Without this parameter, you might have to press Esc multiple times to
+    close all its windows.
+-f
+    Applies a specified filter to restrict the comparison. The filter can be a filemask
+    like *.h *.cpp, or the name of a file filter like XML/HTML Devel. Add quotation
+    marks around a filter mask or name that contains spaces.
+-m compare-method
+    Sets the compare method to use for the comparison. This can be one of the keywords
+    Full, Quick, Binary, Date, SizeDate, Size or Existence.
+-t window-type
+    Specifies the type of window in which to display files. This can be one of the
+    keywords Text, Table, Binary, Image or Webpage.
+-x
+    Closes WinMerge (after displaying an information dialog) when you start a comparison
+    of identical files. The parameter has no effect after the comparison, for example if
+    the files become identical as a result of merging or editing. This parameter is
+    useful when you use WinMerge as an external compare application, or when you want to
+    eliminate unnecessary steps by ignoring files that don't have any differences.
+-xq
+    Is similar to -x but does not show the message about identical files.
+-s
+    Limits WinMerge windows to a single instance. For example, if WinMerge is already
+    running, a new compare opens in the same instance. Without this parameter, multiple
+    windows are allowed: depending on other settings, a new compare might open in the
+    existing window or in a new window.
+-sw
+    Limit the WinMerge window to one instance as well as the option -s. However, it
+    waits for the instance displaying the window to terminate. 
+-s-
+    Ensure that another instance is always executed, ignoring the value of the "Allow
+    only one instance to run" option.
+-ul
+    Prevents WinMerge from adding the left path to the Most Recently Used (MRU) list.
+    External applications should not add paths to the MRU list in the Select Files or
+    Folders dialog.
+-um
+    Prevents WinMerge from adding the middle path to the Most Recently Used (MRU) list.
+    External applications should not add paths to the MRU list in the Select Files or
+    Folders dialog.
+-ur
+    Prevents WinMerge from adding the right path to the Most Recently Used (MRU) list.
+    External applications should not add paths to the MRU list in the Select Files or
+    Folders dialog.
+-u
+    Prevents WinMerge from adding either path (left or right) to the Most Recently Used
+    (MRU) list. External applications should not add paths to the MRU list in the Select
+    Files or Folders dialog.
+-wl
+    Opens the left side as read-only. Use this when you don't want to change left side
+    items in the compare.
+-wm
+    Opens the middle side as read-only. Use this when you don't want to change right
+    side items in the compare.
+-wr
+    Opens the right side as read-only. Use this when you don't want to change right side
+    items in the compare.
+-new
+    Opens a new blank window.
+-self-compare
+    Compares the specified file with a copy of the file.
+-clipboard-compare
+    Compares the two most recent contents of the clipboard history.
+-minimize
+    Starts WinMerge as a minimized window. This option can be useful during lengthy
+    compares.
+-maximize
+    Starts WinMerge as a maximized window.
+-fl
+    Sets focus to the left side at startup.
+-fm
+    Sets focus to the middle side at startup.
+-fr
+    Sets focus to the right side at startup.
+-l linenumber
+    Specifies a line number to jump to after loading the files.
+-c charpos
+    Specifies a character position to jump to after loading the files.
+-table-delimiter delimiter
+    Specifies a delimiter character for table editing. To specify a tab character,
+    specify "tab", "\t", or "\x09".
+-dl
+    Specifies a description in the left side title bar, overriding the default folder or
+    filename text. For example: -dl "Version 1.0" or -dl WorkingCopy. Use quotation
+    marks around descriptions that contain spaces.
+-dm
+    Specifies a description in the middle side title bar, just like -dl.
+-dr
+    Specifies a description in the right side title bar, just like -dl.
+-al
+    Auto-merges at the left side at startup.
+-am
+    Auto-merges at the middle side at startup.
+-ar
+    Auto-merges at the right side at startup.
+-noninteractive
+    Runs WinMerge without displaying message boxes during comparison or report
+    generation. The process terminates automatically when the operation is complete,
+    making it suitable for batch or scripted execution. 
+-noprefs
+    Runs WinMerge without loading or saving settings from the registry. All comparisons
+    use default preferences only. 
+-enableexitcode
+    Sets the comparison result to the process exit code. 0: identical, 1: different, 2:
+    error
+-ignorews
+    Controls the "Whitespaces" option (whitespace comparison settings) persistently:
+
+        -ignorews:0 - do not ignore whitespace differences.
+        -ignorews or -ignorews:1 - ignore differences in the amount of whitespace.
+        -ignorews:2 - ignore all whitespace characters.
+-ignoreblanklines
+    Controls the "Ignore blank lines" option persistently:
+        -ignoreblanklines:0 - disables ignoring blank lines.
+        -ignoreblanklines or -ignoreblanklines:1 - enables ignoring blank lines.
+-ignorecase
+    Controls the "Ignore case" option persistently:
+        -ignorecase:0 - disables ignoring case differences.
+        -ignorecase or -ignorecase:1 - enables ignoring case differences.
+-ignoreeol
+    Controls the "Ignore EOL differences" option persistently:
+        -ignoreeol:0 - disables ignoring EOL differences.
+        -ignoreeol or -ignoreeol:1 - enables ignoring EOL differences.
+-ignorecodepage
+    Controls the "Ignore codepage differences" option persistently:
+        -ignorecodepage:0 - disables ignoring codepage differences.
+        -ignorecodepage or -ignorecodepage:1 - enables ignoring codepage differences.
+-ignorecomments
+    Controls the "Ignore comment differences" option persistently:
+        -ignorecomments:0 - disables ignoring comments.
+        -ignorecomments or -ignorecomments:1 - enables ignoring comments.
+-unpacker plugin pipeline
+    Specifies the plugin pipeline for the Unpacker plugin. Example: -unpacker
+    "SortAscending|SelectLines 1-10" 
+-prediffer plugin pipeline
+    Specifies the plugin pipeline for the Prediffer plugin. Example: -prediffer
+    "IgnoreColumns 1-10" 
+-cp codepage
+    Specifies the codepage to use for file comparison. Example: -cp 65001 
+-fileext file-extension
+    Specifies a file extension for determining syntax hightliting.
+-cfg name=value
+    Sets a configuration value in the WinMerge registry or INI file.
+
+    Example: -cfg Settings/DiffAlgorithm=3
+
+    If the section name is unambiguous and does not conflict with other setting names,
+    it can be omitted:
+
+    -cfg DiffAlgo=3
+
+    Note: This entry does not explain which configuration names are available. For a
+    list of settings, refer to HKEY_CURRENT_USER\Software\Thingamahoochie\WinMerge in
+    regedit.
+leftpath
+    Specifies the folder, file or project file to open on the left side.
+middlepath
+    Specifies the folder, file or project file to open on the middle side.
+rightpath
+    Specifies the folder, file or project file to open on the right side.
+
+    WinMerge cannot compare files to folders, so the path parameters (leftpath,
+    middlepath and rightpath) must point to the same target type (either folders or
+    files). If WinMerge cannot find either of the specified paths, it opens the Select
+    Files or Folders dialog, where you can browse for the correct paths.  Tip
+
+    In file comparisons, you can specify a folder name in one of the path parameters, as
+    long as the folder contains a file with the same name as the one specified in the
+    other, file path.
+
+    For example, consider this command:
+
+    WinMergeU C:\Folder\File.txt C:\Folder2
+
+    If C:\Folder2 contains a file named File.txt: WinMerge implicitly resolves the
+    second path as a file specification, and compares the two files. Of course, the
+    command is invalid if C:\Folder2 does not contain a file named File.txt.
+-o outputpath
+    Specifies an optional output file path where you want merged result files to be
+    saved.
+
+    The output path is rarely needed when you start WinMerge from the command line. It
+    is meant to be used with version control tools, where you might need to specify a
+    output path for the result file. If you specify a output path, WinMerge still shows
+    only two or three files in the File Compare window. However, if you save either of
+    these files, it is written to the output path, leaving the two or three source files
+    intact.
+
+    Version control systems typically refer to the source and result files using terms
+    like theirs, mine, and either merged or resolved. If you specify a output path on
+    the WinMerge command line, and are working with a version control system, you should
+    list the files in that order.
+-or outputpath
+    Outputs a comparison report for files or folders. Example: 
+        WinMergeU path1 path2 -or c:\tmp\report.html
+    It is often useful to combine this option with:
+
+        -noninteractive - exits WinMerge after producing the report.
+
+        -minimize - starts WinMerge in minimized state.
+
+        -noprefs - ignores the current preferences and uses default settings. Any
+        changes made with -cfg will then be temporary and not saved.
+
+    The following -cfg settings can also be useful (parameter names may change in the
+    future):
+
+    For file comparisons:
+
+        -cfg Settings/DiffContextV2=0 - hides matching lines in the report (equivalent
+        to View -> Diff Context -> 0 Lines).
+
+        -cfg Settings/ViewLineNumbers=1 - outputs line numbers (set to 0 to disable).
+
+    For folder comparisons:
+
+        -cfg Settings/DirViewExpandSubdirs=1 - automatically expand all subfolders.
+
+        -cfg ReportFiles/ReportType=2 - report style: Simple HTML.
+
+        -cfg ReportFiles/IncludeFileCmpReport=1 - include file comparison reports.
+conflictfile
+    Specifies a conflict file, typically generated by a Version control system. The
+    conflict file opens in the File Compare window, where you can merge and resolve
+    conflicts, as described in Resolving conflict files. Note that no other paths can be
+    used with a conflict file.
+-inifile inifile
+    specifies an INI file used to load and save settings instead of the registry.
