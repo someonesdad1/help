@@ -1,8 +1,24 @@
 *vim*
 
+Startup
+    'help startup-options' to see details
+    vi file                 Edit file
+    vi -t tag file          Jump to tag
+    vi -q errorfile         Quickfix:  use compiler's error messages
+        Use 'help quickfix' to learn more
+    -R  Start in readonly mode
+    -b  Edit in binary mode
+
 Startup positioning
-    'vi +4 file'        Positions the cursor at line 4
-    'vi +/$sym file'    Positions the cursor at first location of sym
+    Last line       vi + file
+    Line n          vi +n file
+    At function     vi +/Fn file   '+/{pattern}' searches for the pattern
+    At function, then move to column c
+        vi +"/Fn" +"normal 10|" file
+    Position at a specific line & column:
+        vi "call cursor(l, c)" file        l = line, c = column
+    Compiler error:  'main.c:25:7: error'
+        vi +"call cursor(25,7)" main.c
 
 Non-greedy match
     Instead of '.*?' (which doesn't work), use '.\{-}'

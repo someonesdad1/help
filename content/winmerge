@@ -1,13 +1,46 @@
 *winmerge*
+|winmerge_features|
+|winmerge_command_line|
+|winmerge_plugin_list|
 
-Downloaded from https://manual.winmerge.org/en/Command_line.html on 4 Feb 2026.  I've
-changed the options to use dash characters, as I only use this tool from cygwin or WSL.
+---------------------------------------------------------------------------
+Features                                                *winmerge_features*
 
-The WinMerge command line accepts several parameters in addition to the paths to
-compare. Most of these parameters are intended for using WinMerge as an external compare
-application or starting a compare operation from a batch file.
+- File comparisons (2-way and 3-way)
+- Recursive directory compares
+- Compare images
+- Compare CSV and tab-separated files in table format
+- Binary comparisons (hex dump format)
 
-Use one of these formats for the WinMerge command:
+Tips
+
+- Binary compare:  use ctrl-O to get open dialog; select files and click on down arrow
+  in the Compare button to select binary.
+- The down arrow in the Compare button has an All button; click on Select and you get a
+  dialog to choose the plugin to use
+- Compare two directories from the command line without recursion with the -r- option.
+  In View, if you turn off 'Show Left Unique' and 'Show Right Unique', you'll see files
+  with common names.  This was useful to show me a number of /plib and /plib/pgm
+  duplicate files with different content.
+
+---------------------------------------------------------------------------
+Plugin List                                          *winmerge_plugin_list*
+
+- Apache Tika (a Java tool that can extract metadata from over 1000 formats)
+- Compare MS files:  Excel, PowerPoint, Visio, Word
+- Data:  CSV, TSV (tab-separated), JSON, YAML
+- CompareEscapedJavaPropertiesFiles
+- Decompile:  DisassembleJVM, DisassembleIL, DisassembleNative
+- Editor script:  AIConvertText, ExecFilterCommand, MakeUpper, MakeLower,
+  RemoveDuplicates, CountDuplicates, SortAscending, SortDescending, ReverseColumns,
+  ReverseLines, SelectColumns, SelectLines, Replace, Tokenize, Trim
+- Prettification:  HTML, XML, JSON, YAML
+- Preview:  Graphviz, Markdown, PlantUML
+- Validation:  ValidateHTML
+- Other:  ApplyPatch
+
+---------------------------------------------------------------------------
+Command line options                                *winmerge_command_line*
 
 WinMergeU [-?]
 
@@ -271,3 +304,7 @@ conflictfile
     used with a conflict file.
 -inifile inifile
     specifies an INI file used to load and save settings instead of the registry.
+
+Downloaded from https://manual.winmerge.org/en/Command_line.html on 4 Feb 2026.  I've
+changed the options to use dash characters, as I only use this tool from cygwin or WSL.
+
