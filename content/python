@@ -84,6 +84,10 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
+Binary read/write with stdin/stdout:
+    sys.stdin.buffer.read()
+    sys.stdout.buffer.write()
+
 Open a URL under WSL
     Firefox:  browserexe = "/mnt/c/Program Files/Mozilla Firefox/firefox.exe"
     Chrome:   browserexe = "/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe"
@@ -12345,6 +12349,25 @@ The high-level reason for this is the following pseudo-code for the above two li
 
     For example, the setup code might create a lock to protect a resource from another
     thread while the with block is active.
+
+    An example is the /plib/lwtest.py module in which the function raises() lets you
+    call it with an exception type or a sequence of exception types that are expected in
+    the context manager's block.  
+
+        with raises(ValueError, TypeError):
+            test1()
+            test2()
+
+    The raises() function returns a
+    RaisesContextManager(ExpectedExceptions) instance with the expected exception list
+    and raises an AssertionError exception if any exception seen in the block is not in
+    the provided list of allowed exceptions.  It's a nice way of hiding a bunch of
+    try/except stuff.  IIRC, I got the idea from seeing how pytest did it.
+
+    See https://realpython.com/python-with-statement/ for some details.
+
+    See section "8.5 The with statement" in the python reference manual for detailed
+    syntax.
 
 Methods needed:
 
