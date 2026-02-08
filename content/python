@@ -87,6 +87,7 @@ Miscellaneous stuff
 Binary read/write with stdin/stdout:
     sys.stdin.buffer.read()
     sys.stdout.buffer.write()
+        Example:  see use in /plib/pgm/rem.py:Process() around line 219
 
 Open a URL under WSL
     Firefox:  browserexe = "/mnt/c/Program Files/Mozilla Firefox/firefox.exe"
