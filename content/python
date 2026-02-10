@@ -84,6 +84,36 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
+Python's help symbols
+
+    =           Default argument values
+    *args       Takes arbitrary positional arguments (0 or more)
+    *           Keyword-only arguments after the *
+    /           Position-only arguments to the left of this symbol
+    **kw        Takes arbitrary keyword arguments (0 or more)
+    [arg]       Optional argument
+    ...         Things aren't simple (go read the documentation)
+
+    Examples
+
+    sorted(iterable, /, *, key=None, reverse=False)
+        / ends the positional arguments and * means that every argument after the * is a
+        keyword-only argument.  Thus
+            sorted(numbers, reverse=True) works
+            sorted(numbers, None, True) doesn't work
+
+    math.sqrt(x, /)
+    list.pop(index=-1, /)
+        Means this function only takes one positional argument and its default value is
+        -1, meaning return from the right-hand end of the list.  Square root takes one
+        positional argument.
+    sum(iterable, /, start=0) Any iterable, e.g. list, string, generator, etc.; of
+        course, here it also requires numeric types
+    sum(seq):  seq is another common noun for an iterable
+
+    range(stop) --> range object
+    range(start, stop[, step]) --> range object
+
 Binary read/write with stdin/stdout:
     sys.stdin.buffer.read()
     sys.stdout.buffer.write()
@@ -12507,5 +12537,6 @@ Methods needed:
         successfully and does not want to suppress the raised exception. This allows
         context management code to easily detect whether or not an __exit__() method has
         actually failed.
+
 
 vim:  tw=88
