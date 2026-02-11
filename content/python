@@ -12480,6 +12480,57 @@ Supports the programming pattern
     with cm as x:
         Do your tasks
 
+Methods needed:
+    cm.__enter__(self)
+        Return this object or another object related to the context to use within the
+        with block.
+            Example:  a file object returns itself from __enter__(), allowing
+            
+                with open("a.py") as fp:
+                    text = fp.read()
+
+    cm.__exit__(self, exc_type, exc_val, exc_tb)
+        Return True:   any exceptions are swallowed
+        Return False:  any exceptions are propagated out of the context
+
+        The return value is handled by the python interpreter:  True tells it that the
+        context code worked OK and to ignore all exceptions.  False tells it to
+        propagate any exceptions to the following code environment.
+
+        Example:
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                # exc_type, exc_val, exc_tb are None if no exception occurred
+                # If an index error occurred, alert user but ignore; don't ignore other
+                # exception types
+                if isinstance(exc_value, IndexError):
+                    print(f"Index error ignored: {exc_value}")
+                    return True
+                elif exc_value:
+                    print(f"Exception not ignored: {exc_value}")
+                return False
+
+        Exit the runtime context and return a Boolean flag indicating if any exception
+        that occurred should be suppressed. If an exception occurred while executing the
+        body of the with statement, the arguments contain the exception type, value and
+        traceback information. Otherwise, all three arguments are None.
+        
+        Returning a True value from this method will cause the with statement to
+        suppress the exception and continue execution with the statement immediately
+        following the with statement. Otherwise the exception continues propagating
+        after this method has finished executing. Exceptions that occur during execution
+        of this method will replace any exception that occurred in the body of the with
+        statement.
+        
+        The exception passed in should never be reraised explicitly - instead, this
+        method should return a False value to indicate that the method completed
+        successfully and does not want to suppress the raised exception. This allows
+        context management code to easily detect whether or not an __exit__() method has
+        actually failed.
+
+
+
+
+
 The high-level reason for this is the following pseudo-code for the above two lines:
 
     with cm as x:
@@ -12508,35 +12559,6 @@ The high-level reason for this is the following pseudo-code for the above two li
 
     See section "8.5 The with statement" in the python reference manual for detailed
     syntax.
-
-Methods needed:
-
-    cm.__enter__()
-        Return this object or another object related to the context to use within the
-        with block.
-            Example:  a file object returns itself from __enter__(), allowing
-            
-                with open("a.py") as fp:
-                    text = fp.read()
-
-    cm.__exit__(exc_type, exc_val, exc_tb)
-        Exit the runtime context and return a Boolean flag indicating if any exception
-        that occurred should be suppressed. If an exception occurred while executing the
-        body of the with statement, the arguments contain the exception type, value and
-        traceback information. Otherwise, all three arguments are None.
-        
-        Returning a true value from this method will cause the with statement to
-        suppress the exception and continue execution with the statement immediately
-        following the with statement. Otherwise the exception continues propagating
-        after this method has finished executing. Exceptions that occur during execution
-        of this method will replace any exception that occurred in the body of the with
-        statement.
-        
-        The exception passed in should never be reraised explicitly - instead, this
-        method should return a false value to indicate that the method completed
-        successfully and does not want to suppress the raised exception. This allows
-        context management code to easily detect whether or not an __exit__() method has
-        actually failed.
 
 
 vim:  tw=88
