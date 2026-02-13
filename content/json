@@ -5,9 +5,9 @@
 |json_mckeeman_form|                 
 
 ---------------------------------------------------------------------------
-JSON Overview                                               *json_overview*
+Basics:  strings, arrays (lists), and objects (dicts)
 
-The two key structures are objects (dicts) and arrays (lists)
+    Value:  object, array, number, string, literal
 
     object:  unordered set of name/value pairs
         {
@@ -18,17 +18,49 @@ The two key structures are objects (dicts) and arrays (lists)
     arrays:  ordered collection of elements
         [ value1, value2, ...]
 
-Values
+---------------------------------------------------------------------------
+JSON Overview                                               *json_overview*
+
+Ref:  ECMA-404
+
+Text tokens             [ ] { } : ,
+Literal name tokens     true false null
+Whitespace              \t \n \r space
+    Whitespace is not allowed in any token
+Values:
     object
     array
-    string      Characters in double quotes
-    number      int or float
-    true        bool
-    false       bool
-    null        nothing or empty
+    number
+    string
+    Literal name token
 
-Whitespace:  "", '0020', '000A', '000D', '0009'
-    '0020 == U+0020 Unicode codepoint
+Object:  Curly brackets with 0 or more name:value pairs separated by commas
+    { name:value, ...}
+
+Array:  Square brackets with zero or more values separated by commas
+    { name:value, ...}
+
+Number:  The usual int, float, or exponential forms with '.' for radix
+    Infinity and NaN are not allowed
+
+String:  "x*" where x is a Unicode code point.  All code points can be within double
+    quotes except ones that need to be escaped:  
+        Double quote " (U+22)
+        Backslash \ (U+5c)
+        Control characters U+00 to U+1f
+    Some 2-character escapes
+        - \" double quote
+        - \\ backslash
+        - \/ forward slash
+        - \b backspace
+        - \f formfeed
+        - \n linefeed
+        - \r carriage return
+        - \t tab
+
+    Code point:  U+00 to U+ffff:  \uxxxx where x is a hex digit.  For example,
+        "\u002F" == "\u002f" == "\/" == "/"
+    Note in basic multilingual plane, use 12 characters for UTF-16:  "\uD834\uDD1E"
 
 ---------------------------------------------------------------------------
 JSON grammar in McKeeman form                       *json_grammar*
