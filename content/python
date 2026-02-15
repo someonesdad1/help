@@ -114,6 +114,25 @@ Python's help symbols
     range(stop) --> range object
     range(start, stop[, step]) --> range object
 
+Circular dependencies
+    https://stackoverflow.com/questions/9252543/what-can-i-do-about-importerror-cannot-import-name-x-or-attributeerror
+
+    A common cause is you're using the 'from a import b' syntax.  It's better to use
+    'import a', then refer to the needed b object later as a.b.  This is particularly 
+    true when you use the a.b references in functions and it lets you avoid using 'from
+    a import b' in the function, which is annoying to readers of the code, as they have
+    to scan everything to see the dependencies.
+
+    I often want to use from 'a import b' so that I have shorter token names.  You can
+    do this with 'import alongnamereallylong as a' and then you'll have the shorter
+    tokens -- and you'll still see the long name in the debugger.
+
+    One common cause I have is wanting to use Color or t in a module for printing and
+    I'll use 'from color import Color, t' in the module's header.   This is easy to fix
+    in the selftest/demo stuff by moving the import below the 'if __name__ == "__main__":'
+    line.
+
+
 Binary read/write with stdin/stdout:
     sys.stdin.buffer.read()
     sys.stdout.buffer.write()
