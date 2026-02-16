@@ -452,6 +452,11 @@ Fast way to remove whitespace from string s
     Use /plib/dpstr.RemoveWhitespace(s)
     Note using regexp or str.translate() are significantly slower (see
     http://www.qtrac.eu/01_nows.html)
+
+Remove multiple items from a list
+    mylist[:] = filter(keep_function, mylist)
+    mylist[:] = (x for x in mylist if keep_condition)
+    mylist[:] = [x for x in mylist if keep_condition]   (probably fastest)
     
 Nested scopes:  how to change variables in upper scope
     print("Naive way:")
@@ -699,10 +704,15 @@ push() and pop() for an instance
         import copy 
 
         class PushPop:
+            # This class variable will be used by all instances, so I don't think this
+            # method will work with multiple instances of A.  A workaround might be to
+            # make PushPop have a constructor and its stack would then be with the
+            # instance.  Class A would then have to initialize the stack by calling
+            # PushPop's constructor with super().
             _stack = []
-            def push(self):
+            def Push(self):
                 PushPop._stack.append(copy.deepcopy(vars(self)))
-            def pop(self):
+            def Pop(self):
                 if PushPop._stack:
                     old = PushPop._stack.pop()
                     vars(self).update(old)
@@ -718,11 +728,11 @@ push() and pop() for an instance
 
         a = A(1, 5)
         print(a)
-        a.push()
+        a.Push()
         a.a = -34
         a.b[1][1] = 58
         print(a)
-        a.pop()
+        a.Pop()
         print(a)
 
     which prints out
