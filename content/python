@@ -15,6 +15,7 @@ Core
     |python_bitarray|       Efficient boolean arrays
     |python_datetime|
     |python_hashlib|
+    |python_super|
     |python_context_manager|
     |python_descriptors|
     |python_streams|
@@ -1265,6 +1266,10 @@ Reading text files:
     f.write(s: str) # Write and return number of bytes written
 
 ---------------------------------------------------------------------------
+super                                                           *python_super*
+
+https://rhettinger.wordpress.com/2011/05/26/super-considered-super/
+
 super([T[, object-or-type]]):  calling a method in a parent class
     super returns a proxy object that delegates method calls to a parent or
     sibling class of type T.  This is useful for accessing inherited methods
