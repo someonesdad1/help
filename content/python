@@ -8541,21 +8541,37 @@ are encoded".  Thus the following syntax
 
 Concatenating strings and bytes
     https://docs.python.org/3/faq/programming.html#what-is-the-most-efficient-way-to-concatenate-many-strings-together
-    Strings:
-        str.join():
+
+    str and bytes are immutable; concatenating a bunch of them is inefficient because
+    you create many new objects.   In the general case, the total runtime cost is
+    quadratic in the total string length.
+        Don't do this because it's O(n²)
+            result = ""
+            for s in my_strings:
+                result += s
+
+    Strings:  put them in a list and call str.join()
+        Method 1:  str.join()
             chunks = []
             for s in my_strings:
                 chunks.append(s)
             result = ''.join(chunks)
-        io.StringIO
+        Method 2:  StringIO:
             output = io.StringIO()
             for s in my_strings:
                 output.write(s)
             result = output.getvalue()
-    Bytes:
-        result = bytearray()
-        for b in my_bytes_objects:
-            result += b
+        
+    Bytes
+        Use bytearray object
+            result = bytearray()
+            for b in my_bytes_objects:
+                result += b
+        Join using list
+            chunks = []
+            for b in my_bytes:
+                chunks.append(b)
+            result = b''.join(chunks)
 
 Byte arrays
     bytes() returns an immutable sequences of integers in [0, 255].  
@@ -8572,7 +8588,6 @@ Byte arrays
         Creating a zero-filled instance with a given length: bytearray(10)
         From an iterable of integers: bytearray(range(20))
         Copying existing binary data via the buffer protocol: bytearray(b'Hi!')
-
 
 ----------------------------------------------------------------------
 ruff                                        *python_ruff*
