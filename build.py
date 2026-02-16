@@ -188,7 +188,7 @@ if 1:   # Core functionality
         files = '''
         
             arduino asciidoc astronomical awk bash basic bibtex biology btop c chemistry
-            constants cpp cvs darcs electrical engineering find flex g gdb git go hg
+            conda constants cpp cvs darcs electrical engineering find flex g gdb git go hg
             hp3488 hp42s hp49 html json korn latex lua make_ markdown materials math
             mathematica matplotlib mpmath mswindows numpy office pandoc pcl5 perl4 perl5
             physics pil ps pygame python rst scipy scons sed shop simpy sizes snippets
@@ -309,7 +309,7 @@ if 1:   # Core functionality
         Math
             mpmath matplotlib sympy StatisticsTables StatisticsPython Mathematica
         Prog∇
-            C Cpp gdb g bash vim make_ PIL basic flex pygame Snippets STL perl4 perl5
+            bash vim conda C Cpp gdb g make_ PIL basic flex pygame Snippets STL perl4 perl5
             json uncertainties PCL5 yaml Korn_Shell lua
         VCS∇
             git hg darcs cvs Subversion
