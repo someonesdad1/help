@@ -85,6 +85,13 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
+__file__:  Name of currently executing script
+
+If you're getting weird behavior on an import, you might have an improperly
+named file somewhere; check it by
+    import xxxx
+    print(xxxx.__file__)
+
 Python's help symbols
 
     =           Default argument values
@@ -843,7 +850,7 @@ with statements
   --------
     - Ensure a lock that is acquired at the start of a block is 
       released when the block is left:
-        @contextmanager
+        @context.libcontextmanager
         def locked(lock):
             lock.acquire()
             try:
@@ -859,7 +866,7 @@ with statements
 
     - Ensure a file is closed when a block is left, even if an
       exception occurs:
-        @contextmanager
+        @context.libcontextmanager
         def opened(filename, mode="r"):
             f = open(filename, mode)
             try:
@@ -1695,11 +1702,6 @@ Avoid string concatenations!
     rather than
         for s in strings:
             result += s
-
-If you're getting weird behavior on an import, you might have an improperly
-named file somewhere; check it by
-    import xxxx
-    print(xxxx.__file__)
 
 How to dump locals:
     from pprint import pprint

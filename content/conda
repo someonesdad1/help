@@ -53,4 +53,4 @@ Create a new virtual environment
         conda install numpy scipy
 
 Clone existing environments
-    conda create -n 11 --clone path/to/file/env1
+    conda create -n 11clone --clone path/to/file/env1
