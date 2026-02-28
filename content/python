@@ -2580,35 +2580,35 @@ List methods:
     L = list.__dict__.keys()
     for i in sorted(L):
         print(i)
-  gives for python 3.7:
+  gives for python 3.11:
+    (skip to xxylists below for the signatures)
 
-    __add__          __hash__         __ne__           copy
-    __contains__     __iadd__         __new__          count
-    __delitem__      __imul__         __repr__         extend
-    __doc__          __init__         __reversed__     index
-    __eq__           __iter__         __rmul__         insert
-    __ge__           __le__           __setitem__      pop
-    __getattribute__ __len__          __sizeof__       remove
-    __getitem__      __lt__           append           reverse
-    __gt__           __mul__          clear            sort
+__add__             __getitem__         __len__             __rmul__            extend
+__class_getitem__   __gt__              __lt__              __setitem__         index
+__contains__        __hash__            __mul__             __sizeof__          insert
+__delitem__         __iadd__            __ne__              append              pop
+__doc__             __imul__            __new__             clear               remove
+__eq__              __init__            __repr__            copy                reverse
+__ge__              __iter__            __reversed__        count               sort
+__getattribute__    __le__
 
-Use sorted to generate a sorted list from any iterable.
+Use sorted to generate a sorted list from any iterable:
     sorted(iterable, cmp=None, key=None, reverse=False)
-  Example of sort keys:
-    students = (
-        # Name  Grade Age
-        ("john", "A", 15),
-        ("jane", "B", 12),
-        ("dave", "B", 10),
-    )
+
+    Example of sort keys:
+        students = (
+            # Name  Grade Age
+            ("john", "A", 15),
+            ("jane", "B", 12),
+            ("dave", "B", 10),
+        )
+
     sorted(students, key= lambda s: s[2])  # Sorts by age
-    --> [('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
-    Since this pattern is common, use convenience functions from operator
-    module:
+        --> [('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
+    Since this pattern is common, use convenience functions from operator module:
         from operator import itemgetter
         sorted(students, key=itemgetter(2))
-    Can also use operator.attrgetter for objects with attributes in the
-    same fashion.
+    Can also use operator.attrgetter for objects with attributes in the same fashion.
 
     itemgetter is a useful pattern:  it's a closure equivalent to the
     following:
@@ -2622,13 +2622,92 @@ Use sorted to generate a sorted list from any iterable.
                     return tuple(obj[item] for item in items)
             return g
 
+xxylists List methods
+list(iterable=(), /):  Built-in mutable sequence.
+__add__(self, value, /)
+    Return self+value.
+__contains__(self, key, /)
+    Return key in self.
+__delitem__(self, key, /)
+    Delete self[key].
+__eq__(self, value, /)
+    Return self==value.
+__ge__(self, value, /)
+    Return self>=value.
+__getattribute__(self, name, /)
+    Return getattr(self, name).
+__getitem__(...)
+    x.__getitem__(y) <==> x[y]
+__gt__(self, value, /)
+    Return self>value.
+__iadd__(self, value, /)
+    Implement self+=value.
+__imul__(self, value, /)
+    Implement self*=value.
+__init__(self, /, *args, **kwargs)
+    Initialize self.  See help(type(self)) for accurate signature.
+__iter__(self, /)
+    Implement iter(self).
+__le__(self, value, /)
+    Return self<=value.
+__len__(self, /)
+    Return len(self).
+__lt__(self, value, /)
+    Return self<value.
+__mul__(self, value, /)
+    Return self*value.
+__ne__(self, value, /)
+    Return self!=value.
+__repr__(self, /)
+    Return repr(self).
+__reversed__(self, /)
+    Return a reverse iterator over the list.
+__rmul__(self, value, /)
+    Return value*self.
+__setitem__(self, key, value, /)
+    Set self[key] to value.
+__sizeof__(self, /)
+    Return the size of the list in memory, in bytes.
+append(self, object, /)
+    Append object to the end of the list.
+clear(self, /)
+    Remove all items from list.
+copy(self, /)
+    Return a shallow copy of the list.
+count(self, value, /)
+    Return number of occurrences of value.
+extend(self, iterable, /)
+    Extend list by appending elements from the iterable.
+index(self, value, start=0, stop=9223372036854775807, /)
+    Return first index of value.
+    Raises ValueError if the value is not present.
+insert(self, index, object, /)
+    Insert object before index.
+pop(self, index=-1, /)
+    Remove and return item at index (default last).
+    Raises IndexError if list is empty or index is out of range.
+remove(self, value, /)
+    Remove first occurrence of value.
+    Raises ValueError if the value is not present.
+reverse(self, /)
+    Reverse *IN PLACE*.
+sort(self, /, *, key=None, reverse=False)
+    Sort the list in ascending order and return None.
+    The sort is in-place (i.e. the list itself is modified) and stable (i.e. the
+    order of two equal elements is maintained).
+    If a key function is given, apply it once to each list item and sort them,
+    ascending or descending, according to their function values.
+    The reverse flag can be set to sort in descending order.
+
 py_array_indexing
-    See https://en.wikipedia.org/wiki/Row-_and_column-major_order#Address_calculation_in_general
+
+    See
+    https://en.wikipedia.org/wiki/Row-_and_column-major_order#Address_calculation_in_general
     for the general formulas for row-major and column-major addressing.
 
-    Here, we'll assume we're using python lists which store their elements consecutively in memory
-    in row-major order.  We'll use [row][col] index notation (0-based) for the lists as if they
-    were nested appropriately.
+    Here, we'll assume we're using python lists which store their elements consecutively
+    in memory in row-major order.  We'll use [row][col] index notation (0-based) for the
+    lists as if they were nested appropriately.
 
     Let R = number of rows and C = number of columns of the 2D array.
 
@@ -2648,8 +2727,9 @@ py_array_indexing
     translates to [row][col] being 
         row + R*col
 
-    Summary:  given a python list with R*C elements where R is number of rows and C is number of
-    columns.  Using [row][col] index notation (0-based), the relevant list element's offset is
+    Summary:  given a python list with R*C elements where R is number of rows and C is
+    number of columns.  Using [row][col] index notation (0-based), the relevant list
+    element's offset is
 
         Row major:      col + C*row
         Column major:   row + R*col
