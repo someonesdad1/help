@@ -1,8 +1,7 @@
 '''
-To change index file order, edit MakeIndexFile()
-
-    Script for building help documentation
+Script for building help documentation
     Created 13 Mar 2022
+    To change index file order, edit MakeIndexFile()
     
     - To add a new topic
         - Create a file in ./content directory
@@ -48,38 +47,42 @@ if 1:  # Header
         oo>
     '''
     if 1:  # Standard imports
-        from pathlib import Path as P
         import getopt
         import os
+        import pathlib
         import re
         import sys
     if 1:  # Custom imports
-        from color import t
-        from f import flt
-        from wrap import dedent
+        import dptypes
+        import f
+        import trm
+        import wrap
         if 0:
             import debug
             debug.SetDebugger()
+    if 1:  # Import symbols
+        Path = pathlib.Path
+        #
+        Constant = dptypes.Constant
+        dedent = wrap.dedent
+        flt = f.flt
+        t = trm.Trm()
     if 1:  # Global variables
-        ii = isinstance
         W = int(os.environ.get("COLUMNS", "80")) - 1
         L = int(os.environ.get("LINES", "50"))
-        class G:
-            pass
-        g = G()     # Instance whose attributes hold global variables
+        g = Constant()     # Instance whose attributes hold global variables
         g.dbg = False
-        g.output = P("output")
-        g.content = P("content")
-        g.help = P("hldhelp.vim")
+        g.output = Path("output")
+        g.content = Path("content")
+        g.help = Path("hldhelp.vim")
         g.suffix = ".hld"
         g.index = "index" + g.suffix
 if 1:   # Utility
     def GetColors():
-        t.err = t.redl
-        t.help = t.lill
-        t.concern = t.ornl if g.dbg else ""
-        t.dbg = t.sky if g.dbg else ""
-        t.N = t.n if g.dbg else ""
+        t.err = t.red
+        t.help = t.lil
+        t.concern = t.orn
+        t.dbg = t.sky
     def Dbg(*p, **kw):
         if g.dbg:
             print(f"{t.dbg}", end="")
@@ -202,7 +205,7 @@ if 1:   # Core functionality
         tgtdir = "/help/content"
         Dbg(f"Inspecting {tgtdir}")
         os.chdir(tgtdir)
-        p = P(".")
+        p = Path(".")
         ignore = "a bash.ex.sh mk shop.densities tags .todo .vi z .z".split()
         Dbg(f"Ignoring {ignore}")
         for i in p.glob("*"):
@@ -212,7 +215,7 @@ if 1:   # Core functionality
             if i.suffix == ".swp":
                 continue
             if str(i) not in files:
-                t.print(f"{t.concern}Warning:  {i!s} not in GetContentFiles()")
+                t.print(f"{t.concern}Warning:  {tgtdir}/{i!s} not in GetContentFiles()")
                 continue
         os.chdir(curdir)
         return files
@@ -249,7 +252,7 @@ if 1:   # Core functionality
         this is what I use, as it lets the output directly be copied
         anywhere.
         '''
-        file = P("h")
+        file = Path("h")
         assert(file.exists())
         to = g.output/file
         open(to, "w").write(open(file).read())
@@ -271,7 +274,7 @@ if 1:   # Core functionality
         # index.hld file in this directory.  Therefore we want no
         # directory names in the file's name.
         os.chdir(g.output)
-        for file in P(".").glob(f"*{g.suffix}"):
+        for file in Path(".").glob(f"*{g.suffix}"):
             for line in open(file).readlines():
                 mo = r.search(line)
                 if mo:
@@ -285,7 +288,7 @@ if 1:   # Core functionality
         tags = list(sorted(list(set(tags))))
         n = len(tags) - 1
         # Write the tags file
-        t = P("tags")
+        t = Path("tags")
         with open(t, "w") as f:
             f.write('\n'.join(tags))
         if d["-v"]:
@@ -323,18 +326,19 @@ if 1:   # Core functionality
         ''')
         cwd = os.getcwd()
         os.chdir(g.output)
-        index = P(g.index)
+        index = Path(g.index)
         with open(index, "w") as f:
             print(data.rstrip(), file=f)
         os.chdir(cwd)
         Dbg("New index file:")
         for line in data.split("\n"):
             Dbg(f"{t.trql}  {line}")
-        print("Successful build")
+        t.print(f"{t.grn}Successful build")
 if __name__ == "__main__": 
     d = {}      # Options dictionary
     args = ParseCommandLine(d)
-    g.content_files = GetContentFiles()
+    with g:
+        g.content_files = GetContentFiles()
     CopyContentFiles(g.content_files)
     BuildTagsFile()
     MakeIndexFile()
