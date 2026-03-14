@@ -68,7 +68,6 @@ Other
     |python_threads|
     |python_multiprocessing|
     |python_time|
-    |python_types|
 Less-used stuff
     |python_bit_manipulations|
     |python_debugger|
@@ -3056,40 +3055,6 @@ Logical tests
     issuperset(other)       True if set is a superset of other
     set >= other            True if set is a superset of other
     set > other             True if set is a proper superset of other
-
------------------------------------------------------------------------------
-From types.py                                              *python_types*
-
-NoneType (== TypeType)
-
-IntType
-LongType
-FloatType
-ComplexType
-
-StringType
-UnicodeType
-StringsType = (StringType, UnicodeType)
-BufferType
-
-TupleType
-ListType
-DictType
-
-FunctionType (== LambdaType)
-CodeType
-ClassType
-UnboundMethodType
-InstanceType
-MethodType
-BuiltinFunctionType (== BuiltinMethodType)
-ModuleType
-
-FileType
-XRangeType
-TypeError
-SliceType
-EllipsisType
 
 -----------------------------------------------------------------------------
 debugger                                                *python_debugger*
@@ -12856,6 +12821,8 @@ The high-level reason for this is the following pseudo-code for the above two li
 ---------------------------------------------------------------------------
 Typing                                                      *python_types*
 
+https://typing.python.org/en/latest/
+
 Type annotations provide some benefits
     - Type hints provide a "user manual" baked into the code
     - A good name for the class/method tell you what it does
@@ -12863,6 +12830,16 @@ Type annotations provide some benefits
     - You don't have to read the code to get the previous two things
     - 'from typing import Annotated' lets you communicate the "why"; e.g.
         - Radians = Annotated[float, "Phase angle in radians"]
+
+Examples:
+    list[int]
+    dict[str, int]
+
+    from collections import defaultdict
+    from re import Pattern
+
+    def f(x: Pattern[str]) -> defaultdict[str, int]:
+        ...
 
 Modern syntax with 3.10+:
     # The following is preferred, as you type-hint the fields directly within the
@@ -12883,6 +12860,21 @@ Modern syntax with 3.10+:
     The older clunky way is
         from typing import Union
         def func() -> Union[Result, None]: ...
+
+Make your types as wide as possible.  For example, Sequence[str] is a wider type than
+list[str] because all list objects are also Sequence objects, but the converse is not
+true. A subclass is narrower than a class it derives from. A union of types is wider
+than the individual types that comprise the union.
+
+Type aliases
+    # Simple type alias
+        FamilyPet = Cat | Dog | GoldFish
+    # Generic type alias
+        ListOrTuple = list[_T] | tuple[_T, ...]
+    # Recursive type alias
+        TreeNode = LeafNode | list["TreeNode"]
+    # Explicit type alias using PEP 613 syntax
+        StrOrInt: TypeAlias = str | int
 
 mypy 1.19.1 type hints cheatsheet
 
