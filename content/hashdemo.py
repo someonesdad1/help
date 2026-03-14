@@ -1,5 +1,6 @@
 import hashlib
-from color import t
+import trm
+t = trm.Trm()
 
 d = (hashlib.md5, hashlib.sha1, hashlib.sha224, hashlib.sha256, hashlib.sha384,
      hashlib.sha512, hashlib.sha3_224, hashlib.sha3_256, hashlib.sha3_384,

@@ -162,7 +162,7 @@ if 1:   # Help
         
         These help files are formatted to fit in an 80 column wide terminal window.  You
         can reformat them as needed if you use a different width. {t.help}
-
+        
         - To add a new topic
             - Create a file in the ./content directory
                 - Make sure there are suitable objects to be tagged like
@@ -302,7 +302,7 @@ if 1:   # Core functionality
         # This file used to be made by the script, but now I prefer to be 
         # able to manually determine its structure here.
         data = dedent('''
-
+        
         python numpy scipy
         arduino shop winmerge
         git markdown
@@ -322,7 +322,7 @@ if 1:   # Core functionality
             markdown html pandoc rst latex Office bibtex asciidoc PostScript mswindows
         Hardware∇
             hp3488 HP42s 
-
+        
         ''')
         cwd = os.getcwd()
         os.chdir(g.output)

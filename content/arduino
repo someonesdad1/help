@@ -31,6 +31,17 @@ If you run out of dynamic memory, store big things in flash; e.g.
     Typically 32k of flash versus 2k of SRAM.
 
 ----------------------------------------------------------------------
+bool    Occupies one byte of memory
+byte    uint8   [0, 255]
+char    int8 (at least this many bits)
+int     int16   [-32768, 32767], Due/SAMD int32
+uint    uint16 [0, 65535]
+short   int16
+long    int32   [-2147483648, 2147483647]
+float   4 bytes
+double  4 bytes (Uno etc.), 8 bytes on Due
+word    uint16 (at least this many bits)
+----------------------------------------------------------------------
 LedControl                                               *ard_LED*
     https://wayoda.github.io/LedControl/
     https://wayoda.github.io/LedControl/pages/software
@@ -795,6 +806,7 @@ analogReference(choice) --> void
 
 analogWrite(int pin, int value) --> void
     Writes an analog value to a pin, which causes a PWM output.
+    value must be 0 to 255, which is the duty cycle.
 
     PWM functionality
         Uno (R3 & earlier), Nano, Mini:  3, 9, 10, 11: 490 Hz; 5, 6: 980 Hz
@@ -1144,26 +1156,26 @@ Serial
 
 Function list
     if (Serial)
-    available()
-    availableForWrite()
-    begin()
-    end()
-    find()
-    findUntil()
-    flush()
-    parseFloat()
-    parseInt()
-    peek()
-    print()
-    println()
-    read()
-    readBytes()
-    readBytesUntil()
-    readString()
-    readStringUntil()
-    setTimeout()
-    write()
-    serialEvent()
+    Serial.available()
+    Serial.availableForWrite()
+    Serial.begin()
+    Serial.end()
+    Serial.find()
+    Serial.findUntil()
+    Serial.flush()
+    Serial.parseFloat()
+    Serial.parseInt()
+    Serial.peek()
+    Serial.print()
+    Serial.println()
+    Serial.read()
+    Serial.readBytes()
+    Serial.readBytesUntil()
+    Serial.readString()
+    Serial.readStringUntil()
+    Serial.setTimeout()
+    Serial.write()
+    Serial.serialEvent()
 
 Function details; ∇ means an optional argument.
 
