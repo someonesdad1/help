@@ -12821,6 +12821,8 @@ The high-level reason for this is the following pseudo-code for the above two li
 ---------------------------------------------------------------------------
 Typing                                                      *python_types*
 
+# type: ignore[no-redef]
+
 https://typing.python.org/en/latest/
 
 Type annotations provide some benefits
@@ -12865,6 +12867,11 @@ Make your types as wide as possible.  For example, Sequence[str] is a wider type
 list[str] because all list objects are also Sequence objects, but the converse is not
 true. A subclass is narrower than a class it derives from. A union of types is wider
 than the individual types that comprise the union.
+
+    from collections.abc import Iterable
+    def bar(x: Iterable[str]) -> list[str]: ...
+    # Note:  use Iterable as above rather than from typing (recommendation of
+    # https://typing.python.org/en/latest/reference/best_practices.html)
 
 Type aliases
     # Simple type alias
