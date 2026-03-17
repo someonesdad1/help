@@ -2844,6 +2844,16 @@ setdefault(key[, x])    If key in d, return value; otherwise set d[key] = x
 update([other])         Update with key/value pairs from other.
 values()                Return copy of list of values (iterator)
 
+Modern syntax for a counter using a dict generator
+    # Let dependency_graph be dict[module_name:str : list[filenames]]
+    #   where module_name ∈ all_module_names = list[filenames]
+    # Initialze the counting dict to all zeros
+    usage_counts = {m: 0 for m in all_module_names}
+    # Count
+    for deps in dependency_graph.values():
+        for d in deps:
+            usage_counts[d] += 1
+
 If you want to iterate and change the dictionary, use
     for key in d.keys():
         do something with d
@@ -12821,9 +12831,10 @@ The high-level reason for this is the following pseudo-code for the above two li
 ---------------------------------------------------------------------------
 Typing                                                      *python_types*
 
-# type: ignore[no-redef]
+# type: ignore[no-redef]        Tell mypy to ignore a problem line
 
 https://typing.python.org/en/latest/
+https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 
 Type annotations provide some benefits
     - Type hints provide a "user manual" baked into the code
@@ -12870,10 +12881,13 @@ than the individual types that comprise the union.
 
     from collections.abc import Iterable
     def bar(x: Iterable[str]) -> list[str]: ...
-    # Note:  use Iterable as above rather than from typing (recommendation of
+
+    # Note:  use python's built-in generic Iterable as above rather than from the typing
+    # module (recommendation of
     # https://typing.python.org/en/latest/reference/best_practices.html)
 
 Type aliases
+    from typing import TypeVar, Iterable
     # Simple type alias
         FamilyPet = Cat | Dog | GoldFish
     # Generic type alias
@@ -12883,7 +12897,48 @@ Type aliases
     # Explicit type alias using PEP 613 syntax
         StrOrInt: TypeAlias = str | int
 
+
+Gemini's Rosetta Stone for the runtime world (code execution) and the type world (mypy)
+
+               (runtime value)
+Concept        The "Operator"       The "Shape" (Mypy Type)       Physics Analogy
+----------     ----------------     -----------------------       --------------------
+Callables      def func(x): ...     ty.Callable[[int], T]         A Function (Operator)
+Pairs          zip(a, b)            ty.Iterator[tuple[T, U]]      Combined States
+Index + Item   enumerate(seq)       ty.Iterator[tuple[int, T]]    Labeled States
+Transform      map(func, seq)       ty.Iterator[T]                A Transformation
+Containers     list(), dict()       list[T], dict[K, V]           A Bound System
+Anything       N/A (Dynamic)        ty.Any                        The Vacuum State
+Generics       N/A                  T = ty.TypeVar('T')           A Variable Constant
+
+Three Rules to Minimize Entropy
+
+    The Subscript Rule: If Python throws a SyntaxError or TypeError because of brackets
+    [] on a return line, swap the built-in name (like zip) for its typing equivalent
+    (like ty.Iterator).
+
+    The Star Rule: For *args, type the individual item, not the collection. (e.g.,
+    *args: int means "any number of integer arguments").
+
+    The Alias Rule: If you want to use a local name for a complex type (like MyFunc =
+    ty.Callable), always use the ty.TypeAlias hint to ensure the name inherits its
+    "generic" powers.
+
+This setup ensures that your code remains "radiation-proof" across versions while
+providing enough resolution for mypy to find those hidden bugs.
+
+Python Concept      Engineering Analog      Role in your Refactor
+--------------      ------------------      ---------------------------------
+ty.Any              Ground/Common           A safe sink for data you haven't "calibrated" yet
+ty.Union            Multiplexer (MUX)       For when a line can carry one of several
+                                            distinct signals
+ty.Protocol         Interface               Defines the "pinout" (methods) an object must have
+                    Specification
+ty.Generic          Parametric Design       Blueprint that scales based on the input material
+
+
 mypy 1.19.1 type hints cheatsheet
+=================================
 
 Variables
 ---------
