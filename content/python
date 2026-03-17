@@ -12837,10 +12837,10 @@ https://typing.python.org/en/latest/
 https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 
 Type annotations provide some benefits
-    - Type hints provide a "user manual" baked into the code
-    - A good name for the class/method tell you what it does
-    - The types tell you what it takes and what it returns
+    - 1:    Type hints provide a "user manual" baked into the code
+    - 2:    A good name for the class/method tells you what it does
     - You don't have to read the code to get the previous two things
+    - The types tell you what it takes and what it returns
     - 'from typing import Annotated' lets you communicate the "why"; e.g.
         - Radians = Annotated[float, "Phase angle in radians"]
 
@@ -12855,16 +12855,15 @@ Examples:
         ...
 
 Modern syntax with 3.10+:
-    # The following is preferred, as you type-hint the fields directly within the
-    # definition (something mypy loves).
-    from typing import NamedTuple
-    class Result(NamedTuple):
-        value: float
-        uncertaint: float
-    def Calculate(data: list[float]) -> Result | None:
-        if not data:
-            return None
-        return Result(10.5, 0.2)
+    # Preferred:  type-hint the fields directly within the definition
+        from typing import NamedTuple
+        class Result(NamedTuple):
+            value: float
+            uncertaint: float
+        def Calculate(data: list[float]) -> Result | None:
+            if not data:
+                return None
+            return Result(10.5, 0.2)
 
     The | operator works with any type.  Also, you can use
         isinstance(x, int | float)
