@@ -206,7 +206,7 @@ if 1:   # Core functionality
         Dbg(f"Inspecting {tgtdir}")
         os.chdir(tgtdir)
         p = Path(".")
-        ignore = "a bash.ex.sh mk shop.densities tags .todo .vi z .z".split()
+        ignore = "a bash.ex.sh mk shop.densities tags .todo .vi y z .z".split()
         Dbg(f"Ignoring {ignore}")
         for i in p.glob("*"):
             # Remove files we ignore
