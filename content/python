@@ -12854,6 +12854,99 @@ Examples:
     def f(x: Pattern[str]) -> defaultdict[str, int]:
         ...
 
+Short textbook on python typing by Gemini
+    - Chapter 1: The Identity Crisis (T vs type[T])
+        - The Concept: In Python, float is both a Type and a Function (the constructor).
+        - The Problem: If you write x: T, mypy thinks x is a number (like 1.5). If you
+          want x to be the class itself (so you can call x(5)), you must use type[T].
+        - Mental Model: T is the Material; type[T] is the Mold that creates the
+          material.
+    - Chapter 2: Protocols (Structural Subtyping)
+        - The Concept: Python doesn't care about the family tree (inheritance), it cares
+          about the "pinout" (methods).
+        - The Problem: int and float don't share a useful base class in Python for
+          arithmetic.
+        - Mental Model: A Protocol is a Technical Specification Sheet. If an object has
+          an __add__ method, it satisfies the "Arithmetic" spec, regardless of whether
+          it's an int or a platypus.
+    - Chapter 3: Nominal vs. Structural
+        - Nominal (C++/Java): "You are a Number because your ID card says so."
+        - Structural (Python Protocols): "You are a Number because you can add and
+          subtract."
+        - The Friction: mypy is a static analyzer trying to enforce Nominal rules on a
+          Structural language.
+    - Chapter 4: Generics and Variance
+        - The Concept: If a function accepts a Sequence[Any], it can take a List or a
+          Tuple.
+        - The Trap: Returning Sequence[T] is often safer than List[T] because Sequence
+          is "read-only" (covariant), which makes the type checker much less grumpy when
+          you pass data around.
+    - Immediate Suggestion for dpseq.py:
+        - If GetNum is still throwing errors, look at the typ: Tnum=int part. Change it
+          to typ: type[Tnum] = int.
+        - The error Type "int" is not assignable to "Tnum" usually happens because int
+          is a concrete class, but Tnum is a variable. By using type[Tnum], you bridge
+          that gap.
+
+Variance in generics      Let Cat be a subtype of Animal
+    - See https://en.wikipedia.org/wiki/Type_variance
+    - Variance describes how something varies.  There are three types of variance
+        - Covariance        : subtype varies with the wrapped type
+        - Contravariance    : subtype varies in the opposite direction
+        - Invariance        : you can't substitute a subtype or supertype
+    - Note computer science uses the concept of variance different than other
+      disciplines.  A covariant class means it can be safely substituted with a more
+      specific type, usually a child class.  Contravariant is the opposite, meaning you
+      can only substitute a parent class.  Invariant means that you can substitute
+      neither.  See https://dev.to/cardamomcode/python-type-annotations-part-3-ihf for
+      some more info.
+    - Covariance:  You can assign an instance of Iterable[Cat] to Iterable[Animal].
+        - Covariance means the subtype transforms (varies) with the wrapped type.  
+    - Contravariance:  If Cat is a subclass of Animal, then you can assign an instance
+      of Callable[[Animal], None] to a variable of Callable[[Cat], None].
+    - Invariance means neither covariant nor contravariant:  If Cat is a subclass of
+      Animal, you cannot assign an instance of list[Animal] to a variable of type
+      list[Cat] or vice versa.
+    - Callables (function types) are covariant on their return type and contravariant on
+      their arguments.
+    - Mutable containers like list and dict are invariant
+    - Immutable containers like tuple and set are covariant
+    - Union types are covariant.  Optional types are also covariant because they are
+      equivalent to T | None.
+
+- Contravariant vectors in physics 
+    - https://en.wikipedia.org/wiki/Covariance_and_contravariance_of_vectors
+    - A vector is a tuple of numbers that depend on a coordinate system.  Take the 2D
+      Cartesian plane with the basis vectors (i, j).  Suppose I measure the position of
+      an object at a*i + b*j measured in m, giving the position vector of (a, b).  This is 
+      a contravariant vector:  if I scale the units of the basis vectors by β, then the
+      components of the vector are scaled by 1/β.  
+        - Example:  (1, 2) in m.  Change the basis vectors to cm, meaning the basis is
+          multiplied by 0.01.  The location of the vector in space doesn't change.  Its
+          new coordinates must be multiplied by 1/0.01 or 100, giveing (100, 200) cm.
+    - Contravariance:  coordinates scale inversely to the basis vector scaling.  The
+      components have to change this way to leave the vector alone in space.  To do
+      this (have the vector remain invariant), the components have to change in a way 
+      that "cancels" the transformation of the axes in space, whether by rotation or
+      dilation or translation.
+        - Physically, for the concept of the vector to remain untransformed in space
+          while the spatial coordinates are changed, if the spatial axes change, then
+          the vector's components have to change in such a way as to cancel the change.
+    - Mathematics:  Let the spatial transformation be an n✗n invertible matrix M.  The
+      basis vectors transform as [e₁' e₂' ...] = [e₁ e₂ ...]*M; then the components of
+      a vector in the original basis vⁱ must transform as [v¹' v²' ...]† = 
+      M⁻¹*[v¹ v² ...]† where the components of the vector are often written as a column
+      vector († for transpose).
+    - In contrast, a covector has components that transform like the reference axes.  It
+      lives in the dual vector space and represents a map from vectors to scalars.  See
+      the example using the dot product in the above URL.
+    - An invariant is an object that doesn't change with a change in basis.  An example
+      is a scalar like the mass of a particle, as it doesn't depend on where you observe
+      it from (moving coordinate systems excepted because of special relativity).  A
+      distance (magnitude of a vector, another scalar) is also an invariant.
+    - Note that the scalar product of a covector and a vector is an invariant, as they
+      have components that vary oppositely wrt the transformation and thus cancel out.
+
 Modern syntax with 3.10+:
     # Preferred:  type-hint the fields directly within the definition
         from typing import NamedTuple
@@ -12896,7 +12989,6 @@ Type aliases
     # Explicit type alias using PEP 613 syntax
         StrOrInt: TypeAlias = str | int
 
-
 Gemini's Rosetta Stone for the runtime world (code execution) and the type world (mypy)
 
                (runtime value)
@@ -12935,6 +13027,303 @@ ty.Protocol         Interface               Defines the "pinout" (methods) an ob
                     Specification
 ty.Generic          Parametric Design       Blueprint that scales based on the input material
 
+Refactoring protocol (from Gemini)
+==================================
+
+    1. The "Zero-Message" Objective
+
+    The goal is a Green Board: Success: no issues found. We achieve this by resolving
+    errors rather than silencing them, ensuring the code is "statically stable."
+
+    2. Signature Impedance Matching
+
+    When annotating functions, ensure the Type World and Runtime World don't collide.
+
+        Rule of Built-ins: Never use brackets [] on runtime operators (zip, enumerate,
+        map).
+
+        The Translation:
+
+            zip(...) → -> ty.Iterator[tuple[T, U]]
+
+            enumerate(...) → -> ty.Iterator[tuple[int, T]]
+
+        *The args Symmetry: Type the individual "particle" (e.g., *args: float), not the
+        "cloud" (e.g., *args: tuple).
+
+    3. Radiation-Proofing (Compatibility)
+
+    To ensure the code runs on everything from "ancient" 3.7 to the future 3.14:
+
+        Prefer the ty. Prefix: Use ty.Callable, ty.Iterable, and ty.Any directly in
+        signatures.
+
+        The Alias Guard: If using local aliases (e.g., Callable = ty.Callable), you must
+        use ty.TypeAlias to tell mypy it’s a template, not a static variable.
+
+            Surgical Fix: Callable: ty.TypeAlias = ty.Callable
+
+    4. The "Leaf-First" Migration Path
+
+    Just like growing a crystal or assembling a complex LaserJet gear train, we work
+    from the smallest dependencies upward.
+
+        Leaf Modules: Utility files (like your iterutil) where we practice the "exotic"
+        syntax.
+
+        Bit Modules: Intermediate logic and mathematical transformations.
+
+        Important Modules: The core HP-42s simulator and high-level physics engines.
+
+    5. Higher-Order Logic (The ... Mirror)
+
+    Remember that in Python's Callable, the ellipsis ... represents the input parameter
+    block.
+
+        Syntax: ty.Callable[..., ty.Any]
+
+        Mental Model: This is the "Transfer Function"—we know it takes something and
+        returns something, allowing us to maintain the "Path of Least Action" during
+        initial refactoring.
+
+    Your Current "UHV" State
+
+        Baseline: Mypy passes on the full 138-file set (with exclude).
+
+        Beachhead: 1st "Leaf" file is fully annotated and verified.
+
+        Next Action: Begin the "Production Run" on the remaining leaf modules using
+        these templates.
+
+Type-hinting style guide (from Gemini)
+======================================
+
+    This Style Guide is designed to be your "Standard Operating Procedure" (SOP) for the
+    138-module refactor. It prioritizes backward compatibility (3.9+) and "High-Vacuum"
+    precision, ensuring that your annotations are as reliable as a calibrated LCR meter.
+
+    1. The Global "Header" Strategy
+
+        To maintain a consistent "bus width" across all files, start every module with a
+        standardized import block. This minimizes "namespace pollution" and keeps the
+        ty. prefix available for all type logic.
+
+        import typing as ty
+        import itertools as it
+        # Always use TypeVars at the top level for generic 'States'
+        T = ty.TypeVar('T')  # Generic Input
+        U = ty.TypeVar('U')  # Generic Output
+
+    2. Signal vs. Operator (The "Subscript" Rule)
+
+        This is the most frequent source of "environmental" errors in Python 3.11.
+        Environmental errors are where a function expecting a list gets a map object
+        (which can only be read once), or a math routine receives a None because an edge
+        case wasn't handled.
+
+        Containers (States): 
+            Use the built-in lowercase versions: list[T], dict[K, V], tuple[T, ...].
+
+        Iterators (Operators): 
+            Use ty.Iterator[T] or ty.Iterable[T] for anything involving yield, zip, map,
+            or enumerate.
+
+        The Mypy/Python Conflict:
+            Never add brackets [] to zip, enumerate, or filter in a return signature.
+                Bad: -> zip[int] (Runtime Syntax Error)
+                Good: -> ty.Iterator[tuple[int, int]]
+
+    3. Handling "Environmental" Noise (None and Union)
+
+        Python’s biggest "leak" is the unexpected None.
+
+            The Pipe Operator: Use | (available in 3.10+) for optional types.
+
+                def find_val(...) -> float | None:
+
+            Strictness: If a function can return None, the caller must handle it. This
+            is where you will catch 90% of your head-scratcher bugs.
+
+    4. Function Signatures (The "Pinout")
+
+        Think of a function signature like a physical connector.
+
+            *args: Type the element, not the tuple.
+
+                def sum_all(*args: float) -> float:
+
+            **kwargs: Type the value.
+
+                def config(**kwargs: ty.Any) -> None:
+
+            Callables (Transfer Functions): Use the ... ellipsis for "Black Box" inputs
+            until you need higher resolution.
+
+                func: ty.Callable[..., float]
+
+    5. Managing the "138-File" Migration (The Workflow)
+
+        Phase	    Action	            Goal
+        I           Passivation	        Add # type: ignore to complex legacy lines.
+                                        Get to a "Green Board" immediately.
+        II          Leafing	            Remove ignore tags in utility files.
+                                        Define your T and U generic flows.
+        III         Core	            Annotate the HP-42s Logic.	Fix "Environmental"
+                                        bugs (leaky None types).
+        IV          Final UHV	        Set disallow_untyped_defs = True in mypy.ini.
+                                        Total "Vacuum" seal on the library.
+
+    6. When to use ty.Any (The "Faraday Shield")
+
+        Use ty.Any sparingly as a "shield" to block mypy from looking too deep into a
+        library you don't control (like an old version of mpmath or a complex
+        C-extension).
+
+            Protocol: Annotate your internal logic strictly, but use Any at the boundary
+            where you interface with messy external data.
+
+        The "Judgment Call" Metric
+
+        As you look at your next file, ask yourself: "Does this function's return type
+        change based on its input?"
+
+            If Yes: Use a TypeVar (T).
+
+            If No: Use a concrete type (float, int, str).
+
+    This guide should act as your Technical Manual for the next two weeks. It turns the
+    "scratch-your-head" debugging into a "check-the-compiler" workflow.
+
+Types and factories (constructors
+
+    In dpseq.py:fDistribute(), I ran into a problem with the typing.  The way around
+    this was to use 
+        'impl: type[T] = float' 
+    to define a class constructor (factory) to get instances of T, allowing you to call
+    impl(value) in the code which ensuring mypy checks the types.
+
+An arithmetic interface
+-----------------------
+
+    This was needed in dpseq.py:fDistribute(), which defines a Protocol that describes a
+    numerical type that supports arithmetic stuff.
+
+        import typing as ty
+
+        # T_Arith represents any type that acts like a number
+        T_Arith = ty.TypeVar("T_Arith", bound="SupportsArithmetic")
+
+        @ty.runtime_checkable
+        class SupportsArithmetic(ty.Protocol):
+            """
+            An interface spec for types that support basic arithmetic
+            and can be constructed from a numeric value.
+            """
+            def __init__(self, value: ty.Any) -> None: ...
+            def __add__(self: T_Arith, other: ty.Any) -> T_Arith: ...
+            def __sub__(self: T_Arith, other: ty.Any) -> T_Arith: ...
+            def __mul__(self: T_Arith, other: ty.Any) -> T_Arith: ...
+            def __truediv__(self: T_Arith, other: ty.Any) -> T_Arith: ...
+            def __lt__(self: T_Arith, other: ty.Any) -> bool: ...
+            def __le__(self: T_Arith, other: ty.Any) -> bool: ...
+
+        # We use the Protocol to constrain our TypeVar
+        T = ty.TypeVar("T", bound=SupportsArithmetic)
+
+    This allowed fDistribute to become truly generic; it doesn't care about the type as
+    long as it has the proper pinout:
+    
+        def fDistribute(
+                n: int, 
+                a: ty.Any = 0.0, 
+                b: ty.Any = 1.0, 
+                impl: type[T] = float  # type: ignore # default 'float' matches the Protocol
+        ) -> ty.Iterator[T]:
+            # Check arguments
+            msg = "n must be an integer > 1"
+            if not isinstance(n, int):
+                raise TypeError(msg)
+            if n < 2:
+                raise ValueError(msg)
+            if not isinstance(a, (int, impl)) or not isinstance(b, (int, impl)):
+                raise TypeError("a and b must be either an integer or impl")
+            if not (a < b):
+                raise ValueError("Must have a < b")
+            # We cast 'a' and 'b' through the 'impl' constructor
+            # This ensures x0 and dx are of type T
+            x0: T = impl(a)
+            dx: T = impl(b) - x0
+            # Pre-calculate the denominator as a T type to avoid 'float' drift
+            divisor: T = impl(n - 1)
+            for i in range(n):
+                # All operations here involve T types, so 'x' remains a T
+                x = x0 + (impl(i) / divisor) * dx
+                yield x
+
+
+How to export Gemini stuff
+==========================
+
+    If you want a single file containing everything we’ve discussed, follow this exact
+    sequence:
+
+        Go to Google Takeout: takeout.google.com.
+
+        Deselect All: Do not check the box for "Gemini."
+
+        Find "My Activity": Scroll down to My Activity and check that box.
+
+        Filter for Gemini: Click the button that says "All activity data included"
+        inside the My Activity section.
+
+        Toggle Specifics: Uncheck everything except "Gemini" (or "Gemini Apps").
+
+        Create Export: Proceed with the export as a .zip.
+
+    Inside that zip file, you will find Takeout/My Activity/Gemini/My Activity.html.
+    This file should be packed with every prompt and response from our session,
+    preserving the raw text in a single, searchable browser page.  The "Quick Patch"
+    Workaround
+
+    If you just want to save the Style Guide or a specific Refactoring Protocol as a
+    clean document without a full server dump:
+
+        The Docs Sync: Use the "Share & Export" icon (square with an arrow) directly
+        under one of my messages and select "Export to Docs." If the document is empty,
+        check if you have multiple Google accounts logged in—sometimes it defaults to
+        the "Primary" account's Drive instead of the one you're currently using.
+
+    It makes perfect "human engineering" sense to have an offline copy before you start
+    a 14-day sprint. If the "My Activity" method still returns a vacuum, the most
+    reliable "low-tech" backup is to use the "Share" button to create a public link for
+    yourself—it’s the only way to preserve the exact UI look and feel.
+
+mypy.ini for this type of work
+------------------------------
+
+    [mypy]
+    # 1. The Global Baseline (Start Here)
+    python_version = 3.11
+    warn_return_any = False
+    warn_unused_configs = True
+
+    # 2. Prevent "Radiation" from untyped imports
+    ignore_missing_imports = True
+
+    # 3. The "Incremental" Strategy
+    # As you finish a file, move it FROM the 'exclude' list
+    # TO a 'strict' section below.
+    exclude = (
+        # Add your 137 remaining files here
+        # as a regex or list
+        )
+
+    # 4. The "Strict Chamber" (Your Beachhead)
+    [mypy-iterutil.*]
+    disallow_untyped_defs = True
+    disallow_incomplete_defs = True
+    check_untyped_defs = True
+    no_implicit_optional = True
 
 mypy 1.19.1 type hints cheatsheet
 =================================
