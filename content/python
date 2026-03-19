@@ -12837,8 +12837,8 @@ https://typing.python.org/en/latest/
 https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 
 Type annotations provide some benefits
-    - 1:    Type hints provide a "user manual" baked into the code
-    - 2:    A good name for the class/method tells you what it does
+    - 1. Type hints provide a "user manual" baked into the code
+    - 2. A good name for the class/method tells you what it does
     - You don't have to read the code to get the previous two things
     - The types tell you what it takes and what it returns
     - 'from typing import Annotated' lets you communicate the "why"; e.g.
@@ -12856,12 +12856,12 @@ Examples:
 
 Short textbook on python typing by Gemini
     - Chapter 1: The Identity Crisis (T vs type[T])
-        - The Concept: In Python, float is both a Type and a Function (the constructor).
+        - The Concept: In python, float is both a type and a function (the constructor).
         - The Problem: If you write x: T, mypy thinks x is a number (like 1.5). If you
           want x to be the class itself (so you can call x(5)), you must use type[T].
         - Mental Model: T is the Material; type[T] is the Mold that creates the
           material.
-    - Chapter 2: Protocols (Structural Subtyping)
+    - Chapter 2: Protocols (structural subtyping)
         - The Concept: Python doesn't care about the family tree (inheritance), it cares
           about the "pinout" (methods).
         - The Problem: int and float don't share a useful base class in Python for
@@ -12869,9 +12869,9 @@ Short textbook on python typing by Gemini
         - Mental Model: A Protocol is a Technical Specification Sheet. If an object has
           an __add__ method, it satisfies the "Arithmetic" spec, regardless of whether
           it's an int or a platypus.
-    - Chapter 3: Nominal vs. Structural
+    - Chapter 3: Nominal vs. structural
         - Nominal (C++/Java): "You are a Number because your ID card says so."
-        - Structural (Python Protocols): "You are a Number because you can add and
+        - Structural (python Protocols): "You are a Number because you can add and
           subtract."
         - The Friction: mypy is a static analyzer trying to enforce Nominal rules on a
           Structural language.
@@ -12946,6 +12946,21 @@ Variance in generics      Let Cat be a subtype of Animal
       distance (magnitude of a vector, another scalar) is also an invariant.
     - Note that the scalar product of a covector and a vector is an invariant, as they
       have components that vary oppositely wrt the transformation and thus cancel out.
+
+typing.NewType
+    This is a way of typing variables that give them better semantics with zero runtime
+    overhead.  Suppose we have a function 
+        def getloc(lat, long):
+            # Formats a latitude & longitude
+    lat and long will typically be floats in degrees, but people can accidentally pass
+    in a string.  To make this more robust, use NewType:
+
+        Lat = NewType("Lat", float)
+        Long = NewType("Long", float)
+
+        def getloc(lat: Lat, long: Long) -> str:
+
+    Now you'll get an error with mypy if you swap lat and long.
 
 Modern syntax with 3.10+:
     # Preferred:  type-hint the fields directly within the definition
