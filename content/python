@@ -2,6 +2,7 @@
 
 Core
     |python_types|
+    |python_ast|
     |python_pathlib|
     |python_re|
     |python_lists|
@@ -85,12 +86,52 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
+__getattr__ magic (context was Mike helping me with trm.py)
+
+    __getattribute__ (The Gatekeeper): This guy stands in front of the door. Every time
+    you ask for u.on, he stops you, runs his logic, and then maybe lets you in. It’s
+    slow and prone to "infinite loops" (if his logic asks for an attribute, he calls
+    himself again).
+
+    __getattr__ (The Safety Net): This guy sits under the floorboards. If you ask for
+    u.on, Python looks for the real attribute first. It finds it, and you're done.
+    __getattr__ is never even called. But if you ask for u.magenta (which doesn't exist
+    as an attribute), then __getattr__ wakes up and says, "Wait, let me check the
+    dictionary!"
+
+Counter from collections
+    x = (1, 1, 1, 1, 1, 2, 2, 2, 3, 4, 4, 5, 8, 10, 10)
+    d = Counter(x)
+    print(d)
+        Counter({1: 5, 2: 3, 4: 2, 10: 2, 3: 1, 5: 1, 8: 1})
+    print(Counter("blind mice, blind mice")) gives
+    Counter({'i': 4, ' ': 3, 'b': 2, 'l': 2, 'n': 2, 'd': 2, 'm': 2, 'c': 2, 'e': 2, ',': 1})
+
 __file__:  Name of currently executing script
+
+Function grammar
+    funcdef                   ::=  [decorators] "def" funcname "(" [parameter_list] ")"
+                                ["->" expression] ":" suite
+    decorators                ::=  decorator+
+    decorator                 ::=  "@" assignment_expression NEWLINE
+    parameter_list            ::=  defparameter ("," defparameter)* "," "/" 
+                                    ["," [parameter_list_no_posonly]] | parameter_list_no_posonly
+    parameter_list_no_posonly ::=  defparameter ("," defparameter)* ["," [parameter_list_starargs]]
+                                | parameter_list_starargs
+    parameter_list_starargs   ::=  "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]]
+                                | "**" parameter [","]
+    parameter                 ::=  identifier [":" expression]
+    defparameter              ::=  parameter ["=" expression]
+    funcname                  ::=  identifier
 
 If you're getting weird behavior on an import, you might have an improperly
 named file somewhere; check it by
     import xxxx
     print(xxxx.__file__)
+
+signum replacements
+    signum = lambda x:  math.copysign(1, x) if x else x
+    (x > 0) - (x < 0)
 
 Python's help symbols
 
@@ -2884,6 +2925,18 @@ defaultdict can do similar things
     wanted integers instead, use defaultdict(int) and each value would start at zero.
     Note, however, that you'll never get a KeyError with a properly-initialized
     defaultdict.
+
+Using kw.get (advice from Mike)
+    width = kw.get("width") or int(os.environ.get("COLUMNS", 80)) - 1
+    Warning:  The or logic triggers on any Falsy value.
+        - If a user explicitly passes width=0 (meaning "calculate it for me"), the or
+          works perfectly.
+        - If a user passes indent="" (an empty string), and you used indent =
+          kw.get("indent") or "    ", it would overwrite their empty string with 4
+          spaces!
+        - For width, it’s usually safe because a width of 0 is functionally useless. But
+          for strings or booleans, I often stick to the more pedantic: width =
+          kw.get("width") if kw.get("width") is not None else 80
 
 Help on class dict in module builtins:
 
@@ -12829,6 +12882,72 @@ The high-level reason for this is the following pseudo-code for the above two li
     syntax.
 
 ---------------------------------------------------------------------------
+Abstract syntax trees                                       *python_ast*
+
+https://realpython.com/ref/stdlib/ast/
+https://coderivers.org/blog/abstract-syntax-tree-python/
+
+Use cases
+    - Analyzing code for static analysis tools (such as linters and type checkers)
+    - Extracting structure for documentation and dependency analysis (such as imports)
+    - Refactoring code programmatically (such as renaming symbols or rewriting APIs)
+    - Instrumenting code automatically (such as inserting logging or timing)
+    - Generating code from templates or other inputs
+    - Building code formatters, transpilers, and domain-specific languages
+    - Find all imported modules
+
+Functions
+    parse() 	            Parses source code into an AST
+    dump() 	                Returns a string representation of an AST
+    unparse() 	            Converts an AST back to Python source code
+    literal_eval() 	        Evaluates a string containing only Python literals 
+                                (doesn’t execute code, but untrusted input can cause
+                                denial-of-service)
+    walk() 	                Recursively yields all descendant nodes
+    fix_missing_locations()	Fills in missing line number and column info
+Classes
+    NodeVisitor 	  	Provides a base class for traversing AST nodes
+    NodeTransformer 	Provides a base class for modifying AST nodes
+    Expression 	  	    Represents the root node for single expressions (from mode='eval')
+
+Rename all occurrences of a varible in a script
+    class VariableRenamer(ast.NodeTransformer):
+        def __init__(self, old_name, new_name):
+            self.old_name = old_name
+            self.new_name = new_name
+        def visit_Name(self, node):
+            if node.id == self.old_name:
+                node.id = self.new_name
+            return node
+
+    source_code = "x = 1\nprint(x)"
+    tree = ast.parse(source_code)
+    renamer = VariableRenamer("x", "y")
+    new_tree = renamer.visit(tree)
+    ast.fix_missing_locations(new_tree)
+    new_code = compile(new_tree, filename="<ast>", mode="exec")
+    exec(new_code)
+    <outputs 1>
+
+Find all imported modules in a script
+    class ImportVisitor(ast.NodeVisitor):
+        def __init__(self):
+            self.imports = []
+        def visit_Import(self, node):
+            for alias in node.names:
+                self.imports.append(alias.name)
+            return node
+        def visit_ImportFrom(self, node):
+            self.imports.append(node.module)
+            return node
+    source_code = "import os\nfrom datetime import datetime"
+    parsed_ast = ast.parse(source_code)
+    visitor = ImportVisitor()
+    visitor.visit(parsed_ast)
+    print(visitor.imports)
+        -> ['os', 'datetime']
+
+---------------------------------------------------------------------------
 Typing                                                      *python_types*
 
 # type: ignore[no-redef]        Tell mypy to ignore a problem line
@@ -12853,6 +12972,45 @@ Examples:
 
     def f(x: Pattern[str]) -> defaultdict[str, int]:
         ...
+
+Rules for asserts in functions after typing
+    - Keep these asserts
+        - Data come from file, a network, or a user (the real world doesn't care about
+          your type hints)
+        - The assert validates a value; e.g., a physical length
+        - asserts that act as type narrowers for mypy
+            - Example:  assert data is not None in 'def process(data: str | None):'
+              tells mypy you know it's not None through some external reason mypy can't
+              see
+        - The library is used by others who might not use type checkers or if the data
+          come from an external source like a CSV or user
+        - Checking matching input types (e.g., s1 and s2 both need to be str or bytes
+          together)
+        - It checks an invariant
+    - Remove these asserts
+        - Checking input type:  isinstance(x, type) and it's part of an internal module.
+          However, if the data come from an external source, you'll still want to check
+          the type, as mentioned above, the real world doesn't care about your type
+          hints.
+
+Rules for asserts in functions after typing
+    - Keep these
+        - External boundaries: data from the "real world" (files, network, user, CSV);
+          type hints are a contract, but external data are unknown
+    - Value Validation: Rules that types can’t express (e.g., assert length > 0, assert
+      probability <= 1.0).
+    - Mypy "Narrowers": Forcing Mypy to see a truth it can't derive (e.g., assert data
+      is not None when you have external knowledge of the state).
+    - Public API Guards: If the library is shared with others who might skip
+      type-checking, keep the guards to prevent "Garbage In, Garbage Out."
+    - Cross-Parameter Symmetry: Ensuring two inputs share a state (e.g., assert type(s1)
+      is type(s2) for your AnyStr utilities).
+    - Algorithmic Invariants: The "Laws of Physics" for your specific logic that must
+      hold true at a specific point in the execution.
+
+Remove these (The "Scaffolding")
+
+    Internal Type-Checking: If x: str is annotated and the function is part of your internal, Mypy-verified pipeline, assert isinstance(x, str) is redundant overhead. Mypy is your static inspector; once the "building" is verified, you can pull the scaffolding away.
 
 Short textbook on python typing by Gemini
     - Chapter 1: The Identity Crisis (T vs type[T])
