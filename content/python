@@ -14081,3 +14081,29 @@ Orthogonality
     color.Color(), you are acknowledging the dependency. If that feels "heavy" or
     "wrong" in a specific file, it’s your intuition telling you that the modules aren't
     orthogonal yet.
+
+Core files in a refactor
+
+    Since you're using fmt.py, trm.py, and f.py as your baseline, you’re already looking
+    at the "Foundation Layer."
+
+    The "Wall-Hanging" Strategy for the Top 10
+
+    As you look at those 10 core files, try to visualize them as a Strict Hierarchy.
+    Circularity usually happens when we treat our core modules like a "toolbox" where
+    every tool can grab any other tool.
+
+    To keep those "Top 10" orthogonal, here is a quick "Mike-approved" checklist for
+    when you open one of them in Vim:
+
+        The "Primitive" Check: Does this core file import a "Higher" file? (e.g., Does
+        your basic string formatter f.py try to import the terminal colorizer trm.py?)
+        If so, move the shared logic "down" to a new primitive or a data-only file.
+
+        The "Gist" Audit: Run your new checkgist.py on them. If the __category__ of a
+        file is "Utility/Math/Terminal/File-IO" all at once, it’s not orthogonal—it’s a
+        "Junk Drawer" module.
+
+        The "Type" Wall: Use those string-forward references for types. It keeps the
+        800lb Gorilla happy without forcing the 98lb Lemur to load a circular dependency
+        at 6:00 AM.
