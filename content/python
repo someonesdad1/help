@@ -2854,6 +2854,8 @@ of property(), but today I prefer to use the @property decorator.
 ---------------------------------------------------------------------------
 Dictionary methods and operations              *python_dictionaries*
 
+xyzzy Attribute access notes
+
 class dict([arg])
     dict(one=2, two=3)   Only works for valid python identifiers
     {"one":2, "two":3}
@@ -3036,6 +3038,220 @@ Static methods:
         Create and return a new object.  See help(type) for accurate signature.
 Data:
     __hash__ = None
+
+xyzzy Attribute access notes
+
+    The 10 km View: Dictionaries vs. Attributes
+
+    In Python, Items (brackets []) and Attributes (dots .) are handled by entirely
+    different "circuitries." When you subclass dict, things get interesting.
+
+    Method	            Trigger	            Role in a dict Subclass
+    __getitem__	        obj["key"]	        Accesses the dictionary's internal hash table
+    __setitem__	        obj["key"] = val	Stores data in the hash table
+    __getattr__	        obj.key	            The Safety Net. Only called if obj.key doesn't
+                                            exist as a real attribute or in the class tree.
+    __getattribute__	obj.key	            The Gatekeeper. Called for every dot access,
+                                            before anything else. (Dangerous to override!)
+    __setattr__	        obj.key = val	    Handles setting a dot-property (e.g., self.is_tty
+                                            = True).
+    The "Leak" Logic
+
+    If Trm is a dict subclass, calling self.red uses __getattr__. But calling
+    self["red"] uses __getitem__. If your TTY-check logic is inside __getattr__ but you
+    (or a library) are accessing colors via self["key"], the "No-Color" filter might be
+    getting skipped.  Debugging Without a Debugger: The "Stealth Logger"
+
+    When the debugger is blinded by a pipe, you need "Flight Data Recording." Since
+    you're a veteran C++ dev, think of this as a thread-safe, externalized stderr log.
+    1. The sys.stderr Trick
+
+    The simplest way to bypass a pipe (>) or a filter (| cat) is to write to stderr. It
+    will show up on your screen even if stdout is redirected.
+
+        import sys
+        # Inside your Trm methods:
+        print(f"DEBUG: Accessing {key}, isatty={sys.stdout.isatty()}", file=sys.stderr)
+
+    2. The "Mike-Style" Trace Tool
+
+    If you want to see "who is doing what to whom" without cluttering your code, use a
+    temporary Watchdog Wrapper inside trm.py.
+
+    Add this to the top of your __getitem__ or __getattr__:
+
+        import traceback
+
+        def __getitem__(self, key):
+            # If we are in a pipe but getting a color code, find out why
+            if not sys.stdout.isatty() and key != "n":
+                # Print the stack trace to stderr so it bypasses the pipe
+                print(f"\n--- LEAK DETECTED: {key} ---", file=sys.stderr)
+                traceback.print_stack(limit=5, file=sys.stderr)
+            return super().__getitem__(key)
+
+    Why this works:
+
+        traceback.print_stack(): This gives you the "C++ backtrace" equivalent. It will
+        show you exactly which file and line number called trm["red"].
+
+        file=sys.stderr: This ensures the debug info doesn't end up inside your cat
+        output, keeping your terminal "clean" while giving you the info.
+
+    The Likely Suspect
+
+        Check if your __init__ or a class-level constant is pre-populating the
+        dictionary with escape strings before the TTY check happens. If the strings are
+        already in the dict, a standard dict.__getitem__ will return them regardless of
+        whether you're in a pipe or not.
+
+    Does the traceback to stderr reveal a "straggler" calling the color codes?
+
+        -> My answer was no, and I was using checks in __getitem__, but here's further
+        info...
+
+    Your __getitem__ logic looks sound on the surface, but there is a "Ghost in the
+    Machine" when subclassing dict: The internal C-code bypass.
+
+    In Python’s standard dict implementation, many internal methods (like update(),
+    get(), or even the iteration used by print(*args)) call the underlying C-functions
+    directly. These C-functions often bypass your overridden __getitem__ to maintain
+    high performance.
+
+    Here is the "Mike-level" architectural breakdown of why your filter is likely being
+    ignored.
+
+    1. The "Internal Bypass" Problem
+
+        If you or a library calls self.get("red") instead of self["red"], Python’s
+        dict.get will go straight to the hash table and return the escape code,
+        completely ignoring your if not self.on check.
+
+        The Fix: You must also override get:
+
+            def get(self, name: str, default: str = "") -> str:
+                if not self.on or (not sys.stdout.isatty() and not self.always):
+                    return ""
+                return super().get(name, default)
+
+    2. The "Attribute Access" Leak
+
+        Are you accessing colors via trm.red? If so, __getitem__ isn't even in the loop.
+
+        If you haven't explicitly mapped __getattr__ to call self[name], then
+        __getattr__ might be returning the raw value from the internal __dict__ or a
+        class attribute.
+
+        The Fix: Ensure all dot-access routes through your filter:
+
+            def __getattr__(self, name: str) -> str:
+                return self[name]  # This forces dot-access through your __getitem__ logic
+
+    3. The isatty() Fragility
+
+        You are checking sys.stdout.isatty(). If your Trm class is being used to format
+        a string that eventually goes to sys.stderr or is stored in a variable and
+        printed later, the state of stdout at the moment of access is what matters.
+
+        The Strategy: Instead of checking isatty() inside __getitem__ (which is O(N)
+        logic in a hot loop), check it once during __init__ and set a flag.  Python
+
+        def __init__(self, ...):
+            super().__init__(...)
+            # Determine the "Truth" once at startup
+            actual_tty = sys.stdout.isatty()
+            self.on = self.on and (actual_tty or self.always)
+
+    4. How to catch the "Leak" in 30 seconds
+
+        Since you can't use the debugger in the pipe, use The Traceback Grenade. Drop
+        this into your else block: Python
+
+        def __getitem__(self, name: str) -> str:
+            if not self.on or (not sys.stdout.isatty() and not self.always):
+                return ""
+
+            # --- The Grenade ---
+            # If we are in a pipe (isatty is False) but reached this line,
+            # something is wrong. Scream to stderr.
+            if not sys.stdout.isatty():
+                import traceback
+                print(f"DEBUG: Leak on {name!r}", file=sys.stderr)
+                traceback.print_stack(limit=3, file=sys.stderr)
+            # -------------------
+
+            return super().__getitem__(name)
+
+    Summary of the "Leak" Investigation:
+
+        Check get(): Is someone calling .get()?
+
+        Check __getattr__: Is someone using trm.red?
+
+        Check Iteration: Is someone doing for val in trm.values()? (Standard
+        dict.values() bypasses __getitem__).
+
+    The most "Lean Beast" way to handle a dict subclass is to UserDict (from the
+    collections module) instead of dict. UserDict is written in pure Python and is
+    designed specifically to ensure that every single access route (like get, update,
+    and values) is forced to go through your overridden __getitem__.
+
+    I asked about substituting UserDict for the dict in Trm and here was Mike's
+    recommendation:
+
+
+        The short answer: Yes, absolutely. Switching to UserDict is the professional
+        move for your specific requirements. In the world of C++, this is akin to moving
+        from a raw void* buffer to a properly encapsulated class with getter/setter
+        logic that you actually control.  Why UserDict is the "Lean Beast" Choice
+
+    While dict is a high-speed Ferrari built in C, it takes shortcuts to stay fast—like
+    ignoring your Python-level overrides. UserDict (found in collections) is written in
+    pure Python. It stores the actual data in an internal attribute called self.data.
+
+    Because it’s pure Python, when you call self.get() or self.update(), the code must
+    route through your overridden __getitem__ or __setitem__. It’s the "Air Traffic
+    Controller" for your namespace.
+
+    UserDict is a standard Python class that uses a __dict__ for its attributes, so it
+    doesn't have __slots__ defined by default. While you could technically add them,
+    it’s usually more trouble than it's worth for a utility class, as it can interfere
+    with how UserDict manages its internal self.data.
+
+    Since you're moving logic around to accommodate the lack of slots (and the new "Air
+    Traffic Controller" flow), here is the "Senior Engineer" layout for the transition.
+
+    1.  The Attribute vs. Data Split
+
+        The biggest shift is remembering that UserDict separates your metadata
+        (attributes like self.on) from your payload (the color strings in self.data).
+
+        Attributes: Stored in self.__dict__. These are your "knobs and dials."
+
+        Data: Stored in self.data. This is the dictionary you are wrapping.
+
+    Why the "Leak" actually plugged itself
+
+        By using UserDict, you've effectively "orthogonalized" the data.
+
+            In dict, self["red"] and self.on were fighting for the same namespace.
+
+            In UserDict, on, always, and _is_tty are properties of the controller, while
+            "red", "blue", and "n" are contents of the payload.
+
+    4. A Note on __getattr__ vs __getitem__
+
+        Because you aren't using __slots__, self.on and self.always are real attributes
+        in self.__dict__.
+
+            When you call trm.on, Python finds it in the __dict__ and returns it
+            immediately. __getattr__ is never called.
+
+            When you call trm.red, Python looks in the __dict__, fails to find it, and
+            then calls __getattr__("red").
+
+    This is perfect "Lean Beast" behavior: your control flags are fast-pathed, and your
+    color lookups are safely routed through the filter.
 
 ---------------------------------------------------------------------------
 Multiset methods and operations                     *python_multisets*
