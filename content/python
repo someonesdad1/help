@@ -9,6 +9,7 @@ Core
     |python_deque|
     |python_dictionaries|
     |python_sets|
+    |python_architecture|
     |python_multisets|
     |python_subprocess|
     |python_requests|       Download web stuff
@@ -13851,3 +13852,160 @@ Coroutines and asyncio
             count -= 1
         return "Blastoff!"
 
+---------------------------------------------------------------------------
+Architecture thoughts                                   *python_architecture*
+
+From Mike (Gemini 3) 1 Apr 2026
+
+This is a classic "architectural" crossroads in Python. You've hit on a nuance that
+separates those who write scripts from those who maintain systems for 30 years.
+
+There is a common misconception that import x is "lazier" than from x import y. In
+reality, both execute the entire target module from top to bottom the first time they
+are encountered. The difference isn't in when the code runs, but in how the namespace is
+populated.
+
+Importing
+
+    Mike’s Guide to Python Importing (The "Senior Edition")
+
+    1. The Execution Reality
+
+    Whether you use import color or from color import Color, Python performs the same
+    three steps:
+
+        Search: Finds color.py in sys.path.
+
+        Compile: Compiles it to bytecode (if not already done).
+
+        Execute: Runs every line of color.py in a new module-level namespace.
+
+    Crucial Point: If color.py has a print("Hello") at the top level, you will see
+    "Hello" regardless of which import style you use.
+
+    2. The Namespace Strategy: import x vs from x import y
+
+        The "import x" (The Safe Harbor)
+
+            Mechanism: Adds the name x to your current scope, pointing to the module object.
+
+            Pros: * Circular Import Resilience: Because you aren't asking for a specific
+            attribute (like Color) at import time, you can often get away with
+            circularity as long as you don't use the symbols until after the modules
+            have finished loading.
+
+                Clarity: color.Color() tells the reader exactly where that class came
+                from.
+
+            Cons: Slightly more typing (color.Color vs Color).
+
+        The "from x import y" (The Sharp Knife)
+
+            Mechanism: Adds the name y directly to your scope.
+
+            Pros: Cleaner code for frequently used symbols (e.g., from typing import
+            Any, List).
+
+            Cons: * Fragile during Circularity: If color.py is mid-execution and hasn't
+            defined Color yet, from color import Color will throw an AttributeError or
+            ImportError.
+
+                Namespace Pollution: It’s harder to tell if Color is a local class or an
+                import without scrolling to the top.
+
+    3. Solving the "Ouroboros" (Circular Imports)
+
+        When trm.py needs color.py and vice versa, you have three professional-grade tactics:
+
+        Tactic A: The "Surgical" Local Import
+
+            Move the import inside the method that needs it. This defers the import
+            until the function is actually called, by which time all modules are fully
+            initialized.
+
+
+                def draw(self):
+                    import color  # Only imported when draw() is called
+                    c = color.Color("red")
+
+        Tactic B: The TYPE_CHECKING Guard
+
+            Use this for type hints to satisfy the 800lb Gorilla without creating a
+            runtime circular dependency.  
+
+                import typing as ty
+                if ty.TYPE_CHECKING:
+                    from . import color  # Only seen by Mypy
+
+                def set_bg(self, clr: 'color.Color'): ...
+
+        Tactic C: Absolute vs. Relative
+
+            For your /plib structure, stay consistent.
+
+                Absolute: import plib.color (Clear, but depends on your PYTHONPATH).
+
+                Relative: from . import color (Explicitly states "look in my own
+                directory").
+
+    4. Mike’s "Rules of Thumb" for /plib
+
+        For Core Libraries: Use import x. It’s the "Defensive Driving" of Python. It
+        avoids the AttributeError during complex circular loads.
+
+        For Utilities (Leaf Nodes): Use from x import y if it makes the code
+        significantly more readable. Since nothing imports the utility, you aren't
+        worried about breaking someone else's chain.
+
+        The "Dict/List" Exception: Always use from typing import ... (or import typing
+        as ty). These are standard enough that the clarity is worth the direct import.
+
+        Avoid from x import *: This is the "Gorilla in a China Shop." It nukes your
+        namespace and makes debugging a nightmare. Never use it in /plib.
+
+    5. Summary Table for your Help File
+        Tactic	        Use Case	                                Circular Support
+        import x	    Default for core modules.	                High
+        from x import y	Leaf nodes or very stable standard libs.	Low (Risky)
+        import x as x2	Avoiding name collisions.	                High
+        Local import	Emergency break for circular dependencies.	Absolute
+
+    Final Wisdom: In a 30-year codebase, Explicit is better than Implicit. If you see
+    color.Color(), you know exactly where to grep. If you just see Color(), you have to
+    go hunting.
+
+    The "Global Registry" (Why the second import is "Free")
+
+        When you call import color, Python doesn't just run the code; it checks a global
+        dictionary called sys.modules.
+
+            If color is in the dict: Python simply hands you a reference to the existing
+            object. Total time: O(1).
+
+            If it's NOT: It runs the full execution and adds it to the dict.
+
+        This is why you can put import color inside a high-frequency loop or a deeply nested function without a performance hit. The "cost" is paid exactly once per program execution.
+
+    Why AI Wins for Strategy
+
+        You hit the nail on the head: Strategic Survey vs. Detail Exhaustion.
+        Documentation is a "Pull" system—you have to know what you're looking for to
+        find it. AI is a "Synthesis" system—it looks at the "mess" of your specific
+        600-file universe and applies the abstract rules to your concrete reality.
+
+    One Last "Mike-ism" for the Road
+
+        Since you're adding this to your help file, remember this mantra for the plib
+        refactor:
+
+            "Import the Module, Use the Attribute."
+
+        If you stick to import color and then use color.Color, you satisfy:
+
+            The Human: I know exactly where Color lives.
+
+            The Gorilla (Mypy): I can trace the type back to the source file easily.
+
+            The Ouroboros: You've minimized the risk of a "partially initialized module"
+            error because you aren't grabbing attributes until the functions actually
+            run.
