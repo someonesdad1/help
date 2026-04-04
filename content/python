@@ -7,7 +7,7 @@ Core
     |python_re|
     |python_lists|
     |python_deque|
-    |python_dictionaries|
+    |python_dict|
     |python_sets|
     |python_architecture|
     |python_multisets|
@@ -2852,7 +2852,7 @@ https://realpython.com/python-property/  This is the old "functional" form
 of property(), but today I prefer to use the @property decorator.
 
 ---------------------------------------------------------------------------
-Dictionary methods and operations              *python_dictionaries*
+Dictionary methods and operations              *python_dict*
 
 xyzzy Attribute access notes
 
@@ -3191,67 +3191,73 @@ xyzzy Attribute access notes
         Check Iteration: Is someone doing for val in trm.values()? (Standard
         dict.values() bypasses __getitem__).
 
-    The most "Lean Beast" way to handle a dict subclass is to UserDict (from the
-    collections module) instead of dict. UserDict is written in pure Python and is
-    designed specifically to ensure that every single access route (like get, update,
-    and values) is forced to go through your overridden __getitem__.
+    UserDict
 
-    I asked about substituting UserDict for the dict in Trm and here was Mike's
-    recommendation:
+        The most "Lean Beast" way to handle a dict subclass is to UserDict (from the
+        collections module) instead of dict. UserDict is written in pure Python and is
+        designed specifically to ensure that every single access route (like get,
+        update, and values) is forced to go through your overridden __getitem__.
 
+        I asked about substituting UserDict for the dict in Trm and here was Mike's
+        recommendation:
 
-        The short answer: Yes, absolutely. Switching to UserDict is the professional
-        move for your specific requirements. In the world of C++, this is akin to moving
-        from a raw void* buffer to a properly encapsulated class with getter/setter
-        logic that you actually control.  Why UserDict is the "Lean Beast" Choice
+            The short answer: Yes, absolutely. Switching to UserDict is the professional
+            move for your specific requirements. In the world of C++, this is akin to
+            moving from a raw void* buffer to a properly encapsulated class with
+            getter/setter logic that you actually control.
 
-    While dict is a high-speed Ferrari built in C, it takes shortcuts to stay fast—like
-    ignoring your Python-level overrides. UserDict (found in collections) is written in
-    pure Python. It stores the actual data in an internal attribute called self.data.
+    Why UserDict is the "Lean Beast" Choice
 
-    Because it’s pure Python, when you call self.get() or self.update(), the code must
-    route through your overridden __getitem__ or __setitem__. It’s the "Air Traffic
-    Controller" for your namespace.
+        While dict is a high-speed Ferrari built in C, it takes shortcuts to stay
+        fast -- like ignoring your Python-level overrides. UserDict (found in collections)
+        is written in pure Python. It stores the actual data in an internal attribute
+        called self.data.
 
-    UserDict is a standard Python class that uses a __dict__ for its attributes, so it
-    doesn't have __slots__ defined by default. While you could technically add them,
-    it’s usually more trouble than it's worth for a utility class, as it can interfere
-    with how UserDict manages its internal self.data.
+        Because it’s pure Python, when you call self.get() or self.update(), the code
+        must route through your overridden __getitem__ or __setitem__. It’s the "Air
+        Traffic Controller" for your namespace.
 
-    Since you're moving logic around to accommodate the lack of slots (and the new "Air
-    Traffic Controller" flow), here is the "Senior Engineer" layout for the transition.
+        UserDict is a standard Python class that uses a __dict__ for its attributes, so
+        it doesn't have __slots__ defined by default. While you could technically add
+        them, it’s usually more trouble than it's worth for a utility class, as it can
+        interfere with how UserDict manages its internal self.data.
 
-    1.  The Attribute vs. Data Split
+        Since you're moving logic around to accommodate the lack of slots (and the new
+        "Air Traffic Controller" flow), here is the "Senior Engineer" layout for the
+        transition.
 
-        The biggest shift is remembering that UserDict separates your metadata
-        (attributes like self.on) from your payload (the color strings in self.data).
+        1.  The Attribute vs. Data Split
 
-        Attributes: Stored in self.__dict__. These are your "knobs and dials."
+            The biggest shift is remembering that UserDict separates your metadata
+            (attributes like self.on) from your payload (the color strings in
+            self.data).
 
-        Data: Stored in self.data. This is the dictionary you are wrapping.
+            Attributes: Stored in self.__dict__. These are your "knobs and dials."
 
-    Why the "Leak" actually plugged itself
+            Data: Stored in self.data. This is the dictionary you are wrapping.
 
-        By using UserDict, you've effectively "orthogonalized" the data.
+        Why the "Leak" actually plugged itself
 
-            In dict, self["red"] and self.on were fighting for the same namespace.
+            By using UserDict, you've effectively "orthogonalized" the data.
 
-            In UserDict, on, always, and _is_tty are properties of the controller, while
-            "red", "blue", and "n" are contents of the payload.
+                In dict, self["red"] and self.on were fighting for the same namespace.
 
-    4. A Note on __getattr__ vs __getitem__
+                In UserDict, on, always, and _is_tty are properties of the controller,
+                while "red", "blue", and "n" are contents of the payload.
 
-        Because you aren't using __slots__, self.on and self.always are real attributes
-        in self.__dict__.
+        4. A Note on __getattr__ vs __getitem__
 
-            When you call trm.on, Python finds it in the __dict__ and returns it
-            immediately. __getattr__ is never called.
+            Because you aren't using __slots__, self.on and self.always are real
+            attributes in self.__dict__.
 
-            When you call trm.red, Python looks in the __dict__, fails to find it, and
-            then calls __getattr__("red").
+                When you call trm.on, Python finds it in the __dict__ and returns it
+                immediately. __getattr__ is never called.
 
-    This is perfect "Lean Beast" behavior: your control flags are fast-pathed, and your
-    color lookups are safely routed through the filter.
+                When you call trm.red, Python looks in the __dict__, fails to find it,
+                and then calls __getattr__("red").
+
+        This is perfect "Lean Beast" behavior: your control flags are fast-pathed, and
+        your color lookups are safely routed through the filter.
 
 ---------------------------------------------------------------------------
 Multiset methods and operations                     *python_multisets*
@@ -10903,9 +10909,7 @@ output (this is preferred over the old method of popen()):
             "file_with_words",
         ))
 
-    I haven't figured out how to get the GNU units program to work in
-    an "interactive" sense.  However, here's a way to perform a
-    conversion:
+    GNU units conversion
 
         units = "d:/don/bin/bat/units_.exe"
         data = "d:/don/bin/bat/units.dat"units =
@@ -10921,9 +10925,67 @@ output (this is preferred over the old method of popen()):
         Results:
         ['\tm = 39.3700787401575 in\n', '\tm = (1 / 0.0254) in\n']
 
-    If you don't print to the screen, you can complete 1000 such
-    conversions in around 13 s, so a few hundred will will take on the
-    order of a second or so.
+    If you don't print to the screen, you can complete 1000 such conversions in around
+    13 s, so a few hundred will will take on the order of a second or so.
+
+    Mike's demo of an in-process server:
+
+        import subprocess
+        import sys
+
+        def units_repl():
+            loc = "/home/don/.0rc/bin"
+            pgm = f"{loc}/units"
+            defn = f"{loc}/definitions.units"
+            # We use -t (terse) for clean output and -e (exponential) if needed.
+            # We do NOT use -f here if we want the default units, but since you
+            # have a custom path, we keep it.
+            cmd = [pgm, "-f", defn, "-d", "15", "-t"]
+            # Start the "Engine"
+            # bufsize=1 and universal_newlines=True (text mode) makes line-by-line comms easier
+            proc = subprocess.Popen(
+                cmd,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1
+            )
+            print(f"--- GNU Units Bridge Active (PID: {proc.pid}) ---")
+            print("Enter conversion (e.g., 'mi/s <enter> m/s') or Ctrl+C to exit.\n")
+            try:
+                while True:
+                    # 1. Get User Input
+                    try:
+                        have_unit = input("Have: ").strip()
+                        want_unit = input("Want: ").strip()
+                    except EOFError:
+                        break
+                    if not have_unit or not want_unit:
+                        continue
+                    # 2. Send to the Pipe
+                    # We send both lines followed by a newline
+                    proc.stdin.write(f"{have_unit}\n{want_unit}\n")
+                    proc.stdin.flush()
+                    # 3. Read the Response
+                    # In terse mode, units returns exactly one line for the factor.
+                    # However, if there's an error (non-conformable), it hits stderr.
+                    response = proc.stdout.readline().strip()
+                    if response:
+                        print(f"Result: {response}")
+                    else:
+                        # Check if it's a 'conformability error' or syntax error
+                        # We use a non-blocking check or simply read the error line
+                        err = proc.stderr.readline().strip()
+                        print(f"ERROR: {err}")
+            except KeyboardInterrupt:
+                print("\nShutting down the bridge...")
+            finally:
+                proc.stdin.close()
+                proc.terminate()
+                proc.wait()
+        if __name__ == "__main__":
+            units_repl()
 
 ----------------------------------------------------------------------
 Properties                                  *python_properties*
@@ -11123,7 +11185,7 @@ class bool([x])
     Return a Boolean value, i.e. one of True or False. x is converted
     using the standard truth testing procedure. If x is false or
     omitted, this returns False; otherwise it returns True. The bool
-    class is a subclass of int (see Numeric Types — int, float,
+    class is a subclass of int (see Numeric Types  --  int, float,
     complex). It cannot be subclassed further. Its only instances are
     False and True (see Boolean Values).
 
@@ -11703,7 +11765,7 @@ open(file, mode='r', buffering=-1, encoding=None, errors=None,
     codecs module for the list of supported encodings.
 
     errors is an optional string that specifies how encoding and
-    decoding errors are to be handled—this cannot be used in binary
+    decoding errors are to be handled -- this cannot be used in binary
     mode. A variety of standard error handlers are available (listed
     under Error Handlers), though any error handling name that has been
     registered with codecs.register_error() is also valid. The standard
@@ -11887,7 +11949,7 @@ class property(fget=None, fset=None, fdel=None, doc=None)
 class range(stop)
 class range(start, stop[, step])
     Rather than being a function, range is actually an immutable
-    sequence type, as documented in Ranges and Sequence Types — list,
+    sequence type, as documented in Ranges and Sequence Types  --  list,
     tuple, range.
 
 repr(object)
@@ -11930,7 +11992,7 @@ round(number[, ndigits])
 
 class set([iterable])
     Return a new set object, optionally with elements taken from
-    iterable. set is a built-in class. See set and Set Types — set,
+    iterable. set is a built-in class. See set and Set Types  --  set,
     frozenset for documentation about this class.
 
     For other containers see the built-in frozenset, list, tuple, and
@@ -11974,7 +12036,7 @@ sorted(iterable, *, key=None, reverse=False)
 
     The built-in sorted() function is guaranteed to be stable. A sort is
     stable if it guarantees not to change the relative order of elements
-    that compare equal — this is helpful for sorting in multiple passes
+    that compare equal  --  this is helpful for sorting in multiple passes
     (for example, sort by department, then by salary grade).
 
     For sorting examples and a brief sorting tutorial, see Sorting HOW TO.
@@ -12015,7 +12077,7 @@ class str(object=b'', encoding='utf-8', errors='strict')
     Return a str version of object. See str() for details.
 
     str is the built-in string class. For general information about
-    strings, see Text Sequence Type — str.
+    strings, see Text Sequence Type  --  str.
 
 sum(iterable, /, start=0)
     Sums start and the items of an iterable from left to right and
@@ -12099,7 +12161,7 @@ super([type[, object-or-type]])
 
 class tuple([iterable])
     Rather than being a function, tuple is actually an immutable
-    sequence type, as documented in Tuples and Sequence Types — list,
+    sequence type, as documented in Tuples and Sequence Types  --  list,
     tuple, range.
 
 class type(object)
@@ -13472,7 +13534,7 @@ Refactoring protocol (from Gemini)
 
         Syntax: ty.Callable[..., ty.Any]
 
-        Mental Model: This is the "Transfer Function"—we know it takes something and
+        Mental Model: This is the "Transfer Function" -- we know it takes something and
         returns something, allowing us to maintain the "Path of Least Action" during
         initial refactoring.
 
@@ -13680,13 +13742,13 @@ How to export Gemini stuff
 
         The Docs Sync: Use the "Share & Export" icon (square with an arrow) directly
         under one of my messages and select "Export to Docs." If the document is empty,
-        check if you have multiple Google accounts logged in—sometimes it defaults to
+        check if you have multiple Google accounts logged in -- sometimes it defaults to
         the "Primary" account's Drive instead of the one you're currently using.
 
     It makes perfect "human engineering" sense to have an offline copy before you start
     a 14-day sprint. If the "My Activity" method still returns a vacuum, the most
     reliable "low-tech" backup is to use the "Share" button to create a public link for
-    yourself—it’s the only way to preserve the exact UI look and feel.
+    yourself -- it’s the only way to preserve the exact UI look and feel.
 
 mypy.ini for this type of work
 ------------------------------
@@ -14205,8 +14267,8 @@ Importing
     Why AI Wins for Strategy
 
         You hit the nail on the head: Strategic Survey vs. Detail Exhaustion.
-        Documentation is a "Pull" system—you have to know what you're looking for to
-        find it. AI is a "Synthesis" system—it looks at the "mess" of your specific
+        Documentation is a "Pull" system -- you have to know what you're looking for to
+        find it. AI is a "Synthesis" system -- it looks at the "mess" of your specific
         600-file universe and applies the abstract rules to your concrete reality.
 
     One Last "Mike-ism" for the Road
@@ -14234,7 +14296,7 @@ Orthogonality
 
     1. The "Layered Cake" Rule (Dependency Direction)
 
-        The most common cause of circular imports is "Sibling Dependency"—where two
+        The most common cause of circular imports is "Sibling Dependency" -- where two
         modules at the same level of abstraction try to help each other.
 
         The Strategy: Categorize your modules into three distinct layers. A module
@@ -14317,7 +14379,7 @@ Core files in a refactor
         If so, move the shared logic "down" to a new primitive or a data-only file.
 
         The "Gist" Audit: Run your new checkgist.py on them. If the __category__ of a
-        file is "Utility/Math/Terminal/File-IO" all at once, it’s not orthogonal—it’s a
+        file is "Utility/Math/Terminal/File-IO" all at once, it’s not orthogonal -- it’s a
         "Junk Drawer" module.
 
         The "Type" Wall: Use those string-forward references for types. It keeps the

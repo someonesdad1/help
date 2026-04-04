@@ -66,7 +66,6 @@ if 1:  # Header
         Constant = dptypes.Constant
         dedent = wrap.dedent
         flt = f.flt
-        t = trm.Trm()
     if 1:  # Global variables
         W = int(os.environ.get("COLUMNS", "80")) - 1
         L = int(os.environ.get("LINES", "50"))
@@ -77,17 +76,31 @@ if 1:  # Header
         g.help = Path("hldhelp.vim")
         g.suffix = ".hld"
         g.index = "index" + g.suffix
+    if 1:  # Enable colorizing
+        g.color = False
+        if g.color:
+            u = trm.Trm()
+        else:
+            class G:
+                def print(self, *p, **kw):
+                    print(*p, **kw)
+            u = G()
 if 1:   # Utility
     def GetColors():
-        t.err = t.red
-        t.help = t.lil
-        t.concern = t.orn
-        t.dbg = t.sky
+        u.err = u.red if g.color else ""
+        u.help = u.lil if g.color else ""
+        u.concern = u.orn if g.color else ""
+        u.dbg = u.sky if g.color else ""
+        u.yel = u.yel if g.color else ""
+        u.orn = u.orn if g.color else ""
+        u.n = u.n if g.color else ""
+        u.trq = u.trq if g.color else ""
+        u.grn = u.grn if g.color else ""
     def Dbg(*p, **kw):
         if g.dbg:
-            print(f"{t.dbg}", end="")
+            print(f"{u.dbg}", end="")
             print(*p, **kw)
-            print(f"{t.n}", end="")
+            print(f"{u.n}", end="")
     def Error(*msg, status=1):
         print(*msg, file=sys.stderr)
         exit(status)
@@ -129,10 +142,10 @@ if 1:   # Utility
             g.dbg = True
         GetColors()
         if d["-d"]:
-            Dbg(f"Command line: {t.ornl}{sys.argv}")
+            Dbg(f"Command line: {u.orn}{sys.argv}")
             Dbg("Option settings:")
             for i in d:
-                Dbg(f"  {i}    {t.ornl}{d[i]}")
+                Dbg(f"  {i}    {u.orn}{d[i]}")
         return args
 if 1:   # Help
     def Help():
@@ -161,16 +174,16 @@ if 1:   # Help
         me return from a tags jump (^]) by pressing the 't' key.
         
         These help files are formatted to fit in an 80 column wide terminal window.  You
-        can reformat them as needed if you use a different width. {t.help}
+        can reformat them as needed if you use a different width. {u.help}
         
         - To add a new topic
             - Create a file in the ./content directory
                 - Make sure there are suitable objects to be tagged like
                   '*this_is_a_tag*'
-            - Add this file to files in build.py:GetContentFiles(){t.yel}
+            - Add this file to files in build.py:GetContentFiles(){u.yel}
             - Edit build.py:MakeIndexFile() to create new index.hld file (you won't see
-              your changes in the hh command if you don't do this){t.help}
-            - Run this script (build.py){t.n}
+              your changes in the hh command if you don't do this){u.help}
+            - Run this script (build.py){u.n}
         
         - Build steps
             - Construct each content file in the output directory
@@ -182,7 +195,7 @@ if 1:   # Help
             - content:  location of help files
             - output:  deployment of build's files
         
-        {t.help}See doc/readme.pdf for documentation.{t.n}
+        {u.help}See doc/readme.pdf for documentation.{u.n}
         '''))
         exit(0)
 if 1:   # Core functionality
@@ -215,7 +228,7 @@ if 1:   # Core functionality
             if i.suffix == ".swp":
                 continue
             if str(i) not in files:
-                t.print(f"{t.concern}Warning:  {tgtdir}/{i!s} not in GetContentFiles()")
+                u.print(f"{u.concern}Warning:  {tgtdir}/{i!s} not in GetContentFiles()")
                 continue
         os.chdir(curdir)
         return files
@@ -282,17 +295,17 @@ if 1:   # Core functionality
                     if len(gr) > 1:
                         continue
                     tag = gr[0]
-                    t = f"{tag}\t{file}\t/*{tag}*"
-                    tags.append(t)
+                    tg = f"{tag}\t{file}\t/*{tag}*"
+                    tags.append(tg)
         # Get rid of duplicates
         tags = list(sorted(list(set(tags))))
         n = len(tags) - 1
         # Write the tags file
-        t = Path("tags")
-        with open(t, "w") as f:
+        tg = Path("tags")
+        with open(tg, "w") as f:
             f.write('\n'.join(tags))
         if d["-v"]:
-            print(f"{n} tags constructed in {t.absolute()}")
+            print(f"{n} tags constructed in {tg.absolute()}")
         # Go to the directory we started from
         os.chdir(cwd)
     def MakeIndexFile():
@@ -332,8 +345,8 @@ if 1:   # Core functionality
         os.chdir(cwd)
         Dbg("New index file:")
         for line in data.split("\n"):
-            Dbg(f"{t.trql}  {line}")
-        t.print(f"{t.grn}Successful build")
+            Dbg(f"{u.trq}  {line}")
+        u.print(f"{u.grn}Successful build")
 if __name__ == "__main__": 
     d = {}      # Options dictionary
     args = ParseCommandLine(d)
