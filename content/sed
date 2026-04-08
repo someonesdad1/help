@@ -1,5 +1,33 @@
 *sed*
 
+Workhorse:      https://linuxblog.io/sed-command-linux-examples/
+    sed 's/pattern/replacement/' file       # Does first match
+    sed 's/pattern/replacement/g' file      # Does all matches
+    sed 's/pattern/replacement/I' file      # Case insensitive
+    sed 's/pattern/replacement/2' file      # 2nd match
+
+    Specific lines
+        sed '3s/pattern/replacement/' file          # Change line 3 only
+        sed '3,8s/pattern/replacement/' file        # Range of lines
+        sed ',8s/pattern/replacement/' file         # Beginning to line 8
+        sed '8,s/pattern/replacement/' file         # Line 8 to end of file
+    Only lines matching a pattern
+        sed '/^#/s/pattern/replacement/' file       # Target only comments
+    Deleting lines
+        sed '/^$/d' file                            # Delete blank lines
+        sed '/^#/d' file                            # Delete all comment lines
+        sed '/^#/d;/^$/d' file                      # Delete comments & blank lines
+        sed '5d' file                               # Delete specific line number
+        sed '5,10d' file                            # Delete a range
+
+Editing files in-place
+    sed -i     's/pattern/repl/' file           # Dangerous without backup
+    sed -i.bak 's/pattern/repl/' file           # Handy suffix to get a backup
+
+Chain multiple commands
+    sed -e 's/foo/bar/g' -e 's/baz/qux/g' file.txt
+    sed 's/foo/bar/g;s/baz/qux/g' file.txt
+
 General form of sed commands:
   [address],[address][!]command[arguments]
 

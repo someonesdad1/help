@@ -1648,33 +1648,28 @@ It is pythonic to keep data in sequences and operate on them with map,
 If you need speed, consider the following recommendations from Guido
 http://www.python.org/doc/essays/list2str.html
 
-    * Rule number one: only optimize when there is a proven speed
-      bottleneck. Only optimize the innermost loop.
-    * Small is beautiful. Given Python's hefty charges for bytecode
-      instructions and variable look-up, it rarely pays off to add extra
-      tests to save a little bit of work.
-    * Use intrinsic operations. An implied loop in map() is faster than an
-      explicit for loop; a while loop with an explicit loop counter is even
-      slower.
-    * Avoid calling functions written in Python in your inner loop. This
-      includes lambdas. In-lining the inner loop can save a lot of time.
-    * Local variables are faster than globals; if you use a global constant
-      in a loop, copy it to a local variable before the loop. And in
-      Python, function names (global or built-in) are also global
-      constants!
-    * Try to use map(), filter() or reduce() to replace an explicit for
-      loop, but only if you can use a built-in function: map with a
-      built-in function beats a for loop, but a for loop with in-line code
-      beats map with a lambda function!
-    * Check your algorithms for quadratic behavior. But notice that a more
-      complex algorithm only pays off for large N - for small N, the
-      complexity doesn't pay off. In our case, 256 turned out to be small
-      enough that the simpler version was still a tad faster. Your mileage
-      may vary - this is worth investigating.
-    * And last but not least: collect data. Python's excellent profile
-      module can quickly show the bottleneck in your code. if you're
-      considering different versions of an algorithm, test it in a tight
-      loop using the time.clock() function.
+    - Rule number one: only optimize when there is a proven speed bottleneck. Only
+      optimize the innermost loop.
+    - Small is beautiful. Given Python's hefty charges for bytecode instructions and
+      variable look-up, it rarely pays off to add extra tests to save a little bit of
+      work.
+    - Use intrinsic operations. An implied loop in map() is faster than an explicit for
+      loop; a while loop with an explicit loop counter is even slower.
+    - Avoid calling functions written in Python in your inner loop. This includes
+      lambdas. In-lining the inner loop can save a lot of time.
+    - Local variables are faster than globals; if you use a global constant in a loop,
+      copy it to a local variable before the loop. And in Python, function names (global
+      or built-in) are also global constants!
+    - Try to use map(), filter() or reduce() to replace an explicit for loop, but only
+      if you can use a built-in function: map with a built-in function beats a for loop,
+      but a for loop with in-line code beats map with a lambda function!
+    - Check your algorithms for quadratic behavior. But notice that a more complex
+      algorithm only pays off for large N - for small N, the complexity doesn't pay off.
+      In our case, 256 turned out to be small enough that the simpler version was still
+      a tad faster. Your mileage may vary - this is worth investigating.
+    - And last but not least: collect data. Python's excellent profile module can
+      quickly show the bottleneck in your code. if you're considering different versions
+      of an algorithm, test it in a tight loop using the time.clock() function.
 
 You can iterate on files; each item is a line from the file (this works only
 in python 2):
@@ -3374,6 +3369,8 @@ useful to define command aliases.  Example:
         Lets you start a REPL with the current globals and locals, then
         quit to go back to debugger.
 
+        REPL = read-eval-print loop
+
 pdb module's methods:
 
     run(statement [, globals [, locals]])
@@ -3417,6 +3414,7 @@ Command list
                     of 'pdb' to see all help.
     ignore          How many times to ignore a breakpoint
     interact        Enter a python REPL with current globals/locals
+                    REPL = read-eval-print loop
     j, jump         Set next line; only works in bottom frame
     l, list         List source
     ll, longlist    List source of current function
