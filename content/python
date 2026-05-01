@@ -87,6 +87,9 @@ Less-used stuff
 ----------------------------------------------------------------------
 Miscellaneous stuff
 
+How to get file, method, & line number from traceback's stack:
+    filename, linenum, method_name, executed_line = traceback.extract_stack()[-2]
+
 __getattr__ magic (context was Mike helping me with trm.py)
 
     __getattribute__ (The Gatekeeper): This guy stands in front of the door. Every time

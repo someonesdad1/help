@@ -14,6 +14,29 @@ Todo:
 |git_Commands|
 |git_Architecture|
 
+
+Working on a branch
+    - See the branch history:
+        - git log UnitArbiter_refactor1
+    - Better:  git log --oneline --graph --all
+        - ASCII character graph of the branches
+
+    Shallow clone:
+        cd /tmp
+        git clone -b UnitArbiter_refactor1 --single-branch https://github.com/your-username/your-repo.git temp_docs
+            -> Saves time & space by ignoring all other branches and checks out the branch
+            immediately.
+    or
+
+    git worktree:  allows you to have two different branches checked out into two
+    different folders simultaneously, sharing the same .git history:
+
+        git worktree add /tmp/temp_docs UnitArbiter_refactor1
+
+        Now /tmp/temp_docs contains your branch code, and your original folder stays on
+        main. When you're done, just delete the folder and run 'git worktree prune'.
+
+
 NOTE:  Open giteveryday(7) if you have it for a good overview of daily commands (on WSL,
 not in cygwin)
 
