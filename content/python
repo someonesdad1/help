@@ -3344,26 +3344,59 @@ Logical tests
 debugger                                                *python_debugger*
 
 My usual method of debugging is a line in the code
-    from pdb import set_trace as xx 
-    from dpdb import set_trace as xx  (My modified debugger with colorizing)
+    from pdb import set_trace as yy 
+    from dpdb import set_trace as yy  (My modified debugger with colorizing)
 
-Then xx() anywhere in the code drops into the debugger at that point.
+Then yy() anywhere in the code drops into the debugger at that point.
 
-Key debugger commands
+Built-in debugger commands
 
-    h           Show list of commands.  'h cmd' gives help on cmd.
-    n           Execute next statement
-    s           Step into next statement
-    a           Show arguments of current frame
-    w, bt       Show backtrace
-    b, tb       Breakpoint, temporary breakpoint
-    r           Continue until return
-    c           Continue execution
-    d, u        Down and up in the stack frames
-    p expr      Print value of expression
-    pp expr     Pretty print value of expression
-    l           List code
-    ll          List code of current function
+    a(rgs)     Args of current function
+    b(reak)    List/define breakpoints
+    bt         Backtrace
+    c(ontinue) Continue execution
+    cl(ear)    Clear breakpoints
+    commands   Specify commands for bp; end with 'end'
+    condition  Set a condition for a bp
+    d(own)     Move down the stack
+    debug      Recursive debugger
+    disable    Disable bp
+    display    Display an expression at each stop
+    enable     Enable a bp
+    q(uit)     Exit the debugger
+    ignore     Ignore a bp
+    interact   Start a REPL
+    j(ump)     Set next line to be executed
+    l(ist)     Show code
+    ll         Longlist
+    n(ext)     Step to next line in current function
+    r(eturn)   Continue until function return
+    restart    Restart program (alias for run)
+    retval     Last return value of a function (also rv)
+    s(tep)     Execute the current line
+    source     Show source code for expressions
+    tbreak     Set temporary bp
+    u(p)       Move up stack frame
+    unalias    Remove alias
+    undisplay  Remove named expression or all
+    unt(il)    Continue until line number > current reached
+    whatis     Print type of arg
+    w(here)    Backtrace
+
+Here are some core techniques:
+
+    condition   Set a condition that must be True for a bp to work.  Use no arg
+                to remove an existing condition.
+    commands    Enter a set of commands for a specific breakpoint.  Type a line 
+                with 'end' to end the command.  To remove commands from a bp, 
+                type 'command\nend\n'.  With no bp number argument, it refers
+                to the last bp set.
+    until       In a loop or a bunch of function calls, set 'unt x' where x is a
+                line number below where you want to stop.  This can avoid a lot of
+                stepping of code.
+    display     Display the value of an expression if it changes each time execution
+                stops in the current frame.
+    ignore/enable   Ignore/enable breakpoints
 
 Use .pdbrc in $HOME or current directory to init the debugger.  This is
 useful to define command aliases.  Example:
