@@ -21,11 +21,11 @@
 Based on the online documentation for version 0.19; however, results are
 shown using 0.18.
 
-Set mp.pretty = True to avoid seeing types in interactive sessions:
-    mp.pretty = False
+Set mpmath.mp.pretty = True to avoid seeing types in interactive sessions:
+    mpmath.mp.pretty = False
         >>> limit(lambda x: (x-sin(x))/x**3, 0)
         mpf('0.16666666666666666')
-    mp.pretty = True
+    mpmath.mp.pretty = True
         >>> limit(lambda x: (x-sin(x))/x**3, 0)
         0.166666666666667
 
@@ -58,13 +58,11 @@ mpmathify(x, strings=True)
     complex numbers are permitted.
 
 fraction(p, q)
-    Returns lazy mpf representing p/q.  Note the value is updated
-    with the precision.
+    Returns lazy mpf representing p/q.  Note the value is updated with the precision.
 
 chop(x, tol=None):
-    Chops off small real or imaginary parts, or converts numbers
-    close to zero to exact zeros. The input can be a single
-    number or an iterable:
+    Chops off small real or imaginary parts, or converts numbers close to zero to exact
+    zeros. The input can be a single number or an iterable:
 
         >>> from mpmath import *
         >>> mp.dps = 15; mp.pretty = False
@@ -77,17 +75,18 @@ chop(x, tol=None):
     The tolerance defaults to 100*eps.
 
 almosteq(s, t, rel_eps=None, abs_eps=None)
-    If no epsilons are given, both are set to 2^(-p+m) where p is
-    the working precision and m is a small integer.  This allows
-    checking for equality in the presence of small rounding errors.
+    The absolute difference is |s-t| and the relative difference is |s-t|/max(|s|, |t|).
+
+    If no epsilons are given, both are set to 2^(-p+m) where p is the working precision
+    and m is a small integer.  This allows checking for equality in the presence of
+    small rounding errors.
 
 arange(a, b, c):  Extension of range.
 
 linspace(a, b, n)
-
-    Returns a list of evenly-spaced samples from a to b.  This is useful
-    for partitioning an interval into subintervals, including the
-    endpoint.  Can also use linspace(mpi(a, b), n).
+    Returns a list of evenly-spaced samples from a to b.  This is useful for
+    partitioning an interval into subintervals, including the endpoint.  Can also use
+    linspace(mpi(a, b), n).
 
 Printing
     mp.dps = 15
@@ -100,20 +99,18 @@ Printing
     To always print an mpf number in scientific notation:
         from mpmath.libmp import to_str
         a, dps = , mpf(2222), 20
-        print(to_str(a._mpf_, dps, min_fixed=2, max_fixed=1,
-                     show_zero_exponent=True))
+        print(to_str(a._mpf_, dps, min_fixed=2, max_fixed=1, show_zero_exponent=True))
         --> 2.2222e+4
 
-        The a._mpf_ is the "raw" form of the floating point number,
-        which is used internally and, in this case, is the tuple 
-        (0, mpz(11111), 1, 14).  Having min_fixed > max_fixed forces
-        scientific notation.
+        The a._mpf_ is the "raw" form of the floating point number, which is used
+        internally and, in this case, is the tuple (0, mpz(11111), 1, 14).  Having
+        min_fixed > max_fixed forces scientific notation.
+
     To always print an mpf number in fixed point:  set min_fixed to -inf
     and max_fixed to +inf.
 
 Temporarily changing precision:  workdps, extradps
 
-    from __future__ import with_statement
     mp.dps = 15
     with workdps(20):
         print mpf(1)/7
@@ -123,8 +120,9 @@ Temporarily changing precision:  workdps, extradps
     Prints:
         0.14285714285714285714
         0.142857142857142857142857142857
-    The with statement ensures the precision gets reset when exiting the
-    block even if an exception is raised.
+
+    The with statement ensures the precision gets reset when exiting the block even if
+    an exception is raised.
 
     Can also use them as function decorators
         @workdps(6)

@@ -229,6 +229,14 @@ The useful tangent
     cos(θ) = 1/sqrt(1 + m**2)
     sin(θ) = m/sqrt(1 + m**2)
 
+Law of cosines
+
+    c**2 = a**2 + b**2 - 2*a*b*cos(theta), theta between sides a & b
+
+Sine Law 
+
+    a/sin(A) = b/sin(B) = c/sin(C)
+
 Sum/Diff formulas
     sin(a + b) = sin(a)*cos(b) + cos(a)*sin(b)
     sin(a - b) = sin(a)*cos(b) - cos(a)*sin(b)
