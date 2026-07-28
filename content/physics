@@ -10,6 +10,7 @@
 |Equation_of_State|
 |Heat_of_Combustion|
 |Thermal_Conductivity|
+|Specific_heat|
 |Sea_Water|
 |Fluid_mechanics|
 |Isotopes|
@@ -299,6 +300,60 @@ Composition of sea water                             *Sea_Water*
 Fluid mechanics                                    *Fluid_mechanics*
 
 1 foot of water = 0.4335 psi = 2989 Pa = 0.02989 bar = 0.02950 atm
+
+-----------------------------------------------------------------------------
+Specific heat                                       *Specific_heat*
+
+Ref https://en.wikipedia.org/wiki/Table_of_specific_heat_capacities
+
+At 25 °C and is the isobaric (constant pressure) mass specific heat
+Units = J/g·K, values are rounded to 3 figures
+
+Air, dry, sea level                 1.0035
+Aluminum                            0.897
+Animal tissue (including human)     3.47
+Antimony                            0.207
+Argon                               0.520
+Asphalt                             0.920
+Brick                               0.840
+Concrete                            0.880
+Copper                              0.385
+Diamond                             0.509
+Ethanol (liquid)                    2.44
+Gasoline (liquid)                   2.22
+Glass, silica                       0.840                           
+Glass, crown                        0.670                           
+Glass, flint                        0.503                           
+Glass, borosilicate                 0.753                           
+Gold                                0.129
+Granite                             0.790
+Graphite                            0.710
+Gypsum                              1.09
+Human body tissue                   3
+Iron                                0.449
+Lead                                0.129
+Lithium                             3.58
+Magnesium                           1.02
+Mercury                             0.140
+Methanol                            2.14
+Molten salt 142-540 °C              1.56
+Paraffin wax                        2.50
+Polyethylene                        2.30
+Sand                                0.835
+Silica, fused                       0.703
+Silver                              0.233
+Sodium                              1.23
+Soil                                0.800
+Steel                               0.466
+Tin                                 0.227
+Titanium                            0.523
+Tungsten                            0.134
+Uranium                             0.116
+Water (steam at 100 °C)             2.03
+Water (25 °C)                       4.18
+Water (ice) (-10 °C)                2.05
+Wood                                1.7 (1.2 to 2.9)
+Zinc                                0.387
 
 -----------------------------------------------------------------------------
 Thermal_Conductivity                             *Thermal_Conductivity*

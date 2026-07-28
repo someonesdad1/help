@@ -15,6 +15,7 @@
 Planetary data                                        *Planetary_Data*
 
 Mean radius for Earth = 6.371 Mm with 0.3% variability
+    This curvature is 10 ppm per unit distance or 1 mm over 113 m.
     0.001° = 17.5 μrad
     Thus, a GPS position to 0.001° is uncertain to about (17.5e-6)(6.371e6 m) or 
     17.5(6.37) = 111 m.
