@@ -1,6 +1,7 @@
 *Electrical*
 
 |Resistor_Color_Code|
+|Capacitor_codes|
 |Cu_wire|
 |PhysProperties|
 |Ampacities|
@@ -362,3 +363,37 @@ The formulas that relate these resistances are
 
 Sometimes using these equations is useful for simplifying a circuit without going through all of
 the equations from Kirchhoff's Laws.
+
+-----------------------------------------------------------------------------
+Capacitor codes                                 *Capacitor_codes*
+
+Typical for capacitors from 1 pF to 1 uF
+
+Three digit code:  First two digits are significand, third is number of zeros, 
+units are pF
+
+Example:  473 is 47000 pF or 47 nF
+
+EIA voltage codes
+    0G  4 V             2C  160 V
+    0L  5.5 V           2Z  180 V
+    0J  6.3 V           2D  200 V
+    1A  10 V            2P  220 V
+    1C  16 V            2E  250 V
+    1E  25 V            2F  315 V
+    1H  50 V            2V  350 V
+    1J  63 V            2G  400 V
+    1K  80 V            2W  450 V
+    2A  100 V           2H  500 V
+    2Q  110 V           2J  630 V
+    2B  125 V           3A  1000 V
+    2C  160 V
+
+EIA tolerance codes
+    B     ± 0.10 pF        H     ± 3%
+    C     ± 0.25 pF        J     ± 5%
+    D     ± 0.5 pF         K     ± 10%
+    E     ± 0.5%           M     ± 20%
+    F     ± 1%             N     ± 30%
+    G     ± 2%             P     +100%, -0%
+    Z     +80%, -20%
